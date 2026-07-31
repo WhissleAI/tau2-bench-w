@@ -80,7 +80,9 @@ from tau2.voice.audio_native.adapter import DiscreteTimeAdapter, create_adapter
 from tau2.voice.audio_native.tick_result import TickResult
 
 # Provider type alias
-AudioNativeProvider = Literal["openai", "gemini", "xai", "nova", "qwen", "livekit"]
+AudioNativeProvider = Literal[
+    "openai", "gemini", "xai", "nova", "qwen", "livekit", "whissle"
+]
 
 # VAD config union type (string annotations for lazy resolution)
 VADConfig = Union[
@@ -294,6 +296,10 @@ class DiscreteTimeAudioNativeAgent(FullDuplexAgent[DiscreteTimeAgentState]):
             )
 
             self.vad_config = LiveKitVADConfig()
+        elif provider == "whissle":
+            # Whissle does its own VAD/endpointing/barge-in server-side; the adapter
+            # ignores vad_config.
+            self.vad_config = None
         else:  # nova
             from tau2.voice.audio_native.nova.provider import NovaVADConfig
 

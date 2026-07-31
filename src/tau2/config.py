@@ -198,6 +198,8 @@ DEFAULT_AUDIO_NATIVE_MODELS = {
     "nova": DEFAULT_NOVA_MODEL,
     "qwen": DEFAULT_QWEN_MODEL,
     "livekit": "dummy",
+    # Whissle's brain/model lives behind its API; the label is informational.
+    "whissle": "whissle-voice",
 }
 
 DEFAULT_AUDIO_NATIVE_REASONING_EFFORT: dict[str, str | None] = {
@@ -207,6 +209,7 @@ DEFAULT_AUDIO_NATIVE_REASONING_EFFORT: dict[str, str | None] = {
     "nova": None,
     "qwen": None,
     "livekit": None,
+    "whissle": None,
 }
 
 AUDIO_NATIVE_PROVIDER_TYPES = {
@@ -216,6 +219,9 @@ AUDIO_NATIVE_PROVIDER_TYPES = {
     "nova": "audio_native",
     "qwen": "audio_native",
     "livekit": "cascaded",
+    # Whissle is a real cascaded STT→LLM→TTS pipeline (like livekit), so it gets
+    # the transcribed-speech system-prompt guidance.
+    "whissle": "cascaded",
 }
 
 # =============================================================================

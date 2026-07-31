@@ -452,6 +452,19 @@ def create_adapter(
             send_audio_instant=send_audio_instant,
             audio_format=audio_format,
         )
+    elif provider == "whissle":
+        from tau2.voice.audio_native.whissle.config import WhissleConfig
+        from tau2.voice.audio_native.whissle.discrete_time_adapter import WhissleAdapter
+
+        # Whissle's config comes from the environment (WHISSLE_BASE / _AGENT_ID /
+        # _API_KEY); cascaded_config may carry a pre-built WhissleConfig for tests.
+        wconfig = cascaded_config if isinstance(cascaded_config, WhissleConfig) else WhissleConfig()
+        adapter = WhissleAdapter(
+            tick_duration_ms=tick_duration_ms,
+            whissle_config=wconfig,
+            send_audio_instant=send_audio_instant,
+            audio_format=audio_format,
+        )
     else:
         raise ValueError(f"Unknown provider: {provider}")
 
