@@ -20,3 +20,20 @@ export WHISSLE_BASE=... WHISSLE_AGENT_ID=... WHISSLE_API_KEY=... OPENAI_API_KEY=
 uv run tau2 run --domain retail  --agent whissle --agent-llm whissle --user-llm gpt-4o --max-concurrency 2
 uv run tau2 run --domain airline --agent whissle --agent-llm whissle --user-llm gpt-4o --max-concurrency 2
 ```
+
+## Run 2 — completion/persistence nudge (honest negative result)
+
+Added an agent instruction to complete actions (not just promise them), persist
+through auth steps, and treat transfer-to-human as a last resort — targeting the
+"acknowledges but doesn't act" pattern seen in run-1 failures.
+
+| Run | Retail Pass^1 |
+|-----|---------------|
+| 1 (base instruction) | 0.614 (70/114) |
+| 2 (+ completion/persistence nudge) | 0.623 (71/114) |
+
+**Delta +0.009 — within run-to-run noise** (LLM non-determinism + gpt-4o user
+simulator variance); `transfer_to_human_agents` calls were unchanged (18 → 19). So
+this prompt nudge is NOT a meaningful lever. The failures are genuine model
+reasoning on hard multi-step tasks, not a "forgot to call the tool" gap. Reported
+for honesty; kept the instruction (it's good general behavior) but claim no lift.
