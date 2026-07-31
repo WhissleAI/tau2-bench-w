@@ -295,6 +295,8 @@ try:
 
     # Agent factories
     registry.register_agent_factory(create_llm_agent, "llm_agent")
+    from tau2.agent.whissle_agent import create_whissle_agent
+    registry.register_agent_factory(create_whissle_agent, "whissle")
     registry.register_agent_factory(
         create_llm_gt_agent,
         "llm_agent_gt",
