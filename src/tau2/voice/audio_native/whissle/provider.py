@@ -38,6 +38,10 @@ else:
 
 from tau2.voice.audio_native.whissle.config import WhissleConfig
 
+import sys as _sys
+def _DBG(*a):
+    print('WHISSLE_DBG', *a, file=_sys.stderr, flush=True)
+
 
 class WhissleRoomProvider:
     """Joins Whissle's bench-voice LiveKit room and exchanges audio + tool calls."""
@@ -78,7 +82,7 @@ class WhissleRoomProvider:
         data = resp.json()
         url, token, room_name = data["url"], data["token"], data["room"]
         self.session_id = room_name
-        logger.info("whissle bench-voice session started — room={}", room_name)
+        logger.info("whissle bench-voice session started — room={}", room_name); _DBG("session-started room=", room_name)
 
         self.room = rtc.Room()
         self.room.on("track_subscribed", self._on_track)
@@ -92,11 +96,13 @@ class WhissleRoomProvider:
             self.config.user_sample_rate, self.config.num_channels
         )
         track = rtc.LocalAudioTrack.create_audio_track("user-sim", self._audio_source)
-        await self.room.local_participant.publish_track(
+        pub = await self.room.local_participant.publish_track(
             track,
             rtc.TrackPublishOptions(source=rtc.TrackSource.SOURCE_MICROPHONE),
         )
+        _DBG("mic-published sid=", getattr(pub, "sid", "?"), "remote-participants=", list(self.room.remote_participants.keys()) if hasattr(self.room, "remote_participants") else "?")
         self._connected = True
+        self._frames_sent = 0
 
     async def disconnect(self) -> None:
         self._connected = False
@@ -117,19 +123,30 @@ class WhissleRoomProvider:
     # -- audio -------------------------------------------------------------------
 
     async def send_audio(self, pcm16: bytes) -> None:
-        """Publish one tick of user PCM16 into the room."""
+        """Publish one tick of user PCM16 into the room, as WebRTC-sized frames.
+
+        A tick's audio is ~200ms; LiveKit/WebRTC ingests small frames (10ms), not one
+        big blob — publishing a 200ms frame is silently dropped by the receiver (the
+        bot's mic-watchdog sees a track but zero audio). So split into 10ms frames."""
         if not self._audio_source or not pcm16:
             return
-        samples = len(pcm16) // (2 * self.config.num_channels)
-        if samples <= 0:
+        sr = self.config.user_sample_rate
+        ch = self.config.num_channels
+        frame_bytes = int(sr * 0.01) * 2 * ch  # 10ms of PCM16
+        if frame_bytes <= 0:
             return
-        frame = rtc.AudioFrame(
-            data=pcm16,
-            sample_rate=self.config.user_sample_rate,
-            num_channels=self.config.num_channels,
-            samples_per_channel=samples,
-        )
-        await self._audio_source.capture_frame(frame)
+        for off in range(0, len(pcm16), frame_bytes):
+            chunk = pcm16[off:off + frame_bytes]
+            samples = len(chunk) // (2 * ch)
+            if samples <= 0:
+                continue
+            frame = rtc.AudioFrame(
+                data=chunk, sample_rate=sr, num_channels=ch, samples_per_channel=samples,
+            )
+            await self._audio_source.capture_frame(frame)
+            self._frames_sent = getattr(self, "_frames_sent", 0) + 1
+            if self._frames_sent % 200 == 1:
+                _DBG("mic-frame#", self._frames_sent, "bytes=", len(chunk))
 
     async def drain_agent_audio(self) -> bytes:
         """Return + clear the bot PCM16 accumulated since the last drain."""
@@ -139,6 +156,7 @@ class WhissleRoomProvider:
         return out
 
     def _on_track(self, track, publication, participant) -> None:  # noqa: ANN001
+        _DBG("track-subscribed kind=", getattr(track,"kind",None))
         if getattr(track, "kind", None) == rtc.TrackKind.KIND_AUDIO:
             self._consume_tasks.append(asyncio.ensure_future(self._consume_audio(track)))
 
@@ -149,11 +167,15 @@ class WhissleRoomProvider:
             num_channels=self.config.num_channels,
         )
         try:
+            _rx = 0
             async for event in stream:
                 frame = getattr(event, "frame", event)
                 data = frame.data.tobytes() if hasattr(frame.data, "tobytes") else bytes(frame.data)
                 async with self._agent_lock:
                     self._agent_pcm.extend(data)
+                _rx += 1
+                if _rx % 100 == 1:
+                    _DBG("bot-audio-frame#", _rx, "bytes=", len(data))
         except asyncio.CancelledError:  # normal on disconnect
             raise
         except Exception as exc:  # noqa: BLE001
@@ -179,7 +201,20 @@ class WhissleRoomProvider:
             msg = json.loads(payload.decode("utf-8"))
         except Exception:  # noqa: BLE001 — not our JSON
             return
-        if not isinstance(msg, dict) or msg.get("type") != "server-message":
+        if not isinstance(msg, dict):
+            return
+        mtype = msg.get("type")
+        _DBG("data", "type=", mtype, "inner=", (msg.get("data") or {}).get("type") if isinstance(msg.get("data"), dict) else None)
+        # The bot broadcasts its own spoken transcript as a standard RTVI
+        # `bot-transcription` message ({type, data:{text}}) — use it as the agent
+        # transcript (the user sim also hears the audio; this feeds scoring/content).
+        if mtype == "bot-transcription":
+            text = str((msg.get("data") or {}).get("text") or "").strip()
+            if text:
+                self._agent_texts.append(text)
+                _DBG("says:", text[:200])
+            return
+        if mtype != "server-message":
             return
         inner = msg.get("data")
         if not isinstance(inner, dict):
@@ -187,10 +222,12 @@ class WhissleRoomProvider:
         kind = inner.get("type")
         if kind == "bench-tool-call":
             self._tool_calls.append(inner)
+            _DBG("tool-call", inner.get("name"), inner.get("arguments"))
         elif kind == "bench-agent-text":
             text = str(inner.get("text") or "").strip()
             if text:
                 self._agent_texts.append(text)
+                _DBG("says:", text[:200])
 
     def drain_tool_calls(self) -> list[dict]:
         calls: list[dict] = []
@@ -213,6 +250,7 @@ class WhissleRoomProvider:
             "data": {"t": "bench-tool-result", "d": {"id": call_id, "result": result}},
         }
         raw = json.dumps(envelope).encode("utf-8")
+        _DBG("tool-result", call_id, str(result)[:160])
         try:
             await self.room.local_participant.publish_data(raw, reliable=True)
         except TypeError:
