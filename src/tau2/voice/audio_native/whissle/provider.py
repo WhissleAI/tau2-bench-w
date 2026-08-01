@@ -57,6 +57,7 @@ class WhissleRoomProvider:
         self.session_id: Optional[str] = None  # room name, surfaced in results
         self._audio_source: Optional["rtc.AudioSource"] = None
         self._agent_pcm = bytearray()  # accumulated bot PCM16 @ agent_sample_rate
+        self._agent_pcm_total = 0  # monotonic byte counter (turn-quiet detection)
         self._agent_lock = asyncio.Lock()
         self._tool_calls: deque[dict] = deque()  # incoming bench-tool-call payloads
         self._agent_texts: deque[str] = deque()  # incoming bench-agent-text
@@ -173,6 +174,7 @@ class WhissleRoomProvider:
                 data = frame.data.tobytes() if hasattr(frame.data, "tobytes") else bytes(frame.data)
                 async with self._agent_lock:
                     self._agent_pcm.extend(data)
+                    self._agent_pcm_total += len(data)
                 _rx += 1
                 if _rx % 100 == 1:
                     _DBG("bot-audio-frame#", _rx, "bytes=", len(data))
@@ -228,6 +230,10 @@ class WhissleRoomProvider:
             if text:
                 self._agent_texts.append(text)
                 _DBG("says:", text[:200])
+
+    def agent_audio_total(self) -> int:
+        """Monotonic total bot PCM bytes received (thread-safe read of an int)."""
+        return self._agent_pcm_total
 
     def drain_tool_calls(self) -> list[dict]:
         calls: list[dict] = []

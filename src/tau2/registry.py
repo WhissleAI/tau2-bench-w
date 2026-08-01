@@ -297,6 +297,10 @@ try:
     registry.register_agent_factory(create_llm_agent, "llm_agent")
     from tau2.agent.whissle_agent import create_whissle_agent
     registry.register_agent_factory(create_whissle_agent, "whissle")
+    # Half-duplex VOICE agent: drives Whissle's real STT→LLM→TTS cascade turn by
+    # turn over LiveKit (the faithful model — NOT the tick full-duplex path).
+    from tau2.agent.whissle_voice_agent import create_whissle_voice_agent
+    registry.register_agent_factory(create_whissle_voice_agent, "whissle_voice")
     registry.register_agent_factory(
         create_llm_gt_agent,
         "llm_agent_gt",
