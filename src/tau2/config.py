@@ -29,7 +29,11 @@ DEFAULT_LLM_ENV_INTERFACE = "gpt-4.1-2025-04-14"
 DEFAULT_LLM_ENV_INTERFACE_TEMPERATURE = 0.0
 DEFAULT_LLM_ENV_INTERFACE_ARGS = {"temperature": DEFAULT_LLM_ENV_INTERFACE_TEMPERATURE}
 
-DEFAULT_LLM_EVAL_USER_SIMULATOR = "claude-opus-4-5"
+# OpenAI-only judging in this fork (no Anthropic key wired). Upstream defaults the
+# eval/hallucination reviewer to claude-opus-4-5, which crashes the run post-task
+# with AuthenticationError when ANTHROPIC_API_KEY is unset. gpt-4.1 matches the
+# NL-assertion judge already used for scoring.
+DEFAULT_LLM_EVAL_USER_SIMULATOR = "gpt-4.1-2025-04-14"
 
 # LLM debug logging
 DEFAULT_LLM_LOG_MODE = "latest"  # Options: "all", "latest"

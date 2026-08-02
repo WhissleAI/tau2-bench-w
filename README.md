@@ -32,6 +32,19 @@ Voice full-duplex · Knowledge retrieval · 75+ task fixes<br>
 
 See [CHANGELOG.md](CHANGELOG.md) for the full version history.
 
+## Testing a Whissle agent (this fork)
+
+This fork can run an agent you build at **[platform.whissle.ai](https://platform.whissle.ai)**
+through Whissle's real voice pipeline (STT → LLM + tools → TTS) on the same tau2
+tasks, and report task success + the text → voice delta.
+
+- **[WHISSLE_HALF_DUPLEX.md](WHISSLE_HALF_DUPLEX.md)** — start here. Create an agent
+  at whissle.ai, get a `wsk_` key, and run the half-duplex benchmark
+  (`--agent whissle_voice` / `./run_hd.sh`). This is the faithful model of
+  Whissle's cascade and the number to report.
+- **[WHISSLE_VOICE.md](WHISSLE_VOICE.md)** — the tick-based full-duplex provider
+  (`--audio-native-provider whissle`), for latency / barge-in experiments.
+
 > **Backward compatibility note**: If you are evaluating an agent (not training), use the `base` task split to evaluate on the complete task set that matches the original τ-bench structure. This is the default.
 
 > **Upgrading from $\tau^2$-bench?** Installation now uses `uv` instead of `pip install -e .`, and Python `>=3.12, <3.14` is required (was `>=3.10`). Some internal APIs have been refactored — see [CHANGELOG.md](CHANGELOG.md) for details.
