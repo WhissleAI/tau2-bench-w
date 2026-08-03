@@ -37,6 +37,9 @@ def transcribe_audio(
         if conversion_error:
             return TranscriptionResult(transcript="", error=conversion_error)
 
+        if config.model == "whissle":
+            return transcribe_whissle(pcm_audio_data, config)
+
         if config.model in ["nova-2", "nova-3"]:
             return transcribe_deepgram(pcm_audio_data, config)
 
@@ -199,6 +202,77 @@ def transcribe_whisper(
     except Exception as e:
         return TranscriptionResult(
             transcript="", error=f"OpenAI transcription failed: {str(e)}"
+        )
+
+
+# Friendly language code the Whissle transcription endpoint expects. The engine is
+# selected server-side from this; we only say WHICH language. BCP-47 locales
+# (en-US, hi-IN) collapse to the platform's friendly set.
+_WHISSLE_LANG = {
+    "en": "en", "en-us": "en", "en-in": "en", "en-gb": "en",
+    "hi": "hi", "hi-in": "hi",
+    "te": "te", "te-in": "te",
+    "hinglish": "hinglish", "tenglish": "tenglish",
+}
+
+
+def _to_whissle_lang(language: str | None) -> str:
+    if not language:
+        return "en"
+    key = language.strip().lower()
+    return _WHISSLE_LANG.get(key, _WHISSLE_LANG.get(key.split("-")[0], "en"))
+
+
+def transcribe_whissle(
+    audio_data: AudioData, config: TranscriptionConfig
+) -> TranscriptionResult:
+    """Transcribe via the Whissle platform endpoint (POST /api/models/transcribe).
+
+    This is the PRODUCT surface, not a raw provider: the caller picks a language and
+    the platform selects the engine (Deepgram / Sarvam / on-prem), never revealed in
+    the request or response. Auth is a `wsk_` secret key. Reads WHISSLE_BASE +
+    WHISSLE_API_KEY from the environment, matching run_voice.sh.
+    """
+    _validate_pcm16_mono_24000(audio_data.format)
+    try:
+        base = os.getenv(
+            "WHISSLE_BASE", "https://aws-gateway-backend.whissle.ai/bot"
+        ).rstrip("/")
+        api_key = os.getenv("WHISSLE_API_KEY")
+        if not api_key:
+            return TranscriptionResult(
+                transcript="", error="WHISSLE_API_KEY not found in environment"
+            )
+
+        # Wrap the pcm16 mono 24k frames as a WAV container the endpoint accepts.
+        wav_buffer = io.BytesIO()
+        with wave.open(wav_buffer, "wb") as wav_file:
+            wav_file.setnchannels(1)
+            wav_file.setsampwidth(2)
+            wav_file.setframerate(DEFAULT_OPENAI_OUTPUT_SAMPLE_RATE)
+            wav_file.writeframes(audio_data.data)
+        wav_buffer.seek(0)
+
+        language = _to_whissle_lang(config.language)
+        diarize = str(bool(config.extra_options.get("diarize", False))).lower()
+        response = requests.post(
+            f"{base}/api/models/transcribe",
+            headers={"Authorization": f"Bearer {api_key}"},
+            files={"file": ("audio.wav", wav_buffer.read(), "audio/wav")},
+            data={"language": language, "diarize": diarize},
+            timeout=120,
+        )
+        if response.status_code != 200:
+            return TranscriptionResult(
+                transcript="",
+                error=f"Whissle API error {response.status_code}: {response.text[:200]}",
+            )
+        result = response.json()
+        return TranscriptionResult(transcript=result.get("text", "") or "")
+
+    except Exception as e:
+        return TranscriptionResult(
+            transcript="", error=f"Whissle transcription failed: {str(e)}"
         )
 
 
