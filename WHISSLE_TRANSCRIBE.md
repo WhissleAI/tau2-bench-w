@@ -11,13 +11,21 @@ This is separate from the tau2 agentic domains (airline/retail/telecom): those s
 task success (pass^k); this scores transcription fidelity. It reuses the repo's
 `.env` creds, `results/whissle/` output, and `jiwer` scoring.
 
+It **drives the `whissle` CLI** ([WhissleAI/whissle-cli](https://github.com/WhissleAI/whissle-cli)) — `models tts` to synthesize and `models transcribe` to transcribe — so it exercises exactly what a customer runs, not a private HTTP path.
+
 ## Setup
 
 ```bash
-# .env (same file the voice benchmark uses)
+# 1. Install the whissle CLI so `whissle` is on PATH (or set WHISSLE_CLI to point at it)
+npm i -g @whissle/cli        # or: npm link inside a whissle-cli checkout
+#   WHISSLE_CLI="node /path/to/whissle-cli/bin/whissle.mjs"   # alternative
+
+# 2. .env (same file the voice benchmark uses)
 WHISSLE_API_KEY=wsk_live_...     # a secret key with models:invoke
 # WHISSLE_BASE=...               # optional; defaults to the prod gateway
 ```
+
+The CLI reads the key from `WHISSLE_API_KEY` (or its own `~/.whissle/config.json`).
 
 ## Run
 
