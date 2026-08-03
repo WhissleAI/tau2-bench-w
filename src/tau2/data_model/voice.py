@@ -36,7 +36,12 @@ except ImportError:
 # ============================================================================
 
 TranscriptionModel = Literal[
-    "nova-2", "nova-3", "whisper-1", "gpt-4o-transcribe", "gpt-4o-mini-transcribe"
+    "nova-2", "nova-3", "whisper-1", "gpt-4o-transcribe", "gpt-4o-mini-transcribe",
+    # The Whissle platform transcription endpoint. Unlike the others this is NOT a
+    # raw provider — the engine (Deepgram / Sarvam / on-prem) is chosen server-side
+    # from `language` and never exposed. `language` here is a friendly code
+    # (en / hi / te / hinglish / tenglish), not a raw provider locale.
+    "whissle",
 ]
 
 
