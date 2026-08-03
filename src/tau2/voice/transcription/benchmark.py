@@ -74,11 +74,35 @@ def _auth() -> dict[str, str]:
     return {"Authorization": f"Bearer {key}"}
 
 
-def synthesize(text: str, voice: Optional[str] = None) -> bytes:
-    """Platform TTS → audio bytes (mp3). Engine hidden."""
+# Round-trip TTS voice per language. The /api/models/tts endpoint has no language
+# field and defaults to an English voice — synthesizing Devanagari/Telugu with it
+# produces English-sounding gibberish. So the round-trip must pick a language-
+# appropriate voice explicitly; the Indian languages use a multilingual IN voice.
+# (This is a harness concern, not what a customer's real clips look like — corpus
+# mode has no TTS step.)
+_TTS_VOICE: dict[str, tuple[Optional[str], Optional[str]]] = {
+    "en": (None, None),  # platform default (English)
+    "hi": ("sarvam", "anushka"),
+    "te": ("sarvam", "anushka"),
+    "hinglish": ("sarvam", "anushka"),
+    "tenglish": ("sarvam", "anushka"),
+}
+
+
+def synthesize(
+    text: str, language: str = "en",
+    engine: Optional[str] = None, voice: Optional[str] = None,
+) -> bytes:
+    """Platform TTS → audio bytes (mp3). Voice/engine chosen per language for the
+    round-trip (a manifest row may override via `engine`/`voice`)."""
+    dflt_engine, dflt_voice = _TTS_VOICE.get(language, (None, None))
     body: dict[str, Any] = {"text": text}
-    if voice:
-        body["voice"] = voice
+    eng = engine or dflt_engine
+    voc = voice or dflt_voice
+    if eng:
+        body["engine"] = eng
+    if voc:
+        body["voice"] = voc
     r = requests.post(
         f"{_base()}/api/models/tts", headers=_auth(), json=body, timeout=120
     )
@@ -143,7 +167,10 @@ def _run_case(row: dict[str, Any], mode: str, repeat: int) -> dict[str, Any]:
                 audio = path.read_bytes()
                 filename = path.name
             else:  # round-trip: synthesize the reference (or its tts_text)
-                audio = synthesize(row.get("tts_text") or reference, row.get("voice"))
+                audio = synthesize(
+                    row.get("tts_text") or reference, language,
+                    engine=row.get("engine"), voice=row.get("voice"),
+                )
                 filename = f"{row['id']}.mp3"
             resp = transcribe(audio, filename, language, diarize=False)
             hyp = resp.get("text", "")
@@ -172,6 +199,12 @@ def _run_case(row: dict[str, Any], mode: str, repeat: int) -> dict[str, Any]:
 
 
 # ── CLI ──────────────────────────────────────────────────────────────────────
+
+@app.command()
+def languages() -> None:
+    """List the language codes the platform transcription endpoint accepts."""
+    console.print("supported languages: " + " · ".join(LANGUAGES))
+
 
 @app.command()
 def run(
