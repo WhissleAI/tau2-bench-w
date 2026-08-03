@@ -45,6 +45,23 @@ uv sync --extra voice
 uv run --extra voice python -m tau2.voice.transcription.benchmark run --language te --repeat 2
 ```
 
+## Diarization (speaker attribution)
+
+Transcription fidelity is *what* was said; diarization is *who* said it. Because
+diarizers can't separate synthetic TTS voices, this is a **corpus-only** test on real
+multi-speaker audio, scored with **DER** (Diarization Error Rate) + speaker-count
+accuracy — all through the CLI (`whissle models transcribe --diarize --json`).
+
+```bash
+python scripts/build_diarization_set.py    # build the clips (needs datasets, soundfile, numpy)
+uv run --extra voice python -m tau2.voice.transcription.benchmark diarize
+```
+
+The clips (`data/transcription/diarization/`) are built by concatenating distinct
+real **LibriSpeech** speakers, so the ground-truth speaker timeline is exact. Drop
+your own real 2-speaker call recordings into a manifest (`{id, audio, num_speakers,
+turns:[{speaker,start,end,text}]}`) to score production audio.
+
 ## Two modes
 
 | mode | audio source | what it proves | use for |
