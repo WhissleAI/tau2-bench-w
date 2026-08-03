@@ -17,6 +17,13 @@ set -a; . ./.env; set +a
 : "${WHISSLE_API_KEY:?set in .env}"
 export WHISSLE_BASE="${WHISSLE_BASE:-https://aws-gateway-backend.whissle.ai/bot}"
 
+# This benchmark drives the `whissle` CLI (github.com/WhissleAI/whissle-cli).
+# Install it (npm i -g / npm link) so `whissle` is on PATH, or point WHISSLE_CLI at it.
+if [ -z "${WHISSLE_CLI:-}" ] && ! command -v whissle >/dev/null 2>&1; then
+  echo "MISSING the whissle CLI — install it or set WHISSLE_CLI=\"node /path/to/whissle-cli/bin/whissle.mjs\"" >&2
+  exit 1
+fi
+
 LANG_ARG="${1:-all}"; REPEAT="${2:-1}"
 MODE="${MODE:-round-trip}"; MANIFEST="${MANIFEST:-data/transcription/whissle_roundtrip.jsonl}"
 

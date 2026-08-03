@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""Multilingual transcription benchmark for the Whissle platform endpoint.
+"""Multilingual transcription benchmark, driven through the `whissle` CLI.
 
-Measures transcription fidelity (WER + CER) of `POST /api/models/transcribe` across
-the languages the product exposes — en, hi, te, hinglish, tenglish — WITHOUT ever
-naming the underlying engine (that is chosen server-side from the language).
+Measures transcription fidelity (WER + CER) across the languages the product exposes
+— en, hi, te, hinglish, tenglish — by DOGFOODING the `whissle` CLI (`models tts` +
+`models transcribe`), exactly what a customer runs. The engine/voice/provider is
+chosen and hidden by the platform; this harness never names it or calls HTTP itself.
 
 Two modes, both driven by a JSONL manifest of {id, language, reference, ...}:
 
@@ -31,7 +32,9 @@ Usage:
     python -m tau2.voice.transcription.benchmark run \
         --manifest data/transcription/my_corpus.jsonl --mode corpus
 
-Reads WHISSLE_BASE + WHISSLE_API_KEY from the environment (see run_transcribe.sh).
+Requires the `whissle` CLI on PATH (or set WHISSLE_CLI, e.g.
+`WHISSLE_CLI="node /path/to/whissle-cli/bin/whissle.mjs"`). Auth/base URL come from
+the CLI's own config or WHISSLE_API_KEY / WHISSLE_BASE_URL (see run_transcribe.sh).
 """
 
 from __future__ import annotations
@@ -39,13 +42,14 @@ from __future__ import annotations
 import json
 import os
 import re
+import subprocess
+import tempfile
 import time
 import unicodedata
 from pathlib import Path
 from typing import Any, Optional
 
 import jiwer
-import requests
 from dotenv import load_dotenv
 from rich.console import Console
 from typer import Option, Typer
@@ -59,71 +63,59 @@ DEFAULT_MANIFEST = "data/transcription/whissle_roundtrip.jsonl"
 LANGUAGES = ["en", "hi", "te", "hinglish", "tenglish"]
 
 
-# ── platform HTTP (engine stays hidden) ───────────────────────────────────────
+# ── the whissle CLI (dogfood the product's own client, not raw HTTP) ───────────
+# The benchmark drives the `whissle` CLI end to end — `models tts` to synthesize,
+# `models transcribe --json` to transcribe — so it exercises exactly what a customer
+# using the CLI hits, engine/voice/provider chosen and hidden by the platform. Auth
+# and base URL come from the CLI's own config (~/.whissle/config.json) or the
+# WHISSLE_API_KEY / WHISSLE_BASE_URL env. Override the binary with WHISSLE_CLI, e.g.
+# `WHISSLE_CLI="node /path/to/whissle-cli/bin/whissle.mjs"`.
 
-def _base() -> str:
-    return os.getenv(
-        "WHISSLE_BASE", "https://aws-gateway-backend.whissle.ai/bot"
-    ).rstrip("/")
-
-
-def _auth() -> dict[str, str]:
-    key = os.getenv("WHISSLE_API_KEY")
-    if not key:
-        raise RuntimeError("WHISSLE_API_KEY not set (see run_transcribe.sh / .env)")
-    return {"Authorization": f"Bearer {key}"}
+_ANSI = re.compile(r"\x1b\[[0-9;]*m")
 
 
-# Round-trip TTS voice per language. The /api/models/tts endpoint has no language
-# field and defaults to an English voice — synthesizing Devanagari/Telugu with it
-# produces English-sounding gibberish. So the round-trip must pick a language-
-# appropriate voice explicitly; the Indian languages use a multilingual IN voice.
-# (This is a harness concern, not what a customer's real clips look like — corpus
-# mode has no TTS step.)
-_TTS_VOICE: dict[str, tuple[Optional[str], Optional[str]]] = {
-    "en": (None, None),  # platform default (English)
-    "hi": ("sarvam", "anushka"),
-    "te": ("sarvam", "anushka"),
-    "hinglish": ("sarvam", "anushka"),
-    "tenglish": ("sarvam", "anushka"),
-}
+def _cli_argv() -> list[str]:
+    override = os.getenv("WHISSLE_CLI")
+    return override.split() if override else ["whissle"]
 
 
-def synthesize(
-    text: str, language: str = "en",
-    engine: Optional[str] = None, voice: Optional[str] = None,
-) -> bytes:
-    """Platform TTS → audio bytes (mp3). Voice/engine chosen per language for the
-    round-trip (a manifest row may override via `engine`/`voice`)."""
-    dflt_engine, dflt_voice = _TTS_VOICE.get(language, (None, None))
-    body: dict[str, Any] = {"text": text}
-    eng = engine or dflt_engine
-    voc = voice or dflt_voice
-    if eng:
-        body["engine"] = eng
-    if voc:
-        body["voice"] = voc
-    r = requests.post(
-        f"{_base()}/api/models/tts", headers=_auth(), json=body, timeout=120
+def _cli_env() -> dict[str, str]:
+    env = dict(os.environ)
+    # The CLI reads WHISSLE_BASE_URL; bridge WHISSLE_BASE (what run_*.sh set).
+    base = os.getenv("WHISSLE_BASE_URL") or os.getenv("WHISSLE_BASE")
+    if base:
+        env["WHISSLE_BASE_URL"] = base
+    return env
+
+
+def _run_cli(args: list[str], timeout: int = 180) -> subprocess.CompletedProcess:
+    proc = subprocess.run(
+        _cli_argv() + args, capture_output=True, text=True,
+        env=_cli_env(), timeout=timeout,
     )
-    r.raise_for_status()
-    return r.content
+    if proc.returncode != 0:
+        detail = (proc.stderr or proc.stdout or "").strip()
+        raise RuntimeError(
+            f"whissle {' '.join(args[:2])} -> exit {proc.returncode}: {_ANSI.sub('', detail)[:200]}"
+        )
+    return proc
 
 
-def transcribe(
-    audio: bytes, filename: str, language: str, diarize: bool = False
-) -> dict[str, Any]:
-    """Platform STT → {text, segments, duration_seconds, cost_usd}. Engine hidden."""
-    r = requests.post(
-        f"{_base()}/api/models/transcribe",
-        headers=_auth(),
-        files={"file": (filename, audio, "application/octet-stream")},
-        data={"language": language, "diarize": str(diarize).lower()},
-        timeout=180,
-    )
-    if r.status_code != 200:
-        raise RuntimeError(f"transcribe {r.status_code}: {r.text[:200]}")
-    return r.json()
+def synthesize_to_file(text: str, language: str, out_path: str) -> None:
+    """`whissle models tts` → writes an audio file. Omit --language for English (the
+    platform auto-detects script); pass it for hi/te/hinglish/tenglish."""
+    args = ["models", "tts", text, "--out", out_path]
+    if language and language != "en":
+        args += ["--language", language]
+    _run_cli(args)
+
+
+def transcribe_file(path: str, language: str, diarize: bool = False) -> dict[str, Any]:
+    """`whissle models transcribe --json` → {text, segments, duration_seconds, cost_usd}."""
+    args = ["models", "transcribe", path, "--language", language, "--json"]
+    if diarize:
+        args.append("--diarize")
+    return json.loads(_ANSI.sub("", _run_cli(args).stdout).strip())
 
 
 # ── scoring ────────────────────────────────────────────────────────────────
@@ -161,18 +153,16 @@ def _run_case(row: dict[str, Any], mode: str, repeat: int) -> dict[str, Any]:
 
     for i in range(repeat):
         t0 = time.time()
+        tmp_path: Optional[str] = None
         try:
             if mode == "corpus":
-                path = Path(row["audio"])
-                audio = path.read_bytes()
-                filename = path.name
-            else:  # round-trip: synthesize the reference (or its tts_text)
-                audio = synthesize(
-                    row.get("tts_text") or reference, language,
-                    engine=row.get("engine"), voice=row.get("voice"),
-                )
-                filename = f"{row['id']}.mp3"
-            resp = transcribe(audio, filename, language, diarize=False)
+                audio_path = str(Path(row["audio"]))
+            else:  # round-trip: synthesize the reference (or its tts_text) via the CLI
+                fd, tmp_path = tempfile.mkstemp(suffix=".mp3", prefix=f"{row['id']}_")
+                os.close(fd)
+                synthesize_to_file(row.get("tts_text") or reference, language, tmp_path)
+                audio_path = tmp_path
+            resp = transcribe_file(audio_path, language)
             hyp = resp.get("text", "")
             s = score(reference, hyp)
             results.append({
@@ -185,6 +175,12 @@ def _run_case(row: dict[str, Any], mode: str, repeat: int) -> dict[str, Any]:
         except Exception as e:  # noqa: BLE001 — one bad row must not sink the run
             results.append({"error": str(e), "wer": 1.0, "cer": 1.0,
                             "latency_s": round(time.time() - t0, 2)})
+        finally:
+            if tmp_path:
+                try:
+                    os.unlink(tmp_path)
+                except OSError:
+                    pass
 
     ok = [r for r in results if "error" not in r]
     agg = {
@@ -231,7 +227,7 @@ def run(
 
     console.print(
         f"[bold]transcription benchmark[/bold]  mode={mode}  cases={len(rows)}  "
-        f"repeat={repeat}  base={_base()}"
+        f"repeat={repeat}  via `{' '.join(_cli_argv())}`"
     )
     cases = []
     for row in rows:
