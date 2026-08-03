@@ -50,7 +50,9 @@ from pathlib import Path
 from typing import Any, Optional
 
 import jiwer
+import numpy as np
 from dotenv import load_dotenv
+from scipy.optimize import linear_sum_assignment
 from rich.console import Console
 from typer import Option, Typer
 
@@ -142,6 +144,68 @@ def score(reference: str, hypothesis: str) -> dict[str, float]:
     wer = 1.0 if not hyp else float(jiwer.wer(ref, hyp))
     cer = 1.0 if not hyp else float(jiwer.cer(ref, hyp))
     return {"wer": round(min(wer, 1.0), 4), "cer": round(min(cer, 1.0), 4)}
+
+
+# ── diarization scoring (DER) ─────────────────────────────────────────────────
+
+def diarization_error_rate(
+    ref_turns: list[dict], hyp_segments: list[dict], frame_s: float = 0.01,
+) -> dict[str, Any]:
+    """NIST-style Diarization Error Rate (no collar). The reference is non-overlapping
+    (we build the clips by concatenation), so per 10 ms frame:
+
+        DER = (missed + false_alarm + confusion) / total_reference_speech
+
+    Hypothesis speakers are mapped to reference speakers by the assignment that
+    MAXIMISES frame overlap (Hungarian) — DER is invariant to how the diarizer names
+    its speakers, only whether it splits them the same way. Also returns the speaker
+    counts so under/over-splitting is visible."""
+    ref_turns = [t for t in ref_turns if t.get("end") is not None]
+    hyp_segments = [
+        s for s in hyp_segments
+        if s.get("start") is not None and s.get("end") is not None and s.get("speaker") is not None
+    ]
+    end = max(
+        [t["end"] for t in ref_turns] + [s["end"] for s in hyp_segments] + [0.0]
+    )
+    n = int(np.ceil(end / frame_s)) + 1
+    ref = np.full(n, -1, dtype=int)
+    for t in ref_turns:
+        ref[int(t["start"] / frame_s):int(t["end"] / frame_s)] = int(t["speaker"])
+    hyp = np.full(n, -1, dtype=int)
+    for s in hyp_segments:
+        hyp[int(s["start"] / frame_s):int(s["end"] / frame_s)] = int(s["speaker"])
+
+    ref_spks = sorted({int(t["speaker"]) for t in ref_turns})
+    hyp_spks = sorted({int(s["speaker"]) for s in hyp_segments})
+    # Optimal hyp→ref speaker mapping maximising overlap.
+    mapping: dict[int, int] = {}
+    if ref_spks and hyp_spks:
+        m = np.zeros((len(ref_spks), len(hyp_spks)), dtype=int)
+        for i, r in enumerate(ref_spks):
+            for j, h in enumerate(hyp_spks):
+                m[i, j] = int(np.sum((ref == r) & (hyp == h)))
+        ri, hj = linear_sum_assignment(-m)
+        mapping = {hyp_spks[j]: ref_spks[i] for i, j in zip(ri, hj)}
+
+    total_ref = int(np.sum(ref >= 0))
+    missed = int(np.sum((ref >= 0) & (hyp < 0)))
+    false_alarm = int(np.sum((ref < 0) & (hyp >= 0)))
+    active = (ref >= 0) & (hyp >= 0)
+    confusion = sum(
+        int(np.sum(active & (hyp == h) & (ref != mapping.get(h, -999))))
+        for h in hyp_spks
+    )
+    der = (missed + false_alarm + confusion) / total_ref if total_ref else 1.0
+    return {
+        "der": round(min(der, 1.0), 4),
+        "missed_s": round(missed * frame_s, 2),
+        "false_alarm_s": round(false_alarm * frame_s, 2),
+        "confusion_s": round(confusion * frame_s, 2),
+        "ref_speakers": len(ref_spks),
+        "hyp_speakers": len(hyp_spks),
+        "speaker_count_err": abs(len(ref_spks) - len(hyp_spks)),
+    }
 
 
 # ── run one manifest row ─────────────────────────────────────────────────────
@@ -273,6 +337,70 @@ def run(
         },
         "cases": cases,
     }, ensure_ascii=False, indent=2), encoding="utf-8")
+    console.print(f"\nsaved → {out}")
+
+
+DEFAULT_DIAR_MANIFEST = "data/transcription/diarization/manifest.jsonl"
+
+
+@app.command()
+def diarize(
+    manifest: str = Option(DEFAULT_DIAR_MANIFEST, help="JSONL of {id, audio, num_speakers, turns[]}"),
+    limit: Optional[int] = Option(None, help="cap number of clips"),
+    save_to: Optional[str] = Option(None, help="write full JSON results here"),
+) -> None:
+    """Score speaker diarization (DER) on real multi-speaker clips via the CLI.
+
+    Drives `whissle models transcribe --diarize --json` and compares the returned
+    speaker-labelled segments against a ground-truth turn timeline (built by
+    concatenating distinct real LibriSpeech speakers — see
+    scripts/build_diarization_set.py). Reports DER + speaker-count accuracy."""
+    rows = [
+        json.loads(line)
+        for line in Path(manifest).read_text(encoding="utf-8").splitlines()
+        if line.strip() and not line.lstrip().startswith("#")
+    ]
+    if limit:
+        rows = rows[:limit]
+    if not rows:
+        console.print(f"[red]no clips in {manifest} — run scripts/build_diarization_set.py first[/red]")
+        raise SystemExit(1)
+
+    console.print(
+        f"[bold]diarization benchmark[/bold]  clips={len(rows)}  via `{' '.join(_cli_argv())}`"
+    )
+    cases = []
+    for row in rows:
+        try:
+            resp = transcribe_file(row["audio"], row.get("language", "en"), diarize=True)
+            segs = resp.get("segments", [])
+            m = diarization_error_rate(row["turns"], segs)
+            flag = "[green]✓[/green]" if m["der"] <= 0.15 else "[yellow]•[/yellow]"
+            console.print(
+                f"  {flag} {row['id']:<14} DER {m['der']:.3f}  "
+                f"speakers ref={m['ref_speakers']} hyp={m['hyp_speakers']}"
+                + (f"  [yellow](count off by {m['speaker_count_err']})[/yellow]" if m["speaker_count_err"] else "")
+            )
+            cases.append({"id": row["id"], **m})
+        except Exception as e:  # noqa: BLE001
+            console.print(f"  [red]✗ {row['id']}: {e}[/red]")
+            cases.append({"id": row["id"], "der": 1.0, "error": str(e),
+                          "speaker_count_err": None})
+
+    scored = [c for c in cases if "error" not in c]
+    if scored:
+        mean_der = sum(c["der"] for c in scored) / len(scored)
+        exact_cnt = sum(1 for c in scored if c["speaker_count_err"] == 0)
+        console.print("\n[bold]Summary[/bold]")
+        console.print(f"  mean DER          {mean_der:.3f}  (n={len(scored)})")
+        console.print(f"  speaker-count exact {exact_cnt}/{len(scored)}")
+
+    out = save_to or "results/whissle/diarization.json"
+    Path(out).parent.mkdir(parents=True, exist_ok=True)
+    Path(out).write_text(
+        json.dumps({"manifest": manifest, "cases": cases}, ensure_ascii=False, indent=2),
+        encoding="utf-8",
+    )
     console.print(f"\nsaved → {out}")
 
 
