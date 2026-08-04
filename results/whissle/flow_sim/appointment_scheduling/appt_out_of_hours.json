@@ -1,0 +1,70 @@
+{
+  "task_id": "appt_out_of_hours",
+  "agent_type": "appointment_scheduling",
+  "scenario": "out-of-hours",
+  "ts": "20260804T155819Z",
+  "agent_id": "475f07eb-de3b-4f2c-9613-c8142c5c8bde",
+  "agent_deleted": false,
+  "conversation_id": "65a3011d-749f-49e9-bd8d-a1b96dca314e",
+  "num_turns": 1,
+  "ended": false,
+  "start_state": "greet",
+  "final_state": "capture_need",
+  "task_success": null,
+  "task_success_reason": "not run",
+  "goal_drift_turns": [],
+  "finding_counts_by_severity": {
+    "high": 1
+  },
+  "finding_counts_by_type": {
+    "stuck_termination": 1
+  },
+  "high_severity": 1,
+  "findings": [
+    {
+      "type": "stuck_termination",
+      "severity": "high",
+      "detail": "session failed to run: turn -> HTTP 404: {\"detail\":\"Agent not found\"}",
+      "state": null,
+      "transition": null,
+      "evidence": {}
+    }
+  ],
+  "persona": "Isla Fisher, wants a time outside normal business hours.",
+  "goal": "Try to schedule an appointment for late evening / a Sunday. If told it's outside hours, ask for the nearest in-hours option and either take it or decline.",
+  "states_visited": [
+    "greet",
+    "capture_need"
+  ],
+  "turns": [
+    {
+      "user": "Hi, I'm trying to schedule an appointment but I need it to be in the evening or maybe a Sunday—would that be possible?",
+      "agent": "I appreciate you letting me know your preference! Unfortunately, based on our current schedule, we're open Monday through Friday from 9 AM to 6 PM, so we don't have evening appointments available beyond 6 PM, and we're closed on Sundays.\n\nHowever, we do stay open until 6 PM on weekdays, so if any time between 9 AM and 6 PM works for you, I'd be glad to help you book something. Do any of those weekday time slots work with your schedule?",
+      "current_state": "capture_need",
+      "tools_used": [
+        "get_hours"
+      ],
+      "ended": false
+    }
+  ],
+  "seeded": true,
+  "seeded_checks": {
+    "seed_steps": [
+      {
+        "step": "schedule",
+        "status": "auto",
+        "detail": "Mon–Fri 09:00–18:00 Asia/Kolkata (auto-seeded)"
+      }
+    ],
+    "action_tool": {
+      "expected": null,
+      "called": null
+    }
+  },
+  "seed_teardown": {
+    "deleted": [],
+    "failed": [],
+    "tracked": 0
+  },
+  "log": "results/whissle/flow_sim/appointment_scheduling/appt_out_of_hours_20260804T155819Z.jsonl"
+}

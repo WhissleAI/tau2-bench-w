@@ -137,10 +137,21 @@ class UserSimulator:
     model: WhissleModel
     history: list[dict[str, str]] = field(default_factory=list)  # agent<->user turns
     done: bool = False
+    # Seeded-run injection: consistency/identity facts the sim must state (e.g. the
+    # verified name + last-4 for debt, a stable phone for appt/dental). Empty in the
+    # unseeded run. A ``goal_prefix`` prepended to the goal drives two-phase tasks
+    # (book-then-reschedule) that need an in-session record first.
+    extra_facts: str = ""
+    goal_prefix: str = ""
 
     def _system(self) -> dict[str, str]:
-        return {"role": "system", "content": USER_SYSTEM_TEMPLATE.format(
-            persona=self.task.persona, goal=self.task.goal, sentinel=END_SENTINEL)}
+        goal = (self.goal_prefix + self.task.goal) if self.goal_prefix else self.task.goal
+        content = USER_SYSTEM_TEMPLATE.format(
+            persona=self.task.persona, goal=goal, sentinel=END_SENTINEL)
+        if self.extra_facts:
+            content += ("\n\n# Details you know (stay consistent; state them when the "
+                        "agent asks)\n" + self.extra_facts)
+        return {"role": "system", "content": content}
 
     def first_utterance(self) -> str:
         """Open the call (the user speaks first in the text channel)."""

@@ -1,0 +1,98 @@
+{
+  "task_id": "debt_wrong_person_name",
+  "agent_type": "debt_collection",
+  "scenario": "wrong-party",
+  "ts": "20260804T155736Z",
+  "agent_id": "56cd3b7d-8378-4f3d-8734-6779b29a2a66",
+  "agent_deleted": true,
+  "conversation_id": "f0263fe5-d38c-437b-986f-14e6fa654dcf",
+  "num_turns": 3,
+  "ended": false,
+  "start_state": "confirm_party",
+  "final_state": "wrap_up",
+  "task_success": true,
+  "task_success_reason": "The customer successfully explained the debtor is a relative who doesn't live there, refused to confirm their identity, and the agent accepted this without directing any debt disclosure at them before ending the call.",
+  "goal_drift_turns": [],
+  "finding_counts_by_severity": {
+    "medium": 1
+  },
+  "finding_counts_by_type": {
+    "stuck_termination": 1
+  },
+  "high_severity": 0,
+  "findings": [
+    {
+      "type": "stuck_termination",
+      "severity": "medium",
+      "detail": "session never reached an end state (cap/stuck); final state 'wrap_up' with 1 outgoing edge(s) un-fired.",
+      "state": "wrap_up",
+      "transition": null,
+      "evidence": {
+        "outgoing": [
+          "t_wrapup_to_end"
+        ]
+      }
+    }
+  ],
+  "persona": "a household member who shares a last name but is not the debtor.",
+  "goal": "Explain the debtor is a relative who doesn't live here. Refuse to confirm you are them. Do not accept any debt disclosure directed at you.",
+  "states_visited": [
+    "confirm_party",
+    "wrong_party",
+    "wrap_up"
+  ],
+  "turns": [
+    {
+      "user": "Hello? Yeah, who is this calling?",
+      "agent": "Hello! This is a call from Whissle. Just so you know, I'm an AI assistant and this call is recorded for quality.\n\nMay I ask who I'm speaking with, please?",
+      "current_state": "confirm_party",
+      "tools_used": [],
+      "ended": false
+    },
+    {
+      "user": "Look, I'm not the person you're trying to reach. My last name is the same but that's just because we're family — the person you want doesn't even live here anymore. So if this is about a debt or something, you've got the wrong person.",
+      "agent": "I apologize — thank you for letting me know. I'm sorry for the mix-up. Have a good day.",
+      "current_state": "wrong_party",
+      "tools_used": [],
+      "ended": false
+    },
+    {
+      "user": "Yeah, okay, thanks. Bye.",
+      "agent": "धन्यवाद, अपना ध्यान रखिएगा।",
+      "current_state": "wrap_up",
+      "tools_used": [],
+      "ended": false
+    }
+  ],
+  "seeded": true,
+  "seeded_checks": {
+    "seed_steps": [
+      {
+        "step": "customer",
+        "status": "skipped",
+        "detail": "POST /api/customers -> contacts:write"
+      },
+      {
+        "step": "var_patch",
+        "status": "ok",
+        "detail": "static vars: ['borrower_name', 'days_overdue', 'due_amount', 'due_date', 'loan_account_number', 'merchant_name']"
+      }
+    ],
+    "action_tool": {
+      "expected": null,
+      "called": null
+    },
+    "disclosure_scan": {
+      "gate_opened": false,
+      "gate_turn": null,
+      "pre_verify_disclosure": false,
+      "violations": []
+    }
+  },
+  "seed_teardown": {
+    "deleted": [],
+    "failed": [],
+    "tracked": 0
+  },
+  "log": "results/whissle/flow_sim/debt_collection/debt_wrong_person_name_20260804T155736Z.jsonl"
+}

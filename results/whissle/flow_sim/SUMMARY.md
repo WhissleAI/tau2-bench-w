@@ -1,16 +1,16 @@
 # Flow-sim — overall run summary
 
-- **run**: 20260804T055114Z
+- **run**: 20260804T155944Z
 - **agent types**: 1
 
 | agent_type | sessions | ended | task_success | high-sev sessions | states cov | trans cov |
 |------------|----------|-------|--------------|-------------------|-----------|-----------|
-| `dental_receptionist` | 2 | 0/2 | 0/2 | 0 | 6/10 | 5/16 |
+| `appointment_scheduling` | 10 | 0/10 | 1/10 | 2 | 6/10 | 6/13 |
 
 ## All findings by type (aggregate)
 
 | type | count |
 |------|-------|
+| `premature_termination` | 6 |
+| `stuck_termination` | 4 |
 | `coverage` | 2 |
-| `stuck_termination` | 1 |
-| `premature_termination` | 1 |

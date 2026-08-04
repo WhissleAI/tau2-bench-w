@@ -137,7 +137,13 @@ class FlowClient:
         ).json()
 
     def delete_agent(self, agent_id: str) -> None:
-        self._req("DELETE", f"/api/agents/{agent_id}", action="delete_agent")
+        """Delete an agent. ``confirm=true`` is required for agents that own
+        knowledge documents (e.g. the auto-seeded car_rental fleet, or a seeded CS
+        KB doc): without it the backend returns 409 "pass confirm=true to proceed"
+        and the agent would LINGER. Passing it unconditionally is safe for agents
+        with no KB."""
+        self._req("DELETE", f"/api/agents/{agent_id}?confirm=true",
+                  action="delete_agent")
 
     # ── driving a conversation ───────────────────────────────────────────────
 

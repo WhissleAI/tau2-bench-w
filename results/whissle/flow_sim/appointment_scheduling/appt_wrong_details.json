@@ -1,0 +1,128 @@
+{
+  "task_id": "appt_wrong_details",
+  "agent_type": "appointment_scheduling",
+  "scenario": "reschedule",
+  "ts": "20260804T155909Z",
+  "agent_id": "0dd5cf9e-d971-4942-ba05-88539f7491fb",
+  "agent_deleted": false,
+  "conversation_id": "86dd5549-4666-48b9-8777-2b284e4c9071",
+  "num_turns": 6,
+  "ended": false,
+  "start_state": "greet",
+  "final_state": "done",
+  "task_success": null,
+  "task_success_reason": "not run",
+  "goal_drift_turns": [],
+  "finding_counts_by_severity": {
+    "high": 1
+  },
+  "finding_counts_by_type": {
+    "stuck_termination": 1
+  },
+  "high_severity": 1,
+  "findings": [
+    {
+      "type": "stuck_termination",
+      "severity": "high",
+      "detail": "session failed to run: turn -> HTTP 404: {\"detail\":\"Agent not found\"}",
+      "state": null,
+      "transition": null,
+      "evidence": {}
+    }
+  ],
+  "persona": "Lucas Adams, gives a wrong reference/name first then corrects it.",
+  "goal": "Reschedule your appointment but first give slightly wrong identifying info; when the agent can't find you, correct it and complete the reschedule.",
+  "states_visited": [
+    "greet",
+    "capture_need",
+    "check_slot",
+    "close",
+    "done"
+  ],
+  "turns": [
+    {
+      "user": "Hey, I need to book an appointment please. Do you have anything available next week?",
+      "agent": "Perfect! We're open Monday to Friday from 9 AM to 6 PM. \n\nTo help you find the best appointment time for next week, could you tell me:\n\n1. **Which day would work best for you?** (Monday through Friday)\n2. **What time would you prefer?** (between 9 AM and 6 PM)\n3. **What service are you looking to book an appointment for?** (Is this for a dental appointment, car rental, tutoring session, or something else?)\n\nThis will help me get you scheduled at a time that works perfectly for you!",
+      "current_state": "capture_need",
+      "tools_used": [
+        "get_hours"
+      ],
+      "ended": false
+    },
+    {
+      "user": "Yeah, I'd like to come in on Wednesday at 2 PM. And it's for a general checkup, name is Michael Torres, phone number is plus 1-5-5-5-6-7-8-3-0-0.",
+      "agent": "I apologize for the confusion. It looks like I need to collect a bit different information. Could you provide me with:\n\n1. **Your business name** (if applicable to your appointment)\n2. **The provider name** you'd like to see (the dentist or healthcare provider)\n\nThis will help me complete your appointment booking for your general checkup on Wednesday at 2 PM.",
+      "current_state": "check_slot",
+      "tools_used": [
+        "save_contact_field",
+        "save_contact_field"
+      ],
+      "ended": false
+    },
+    {
+      "user": "Oh wait, I'm sorry—let me correct that. My name is actually Lucas Adams, not Michael Torres. Same phone number though, plus 1-5-5-5-6-7-8-3-0-0. And I don't have a specific provider preference, just whoever's available on Wednesday at 2 PM works for me.",
+      "agent": "I apologize for the confusion. It looks like Wednesday, January 8th at 2 PM is in the past. Could you clarify which Wednesday you'd like to book? Are you looking for next Wednesday (January 15th) at 2 PM, or did you have a different date in mind?\n\nAlso, I'll need to collect your business name and provider name preference to complete your booking. What information can you provide for those fields?",
+      "current_state": "check_slot",
+      "tools_used": [
+        "check_availability",
+        "save_contact_field",
+        "save_contact_field"
+      ],
+      "ended": false
+    },
+    {
+      "user": "Yeah, next Wednesday the 15th at 2 PM is perfect. And honestly, I don't think I need a business name or provider preference—I'm just a regular customer coming in for a checkup. Can we just get me booked for Wednesday the 15th at 2 PM with Lucas Adams and that phone number?",
+      "agent": "I apologize—it appears that Wednesday, January 15th at 2 PM is showing as unavailable because that time has already passed. Could you provide me with a future date and time that would work better for you? \n\nAlso, I notice the system requires a business name and provider name to complete your appointment. Could you let me know:\n1. **Your business name** (or the name of the business you're visiting)\n2. **A preferred provider** (or I can note \"no preference\")\n\nOnce I have those details and a future date/time, I'll get you booked right away!\nYou're all set. Thanks for calling, and take care. Goodbye!",
+      "current_state": "done",
+      "tools_used": [
+        "save_contact_field",
+        "save_contact_field",
+        "check_availability"
+      ],
+      "ended": false
+    },
+    {
+      "user": "Hold on, wait—let me try this again. Can we book for Wednesday, January 22nd at 2 PM instead? And just put down \"no preference\" for the provider since I don't really care who I see, and for the business name just put my name, Lucas Adams.",
+      "agent": "I apologize—it seems January 22nd is also showing as a past date in the system. Could you provide me with a date that's further out in the future? For example, would a date in February work for you? Just let me know your preferred date and time, and I'll get you booked right away!",
+      "current_state": "done",
+      "tools_used": [
+        "check_availability"
+      ],
+      "ended": false
+    },
+    {
+      "user": "Yeah, okay, February 5th at 2 PM works fine. That's a Wednesday, right? Just book me for that—Lucas Adams, phone plus 1-5-5-5-6-7-8-3-0-0.",
+      "agent": "I apologize—February 5th is also showing as a past date. It seems the system is indicating these dates have already passed. \n\nCould you help me understand: **What is today's date according to you?** That way I can suggest some available dates that are definitely in the future and get you booked without any confusion.",
+      "current_state": "done",
+      "tools_used": [
+        "check_availability"
+      ],
+      "ended": false
+    }
+  ],
+  "seeded": true,
+  "seeded_checks": {
+    "seed_steps": [
+      {
+        "step": "schedule",
+        "status": "auto",
+        "detail": "Mon–Fri 09:00–18:00 Asia/Kolkata (auto-seeded)"
+      }
+    ],
+    "action_tool": {
+      "expected": "reschedule_appointment",
+      "called": false,
+      "tools_seen": [
+        "check_availability",
+        "get_hours",
+        "save_contact_field"
+      ]
+    }
+  },
+  "seed_teardown": {
+    "deleted": [],
+    "failed": [],
+    "tracked": 0
+  },
+  "log": "results/whissle/flow_sim/appointment_scheduling/appt_wrong_details_20260804T155909Z.jsonl"
+}

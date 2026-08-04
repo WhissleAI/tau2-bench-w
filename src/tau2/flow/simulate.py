@@ -45,6 +45,9 @@ from typer import Option, Typer
 
 from tau2.flow.analyze import Finding, analyze_session, coverage_findings
 from tau2.flow.client import FlowClient, FlowClientError, TurnResult
+from tau2.flow.seed import (
+    Seeder, action_tool_result, resolve_done, scan_pre_verify_disclosures,
+)
 from tau2.flow.usersim import (
     Task, UserSimulator, WhissleModel, judge_goal_drift, judge_task_success,
 )
@@ -111,9 +114,16 @@ def _tool_calls_from_reply(reply: str) -> list[str]:
 def run_session(
     client: FlowClient, model: WhissleModel, task: Task, system_prompt: str, *,
     semantic: bool = True, keep_agent: bool = False,
+    seeder: Optional[Seeder] = None,
 ) -> dict[str, Any]:
     """Create the agent, drive a full simulated conversation, analyze, ALWAYS clean
-    up. Returns a JSON-serializable session result (also written to disk)."""
+    up. Returns a JSON-serializable session result (also written to disk).
+
+    When ``seeder`` is supplied this is the SEEDED end-to-end run: the agent's tools
+    are given real records (customer / fleet / KB / credential) so they SUCCEED, the
+    user-sim is primed with consistent identity facts, and the result carries the
+    seeded-run assertions (action-tool-called, pre-verify disclosure scan,
+    resolve_done). Every seeded record is torn down by exact id after the session."""
     ts = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     out_dir = RESULTS_ROOT / task.agent_type
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -133,9 +143,12 @@ def run_session(
     setup_error: Optional[str] = None
     ended = False
     drift_flags: list[dict] = []
+    seed_ctx = None
+    seed_teardown: dict[str, Any] = {}
 
     _emit({"event": "session_start", "task_id": task.id, "agent_type": task.agent_type,
-           "scenario": task.scenario, "persona": task.persona, "goal": task.goal, "ts": ts})
+           "scenario": task.scenario, "persona": task.persona, "goal": task.goal,
+           "ts": ts, "seeded": seeder is not None})
 
     try:
         agent = client.create_typed_agent(
@@ -155,7 +168,18 @@ def run_session(
                "num_states": len(flow_spec.get("states") or []),
                "num_transitions": len(flow_spec.get("transitions") or [])})
 
+        # ── SEED: insert the records this agent's tools need, prime the sim ──────
+        if seeder is not None:
+            seed_ctx = seeder.seed(agent_id, task)
+            _emit({"event": "seeded", "steps": seed_ctx.steps,
+                   "resources": [r.__dict__ for r in seed_ctx.resources],
+                   "expected_action_tool": seed_ctx.expected_action_tool,
+                   "goal_prefix": bool(seed_ctx.goal_prefix)})
+
         sim = UserSimulator(task=task, model=model)
+        if seed_ctx is not None:
+            sim.extra_facts = seed_ctx.sim_facts
+            sim.goal_prefix = seed_ctx.goal_prefix
         user_msg = sim.first_utterance()
 
         for i in range(1, task.max_turns + 1):
@@ -242,7 +266,27 @@ def run_session(
     for f in findings:
         _emit({"event": "finding", **f.as_dict()})
 
-    # ── teardown — NEVER leave a throwaway agent behind ──────────────────────
+    # ── seeded-run assertions (the "true completion" checks) ──────────────────
+    seeded_checks: dict[str, Any] = {}
+    if seed_ctx is not None:
+        seeded_checks["seed_steps"] = seed_ctx.steps
+        _flat_tools = [t for tt in turns for t in (tt.get("tools_used") or [])]
+        seeded_checks["action_tool"] = action_tool_result(seed_ctx, _flat_tools)
+        if task.agent_type == "debt_collection" and task.compliance:
+            seeded_checks["disclosure_scan"] = scan_pre_verify_disclosures(
+                turns, full_steps,
+                gate_var=task.compliance.get("gate_variable", "identity_verified"),
+                verify_states=task.compliance.get("verify_states"),
+                forbidden=task.compliance.get("forbidden_substrings_lower"))
+        if task.agent_type == "customer_support":
+            seeded_checks["resolve"] = resolve_done(full_steps)
+        _emit({"event": "seeded_checks", **seeded_checks})
+
+    # ── teardown — NEVER leave a throwaway agent OR seeded record behind ──────
+    if seeder is not None and seed_ctx is not None:
+        seed_teardown = seeder.teardown(seed_ctx)
+        _emit({"event": "seed_teardown", **seed_teardown})
+
     deleted = False
     if agent_id and not keep_agent:
         try:
@@ -274,6 +318,9 @@ def run_session(
         "turns": [{"user": t["user_msg"], "agent": t["agent_reply"],
                    "current_state": t["current_state"], "tools_used": t["tools_used"],
                    "ended": t["ended"]} for t in turns],
+        "seeded": seeder is not None,
+        "seeded_checks": seeded_checks,
+        "seed_teardown": seed_teardown,
         "log": str(log_path),
         "_full_steps": full_steps,  # kept for aggregate coverage; stripped from md
     }
@@ -300,11 +347,80 @@ def _render_transcript(turns: list[dict]) -> str:
 
 # ── aggregation / reporting ──────────────────────────────────────────────────────
 
+def _seeded_rollup(results: list[dict]) -> dict[str, Any]:
+    """Aggregate the seeded-run "true completion" checks across a type's sessions:
+    action-tool-called rate, debt pre-verify disclosure count + verify-fire rate,
+    CS resolve_done rate, and how many sessions had every seed step succeed."""
+    seeded = [r for r in results if r.get("seeded")]
+    if not seeded:
+        return {}
+    roll: dict[str, Any] = {"seeded_sessions": len(seeded)}
+
+    # action tool actually invoked (only over sessions with an expected tool).
+    with_expected = [r for r in seeded
+                     if (r.get("seeded_checks") or {}).get("action_tool", {}).get(
+                         "expected")]
+    if with_expected:
+        called = sum(1 for r in with_expected
+                     if r["seeded_checks"]["action_tool"].get("called"))
+        roll["action_tool"] = {
+            "expected_sessions": len(with_expected), "called": called,
+            "by_tool": _by_tool(with_expected)}
+
+    # debt compliance — pre-verify disclosure + verify-fire.
+    scans = [r["seeded_checks"]["disclosure_scan"] for r in seeded
+             if (r.get("seeded_checks") or {}).get("disclosure_scan")]
+    if scans:
+        roll["debt_compliance"] = {
+            "sessions": len(scans),
+            "pre_verify_disclosure_sessions":
+                sum(1 for s in scans if s.get("pre_verify_disclosure")),
+            "gate_opened_sessions": sum(1 for s in scans if s.get("gate_opened")),
+            "total_violations": sum(len(s.get("violations") or []) for s in scans)}
+
+    # CS resolve_done.
+    resolves = [r["seeded_checks"]["resolve"] for r in seeded
+                if (r.get("seeded_checks") or {}).get("resolve")]
+    if resolves:
+        roll["cs_resolve"] = {
+            "sessions": len(resolves),
+            "resolve_done_sessions": sum(1 for x in resolves if x.get("resolve_done")),
+            "escalated_sessions": sum(1 for x in resolves if x.get("escalated"))}
+
+    # seeding health — sessions where no seed step errored, and lingering resources.
+    def _errored(r: dict) -> bool:
+        return any(s.get("status") == "error"
+                   for s in (r.get("seeded_checks") or {}).get("seed_steps") or [])
+    roll["seed_health"] = {
+        "sessions_no_seed_error": sum(1 for r in seeded if not _errored(r)),
+        "teardown_failed": sum(
+            len((r.get("seed_teardown") or {}).get("failed") or []) for r in seeded),
+        "resources_tracked": sum(
+            (r.get("seed_teardown") or {}).get("tracked", 0) for r in seeded)}
+    return roll
+
+
+def _by_tool(results: list[dict]) -> dict[str, str]:
+    from collections import Counter
+    exp: Counter = Counter()
+    hit: Counter = Counter()
+    for r in results:
+        a = r["seeded_checks"]["action_tool"]
+        exp[a["expected"]] += 1
+        if a.get("called"):
+            hit[a["expected"]] += 1
+    return {t: f"{hit[t]}/{exp[t]}" for t in exp}
+
+
 def aggregate_agent_type(agent_type: str, flow_spec: dict,
                          results: list[dict]) -> dict[str, Any]:
     """Coverage + finding rollup for one agent type over its sessions."""
     cov_findings, cov_table = coverage_findings(
         flow_spec, [r["_full_steps"] for r in results])
+    end_ids = {st.get("id") for st in (flow_spec.get("states") or [])
+               if st.get("type") == "end"}
+    reached_end = sum(1 for r in results if r.get("final_state") in end_ids) \
+        if end_ids else sum(1 for r in results if r["ended"])
     type_counter: Counter = Counter()
     sev_counter: Counter = Counter()
     for r in results:
@@ -319,8 +435,10 @@ def aggregate_agent_type(agent_type: str, flow_spec: dict,
         "ts": datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ"),
         "sessions": len(results),
         "sessions_ended_cleanly": sum(1 for r in results if r["ended"]),
+        "reached_end_state": reached_end,
         "task_success": sum(1 for r in results if r["task_success"] is True),
         "sessions_with_high_findings": sum(1 for r in results if r["high_severity"]),
+        "seeded_rollup": _seeded_rollup(results),
         "finding_counts_by_type": dict(type_counter),
         "finding_counts_by_severity": dict(sev_counter),
         "coverage": cov_table,
@@ -346,12 +464,42 @@ def _write_agent_markdown(path: Path, s: dict) -> None:
         f"# Flow-sim summary — `{s['agent_type']}`",
         "",
         f"- **run**: {s['ts']}",
-        f"- **sessions**: {s['sessions']}  •  **ended cleanly**: "
-        f"{s['sessions_ended_cleanly']}/{s['sessions']}  •  **task success**: "
+        f"- **sessions**: {s['sessions']}  •  **ended cleanly (flag)**: "
+        f"{s['sessions_ended_cleanly']}/{s['sessions']}  •  **reached end state**: "
+        f"{s.get('reached_end_state', '?')}/{s['sessions']}  •  **task success**: "
         f"{s['task_success']}/{s['sessions']}",
         f"- **sessions with HIGH-severity findings**: "
         f"{s['sessions_with_high_findings']}/{s['sessions']}",
         "",
+    ]
+    sr = s.get("seeded_rollup") or {}
+    if sr:
+        lines += ["## Seeded run — true-completion checks", ""]
+        at = sr.get("action_tool")
+        if at:
+            lines.append(
+                f"- **action tool actually called**: {at['called']}/"
+                f"{at['expected_sessions']}  ({at.get('by_tool')})")
+        dc = sr.get("debt_compliance")
+        if dc:
+            lines.append(
+                f"- **debt pre-verify disclosures**: "
+                f"{dc['pre_verify_disclosure_sessions']}/{dc['sessions']} sessions "
+                f"({dc['total_violations']} total)  •  **verify/gate opened**: "
+                f"{dc['gate_opened_sessions']}/{dc['sessions']}")
+        cs = sr.get("cs_resolve")
+        if cs:
+            lines.append(
+                f"- **CS resolve_done**: {cs['resolve_done_sessions']}/{cs['sessions']}"
+                f"  •  **escalated**: {cs['escalated_sessions']}/{cs['sessions']}")
+        sh = sr.get("seed_health") or {}
+        lines.append(
+            f"- **seed health**: no-error {sh.get('sessions_no_seed_error')}/"
+            f"{sr.get('seeded_sessions')}  •  resources tracked "
+            f"{sh.get('resources_tracked')}  •  teardown-failed "
+            f"{sh.get('teardown_failed')}")
+        lines.append("")
+    lines += [
         "## Findings by type",
         "",
         "| type | count |",
@@ -445,6 +593,125 @@ def list_tasks_cmd() -> None:
             console.print(f"    [dim]{t['id']} — {t.get('scenario','')}[/dim]")
 
 
+# Pre-seed AFTER baseline (round-2, tools fail-soft) — the "before" column for the
+# seeded before→after comparison. task_success / reached-end out of 10.
+PRE_SEED_BASELINE = {
+    "dental_receptionist":   {"success": 3, "reached_end": 0},
+    "appointment_scheduling": {"success": 2, "reached_end": 0},
+    "car_rental":            {"success": 1, "reached_end": 0},
+    "customer_support":      {"success": 4, "reached_end": 3},
+    "debt_collection":       {"success": 4, "reached_end": None},
+}
+
+
+def _recompute_action_tool(atype: str) -> dict[str, Any]:
+    """Recompute action-tool-called for a type from its per-session JSONs, using the
+    flat ``turns[].tools_used`` list (authoritative) rather than the stored value."""
+    from collections import Counter
+    exp: Counter = Counter()
+    hit: Counter = Counter()
+    n = 0
+    for p in sorted((RESULTS_ROOT / atype).glob("*.json")):
+        if p.name == "SUMMARY.json":
+            continue
+        d = json.loads(p.read_text(encoding="utf-8"))
+        expected = ((d.get("seeded_checks") or {}).get("action_tool") or {}).get(
+            "expected")
+        if not expected:
+            continue
+        n += 1
+        exp[expected] += 1
+        flat = [t for tt in (d.get("turns") or []) for t in (tt.get("tools_used") or [])]
+        if expected in flat:
+            hit[expected] += 1
+    if not n:
+        return {}
+    return {"expected_sessions": n, "called": sum(hit.values()),
+            "by_tool": {t: f"{hit[t]}/{exp[t]}" for t in exp}}
+
+
+@app.command("seeded-report")
+def seeded_report() -> None:
+    """Assemble the TRUE before→after table from each type's SUMMARY.json (written by
+    a ``--seeded`` run) against the pre-seed baseline. Emits SEEDED_REPORT.md."""
+    rows = []
+    for atype in ["dental_receptionist", "appointment_scheduling", "car_rental",
+                  "debt_collection", "customer_support"]:
+        p = RESULTS_ROOT / atype / "SUMMARY.json"
+        if not p.exists():
+            console.print(f"[yellow]no summary for {atype} (skipped)[/yellow]")
+            continue
+        s = json.loads(p.read_text(encoding="utf-8"))
+        rows.append((atype, s))
+
+    lines = ["# Seeded end-to-end flow validation — true before→after", "",
+             f"- **run**: {datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')}",
+             "- **before** = pre-seed AFTER (round-2, tools fail-soft); "
+             "**after** = seeded (tools succeed on real records)", "",
+             "## Task success & reached-end (N/10)", "",
+             "| agent | success before→after | reached-end before→after | "
+             "action tool called | notes |",
+             "|-------|----------------------|--------------------------|"
+             "--------------------|-------|"]
+    for atype, s in rows:
+        base = PRE_SEED_BASELINE.get(atype, {})
+        n = s["sessions"]
+        succ = s["task_success"]
+        end = s.get("reached_end_state", "?")
+        sr = s.get("seeded_rollup") or {}
+        # Recompute action-tool from each session's authoritative flat tool list
+        # (turns[].tools_used) so the metric is exact regardless of engine-turn
+        # resolution at run time.
+        at = _recompute_action_tool(atype)
+        at_str = (f"{at['called']}/{at['expected_sessions']} "
+                  f"{at.get('by_tool')}" if at else "—")
+        note = ""
+        dc = sr.get("debt_compliance")
+        if dc:
+            note = (f"pre-verify disclosures {dc['pre_verify_disclosure_sessions']}"
+                    f"/{dc['sessions']}; gate opened {dc['gate_opened_sessions']}"
+                    f"/{dc['sessions']}")
+        cs = sr.get("cs_resolve")
+        if cs:
+            note = (f"resolve_done {cs['resolve_done_sessions']}/{cs['sessions']}; "
+                    f"escalated {cs['escalated_sessions']}/{cs['sessions']}")
+        b_s = base.get("success"); b_e = base.get("reached_end")
+        lines.append(
+            f"| `{atype}` | {b_s if b_s is not None else '?'}→{succ} /{n} | "
+            f"{b_e if b_e is not None else '?'}→{end} /{n} | {at_str} | {note} |")
+
+    # Debt compliance headline.
+    debt = next((s for a, s in rows if a == "debt_collection"), None)
+    if debt:
+        dc = (debt.get("seeded_rollup") or {}).get("debt_compliance") or {}
+        lines += ["", "## Debt compliance headline", "",
+                  f"- **pre-verify disclosures**: "
+                  f"{dc.get('pre_verify_disclosure_sessions', '?')}/"
+                  f"{dc.get('sessions', '?')}  (target 0)",
+                  f"- **verify/gate opened**: {dc.get('gate_opened_sessions', '?')}/"
+                  f"{dc.get('sessions', '?')}",
+                  f"- **total forbidden-substring violations (independent scan)**: "
+                  f"{dc.get('total_violations', '?')}"]
+
+    # Seed health / lingering.
+    lines += ["", "## Seed health", "",
+              "| agent | seeded sessions | no-error | resources tracked | "
+              "teardown-failed |", "|-------|-----------------|----------|"
+              "-------------------|-----------------|"]
+    for atype, s in rows:
+        sh = (s.get("seeded_rollup") or {}).get("seed_health") or {}
+        sr = s.get("seeded_rollup") or {}
+        lines.append(
+            f"| `{atype}` | {sr.get('seeded_sessions', '?')} | "
+            f"{sh.get('sessions_no_seed_error', '?')} | "
+            f"{sh.get('resources_tracked', '?')} | {sh.get('teardown_failed', '?')} |")
+
+    out = RESULTS_ROOT / "SEEDED_REPORT.md"
+    out.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    console.print(f"[green]wrote {out}[/green]")
+    console.print("\n".join(lines))
+
+
 @app.command()
 def run(
     agent_type: str = Option(..., help="seeded agent type (e.g. dental_receptionist)"),
@@ -454,14 +721,20 @@ def run(
     semantic: bool = Option(True, help="run the per-turn goal-drift LLM judge"),
     keep_agent: bool = Option(False, help="do NOT delete the throwaway agents (debug)"),
     max_turns: Optional[int] = Option(None, help="override the per-session turn cap"),
+    seeded: bool = Option(
+        False, help="SEEDED end-to-end run: insert real records so tools succeed, "
+        "prime the sim, add the true-completion assertions, tear the records down"),
 ) -> None:
     """Run simulated-user sessions for one agent type against the LIVE backend."""
     client = FlowClient()
     model = WhissleModel()
     who = client.whoami()
+    seeder = Seeder(client, org_id=(who.get("organization") or {}).get("id")) \
+        if seeded else None
     console.print(
         f"[bold]flow-sim[/bold]  org={who.get('organization', {}).get('name')!r}  "
-        f"type={agent_type}  base={client.base}")
+        f"type={agent_type}  base={client.base}  "
+        f"{'[magenta]SEEDED[/magenta]' if seeded else 'unseeded'}")
 
     tasks = load_tasks(agent_type)
     if task_id:
@@ -485,7 +758,7 @@ def run(
                       f"{task.id} ({task.scenario})")
         t0 = time.time()
         res = run_session(client, model, task, system_prompt,
-                          semantic=semantic, keep_agent=keep_agent)
+                          semantic=semantic, keep_agent=keep_agent, seeder=seeder)
         dt = time.time() - t0
         results.append(res)
         _print_session_line(res, dt)
@@ -542,6 +815,30 @@ def _print_session_line(res: dict, dt: float) -> None:
         f"    turns={res['num_turns']} ended={res['ended']} "
         f"success={res['task_success']} final={res['final_state']!r}  "
         f"findings: {ft}  {tag}  ({dt:.1f}s)  deleted={res['agent_deleted']}")
+    sc = res.get("seeded_checks") or {}
+    if sc:
+        bits = []
+        at = sc.get("action_tool") or {}
+        if at.get("expected"):
+            mark = "[green]✓[/green]" if at.get("called") else "[red]✗ NOT CALLED[/red]"
+            bits.append(f"action[{at['expected']}]={mark}")
+        ds = sc.get("disclosure_scan")
+        if ds:
+            pv = ds.get("pre_verify_disclosure")
+            bits.append(("[red]PRE-VERIFY LEAK[/red]" if pv else "[green]0 pre-verify[/green]")
+                        + f" gate={'open' if ds.get('gate_opened') else 'closed'}")
+        rv = sc.get("resolve")
+        if rv:
+            bits.append(("[green]resolve_done[/green]" if rv.get("resolve_done")
+                         else "[yellow]no-resolve[/yellow]")
+                        + (" escalated" if rv.get("escalated") else ""))
+        st = sc.get("seed_steps") or []
+        seed_ok = [x for x in st if x.get("status") == "ok"]
+        seed_skip = [x for x in st if x.get("status") == "skipped"]
+        bits.append(f"seed(ok={len(seed_ok)},skip={len(seed_skip)})")
+        td = res.get("seed_teardown") or {}
+        bits.append(f"torn_down={len((td.get('deleted') or []))}/{td.get('tracked', 0)}")
+        console.print("      seeded: " + "  ".join(bits))
 
 
 def _print_agent_summary(s: dict) -> None:

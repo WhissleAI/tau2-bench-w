@@ -1,0 +1,137 @@
+{
+  "task_id": "debt_hardship",
+  "agent_type": "debt_collection",
+  "scenario": "dispute",
+  "ts": "20260804T155745Z",
+  "agent_id": "d89995ee-c924-45aa-bd93-2deab7e49b88",
+  "agent_deleted": false,
+  "conversation_id": "a64d56be-e520-4ec2-8ec5-5223d6bc3866",
+  "num_turns": 8,
+  "ended": false,
+  "start_state": "confirm_party",
+  "final_state": "end",
+  "task_success": null,
+  "task_success_reason": "not run",
+  "goal_drift_turns": [],
+  "finding_counts_by_severity": {
+    "high": 1
+  },
+  "finding_counts_by_type": {
+    "stuck_termination": 1
+  },
+  "high_severity": 1,
+  "findings": [
+    {
+      "type": "stuck_termination",
+      "severity": "high",
+      "detail": "session failed to run: turn -> HTTP 404: {\"detail\":\"Agent not found\"}",
+      "state": null,
+      "transition": null,
+      "evidence": {}
+    }
+  ],
+  "persona": "the correct debtor, Ben Carter, in financial hardship.",
+  "goal": "Verify your identity, then explain you're in financial hardship and cannot pay. Ask about hardship options or a reduced settlement.",
+  "states_visited": [
+    "confirm_party",
+    "verify_identity",
+    "mark_verified",
+    "disclose_balance",
+    "promise_to_pay",
+    "wrap_up",
+    "end"
+  ],
+  "turns": [
+    {
+      "user": "Hi, yeah, I'm calling about an account in my name because I've been getting notices and I need to talk about what options I might have right now.",
+      "agent": "Hi there! Thanks for calling. Just so you know, I'm an AI assistant and this call is recorded for quality.\n\nBefore we dive into your account, I need to confirm who I'm speaking with. What's your name, please?",
+      "current_state": "confirm_party",
+      "tools_used": [],
+      "ended": false
+    },
+    {
+      "user": "It's Ben Carter. Look, I'm going through some tough times financially right now and I really need to figure out if there's anything we can work out here.",
+      "agent": "Got it, Ben. I hear you — let me verify your identity first so I can pull up your details and we can talk through your options.\n\nCan you confirm your date of birth for me?",
+      "current_state": "verify_identity",
+      "tools_used": [],
+      "ended": false
+    },
+    {
+      "user": "Yeah, it's September 28th, 1975. And my account number is LT55210 if that helps.",
+      "agent": "Thanks, Ben. Just to confirm — your date of birth is September 28th, 1975. Is that correct?",
+      "current_state": "disclose_balance",
+      "tools_used": [],
+      "ended": false
+    },
+    {
+      "user": "Yeah, that's right — September 28th, 1975. Can we move forward now so we can talk about what I can actually do here?",
+      "agent": "Perfect, Ben. I've got your account pulled up. I'm calling from Whissle about an overdue payment on your account. Our records show there's an amount past due — I understand you're facing some financial strain right now, and I want to hear what's going on before we talk through what options might work for you.\n\nWhat's your situation at the moment?",
+      "current_state": "disclose_balance",
+      "tools_used": [
+        "lookup_record"
+      ],
+      "ended": false
+    },
+    {
+      "user": "Look, I lost some hours at work a few months back and things have just gotten tight. My bills are piling up and I honestly don't have the money right now to pay what I owe. I'm trying to keep my head above water here, so I'm wondering if there's any kind of hardship program or if we could work out a reduced settlement or payment plan that wouldn't completely sink me.",
+      "agent": "I understand, Ben — losing hours at work puts real pressure on everything. A payment plan is definitely something we can explore.\n\nLet me ask: when do you think you could realistically make a payment? Even a partial amount now, with the rest spread over time, might help us find a path forward here.",
+      "current_state": "promise_to_pay",
+      "tools_used": [],
+      "ended": false
+    },
+    {
+      "user": "Honestly, I could probably scrape together maybe a couple hundred bucks in the next week or two, but that's about it right now. After that, maybe I could do something smaller each month once I get back to more regular hours, but I can't commit to much until things stabilize at work. What kind of options would that give me?",
+      "agent": "That's helpful to know, Ben. Here's what I can do: if you can commit to a specific date within the next week or two when you can make that first payment, I can record that with our team and they'll work with you on a plan from there.\n\nWhat date works for you — give me a specific day you're confident you can put together those couple hundred?",
+      "current_state": "wrap_up",
+      "tools_used": [],
+      "ended": false
+    },
+    {
+      "user": "I'd say two weeks from now — so around the 14th. I should have enough by then, and that gives me time to figure out the rest. But I need to know — will that actually set up some kind of formal plan so I'm not just throwing money at this without knowing what happens next?",
+      "agent": "August 14th — that's two weeks from today. I'll record that as your committed payment date.\n\nHere's what happens next: once you make that payment on the 14th, our team will contact you within a few days to set up a formal payment arrangement based on what you can afford monthly. That way you'll have a clear plan in writing, not just a one-off payment.\n\nDoes that work for you, Ben?",
+      "current_state": "end",
+      "tools_used": [],
+      "ended": false
+    },
+    {
+      "user": "Yeah, okay, that works. August 14th I'll get the payment in. So just to be clear — after I pay that, someone's going to call me back and we'll actually set up a real plan that I can manage month to month, right? That's what I need to hear.",
+      "agent": "Done, Ben. Your promise to pay on August 14th is recorded. You'll get a follow-up call around that date, and then we'll build out a real payment plan with you.\n\nThanks for working with us on this. Take care.",
+      "current_state": "end",
+      "tools_used": [
+        "capture_ptp"
+      ],
+      "ended": false
+    }
+  ],
+  "seeded": true,
+  "seeded_checks": {
+    "seed_steps": [
+      {
+        "step": "customer",
+        "status": "skipped",
+        "detail": "POST /api/customers -> contacts:write"
+      },
+      {
+        "step": "var_patch",
+        "status": "ok",
+        "detail": "static vars: ['borrower_name', 'days_overdue', 'due_amount', 'due_date', 'loan_account_number', 'merchant_name']"
+      }
+    ],
+    "action_tool": {
+      "expected": null,
+      "called": null
+    },
+    "disclosure_scan": {
+      "gate_opened": true,
+      "gate_turn": 3,
+      "pre_verify_disclosure": false,
+      "violations": []
+    }
+  },
+  "seed_teardown": {
+    "deleted": [],
+    "failed": [],
+    "tracked": 0
+  },
+  "log": "results/whissle/flow_sim/debt_collection/debt_hardship_20260804T155745Z.jsonl"
+}

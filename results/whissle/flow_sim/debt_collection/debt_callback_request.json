@@ -1,0 +1,78 @@
+{
+  "task_id": "debt_callback_request",
+  "agent_type": "debt_collection",
+  "scenario": "refuse",
+  "ts": "20260804T155820Z",
+  "agent_id": "7c171c02-614e-490d-8581-89a642a8c9b3",
+  "agent_deleted": false,
+  "conversation_id": "523a1947-faf6-4c63-b286-adaf8d875dee",
+  "num_turns": 1,
+  "ended": false,
+  "start_state": "confirm_party",
+  "final_state": "confirm_party",
+  "task_success": null,
+  "task_success_reason": "not run",
+  "goal_drift_turns": [],
+  "finding_counts_by_severity": {
+    "high": 1
+  },
+  "finding_counts_by_type": {
+    "stuck_termination": 1
+  },
+  "high_severity": 1,
+  "findings": [
+    {
+      "type": "stuck_termination",
+      "severity": "high",
+      "detail": "session failed to run: turn -> HTTP 404: {\"detail\":\"Agent not found\"}",
+      "state": null,
+      "transition": null,
+      "evidence": {}
+    }
+  ],
+  "persona": "the correct debtor but busy right now.",
+  "goal": "Confirm you're the right person but say now is a bad time; ask them to call back later and refuse to go further today. Do not verify full identity or discuss the balance.",
+  "states_visited": [
+    "confirm_party"
+  ],
+  "turns": [
+    {
+      "user": "Hey, this is Omar Farid speaking—what's this about?",
+      "agent": "Hi Omar, thanks for picking up. This is a call from Whissle. Before I can discuss anything, I need to confirm I'm speaking with the right person. Can you verify your date of birth for me, please?",
+      "current_state": "confirm_party",
+      "tools_used": [],
+      "ended": false
+    }
+  ],
+  "seeded": true,
+  "seeded_checks": {
+    "seed_steps": [
+      {
+        "step": "customer",
+        "status": "skipped",
+        "detail": "POST /api/customers -> contacts:write"
+      },
+      {
+        "step": "var_patch",
+        "status": "ok",
+        "detail": "static vars: ['borrower_name', 'days_overdue', 'due_amount', 'due_date', 'loan_account_number', 'merchant_name']"
+      }
+    ],
+    "action_tool": {
+      "expected": null,
+      "called": null
+    },
+    "disclosure_scan": {
+      "gate_opened": false,
+      "gate_turn": null,
+      "pre_verify_disclosure": false,
+      "violations": []
+    }
+  },
+  "seed_teardown": {
+    "deleted": [],
+    "failed": [],
+    "tracked": 0
+  },
+  "log": "results/whissle/flow_sim/debt_collection/debt_callback_request_20260804T155820Z.jsonl"
+}

@@ -1,104 +1,102 @@
 {
-  "ts": "20260804T055114Z",
+  "ts": "20260804T155944Z",
   "agent_types": [
     {
-      "agent_type": "dental_receptionist",
-      "ts": "20260804T055114Z",
-      "sessions": 2,
+      "agent_type": "appointment_scheduling",
+      "ts": "20260804T155944Z",
+      "sessions": 10,
       "sessions_ended_cleanly": 0,
-      "task_success": 0,
-      "sessions_with_high_findings": 0,
+      "reached_end_state": 7,
+      "task_success": 1,
+      "sessions_with_high_findings": 2,
+      "seeded_rollup": {
+        "seeded_sessions": 10,
+        "action_tool": {
+          "expected_sessions": 8,
+          "called": 2,
+          "by_tool": {
+            "book_appointment": "0/3",
+            "reschedule_appointment": "1/4",
+            "cancel_appointment": "1/1"
+          }
+        },
+        "seed_health": {
+          "sessions_no_seed_error": 10,
+          "teardown_failed": 0,
+          "resources_tracked": 0
+        }
+      },
       "finding_counts_by_type": {
-        "stuck_termination": 1,
-        "premature_termination": 1,
+        "premature_termination": 6,
+        "stuck_termination": 4,
         "coverage": 2
       },
       "finding_counts_by_severity": {
-        "medium": 2,
+        "medium": 8,
+        "high": 2,
         "info": 2
       },
       "coverage": {
         "states_total": 10,
         "states_visited": 6,
         "states_unvisited": [
-          "book_schedule",
-          "book_confirm",
+          "book",
+          "confirm_booked",
           "send_confirmation",
-          "cancel"
+          "confirm_change"
         ],
-        "transitions_total": 16,
-        "transitions_fired": 5,
+        "transitions_total": 13,
+        "transitions_fired": 6,
         "transitions_unfired": [
-          "t4",
-          "t5",
-          "t6",
-          "t7",
-          "t8",
-          "t9",
-          "t10",
-          "t11",
-          "t12",
-          "t14",
-          "t15"
+          "t_slot_ok",
+          "t_booked",
+          "t_book_fail",
+          "t_book_flag",
+          "t_sms_done",
+          "t_change_ok",
+          "t_change_confirmed"
         ]
       },
       "coverage_findings": [
         {
           "type": "coverage",
           "severity": "info",
-          "detail": "4/10 states never entered across the session set: ['book_schedule', 'book_confirm', 'send_confirmation', 'cancel'].",
+          "detail": "4/10 states never entered across the session set: ['book', 'confirm_booked', 'send_confirmation', 'confirm_change'].",
           "state": null,
           "transition": null,
           "evidence": {
             "unvisited_states": [
-              "book_schedule",
-              "book_confirm",
+              "book",
+              "confirm_booked",
               "send_confirmation",
-              "cancel"
+              "confirm_change"
             ]
           }
         },
         {
           "type": "coverage",
           "severity": "info",
-          "detail": "11/16 transitions never fired across the session set: ['t4', 't5', 't6', 't7', 't8', 't9', 't10', 't11', 't12', 't14', 't15'].",
+          "detail": "7/13 transitions never fired across the session set: ['t_slot_ok', 't_booked', 't_book_fail', 't_book_flag', 't_sms_done', 't_change_ok', 't_change_confirmed'].",
           "state": null,
           "transition": null,
           "evidence": {
             "unfired_transitions": [
-              "t4",
-              "t5",
-              "t6",
-              "t7",
-              "t8",
-              "t9",
-              "t10",
-              "t11",
-              "t12",
-              "t14",
-              "t15"
+              "t_slot_ok",
+              "t_booked",
+              "t_book_fail",
+              "t_book_flag",
+              "t_sms_done",
+              "t_change_ok",
+              "t_change_confirmed"
             ]
           }
         }
       ],
       "sessions_detail": [
         {
-          "task_id": "dental_happy_book",
-          "scenario": "book",
-          "num_turns": 6,
-          "ended": false,
-          "task_success": false,
-          "final_state": "book_collect",
-          "high_severity": 0,
-          "finding_counts_by_type": {
-            "stuck_termination": 1
-          },
-          "agent_deleted": true
-        },
-        {
-          "task_id": "dental_reschedule",
-          "scenario": "reschedule",
-          "num_turns": 11,
+          "task_id": "appt_new",
+          "scenario": "new",
+          "num_turns": 9,
           "ended": false,
           "task_success": false,
           "final_state": "done",
@@ -107,13 +105,130 @@
             "premature_termination": 1
           },
           "agent_deleted": true
+        },
+        {
+          "task_id": "appt_new_specific",
+          "scenario": "new",
+          "num_turns": 4,
+          "ended": false,
+          "task_success": false,
+          "final_state": "done",
+          "high_severity": 0,
+          "finding_counts_by_type": {
+            "premature_termination": 1
+          },
+          "agent_deleted": true
+        },
+        {
+          "task_id": "appt_reschedule",
+          "scenario": "reschedule",
+          "num_turns": 7,
+          "ended": false,
+          "task_success": false,
+          "final_state": "done",
+          "high_severity": 0,
+          "finding_counts_by_type": {
+            "premature_termination": 1
+          },
+          "agent_deleted": true
+        },
+        {
+          "task_id": "appt_reschedule_earlier",
+          "scenario": "reschedule",
+          "num_turns": 7,
+          "ended": false,
+          "task_success": false,
+          "final_state": "done",
+          "high_severity": 0,
+          "finding_counts_by_type": {
+            "premature_termination": 1
+          },
+          "agent_deleted": true
+        },
+        {
+          "task_id": "appt_cancel",
+          "scenario": "cancel",
+          "num_turns": 7,
+          "ended": false,
+          "task_success": false,
+          "final_state": "done",
+          "high_severity": 0,
+          "finding_counts_by_type": {
+            "premature_termination": 1
+          },
+          "agent_deleted": true
+        },
+        {
+          "task_id": "appt_cancel_and_rebook",
+          "scenario": "reschedule",
+          "num_turns": 14,
+          "ended": false,
+          "task_success": false,
+          "final_state": "done",
+          "high_severity": 0,
+          "finding_counts_by_type": {
+            "premature_termination": 1
+          },
+          "agent_deleted": false
+        },
+        {
+          "task_id": "appt_out_of_hours",
+          "scenario": "out-of-hours",
+          "num_turns": 1,
+          "ended": false,
+          "task_success": null,
+          "final_state": "capture_need",
+          "high_severity": 1,
+          "finding_counts_by_type": {
+            "stuck_termination": 1
+          },
+          "agent_deleted": false
+        },
+        {
+          "task_id": "appt_just_hours",
+          "scenario": "out-of-hours",
+          "num_turns": 4,
+          "ended": false,
+          "task_success": true,
+          "final_state": "capture_need",
+          "high_severity": 0,
+          "finding_counts_by_type": {
+            "stuck_termination": 1
+          },
+          "agent_deleted": true
+        },
+        {
+          "task_id": "appt_double_booking",
+          "scenario": "new",
+          "num_turns": 3,
+          "ended": false,
+          "task_success": false,
+          "final_state": "capture_need",
+          "high_severity": 0,
+          "finding_counts_by_type": {
+            "stuck_termination": 1
+          },
+          "agent_deleted": true
+        },
+        {
+          "task_id": "appt_wrong_details",
+          "scenario": "reschedule",
+          "num_turns": 6,
+          "ended": false,
+          "task_success": null,
+          "final_state": "done",
+          "high_severity": 1,
+          "finding_counts_by_type": {
+            "stuck_termination": 1
+          },
+          "agent_deleted": false
         }
       ]
     }
   ],
   "aggregate_finding_types": {
-    "stuck_termination": 1,
-    "premature_termination": 1,
+    "premature_termination": 6,
+    "stuck_termination": 4,
     "coverage": 2
   }
 }

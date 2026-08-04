@@ -1,0 +1,112 @@
+{
+  "task_id": "cs_cancel_service",
+  "agent_type": "customer_support",
+  "scenario": "resolvable",
+  "ts": "20260804T155606Z",
+  "agent_id": "a61ddf28-edfe-4b07-894e-8af799961e3b",
+  "agent_deleted": true,
+  "conversation_id": "e84f27f8-2c55-4c33-95f1-3df27320e390",
+  "num_turns": 3,
+  "ended": false,
+  "start_state": "greet",
+  "final_state": "understand_issue",
+  "task_success": false,
+  "task_success_reason": "The customer called the wrong company and never proceeded with canceling any actual subscription with the agent.",
+  "goal_drift_turns": [],
+  "finding_counts_by_severity": {
+    "medium": 1
+  },
+  "finding_counts_by_type": {
+    "stuck_termination": 1
+  },
+  "high_severity": 0,
+  "findings": [
+    {
+      "type": "stuck_termination",
+      "severity": "medium",
+      "detail": "session never reached an end state (cap/stuck); final state 'understand_issue' with 2 outgoing edge(s) un-fired.",
+      "state": "understand_issue",
+      "transition": null,
+      "evidence": {
+        "outgoing": [
+          "understand_to_verify",
+          "understand_to_howto"
+        ]
+      }
+    }
+  ],
+  "persona": "Nadia Khan, wants to cancel her subscription.",
+  "goal": "Ask to cancel your subscription. Provide any details needed and confirm the cancellation (or the retention offer if you accept one).",
+  "states_visited": [
+    "greet",
+    "understand_issue"
+  ],
+  "turns": [
+    {
+      "user": "Hi, I need to cancel my subscription please.",
+      "agent": "Hello! I'd be happy to help you with that. \n\nBefore we proceed, could you tell me a bit more about which subscription you'd like to cancel? Are you looking to cancel a subscription related to your tutoring service, car rental business, or dental clinic?",
+      "current_state": "understand_issue",
+      "tools_used": [],
+      "ended": false
+    },
+    {
+      "user": "Oh, I think there might be some confusion—I'm calling about my streaming service subscription, the one I've been paying for monthly. I just want to get it cancelled as soon as possible.",
+      "agent": "I appreciate you clarifying that! However, I think there may be some confusion on my end. I'm a customer support agent for **Whissle**, and based on what I understand, we provide services related to tutoring, car rental, and dental clinic operations.\n\nIt sounds like you're trying to cancel a subscription for a streaming service, which doesn't appear to be something we handle at Whissle. \n\nCould you double-check that you've reached the right company? If you're looking to cancel a streaming service subscription, you may need to contact that service provider directly. \n\nHowever, if you do have any questions or issues related to Whissle's services, I'm here to help!",
+      "current_state": "understand_issue",
+      "tools_used": [],
+      "ended": false
+    },
+    {
+      "user": "Oh my god, I'm so sorry—you're right, I must've called the wrong number. Let me hang up and figure out which company I actually use. Thanks anyway!",
+      "agent": "No problem at all! These things happen. Good luck getting your streaming service sorted out, and sorry we couldn't help this time. Take care!",
+      "current_state": "understand_issue",
+      "tools_used": [],
+      "ended": false
+    }
+  ],
+  "seeded": true,
+  "seeded_checks": {
+    "seed_steps": [
+      {
+        "step": "customer",
+        "status": "skipped",
+        "detail": "POST /api/customers -> contacts:write"
+      },
+      {
+        "step": "credential",
+        "status": "ok",
+        "detail": "id=3ac63d4c-251d-4718-b2dc-ffde35880d3b kind=postgres"
+      },
+      {
+        "step": "kb_doc",
+        "status": "skipped",
+        "detail": "POST kb/ingest -> 403"
+      }
+    ],
+    "action_tool": {
+      "expected": null,
+      "called": null
+    },
+    "resolve": {
+      "resolve_done": false,
+      "reached_mark_resolved": false,
+      "resolved_var_set": false,
+      "escalated": false,
+      "states": [
+        "greet",
+        "understand_issue"
+      ]
+    }
+  },
+  "seed_teardown": {
+    "deleted": [
+      {
+        "kind": "credential",
+        "id": "3ac63d4c-251d-4718-b2dc-ffde35880d3b"
+      }
+    ],
+    "failed": [],
+    "tracked": 1
+  },
+  "log": "results/whissle/flow_sim/customer_support/cs_cancel_service_20260804T155606Z.jsonl"
+}

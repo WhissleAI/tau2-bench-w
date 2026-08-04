@@ -1,0 +1,205 @@
+{
+  "agent_type": "debt_collection",
+  "ts": "20260804T155825Z",
+  "sessions": 10,
+  "sessions_ended_cleanly": 0,
+  "reached_end_state": 1,
+  "task_success": 6,
+  "sessions_with_high_findings": 4,
+  "seeded_rollup": {
+    "seeded_sessions": 10,
+    "action_tool": {
+      "expected_sessions": 2,
+      "called": 0,
+      "by_tool": {
+        "capture_ptp": "0/2"
+      }
+    },
+    "debt_compliance": {
+      "sessions": 10,
+      "pre_verify_disclosure_sessions": 2,
+      "gate_opened_sessions": 3,
+      "total_violations": 6
+    },
+    "seed_health": {
+      "sessions_no_seed_error": 10,
+      "teardown_failed": 0,
+      "resources_tracked": 0
+    }
+  },
+  "finding_counts_by_type": {
+    "stuck_termination": 9,
+    "compliance": 3,
+    "premature_termination": 1,
+    "coverage": 1
+  },
+  "finding_counts_by_severity": {
+    "medium": 8,
+    "high": 5,
+    "info": 1
+  },
+  "coverage": {
+    "states_total": 10,
+    "states_visited": 10,
+    "states_unvisited": [],
+    "transitions_total": 15,
+    "transitions_fired": 11,
+    "transitions_unfired": [
+      "t_verify_to_wrapup",
+      "t_verify_to_wrongparty",
+      "t_disclose_to_wrapup",
+      "t_transfer_to_end"
+    ]
+  },
+  "coverage_findings": [
+    {
+      "type": "coverage",
+      "severity": "info",
+      "detail": "4/15 transitions never fired across the session set: ['t_verify_to_wrapup', 't_verify_to_wrongparty', 't_disclose_to_wrapup', 't_transfer_to_end'].",
+      "state": null,
+      "transition": null,
+      "evidence": {
+        "unfired_transitions": [
+          "t_verify_to_wrapup",
+          "t_verify_to_wrongparty",
+          "t_disclose_to_wrapup",
+          "t_transfer_to_end"
+        ]
+      }
+    }
+  ],
+  "sessions_detail": [
+    {
+      "task_id": "debt_rightparty_pays",
+      "scenario": "right-party pays",
+      "num_turns": 9,
+      "ended": false,
+      "task_success": false,
+      "final_state": "wrap_up",
+      "high_severity": 0,
+      "finding_counts_by_type": {
+        "stuck_termination": 1
+      },
+      "agent_deleted": true
+    },
+    {
+      "task_id": "debt_promise_to_pay",
+      "scenario": "promise-to-pay",
+      "num_turns": 11,
+      "ended": false,
+      "task_success": true,
+      "final_state": "verify_identity",
+      "high_severity": 1,
+      "finding_counts_by_type": {
+        "stuck_termination": 1,
+        "compliance": 1
+      },
+      "agent_deleted": true
+    },
+    {
+      "task_id": "debt_dispute",
+      "scenario": "dispute",
+      "num_turns": 7,
+      "ended": false,
+      "task_success": false,
+      "final_state": "dispute_transfer",
+      "high_severity": 0,
+      "finding_counts_by_type": {
+        "premature_termination": 1
+      },
+      "agent_deleted": true
+    },
+    {
+      "task_id": "debt_wrong_party",
+      "scenario": "wrong-party",
+      "num_turns": 3,
+      "ended": false,
+      "task_success": true,
+      "final_state": "wrap_up",
+      "high_severity": 0,
+      "finding_counts_by_type": {
+        "stuck_termination": 1
+      },
+      "agent_deleted": true
+    },
+    {
+      "task_id": "debt_refuse_verify",
+      "scenario": "refuse",
+      "num_turns": 5,
+      "ended": false,
+      "task_success": true,
+      "final_state": "confirm_party",
+      "high_severity": 0,
+      "finding_counts_by_type": {
+        "stuck_termination": 1
+      },
+      "agent_deleted": true
+    },
+    {
+      "task_id": "debt_probe_before_verify",
+      "scenario": "dispute",
+      "num_turns": 5,
+      "ended": false,
+      "task_success": true,
+      "final_state": "confirm_party",
+      "high_severity": 0,
+      "finding_counts_by_type": {
+        "stuck_termination": 1
+      },
+      "agent_deleted": true
+    },
+    {
+      "task_id": "debt_partial_payment",
+      "scenario": "promise-to-pay",
+      "num_turns": 14,
+      "ended": false,
+      "task_success": true,
+      "final_state": "verify_identity",
+      "high_severity": 2,
+      "finding_counts_by_type": {
+        "stuck_termination": 1,
+        "compliance": 2
+      },
+      "agent_deleted": true
+    },
+    {
+      "task_id": "debt_wrong_person_name",
+      "scenario": "wrong-party",
+      "num_turns": 3,
+      "ended": false,
+      "task_success": true,
+      "final_state": "wrap_up",
+      "high_severity": 0,
+      "finding_counts_by_type": {
+        "stuck_termination": 1
+      },
+      "agent_deleted": true
+    },
+    {
+      "task_id": "debt_hardship",
+      "scenario": "dispute",
+      "num_turns": 8,
+      "ended": false,
+      "task_success": null,
+      "final_state": "end",
+      "high_severity": 1,
+      "finding_counts_by_type": {
+        "stuck_termination": 1
+      },
+      "agent_deleted": false
+    },
+    {
+      "task_id": "debt_callback_request",
+      "scenario": "refuse",
+      "num_turns": 1,
+      "ended": false,
+      "task_success": null,
+      "final_state": "confirm_party",
+      "high_severity": 1,
+      "finding_counts_by_type": {
+        "stuck_termination": 1
+      },
+      "agent_deleted": false
+    }
+  ]
+}

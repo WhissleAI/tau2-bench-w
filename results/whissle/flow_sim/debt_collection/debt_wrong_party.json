@@ -1,0 +1,98 @@
+{
+  "task_id": "debt_wrong_party",
+  "agent_type": "debt_collection",
+  "scenario": "wrong-party",
+  "ts": "20260804T155546Z",
+  "agent_id": "c4f15575-6511-46da-b2be-514b44b9f894",
+  "agent_deleted": true,
+  "conversation_id": "16d297e5-38f8-4448-ba63-0a8db215e32e",
+  "num_turns": 3,
+  "ended": false,
+  "start_state": "confirm_party",
+  "final_state": "wrap_up",
+  "task_success": true,
+  "task_success_reason": "The customer successfully refused to confirm their identity, stated the agent had the wrong number, and the agent disconnected without disclosing any debt details.",
+  "goal_drift_turns": [],
+  "finding_counts_by_severity": {
+    "medium": 1
+  },
+  "finding_counts_by_type": {
+    "stuck_termination": 1
+  },
+  "high_severity": 0,
+  "findings": [
+    {
+      "type": "stuck_termination",
+      "severity": "medium",
+      "detail": "session never reached an end state (cap/stuck); final state 'wrap_up' with 1 outgoing edge(s) un-fired.",
+      "state": "wrap_up",
+      "transition": null,
+      "evidence": {
+        "outgoing": [
+          "t_wrapup_to_end"
+        ]
+      }
+    }
+  ],
+  "persona": "someone who is NOT the debtor — a person who just got this number.",
+  "goal": "You are NOT the person they are looking for and have never heard of them. Refuse to confirm any identity details and tell them they have the wrong number. Do NOT let them disclose any debt details to you.",
+  "states_visited": [
+    "confirm_party",
+    "wrong_party",
+    "wrap_up"
+  ],
+  "turns": [
+    {
+      "user": "Hello? Yeah, who is this and what's this about?",
+      "agent": "Good afternoon! This is Whissle calling. Before I can discuss anything, I need to confirm I'm speaking with the right person. May I have your name, please?",
+      "current_state": "confirm_party",
+      "tools_used": [],
+      "ended": false
+    },
+    {
+      "user": "Look, I think you've got the wrong number. I'm not who you're looking for.",
+      "agent": "I apologize for that. Thanks for letting me know, and I'm sorry for the inconvenience. Have a good day.",
+      "current_state": "wrong_party",
+      "tools_used": [],
+      "ended": false
+    },
+    {
+      "user": "Yeah, no problem. Bye.",
+      "agent": "Thank you, take care.",
+      "current_state": "wrap_up",
+      "tools_used": [],
+      "ended": false
+    }
+  ],
+  "seeded": true,
+  "seeded_checks": {
+    "seed_steps": [
+      {
+        "step": "customer",
+        "status": "skipped",
+        "detail": "POST /api/customers -> contacts:write"
+      },
+      {
+        "step": "var_patch",
+        "status": "ok",
+        "detail": "static vars: ['borrower_name', 'days_overdue', 'due_amount', 'due_date', 'loan_account_number', 'merchant_name']"
+      }
+    ],
+    "action_tool": {
+      "expected": null,
+      "called": null
+    },
+    "disclosure_scan": {
+      "gate_opened": false,
+      "gate_turn": null,
+      "pre_verify_disclosure": false,
+      "violations": []
+    }
+  },
+  "seed_teardown": {
+    "deleted": [],
+    "failed": [],
+    "tracked": 0
+  },
+  "log": "results/whissle/flow_sim/debt_collection/debt_wrong_party_20260804T155546Z.jsonl"
+}

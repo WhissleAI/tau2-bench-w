@@ -1,0 +1,91 @@
+{
+  "task_id": "appt_double_booking",
+  "agent_type": "appointment_scheduling",
+  "scenario": "new",
+  "ts": "20260804T155850Z",
+  "agent_id": "832e8969-2c43-45af-8b99-40da026198fb",
+  "agent_deleted": true,
+  "conversation_id": "4bfd3a4e-ce44-4f82-918c-4ec1c7d68a8d",
+  "num_turns": 3,
+  "ended": false,
+  "start_state": "greet",
+  "final_state": "capture_need",
+  "task_success": false,
+  "task_success_reason": "The customer's goal was not achieved because the business does not offer haircut services, so no appointment could be booked in any form.",
+  "goal_drift_turns": [],
+  "finding_counts_by_severity": {
+    "medium": 1
+  },
+  "finding_counts_by_type": {
+    "stuck_termination": 1
+  },
+  "high_severity": 0,
+  "findings": [
+    {
+      "type": "stuck_termination",
+      "severity": "medium",
+      "detail": "session never reached an end state (cap/stuck); final state 'capture_need' with 1 outgoing edge(s) un-fired.",
+      "state": "capture_need",
+      "transition": null,
+      "evidence": {
+        "outgoing": [
+          "t_captured"
+        ]
+      }
+    }
+  ],
+  "persona": "Mia Scott, tries to book a slot that turns out to be taken.",
+  "goal": "Ask for a popular slot; if it's unavailable, accept the next-nearest option offered and confirm.",
+  "states_visited": [
+    "greet",
+    "capture_need"
+  ],
+  "turns": [
+    {
+      "user": "Hi, I'm calling to book an appointment. Do you have anything available next Tuesday afternoon around 2 PM?",
+      "agent": "Great! We're open Monday to Friday from 9 AM to 6 PM, so next Tuesday afternoon at 2 PM would fall right within our operating hours.\n\nTo help me find the best available slot for you, could you please let me know:\n1. **Which service** are you looking to book an appointment for? (For example, is this for our dental clinic, car rental service, or tutoring?)\n2. **How long** do you expect the appointment to take?\n\nOnce I have these details, I'll be able to check our availability and confirm a time for you!",
+      "current_state": "capture_need",
+      "tools_used": [
+        "get_hours"
+      ],
+      "ended": false
+    },
+    {
+      "user": "Oh right, sorry – I need a haircut, and it usually takes about an hour. Can you check if 2 PM on Tuesday still works?",
+      "agent": "I appreciate you letting me know, but I think there may be a bit of confusion. Based on the services we offer through Whissle, we have:\n\n- A **dental clinic** in Patiala\n- An **online tutoring service**\n- A **car rental business** in Europe\n\nWe don't actually have a haircut or salon service available. Could you let me know if you were perhaps trying to book one of these services instead? Or if you have a different appointment type in mind, I'd be happy to help you schedule it!",
+      "current_state": "capture_need",
+      "tools_used": [],
+      "ended": false
+    },
+    {
+      "user": "Oh wow, I think I called the wrong place then! I was definitely looking for a haircut appointment. My bad – sorry to waste your time. I'll hang up and call the right salon.",
+      "agent": "No problem at all – happens all the time! I hope you find a great salon and get that haircut scheduled. Have a wonderful day, and thanks for calling Whissle!",
+      "current_state": "capture_need",
+      "tools_used": [],
+      "ended": false
+    }
+  ],
+  "seeded": true,
+  "seeded_checks": {
+    "seed_steps": [
+      {
+        "step": "schedule",
+        "status": "auto",
+        "detail": "Mon–Fri 09:00–18:00 Asia/Kolkata (auto-seeded)"
+      }
+    ],
+    "action_tool": {
+      "expected": "book_appointment",
+      "called": false,
+      "tools_seen": [
+        "get_hours"
+      ]
+    }
+  },
+  "seed_teardown": {
+    "deleted": [],
+    "failed": [],
+    "tracked": 0
+  },
+  "log": "results/whissle/flow_sim/appointment_scheduling/appt_double_booking_20260804T155850Z.jsonl"
+}

@@ -1,0 +1,102 @@
+{
+  "task_id": "appt_new_specific",
+  "agent_type": "appointment_scheduling",
+  "scenario": "new",
+  "ts": "20260804T155445Z",
+  "agent_id": "bd128bad-63e9-4002-8782-be5b1ca85be9",
+  "agent_deleted": true,
+  "conversation_id": "59dc51f6-8729-4d31-b79f-8273cd47c6cf",
+  "num_turns": 4,
+  "ended": false,
+  "start_state": "greet",
+  "final_state": "done",
+  "task_success": false,
+  "task_success_reason": "The appointment for next Wednesday at 10am was not scheduled because the business does not offer haircut services, which was the customer's required service.",
+  "goal_drift_turns": [],
+  "finding_counts_by_severity": {
+    "medium": 1
+  },
+  "finding_counts_by_type": {
+    "premature_termination": 1
+  },
+  "high_severity": 0,
+  "findings": [
+    {
+      "type": "premature_termination",
+      "severity": "medium",
+      "detail": "flow reached an end state but the simulated user's goal was NOT met (per the task-success judge).",
+      "state": "done",
+      "transition": null,
+      "evidence": {
+        "goal_met": false
+      }
+    }
+  ],
+  "persona": "Henry Baker, wants a very specific date and time.",
+  "goal": "Schedule a new appointment for exactly next Wednesday at 10am. Insist on that time and confirm if available.",
+  "states_visited": [
+    "greet",
+    "capture_need",
+    "check_slot",
+    "close",
+    "done"
+  ],
+  "turns": [
+    {
+      "user": "Hi, I'm calling to schedule an appointment for next Wednesday at 10 in the morning—do you have that time available?",
+      "agent": "Great! We're open Monday to Friday from 9 AM to 6 PM, so next Wednesday at 10 a.m. is definitely within our business hours and should work well.\n\nTo help me complete your appointment booking, I need a bit more information:\n\n1. **Which service** would you like to book? (For example: tutoring, dental services, car rental, or something else?)\n2. **Your contact information** (name, phone number, email address)\n3. **Any special requests or details** about your appointment?\n\nOnce I have these details, I can confirm the appointment for you on Wednesday at 10 a.m.",
+      "current_state": "capture_need",
+      "tools_used": [
+        "get_hours"
+      ],
+      "ended": false
+    },
+    {
+      "user": "Yeah, I need a haircut, and my name is Henry Baker. You can reach me at 5550284-00. And just to be clear—I really need it to be exactly 10 a.m. next Wednesday, nothing else works for my schedule.",
+      "agent": "I appreciate you providing that information, Henry! However, I need to let you know that we don't offer haircut services. \n\nBased on our business, we provide:\n- **Tutoring services** (online)\n- **Dental services** (located in Patiala)\n- **Car rental services** (located in Europe)\n\nWould any of these services be what you're looking for instead? Or if you were trying to reach a different business for your haircut appointment, I'd be happy to help clarify!",
+      "current_state": "check_slot",
+      "tools_used": [],
+      "ended": false
+    },
+    {
+      "user": "Oh, I think I might have the wrong number then. I was definitely looking for a haircut place. But since I've got you on the line, do you happen to know of any hair salons nearby, or should I just hang up and call somewhere else?",
+      "agent": "I appreciate the question, Henry, but I'm afraid I don't have information about hair salons in your area—that's outside what I can help with. Your best bet would be to do a quick search online for salons near you, or ask friends and family for recommendations.\n\nI'm sorry we couldn't help with the haircut, but if you ever need tutoring, dental services, or car rentals in the future, feel free to give us a call back at Whissle!\n\nBest of luck finding a salon!\nYou're all set. Thanks for calling, and take care. Goodbye!",
+      "current_state": "done",
+      "tools_used": [],
+      "ended": false
+    },
+    {
+      "user": "Alright, thanks anyway. I'll find another place for the haircut. Have a good one.",
+      "agent": "You too, Henry! Thanks for calling, and good luck with finding a salon. Take care!",
+      "current_state": "done",
+      "tools_used": [
+        "end_call"
+      ],
+      "ended": false
+    }
+  ],
+  "seeded": true,
+  "seeded_checks": {
+    "seed_steps": [
+      {
+        "step": "schedule",
+        "status": "auto",
+        "detail": "Mon–Fri 09:00–18:00 Asia/Kolkata (auto-seeded)"
+      }
+    ],
+    "action_tool": {
+      "expected": "book_appointment",
+      "called": false,
+      "tools_seen": [
+        "end_call",
+        "get_hours"
+      ]
+    }
+  },
+  "seed_teardown": {
+    "deleted": [],
+    "failed": [],
+    "tracked": 0
+  },
+  "log": "results/whissle/flow_sim/appointment_scheduling/appt_new_specific_20260804T155445Z.jsonl"
+}
