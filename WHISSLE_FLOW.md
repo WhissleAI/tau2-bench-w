@@ -49,33 +49,32 @@ say-markers, tool calls, state sequence, fired transitions).
 | **appointment** | realistic multi-tool run — `greet→verify(conversation)→lookup(tool)→offer(conversation)→book(tool)→confirm(say)→goodbye(say)→end`; exercises **per-state tool-gating** (`book_appointment` is never offered in the verify/offer states), an **expression branch** (`verify→lookup` on the `caller_name` variable set by `save_contact_field`) with an **llm_condition fallback** on the same edge, and a second `llm_condition` branch on slot choice | 5 |
 | **guarded_loop** | loop guards — a `spin_a ⇄ spin_b` loop (sustained by a `to_override` redirect) that the `max_visits_per_state` guard trips within N re-entries; `on_guard_trip:fallback` then escapes to the landing state. Fully deterministic (say/set_variable/always only — no LLM judge), so it runs in one turn. The verbatim `LOOP-ESCAPED` marker appears **only if** the guard tripped and the fallback fired. | 1 |
 
-## What it asserts, and graceful degradation
+## What it asserts
 
-Assertions are graded in two tiers so the suite is meaningful **today** and becomes
-strict automatically once the trace ships:
+Assertions are graded in two tiers:
 
-- **observable** (runs every time) — asserted on the agent's real replies and
-  `tools_used`. A verbatim say-marker in the reply proves the say-state executed; a
-  tool name in `tools_used` proves that tool state fired and gating admitted it; a
-  gated-out tool's **absence** proves per-state gating.
-- **trace** (`skipped-pending-trace` until deployed) — asserted on the flow
-  step-trace (`flow.steps` per turn + the `GET /flow/trace` accumulation): the exact
-  state-enter sequence, the fired-transition ids, and guard-trip events.
+- **observable** — asserted on the agent's real replies and `tools_used`. A verbatim
+  say-marker in the reply proves the say-state executed; a tool name in `tools_used`
+  proves that tool state fired and gating admitted it; a gated-out tool's **absence**
+  proves per-state gating.
+- **trace** — asserted on the flow step-trace (`flow.steps` per turn + the
+  `GET /flow/trace` accumulation): the exact state-enter sequence, the
+  fired-transition ids, and guard-trip events.
 
-### Trace contract (the dependency)
+### Trace contract
 
-The suite consumes a step-trace shipping in a parallel backend PR
-(**flow-step-trace**). When an agent's flow is active, `chat/turn` responses will
-carry `"flow": {"active": true, "current_state": "<id>", "steps": [ <events> ]}`
-and `GET /api/agents/{id}/flow/trace?conversation_id=...` returns the full
-accumulated `{steps:[...]}`. Step event kinds: `state_enter`, `say_emitted`,
+The flow step-trace has shipped in the backend, so both tiers assert. When an
+agent's flow is active, `chat/turn` responses carry
+`"flow": {"active": true, "current_state": "<id>", "steps": [ <events> ]}` and
+`GET /api/agents/{id}/flow/trace?conversation_id=...` returns the full accumulated
+`{steps:[...]}`. Step event kinds: `state_enter`, `say_emitted`,
 `transition_check{result:"fired|not_satisfied|error"}`, `tools_gated`, `var_set`,
 `guard_trip`, `flow_end`.
 
-Until that PR is merged + deployed the `flow` field is absent (the trace endpoint
-404s). The harness detects this per run: the observable assertions gate the suite
-now, and every trace assertion reports `skipped-pending-trace` instead of failing.
-When the field appears, the same assertions turn strict with no harness change.
+The harness still probes per run: if a deploy predates the trace the `flow` field is
+absent (the endpoint 404s), and every trace assertion degrades to
+`skipped-pending-trace` rather than failing — the observable tier still gates the
+suite. Against a current backend the trace is present and the trace tier is strict.
 
 ## Output
 
