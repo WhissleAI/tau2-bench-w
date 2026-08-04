@@ -148,13 +148,28 @@ _ALLOWED_NODES = (
     ast.Eq, ast.NotEq, ast.Lt, ast.Gt, ast.LtE, ast.GtE,
 )
 
+# The Whissle flow expression grammar (services/flow/expr.py) defines bare
+# lowercase ``true`` / ``false`` as boolean keyword LITERALS. Python's ``ast``
+# parses them as undefined ``Name`` nodes, so without this map the analyzer would
+# (a) mis-flag every ``x == true`` gate as a phantom ``variable_desync`` and
+# (b) never evaluate such gates correctly. We map them to Python bools everywhere
+# a Name is resolved or a referenced-variable set is computed.
+_BOOL_LITERALS = {"true": True, "false": False}
+
+
+def _variable_names(tree: ast.AST) -> set[str]:
+    """The genuine variable names an expression references — i.e. every ``Name``
+    node EXCEPT the boolean keyword literals ``true`` / ``false``."""
+    return {n.id for n in ast.walk(tree)
+            if isinstance(n, ast.Name) and n.id not in _BOOL_LITERALS}
+
 
 def _referenced_names(expr: str) -> set[str]:
     try:
         tree = ast.parse(expr, mode="eval")
     except SyntaxError:
         return set()
-    return {n.id for n in ast.walk(tree) if isinstance(n, ast.Name)}
+    return _variable_names(tree)
 
 
 def eval_expr(expr: str, ctx: dict[str, Any]) -> tuple[Optional[bool], set[str]]:
@@ -167,7 +182,7 @@ def eval_expr(expr: str, ctx: dict[str, Any]) -> tuple[Optional[bool], set[str]]
         tree = ast.parse(expr, mode="eval")
     except SyntaxError:
         return None, set()
-    names = {n.id for n in ast.walk(tree) if isinstance(n, ast.Name)}
+    names = _variable_names(tree)  # excludes the true/false boolean literals
     for node in ast.walk(tree):
         if not isinstance(node, _ALLOWED_NODES):
             return None, names  # unknown construct → unevaluable
@@ -178,6 +193,10 @@ def eval_expr(expr: str, ctx: dict[str, Any]) -> tuple[Optional[bool], set[str]]
         if isinstance(node, ast.Constant):
             return node.value
         if isinstance(node, ast.Name):
+            # Bare true/false are boolean keyword literals in the flow grammar, not
+            # variables — resolve them to Python bools before any ctx lookup.
+            if node.id in _BOOL_LITERALS:
+                return _BOOL_LITERALS[node.id]
             # Missing variable resolves to its declared initial via ctx; ctx is
             # seeded with initials by the caller, so a truly-unknown name is "".
             return ctx.get(node.id, "")
@@ -507,14 +526,31 @@ def _compliance_findings(
     disclosure_states = set(spec.get("disclosure_states") or [])
     forbidden = [w.lower() for w in (spec.get("forbidden_substrings_lower") or [])]
 
-    # The seq at which the gate first opened (verify-state entered OR gate var set).
+    # The seq at which the gate first opened — i.e. when identity became ACTUALLY
+    # verified. When a ``gate_variable`` is declared it is authoritative: the gate
+    # opens exactly at the ``var_set`` that makes it truthy (equivalently, at the
+    # ``mark_verified`` entry that sets it). We do NOT open the gate merely because
+    # an in-progress verify state was entered — the START state is itself a verify
+    # state (e.g. ``confirm_party`` at seq ~0), and treating its entry as "verified"
+    # would open the gate at turn 0 and mask every real pre-verification disclosure.
+    # ``verify_states`` is used as a gate-opener ONLY as a fallback when no
+    # ``gate_variable`` is declared (in which case the spec must list only the
+    # terminal verified-marking state, never an in-progress one).
     gate_seq: Optional[int] = None
-    for s in steps:
-        if s.get("kind") == "state_enter" and s.get("state") in verify_states:
-            gate_seq = s.get("seq"); break
-        if (gate_var and s.get("kind") == "var_set" and s.get("key") == gate_var
-                and _truthy(s.get("value"))):
-            gate_seq = s.get("seq"); break
+    if gate_var:
+        # Authoritative path: the gate opens exactly when the gate variable is set
+        # truthy — nothing else. (An in-progress verify state entry never counts.)
+        for s in steps:
+            if (s.get("kind") == "var_set" and s.get("key") == gate_var
+                    and _truthy(s.get("value"))):
+                gate_seq = s.get("seq"); break
+    else:
+        # No gate variable declared: fall back to verify-state entry. The spec must
+        # then list ONLY the terminal verified-marking state, never a start/in-
+        # progress verify state, or the gate would open at turn 0.
+        for s in steps:
+            if s.get("kind") == "state_enter" and s.get("state") in verify_states:
+                gate_seq = s.get("seq"); break
 
     # Disclosure STATE entered before the gate opened.
     for s in steps:
