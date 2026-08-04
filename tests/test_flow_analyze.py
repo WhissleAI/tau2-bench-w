@@ -148,3 +148,88 @@ def test_post_verify_disclosure_is_clean():
         transcript_lower="your balance is $200.")
     assert not [f for f in findings if f.type == "compliance"], \
         [f.as_dict() for f in findings if f.type == "compliance"]
+
+
+# ── BUG 3 — tool leaks must be judged against the LIVE (call-time) gate ──────────
+#
+# The engine emits a state's ``tools_gated`` when it ENTERS that state — which for
+# the state the model spends turn N in lands at the tail of turn N-1. During turn N
+# the model invokes a tool of that state, THEN a transition fires and the engine
+# emits the NEXT state's gate under turn N's own number. Judging the tool against
+# that post-transition (neighboring-state) gate is an off-by-one that flags every
+# legitimate adjacent-state tool as a "leak". The analyzer must instead pin the tool
+# to the gate that was live BEFORE turn N's boundary transition.
+
+def _tool_flow():
+    return {
+        "start_state": "greet",
+        "states": [
+            {"id": "greet", "type": "collect"},
+            {"id": "book", "type": "action"},
+            {"id": "done", "type": "end"},
+        ],
+        "transitions": [
+            {"id": "t_book", "from": "greet", "to": "book", "kind": "always"},
+            {"id": "t_end", "from": "book", "to": "done", "kind": "always"},
+        ],
+        "variables": [],
+        "settings": {},
+    }
+
+
+# The real-trace layout that produced the false leaks: the gate for the state the
+# model is in (``greet`` → ``check_availability``) is emitted at the tail of the
+# PRIOR turn (turn 1); the tool runs in turn 2; then the transition to ``book`` fires
+# and ``book``'s gate (``create_booking``) is emitted under turn 2. Under the old
+# per-turn union, turn 2's only gate is ``book``'s → the ``greet`` tool false-leaks.
+def _adjacent_state_steps():
+    return [
+        {"seq": 0, "turn": 1, "kind": "state_enter", "state": "greet"},
+        {"seq": 1, "turn": 1, "kind": "tools_gated", "state": "greet",
+         "allowed": ["check_availability"]},
+        # turn 2: model (still in greet) calls check_availability, THEN advances.
+        {"seq": 2, "turn": 2, "kind": "transition_check", "transition_id": "t_book",
+         "from": "greet", "result": "fired"},
+        {"seq": 3, "turn": 2, "kind": "state_enter", "state": "book"},
+        {"seq": 4, "turn": 2, "kind": "tools_gated", "state": "book",
+         "allowed": ["create_booking"]},
+    ]
+
+
+def test_adjacent_state_tool_is_not_a_leak():
+    """A tool of the state the model was actually in (whose gate was emitted the
+    prior turn) must NOT leak, even though the flow advanced to a neighboring state
+    within the same turn and that state's gate is the only one tagged with the turn."""
+    findings = analyze_session(
+        _tool_flow(), _adjacent_state_steps(),
+        tools_used_by_turn={2: ["check_availability"]})
+    leaks = [f for f in findings if f.type == "tool_leakage"]
+    assert leaks == [], [f.as_dict() for f in leaks]
+
+
+def test_genuine_out_of_gate_tool_still_leaks():
+    """A tool offered by NEITHER the live gate nor any prior gate is a real leak."""
+    findings = analyze_session(
+        _tool_flow(), _adjacent_state_steps(),
+        tools_used_by_turn={2: ["issue_refund"]})
+    leaks = [f for f in findings if f.type == "tool_leakage"]
+    assert len(leaks) == 1, [f.as_dict() for f in findings]
+    assert "issue_refund" in leaks[0].detail
+    # It is judged against the LIVE gate (greet's), not the advanced-into book gate.
+    assert leaks[0].evidence["live_allowed"] == ["check_availability"]
+
+
+def test_no_gate_before_call_is_not_judged():
+    """If no tools_gated was ever in effect before the turn's boundary, the analyzer
+    cannot judge the call and must stay silent (no false positive)."""
+    steps = [
+        {"seq": 0, "turn": 1, "kind": "transition_check", "transition_id": "t_book",
+         "from": "greet", "result": "fired"},
+        {"seq": 1, "turn": 1, "kind": "state_enter", "state": "book"},
+        {"seq": 2, "turn": 1, "kind": "tools_gated", "state": "book",
+         "allowed": ["create_booking"]},
+    ]
+    findings = analyze_session(
+        _tool_flow(), steps, tools_used_by_turn={1: ["check_availability"]})
+    assert not [f for f in findings if f.type == "tool_leakage"], \
+        [f.as_dict() for f in findings if f.type == "tool_leakage"]

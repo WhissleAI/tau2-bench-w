@@ -22,8 +22,10 @@ engine can exhibit:
                        the gate opened without its variable set.
   guard_violation      max_visits_per_state / max_transitions_per_call exceeded with
                        no guard_trip; or a guard_trip not handled per on_guard_trip.
-  tool_leakage         a tool was invoked in a turn whose active state did not admit
-                       it (the engine's own tools_gated ``allowed`` set excludes it).
+  tool_leakage         a tool was invoked that the gate LIVE when the model produced
+                       the turn did not admit (the ``tools_gated`` set in effect
+                       before that turn's boundary transition excludes it) — judged
+                       against the live gate, never the state advanced into afterward.
   variable_desync      an expression / var_set references a variable never declared
                        in flow.variables.
   termination          never reached an end within the cap (stuck / loop), OR ended
@@ -396,23 +398,74 @@ def analyze_session(
                                   "ever_set": sorted(ever_set)})
 
     # ── tool_leakage ──────────────────────────────────────────────────────────
-    # For each turn, the engine's own tools_gated `allowed` sets define what may run.
+    # Attribute each tool call to the gate that was LIVE when the model produced
+    # the turn — the ``tools_gated`` set in effect BEFORE this turn's turn-boundary
+    # transition eval — NOT the state the flow advanced into afterward.
+    #
+    # Why this matters: the engine emits a state's ``tools_gated`` when it ENTERS
+    # that state, which for the state the model spends turn N in typically lands at
+    # the END of turn N-1. During turn N the model (correctly) invokes a tool of
+    # that state, THEN a transition fires and the engine emits the NEXT state's gate
+    # under turn N's own number. Unioning / last-writer over a turn therefore judges
+    # the tool against the neighboring (post-transition) state's gate — an off-by-one
+    # that reports every legitimate tool of the state the model was actually in as a
+    # "leak" (confirmed on the customer_support re-run: every leaked tool was a real
+    # tool of an adjacent state and every "allowed" set was a neighboring-state gate).
+    #
+    # Fix: walk the whole trace in seq order and, for each turn that used tools, pin
+    # the live gate to the ``tools_gated`` whose seq is greatest among those emitted
+    # BEFORE that turn's first ``transition_check`` (the post-output, turn-boundary
+    # eval). That is the gate the model saw at call-time regardless of whether it was
+    # emitted at the tail of the prior turn or the head of this one. A tool leaks only
+    # if it is absent from that live set — killing the adjacent-state false positives
+    # while still surfacing a tool the live gate never offered.
+    #
+    # LIMITATION: the trace records ``tools_used`` as a flat per-turn list with no
+    # per-call seq, so a single tool call cannot be pinned to an exact trace position.
+    # If one turn legitimately advances state mid-turn and uses tools under two
+    # different gates, all of that turn's tools are judged against the turn-start
+    # (live-at-production) gate. This is the best correct approximation until the
+    # trace sequences individual tool calls against ``tools_gated``; it never invents
+    # a leak for an adjacent-state tool and still catches a genuinely un-offered one.
     if tools_used_by_turn:
-        allowed_by_turn: dict[int, set[str]] = {}
+        gated = sorted(
+            ((s.get("seq", 0), set(s.get("allowed") or []))
+             for s in steps if s.get("kind") == "tools_gated"),
+            key=lambda g: g[0])
+        # Per turn: seq of its first transition_check (the boundary the model's tool
+        # calls precede) and the seq of its last step (fallback when it never
+        # evaluated a transition, i.e. nothing advanced within the turn).
+        first_check_seq: dict[Any, int] = {}
+        last_step_seq: dict[Any, int] = {}
         for s in steps:
-            if s.get("kind") == "tools_gated":
-                allowed_by_turn.setdefault(s.get("turn"), set()).update(
-                    s.get("allowed") or [])
+            turn = s.get("turn")
+            seq = s.get("seq", 0)
+            if seq > last_step_seq.get(turn, seq - 1):
+                last_step_seq[turn] = seq
+            if s.get("kind") == "transition_check":
+                if turn not in first_check_seq or seq < first_check_seq[turn]:
+                    first_check_seq[turn] = seq
         for turn, used in tools_used_by_turn.items():
-            allowed = allowed_by_turn.get(turn)
-            if allowed is None:
-                continue  # no gating record for this turn — cannot judge
+            cut = first_check_seq.get(turn)
+            if cut is None:
+                # No within-turn transition → nothing advanced; admit anything gated
+                # through the end of the turn (no adjacent-state ambiguity to resolve).
+                end = last_step_seq.get(turn)
+                cut = (end + 1) if end is not None else None
+            live: Optional[set[str]] = None
+            for gseq, allowed in gated:
+                if cut is not None and gseq >= cut:
+                    break
+                live = allowed  # greatest-seq gate strictly before the boundary
+            if live is None:
+                continue  # no gate in effect at call-time — cannot judge
             for tool in used:
-                if tool not in allowed:
+                if tool not in live:
                     add("tool_leakage",
-                        f"tool {tool!r} was invoked on turn {turn} but the active "
-                        f"state's gate admitted only {sorted(allowed)}.",
-                        evidence={"turn": turn, "tool": tool, "allowed": sorted(allowed)})
+                        f"tool {tool!r} was invoked on turn {turn} but the gate live "
+                        f"when the model produced the turn admitted only {sorted(live)}.",
+                        evidence={"turn": turn, "tool": tool,
+                                  "live_allowed": sorted(live)})
 
     # ── say_fidelity ──────────────────────────────────────────────────────────
     emitted_by_state: dict[str, list[str]] = {}
