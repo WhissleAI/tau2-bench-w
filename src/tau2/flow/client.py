@@ -148,10 +148,16 @@ class FlowClient:
     # ── driving a conversation ───────────────────────────────────────────────
 
     def turn(self, agent_id: str, message: str,
-             conversation_id: Optional[str] = None) -> TurnResult:
+             conversation_id: Optional[str] = None,
+             customer_id: Optional[str] = None) -> TurnResult:
         body: dict[str, Any] = {"message": message}
         if conversation_id:
             body["conversation_id"] = conversation_id
+        # Bind the seeded contact so verify_identity / lookup tools have a record to
+        # match — the text-channel equivalent of a voice call's calls.customer_id.
+        # Omitted → the backend leaves ToolContext.customer None (unchanged).
+        if customer_id:
+            body["customer_id"] = customer_id
         d = self._req(
             "POST", f"/api/agents/{agent_id}/chat/turn", json=body, action="turn",
         ).json()
