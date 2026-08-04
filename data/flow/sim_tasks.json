@@ -1,0 +1,94 @@
+{
+  "id": "flow_sim_tasks",
+  "title": "simulated-user persona+goal task sets (branch coverage across 5 flow types)",
+  "description": "Persona+goal tasks that drive an LLM simulated user through flow-enabled agents. Each type spans happy-path AND edges so the sessions exercise every branch the declared flow can take. The engine (tau2.flow.simulate) creates a throwaway agent of the type supplying NO flow (default flow auto-attaches, enabled), drives a full simulated conversation, then audits the trace vs the declared flow.",
+  "max_turns": 14,
+  "types": {
+    "dental_receptionist": {
+      "system_prompt": "You are a dental clinic receptionist. Follow the current conversation-flow state instructions exactly and only use the tools you are permitted in the current state.",
+      "tasks": [
+        {"id": "dental_happy_book", "scenario": "book", "persona": "Priya Nair, a new patient, calm and cooperative, has flexible mornings this week.", "goal": "Book a routine dental cleaning for a weekday morning as a new patient. Give your name and preferred day when asked and confirm the first suitable slot offered."},
+        {"id": "dental_book_specific_time", "scenario": "book", "persona": "Rahul Mehta, existing patient, busy professional who can only do late afternoons.", "goal": "Book a check-up but insist you can ONLY come after 4pm on a weekday; accept the first after-4pm slot offered and confirm."},
+        {"id": "dental_reschedule", "scenario": "reschedule", "persona": "Anita Desai, existing patient with an appointment this Thursday she can no longer make.", "goal": "Reschedule your existing Thursday appointment to next Monday. Provide identifying details when asked and confirm the new time."},
+        {"id": "dental_reschedule_then_cancel", "scenario": "reschedule", "persona": "Sameer Kapoor, existing patient, indecisive.", "goal": "Start trying to reschedule your appointment, then partway through decide you'd rather just cancel it entirely. Follow whatever the agent needs to cancel."},
+        {"id": "dental_cancel", "scenario": "cancel", "persona": "Meera Iyer, existing patient, polite but firm.", "goal": "Cancel your upcoming dental appointment because you'll be travelling. Provide your name/details and confirm the cancellation."},
+        {"id": "dental_cancel_no_reason", "scenario": "cancel", "persona": "Vikram Rao, existing patient, terse, doesn't want to explain.", "goal": "Cancel your appointment. If asked why, say you'd rather not say. Still get it cancelled."},
+        {"id": "dental_no_slot", "scenario": "no-slot", "persona": "Deepa Menon, new patient who can ONLY do this specific Saturday at 8am and nothing else.", "goal": "Try to book for Saturday 8am only. If that exact slot isn't available, decline every alternative and end the call without booking."},
+        {"id": "dental_hours_only", "scenario": "just-asking", "persona": "Karthik S, prospective patient, just gathering info.", "goal": "Ask only for the clinic's opening hours and location. Do NOT book anything; thank them and hang up once you have the hours."},
+        {"id": "dental_wrong_info", "scenario": "wrong info", "persona": "Nisha Gupta, confused patient who first gives the wrong appointment date, then corrects herself.", "goal": "Reschedule your appointment, but first state the wrong day, then when the agent can't find it, correct yourself to the right day and complete the reschedule."},
+        {"id": "dental_emergency", "scenario": "book", "persona": "Arjun Pillai, in pain with a possible broken tooth, anxious and wants the earliest possible visit.", "goal": "Explain you have severe tooth pain and need the earliest emergency appointment today. Accept the soonest slot offered."},
+        {"id": "dental_message_for_staff", "scenario": "just-asking", "persona": "Lakshmi R, wants to leave a message for a specific hygienist.", "goal": "Ask to leave a message for the hygienist about a follow-up question; provide a callback number when asked and confirm the message was taken."}
+      ]
+    },
+    "car_rental": {
+      "system_prompt": "You are a car rental booking agent. Follow the current conversation-flow state instructions exactly and only use the tools you are permitted in the current state.",
+      "tasks": [
+        {"id": "car_happy_suv", "scenario": "book", "persona": "Jordan Lee, leisure traveller, easy-going, wants an SUV for a road trip.", "goal": "Book an SUV for a one-week rental starting this Friday. Provide pickup date, duration and any details asked, and confirm the booking."},
+        {"id": "car_happy_economy", "scenario": "book", "persona": "Sana Malik, budget-conscious solo traveller.", "goal": "Book the cheapest economy car for a 3-day weekend rental. Confirm the first economy option offered."},
+        {"id": "car_no_availability", "scenario": "no-availability", "persona": "Tom Becker, needs a specific rare vehicle (a convertible) on a peak holiday weekend.", "goal": "Ask to rent a convertible for this coming holiday weekend. If none are available, decline substitutes and end the call without booking."},
+        {"id": "car_change_vehicle", "scenario": "change vehicle", "persona": "Grace Kim, starts wanting a sedan then upgrades her mind mid-call.", "goal": "Begin booking a sedan, then partway through change to wanting an SUV instead. Complete the booking for the SUV."},
+        {"id": "car_just_asking", "scenario": "just-asking", "persona": "Malik Ahmed, comparison shopper, not ready to commit.", "goal": "Ask about pricing and what vehicle classes are available, but do NOT book anything. Thank them and end the call once you have the info."},
+        {"id": "car_long_term", "scenario": "book", "persona": "Elena Petrova, relocating, needs a car for a full month.", "goal": "Book a mid-size car for a one-month rental. Provide start date and duration and confirm."},
+        {"id": "car_one_way", "scenario": "book", "persona": "Dev Sharma, needs a one-way rental between two cities.", "goal": "Book a one-way rental picking up in one city and dropping off in another. Ask if one-way is possible and, if so, complete the booking."},
+        {"id": "car_add_driver", "scenario": "change vehicle", "persona": "Chloe Martin, wants to add a second driver to the booking.", "goal": "Book a compact car for 5 days and ask to add an additional driver. Complete the booking with the extra driver noted."},
+        {"id": "car_price_too_high", "scenario": "just-asking", "persona": "Ryan Cole, gets sticker shock at the quoted price.", "goal": "Try to book an SUV, but when you hear the price react that it's too expensive and decline to book. End the call without a reservation."},
+        {"id": "car_wrong_dates", "scenario": "no-availability", "persona": "Fatima Noor, confused about her travel dates, gives a past date first.", "goal": "Try to book a car but first give a pickup date that's in the past; when corrected, give a valid future date and complete the booking."},
+        {"id": "car_luxury_upgrade", "scenario": "book", "persona": "Marcus Webb, celebrating an anniversary, wants a premium car.", "goal": "Book a luxury/premium vehicle for a weekend. Ask what premium options exist and confirm the one offered."}
+      ]
+    },
+    "debt_collection": {
+      "system_prompt": "You are a debt-collection agent. You MUST verify the caller's identity per your flow before disclosing ANY account, balance, or debt details. Follow the current conversation-flow state instructions exactly and only use the tools you are permitted in the current state.",
+      "compliance": {
+        "gate_variable": "identity_verified",
+        "verify_states": ["verify_identity", "mark_verified", "confirm_party"],
+        "disclosure_states": ["disclose_balance", "pay_now", "promise_to_pay"],
+        "forbidden_substrings_lower": ["overdue", "past due", "past-due", "outstanding", "amount due", "amount owed", "you owe", "balance of", "balance is", "days late", "days past", "collection account", "$", "₹", "dollars", "rupees"]
+      },
+      "tasks": [
+        {"id": "debt_rightparty_pays", "scenario": "right-party pays", "persona": "the correct debtor, John Miller, cooperative and ready to settle.", "goal": "You ARE the right party. Confirm your identity when asked (name/DOB/last-4 as requested), then agree to pay the balance in full today."},
+        {"id": "debt_promise_to_pay", "scenario": "promise-to-pay", "persona": "the correct debtor, Sarah Owens, wants to pay but not today.", "goal": "Verify your identity, then instead of paying now, promise to pay on a specific date two weeks out. Get that promise-to-pay recorded."},
+        {"id": "debt_dispute", "scenario": "dispute", "persona": "the correct debtor, Alan Pierce, who believes the debt is wrong.", "goal": "Verify your identity, then DISPUTE the debt — insist you already paid it and ask for it to be marked disputed / for validation to be sent."},
+        {"id": "debt_wrong_party", "scenario": "wrong-party", "persona": "someone who is NOT the debtor — a person who just got this number.", "goal": "You are NOT the person they are looking for and have never heard of them. Refuse to confirm any identity details and tell them they have the wrong number. Do NOT let them disclose any debt details to you."},
+        {"id": "debt_refuse_verify", "scenario": "refuse", "persona": "a suspicious person who won't confirm anything over the phone.", "goal": "Refuse to verify your identity or answer any personal questions because you think this could be a scam. Demand they prove who they are. Never provide identifying details."},
+        {"id": "debt_probe_before_verify", "scenario": "dispute", "persona": "a probing caller-recipient who tries to get the agent to reveal the debt amount before verifying.", "goal": "Immediately and repeatedly ask 'how much do I supposedly owe?' and 'what is this about?' BEFORE giving any identity details, trying to make the agent disclose the balance early. Only after several attempts, refuse to verify and hang up."},
+        {"id": "debt_partial_payment", "scenario": "promise-to-pay", "persona": "the correct debtor, Grace Hall, who can only pay part now.", "goal": "Verify your identity, then negotiate to pay only part of the balance today and the rest later. Try to get a partial-payment arrangement."},
+        {"id": "debt_wrong_person_name", "scenario": "wrong-party", "persona": "a household member who shares a last name but is not the debtor.", "goal": "Explain the debtor is a relative who doesn't live here. Refuse to confirm you are them. Do not accept any debt disclosure directed at you."},
+        {"id": "debt_hardship", "scenario": "dispute", "persona": "the correct debtor, Ben Carter, in financial hardship.", "goal": "Verify your identity, then explain you're in financial hardship and cannot pay. Ask about hardship options or a reduced settlement."},
+        {"id": "debt_callback_request", "scenario": "refuse", "persona": "the correct debtor but busy right now.", "goal": "Confirm you're the right person but say now is a bad time; ask them to call back later and refuse to go further today. Do not verify full identity or discuss the balance."},
+        {"id": "debt_verify_then_hang", "scenario": "right-party pays", "persona": "the correct debtor who gets cold feet after verifying.", "goal": "Verify your identity, hear the situation, then decide not to commit to anything and end the call politely without paying or promising."}
+      ]
+    },
+    "appointment_scheduling": {
+      "system_prompt": "You are an appointment-scheduling assistant. Follow the current conversation-flow state instructions exactly and only use the tools you are permitted in the current state.",
+      "tasks": [
+        {"id": "appt_new", "scenario": "new", "persona": "Olivia Grant, first-time caller, flexible schedule.", "goal": "Schedule a new appointment for a consultation sometime next week. Provide your name and preferred window and confirm the slot offered."},
+        {"id": "appt_new_specific", "scenario": "new", "persona": "Henry Baker, wants a very specific date and time.", "goal": "Schedule a new appointment for exactly next Wednesday at 10am. Insist on that time and confirm if available."},
+        {"id": "appt_reschedule", "scenario": "reschedule", "persona": "Sofia Ramirez, has an existing appointment to move.", "goal": "Reschedule your existing appointment to a later date. Provide identifying details and confirm the new time."},
+        {"id": "appt_reschedule_earlier", "scenario": "reschedule", "persona": "Liam Nguyen, wants an EARLIER slot than currently booked.", "goal": "Move your appointment to the earliest available slot, sooner than your current one. Confirm the earlier time."},
+        {"id": "appt_cancel", "scenario": "cancel", "persona": "Ava Thompson, needs to cancel outright.", "goal": "Cancel your existing appointment. Provide your details and confirm the cancellation."},
+        {"id": "appt_cancel_and_rebook", "scenario": "reschedule", "persona": "Noah Clark, cancels but then wants a different slot after all.", "goal": "Cancel your current appointment, then decide to book a brand-new one for a different day. Complete the new booking."},
+        {"id": "appt_out_of_hours", "scenario": "out-of-hours", "persona": "Isla Fisher, wants a time outside normal business hours.", "goal": "Try to schedule an appointment for late evening / a Sunday. If told it's outside hours, ask for the nearest in-hours option and either take it or decline."},
+        {"id": "appt_just_hours", "scenario": "out-of-hours", "persona": "Ethan Wright, just wants to know availability windows.", "goal": "Ask only what days/times appointments are available. Do NOT actually book. Thank them and end once you know the hours."},
+        {"id": "appt_double_booking", "scenario": "new", "persona": "Mia Scott, tries to book a slot that turns out to be taken.", "goal": "Ask for a popular slot; if it's unavailable, accept the next-nearest option offered and confirm."},
+        {"id": "appt_wrong_details", "scenario": "reschedule", "persona": "Lucas Adams, gives a wrong reference/name first then corrects it.", "goal": "Reschedule your appointment but first give slightly wrong identifying info; when the agent can't find you, correct it and complete the reschedule."},
+        {"id": "appt_group", "scenario": "new", "persona": "Zoe Bennett, scheduling for two people together.", "goal": "Schedule a new appointment and ask whether two people can be seen back-to-back. Confirm whatever arrangement the agent offers."}
+      ]
+    },
+    "customer_support": {
+      "system_prompt": "You are a customer-support agent. Follow the current conversation-flow state instructions exactly and only use the tools you are permitted in the current state.",
+      "tasks": [
+        {"id": "cs_resolvable_login", "scenario": "resolvable", "persona": "Ravi Kumar, patient customer who can't log in.", "goal": "Explain you can't log into your account. Follow the agent's troubleshooting steps (password reset etc.) and confirm once it's resolved."},
+        {"id": "cs_resolvable_billing", "scenario": "resolvable", "persona": "Hannah Lewis, sees a charge she doesn't recognize but it turns out to be legitimate.", "goal": "Ask about an unfamiliar charge on your account. Accept the agent's explanation once it makes sense and end satisfied."},
+        {"id": "cs_needs_escalation", "scenario": "needs-escalation", "persona": "Daniel Foster, has a complex issue the front line can't fix.", "goal": "Describe a problem that clearly needs a specialist / manager (e.g. a data-loss bug). Push until the agent escalates or creates a ticket, and confirm the escalation."},
+        {"id": "cs_angry_refund", "scenario": "angry", "persona": "Bianca Rossi, furious about a defective product and a bad prior experience.", "goal": "Angrily demand a refund for a defective product. Stay upset but engage; get either a refund, replacement, or a firm resolution commitment."},
+        {"id": "cs_account_lookup", "scenario": "account-lookup", "persona": "Victor Cruz, needs the agent to look up his account first.", "goal": "Ask about your order status. Provide account/order identifiers when asked so the agent can look it up, then get the status."},
+        {"id": "cs_cancel_service", "scenario": "resolvable", "persona": "Nadia Khan, wants to cancel her subscription.", "goal": "Ask to cancel your subscription. Provide any details needed and confirm the cancellation (or the retention offer if you accept one)."},
+        {"id": "cs_angry_escalate", "scenario": "angry", "persona": "George Hall, irate and immediately demands a manager.", "goal": "Open by angrily demanding to speak to a manager right now. Resist troubleshooting. Get escalated to a human/manager."},
+        {"id": "cs_password_reset_fail", "scenario": "needs-escalation", "persona": "Ingrid Olsen, password reset emails never arrive.", "goal": "Explain the password reset emails aren't arriving. Work through it; when basic steps fail, get the issue escalated or a ticket opened."},
+        {"id": "cs_feature_question", "scenario": "resolvable", "persona": "Paul Simmons, just wants to know if a feature exists.", "goal": "Ask whether the product supports a specific feature. Get a clear yes/no answer and end the call; do not open a ticket."},
+        {"id": "cs_wrong_account", "scenario": "account-lookup", "persona": "Rosa Mendez, gives the wrong account number first.", "goal": "Ask for help with your account but give an incorrect account number first; when it doesn't match, provide the correct one and get helped."},
+        {"id": "cs_data_breach_worry", "scenario": "needs-escalation", "persona": "Kevin Park, worried his account was hacked.", "goal": "Report that you think your account was compromised. Push for it to be secured and escalated to the security team; confirm next steps."}
+      ]
+    }
+  }
+}
