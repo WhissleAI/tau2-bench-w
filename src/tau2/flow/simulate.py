@@ -44,10 +44,15 @@ from rich.console import Console
 from typer import Option, Typer
 
 from tau2.flow.analyze import Finding, analyze_session, coverage_findings
-from tau2.flow.client import FlowClient, FlowClientError, TurnResult
+from tau2.flow.client import FlowClient, FlowClientError
 from tau2.flow.usersim import (
-    Task, UserSimulator, WhissleModel, judge_goal_drift, judge_task_success,
+    Task,
+    UserSimulator,
+    WhissleModel,
+    judge_goal_drift,
+    judge_task_success,
 )
+from tau2.flow.voice_transport import VoiceTransport
 
 app = Typer(add_completion=False)
 console = Console()
@@ -110,10 +115,24 @@ def _tool_calls_from_reply(reply: str) -> list[str]:
 
 def run_session(
     client: FlowClient, model: WhissleModel, task: Task, system_prompt: str, *,
-    semantic: bool = True, keep_agent: bool = False,
+    semantic: bool = True, keep_agent: bool = False, mode: str = "text",
 ) -> dict[str, Any]:
     """Create the agent, drive a full simulated conversation, analyze, ALWAYS clean
-    up. Returns a JSON-serializable session result (also written to disk)."""
+    up. Returns a JSON-serializable session result (also written to disk).
+
+    ``mode`` selects the TRANSPORT the conversation is driven over:
+      * ``"text"`` — ``POST /chat/turn`` (deterministic; full retrievable step-trace).
+      * ``"voice"`` — the real voice pipeline over LiveKit (STT→flow-brain→TTS), via
+        :class:`VoiceTransport`. Same user-sim + judges; the agent's spoken transcript
+        (RTVI ``bot-transcription``) is the scored text. The flow runs but its
+        step-trace is not persisted for voice today, so the deterministic state-trace
+        analyzer degrades to a typed ``voice_trace_unavailable`` finding and duplex
+        audio (caller/bot/mix WAVs) is captured as evidence. See WHISSLE_VOICE_TESTING.md."""
+    voice = mode == "voice"
+    if voice:
+        # No per-turn flow state is exposed over voice, so the goal-drift judge (which
+        # grades against the active state's goal) has nothing to key on — disable it.
+        semantic = False
     ts = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     out_dir = RESULTS_ROOT / task.agent_type
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -133,6 +152,9 @@ def run_session(
     setup_error: Optional[str] = None
     ended = False
     drift_flags: list[dict] = []
+    vt: Optional[VoiceTransport] = None
+    greeting: str = ""
+    audio_evidence: dict[str, Any] = {}
 
     _emit({"event": "session_start", "task_id": task.id, "agent_type": task.agent_type,
            "scenario": task.scenario, "persona": task.persona, "goal": task.goal, "ts": ts})
@@ -155,11 +177,23 @@ def run_session(
                "num_states": len(flow_spec.get("states") or []),
                "num_transitions": len(flow_spec.get("transitions") or [])})
 
+        # VOICE transport: open the real spoken session AFTER the flow is attached, so
+        # the pipeline builds the FlowController. The agent greets first (a real
+        # answered call); that greeting is the first thing the caller reacts to.
+        if voice:
+            vt = VoiceTransport(agent_id)
+            greeting = vt.start()
+            _emit({"event": "voice_session", "room": vt.room, "greeting": greeting})
+
         sim = UserSimulator(task=task, model=model)
         user_msg = sim.first_utterance()
 
         for i in range(1, task.max_turns + 1):
-            res: TurnResult = client.turn(agent_id, user_msg, conversation_id=conv_id)
+            if voice:
+                assert vt is not None
+                res = vt.turn(user_msg, conversation_id=conv_id)
+            else:
+                res = client.turn(agent_id, user_msg, conversation_id=conv_id)
             conv_id = res.conversation_id or conv_id
             ended = bool(res.raw.get("ended"))
             eng_turn = _engine_turn_of(res.steps)
@@ -194,13 +228,27 @@ def run_session(
             _emit({"event": "conversation_end", "reason": "turn_cap",
                    "turn": task.max_turns})
 
-        # Full accumulated trace (authoritative for the analyzer).
-        if agent_id and conv_id:
+        # Full accumulated trace (authoritative for the analyzer). Text-only: the
+        # voice pipeline runs the flow but does not persist its step-trace (no
+        # conversations row / persist_fn), so there is nothing to GET for a voice
+        # room — full_steps stays [] and the analyzer degrades honestly below.
+        if agent_id and conv_id and not voice:
             try:
                 tr = client.get_trace(agent_id, conv_id)
                 full_steps = list((tr or {}).get("steps") or [])
             except FlowClientError as e:
                 _emit({"event": "trace_fetch_failed", "detail": str(e)})
+
+        # Voice: capture the duplex audio (real spoken-session evidence) + re-ASR.
+        if voice and vt is not None:
+            try:
+                prefix = str((out_dir / f"{task.id}_{ts}").resolve())
+                audio_evidence = vt.finish(prefix, transcribe=True)
+                _emit({"event": "voice_audio", **{k: v for k, v in audio_evidence.items()
+                                                  if k in ("bot", "caller", "mix",
+                                                           "latencies_ms", "bot_reasr")}})
+            except Exception as e:  # noqa: BLE001
+                _emit({"event": "voice_audio_failed", "detail": str(e)})
 
     except FlowClientError as e:
         setup_error = str(e)
@@ -216,7 +264,7 @@ def run_session(
     full_steps = sorted(full_steps, key=lambda s: s.get("seq", 0))
 
     # ── judges + analyze ─────────────────────────────────────────────────────
-    transcript = _render_transcript(turns)
+    transcript = _render_transcript(turns, greeting=greeting)
     success = {"success": None, "reason": "not run"}
     if agent_id and turns and not setup_error:
         success = judge_task_success(model, task, transcript)
@@ -226,6 +274,21 @@ def run_session(
     if setup_error:
         findings.append(Finding("stuck_termination", "high",
                                 f"session failed to run: {setup_error}"))
+    elif voice and not full_steps:
+        # Voice ran the flow over the real STT→brain→TTS pipeline, but the backend
+        # does not persist a voice flow step-trace, so the deterministic state-trace
+        # analyzer has nothing to audit. This is a KNOWN transport gap, not a product
+        # bug — flagged as info, not a false stuck_termination. Task-success (from the
+        # spoken transcript), per-turn latency, and duplex audio still apply. The
+        # moment the backend persists the voice trace, full_steps is non-empty and the
+        # unchanged analyzer runs on it via the branch below. See WHISSLE_VOICE_TESTING.md.
+        findings.append(Finding(
+            "voice_trace_unavailable", "info",
+            "voice session ran the flow over the real voice pipeline, but no voice "
+            "flow step-trace is persisted by the backend, so the deterministic "
+            "state-trace analyzer was skipped (transcript task-success still ran).",
+            evidence={"room": vt.room if vt else None, "turns": len(turns),
+                      "latencies_ms": audio_evidence.get("latencies_ms", [])}))
     elif flow_spec:
         findings = analyze_session(
             flow_spec, full_steps,
@@ -241,6 +304,13 @@ def run_session(
 
     for f in findings:
         _emit({"event": "finding", **f.as_dict()})
+
+    # Tear down the live voice room before deleting the agent.
+    if vt is not None:
+        try:
+            vt.stop()
+        except Exception as e:  # noqa: BLE001
+            _emit({"event": "voice_stop_failed", "detail": str(e)})
 
     # ── teardown — NEVER leave a throwaway agent behind ──────────────────────
     deleted = False
@@ -258,6 +328,10 @@ def run_session(
         "task_id": task.id, "agent_type": task.agent_type, "scenario": task.scenario,
         "ts": ts, "agent_id": agent_id, "agent_deleted": deleted or keep_agent,
         "conversation_id": conv_id,
+        "mode": mode,
+        "voice_room": (vt.room if vt else None) if voice else None,
+        "greeting": greeting or None,
+        "audio": audio_evidence or None,
         "num_turns": len(turns), "ended": ended,
         "start_state": flow_spec.get("start_state"),
         "final_state": turns[-1]["current_state"] if turns else None,
@@ -290,8 +364,10 @@ def run_session(
     return result
 
 
-def _render_transcript(turns: list[dict]) -> str:
+def _render_transcript(turns: list[dict], greeting: str = "") -> str:
     lines = []
+    if greeting:
+        lines.append(f"AGENT: {greeting}")  # voice: the agent answers/greets first
     for t in turns:
         lines.append(f"USER: {t['user_msg']}")
         lines.append(f"AGENT: {t['agent_reply']}")
@@ -454,14 +530,20 @@ def run(
     semantic: bool = Option(True, help="run the per-turn goal-drift LLM judge"),
     keep_agent: bool = Option(False, help="do NOT delete the throwaway agents (debug)"),
     max_turns: Optional[int] = Option(None, help="override the per-session turn cap"),
+    mode: str = Option(
+        "text", help="transport: 'text' (deterministic /chat/turn) or 'voice' (the "
+        "real STT→brain→TTS pipeline over LiveKit — see WHISSLE_VOICE_TESTING.md)"),
 ) -> None:
     """Run simulated-user sessions for one agent type against the LIVE backend."""
+    if mode not in ("text", "voice"):
+        console.print(f"[red]--mode must be 'text' or 'voice', got {mode!r}[/red]")
+        raise SystemExit(2)
     client = FlowClient()
     model = WhissleModel()
     who = client.whoami()
     console.print(
         f"[bold]flow-sim[/bold]  org={who.get('organization', {}).get('name')!r}  "
-        f"type={agent_type}  base={client.base}")
+        f"type={agent_type}  base={client.base}  [bold]mode={mode}[/bold]")
 
     tasks = load_tasks(agent_type)
     if task_id:
@@ -485,7 +567,7 @@ def run(
                       f"{task.id} ({task.scenario})")
         t0 = time.time()
         res = run_session(client, model, task, system_prompt,
-                          semantic=semantic, keep_agent=keep_agent)
+                          semantic=semantic, keep_agent=keep_agent, mode=mode)
         dt = time.time() - t0
         results.append(res)
         _print_session_line(res, dt)
@@ -538,10 +620,17 @@ def _print_session_line(res: dict, dt: float) -> None:
     ft = ", ".join(f"{k}×{v}" for k, v in res["finding_counts_by_type"].items()) or "none"
     hi = res["high_severity"]
     tag = f"[red]{hi} HIGH[/red]" if hi else "[green]0 high[/green]"
+    voice_note = ""
+    if res.get("mode") == "voice":
+        lats = ((res.get("audio") or {}).get("latencies_ms")) or []
+        bot = ((res.get("audio") or {}).get("bot")) or {}
+        p50 = sorted(lats)[len(lats) // 2] if lats else None
+        voice_note = (f"  [cyan]voice[/cyan] room={res.get('voice_room')!r} "
+                      f"turn-latency-p50={p50}ms bot-audio={bot.get('seconds')}s")
     console.print(
         f"    turns={res['num_turns']} ended={res['ended']} "
         f"success={res['task_success']} final={res['final_state']!r}  "
-        f"findings: {ft}  {tag}  ({dt:.1f}s)  deleted={res['agent_deleted']}")
+        f"findings: {ft}  {tag}  ({dt:.1f}s)  deleted={res['agent_deleted']}{voice_note}")
 
 
 def _print_agent_summary(s: dict) -> None:
