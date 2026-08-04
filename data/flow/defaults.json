@@ -1,0 +1,73 @@
+{
+  "id": "flow_defaults",
+  "title": "default-flow coverage (every seeded type ships a driving flow)",
+  "description": "For each seeded agent TYPE, create a throwaway agent supplying NO flow, then prove the backend auto-attached that type's default prompts/agent_types/<type>/flow.json (flow present, enabled, start_state names a real state) AND that the attached flow actually DRIVES the conversation (turn-1 flow.active, the flow enters its start_state, at least one transition is evaluated, and for say-start types the start say text appears verbatim in the reply). debt_collection additionally asserts the compliance gate: no balance/amount is disclosed before identity is verified.",
+  "system_prompt": "You are the agent under test. Follow your configured behavior and the current conversation-flow state instructions.",
+  "types": [
+    {
+      "agent_type": "dental_receptionist",
+      "turns": ["Hi there.", "I'd like to book an appointment.", "Next Tuesday morning works.", "Yes, please go ahead."]
+    },
+    {
+      "agent_type": "patient_checkin",
+      "turns": ["Hello.", "Yes, this is the patient.", "I'm feeling okay, thanks.", "Go ahead."]
+    },
+    {
+      "agent_type": "medication_checkin",
+      "turns": ["Hi.", "Yes, that's me speaking.", "I took my medication this morning.", "No side effects."]
+    },
+    {
+      "agent_type": "medical_followup",
+      "turns": ["Hello.", "Yes, now is a good time.", "I've been recovering well.", "No new symptoms."]
+    },
+    {
+      "agent_type": "headache_enrollment",
+      "turns": ["Hi.", "Yes, I'm ready to start.", "They started about two weeks ago.", "Usually in the afternoon."]
+    },
+    {
+      "agent_type": "appointment_reminder",
+      "turns": ["Hello?", "Yes, this is them.", "Yes, I'll be there.", "Thank you."]
+    },
+    {
+      "agent_type": "appointment_scheduling",
+      "turns": ["Hi, I'd like to schedule something.", "A check-up, please.", "Weekday mornings are best.", "Yes, that time works."]
+    },
+    {
+      "agent_type": "renewal_reminder",
+      "turns": ["Hello?", "Yes, speaking.", "Tell me more about the renewal.", "Okay, I'll renew."]
+    },
+    {
+      "agent_type": "survey_feedback",
+      "turns": ["Hi.", "Sure, I can answer a few questions.", "I'd rate it an eight.", "It was a good experience overall."]
+    },
+    {
+      "agent_type": "lead_qualification",
+      "turns": ["Hi, I saw your ad.", "I'm looking for a solution for my team.", "About twenty people.", "Sometime this quarter."]
+    },
+    {
+      "agent_type": "customer_support",
+      "turns": ["Hi, I need some help.", "My account isn't working.", "I can't log in.", "Yes, I've tried resetting."]
+    },
+    {
+      "agent_type": "sales_handoff",
+      "turns": ["Hi, I'm interested in your product.", "We're a mid-sized company.", "Pricing is my main question.", "Yes, please connect me."]
+    },
+    {
+      "agent_type": "car_rental",
+      "turns": ["Hi, I'd like to rent a car.", "An SUV, please.", "Picking up this Friday.", "For about a week."]
+    },
+    {
+      "agent_type": "debt_collection",
+      "turns": ["Who is this?", "I'm not confirming anything until you tell me what this is about.", "Why are you calling me?"],
+      "gate": {
+        "pre_disclosure_states": ["confirm_party", "verify_identity", "mark_verified", "wrong_party"],
+        "disclosure_states": ["disclose_balance", "pay_now", "promise_to_pay"],
+        "forbidden_substrings_lower": ["overdue", "past due", "past-due", "outstanding", "amount due", "amount owed", "you owe", "balance of", "balance is", "days late", "days past", "collection", "₹"]
+      }
+    },
+    {
+      "agent_type": "ai_tutor",
+      "turns": ["Hi.", "I'd like help with algebra.", "I don't understand how to solve for x.", "Okay, walk me through it."]
+    }
+  ]
+}
