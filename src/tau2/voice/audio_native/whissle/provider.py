@@ -55,6 +55,7 @@ class WhissleRoomProvider:
         self.config = config
         self.room: Optional["rtc.Room"] = None
         self.session_id: Optional[str] = None  # room name, surfaced in results
+        self.conversation_id: Optional[str] = None  # PR #613: persisted voice flow-trace key
         self._audio_source: Optional["rtc.AudioSource"] = None
         self._agent_pcm = bytearray()  # accumulated bot PCM16 @ agent_sample_rate
         self._agent_pcm_total = 0  # monotonic byte counter (turn-quiet detection)
@@ -98,6 +99,9 @@ class WhissleRoomProvider:
         data = resp.json()
         url, token, room_name = data["url"], data["token"], data["room"]
         self.session_id = room_name
+        # PR #613: real-mode voice/start now creates a conversations row and returns its
+        # id, so the voice flow step-trace is retrievable via GET /flow/trace.
+        self.conversation_id = data.get("conversation_id")
         logger.info("whissle bench-voice session started — room={}", room_name); _DBG("session-started room=", room_name)
 
         self.room = rtc.Room()

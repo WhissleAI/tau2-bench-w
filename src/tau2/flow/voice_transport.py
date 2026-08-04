@@ -192,8 +192,16 @@ class VoiceTransport:
         self._bg = BackgroundAsyncLoop()
         self.provider: Optional[WhissleRoomProvider] = None
         self.room: Optional[str] = None
+        self.conversation_id: Optional[str] = None  # PR #613: persisted voice trace key
         self.greeting: str = ""
         self.latencies_ms: list[int] = []
+        # Cursor into provider.events() so each turn drains only the NEW signal frames.
+        # SIGNAL_EMIT=1 pushes {kind:"signal"} server-messages (shadow / speculative /
+        # hesitation predictions from the whissle-large metadata head) on the same data
+        # channel; the provider records every frame, so we filter+attach the per-turn
+        # ones to each TurnResult.raw — the meta-signal layer, captured over real voice.
+        self._sig_cursor = 0
+        self.signals: list[dict] = []   # every signal frame this session (session-level)
 
     # -- lifecycle ---------------------------------------------------------------
 
@@ -207,6 +215,7 @@ class VoiceTransport:
             self.provider.connect(system_prompt="", tools=[], real=True),
             timeout=self.config.connect_timeout_s + 15)
         self.room = self.provider.session_id
+        self.conversation_id = self.provider.conversation_id
         # Handshake that tells the bot the caller is subscribed → triggers greeting.
         self._bg.run_coroutine(self.provider.send_playback_ready(), timeout=10)
         self.greeting = self._collect_until_quiet(
@@ -232,15 +241,23 @@ class VoiceTransport:
         vres = VoiceTurnResult(
             reply=reply, latency_ms=latency_ms,
             bot_audio_bytes=max(0, audio_after - audio_before), boundary=boundary)
+        # Per-turn meta-signals (hesitation / shadow / speculative) emitted on the data
+        # channel during THIS turn — the whole point of running over real voice.
+        turn_signals = self._drain_signals()
         return TurnResult(
             reply=reply,
-            conversation_id=conversation_id or self.room or "",
+            # PR #613: the persisted-trace key is the conversations id returned by
+            # voice/start (not the LiveKit room). Thread it so simulate.py's end-of-
+            # session get_trace(agent_id, conv_id) retrieves the real voice step-trace.
+            conversation_id=self.conversation_id or conversation_id or self.room or "",
             tools_used=[],           # real-mode voice runs tools internally (no delegation)
             tool_events=[],
-            flow=None,               # no retrievable voice trace today (see module doc)
+            flow=None,               # per-turn trace not surfaced; full trace via GET /flow/trace
             raw={"ended": False, "voice": True, "room": self.room,
+                 "conversation_id": self.conversation_id,
                  "latency_ms": latency_ms, "bot_audio_bytes": vres.bot_audio_bytes,
-                 "boundary": boundary, "raw_fragments": vres.raw_fragments},
+                 "boundary": boundary, "raw_fragments": vres.raw_fragments,
+                 "signals": turn_signals},
         )
 
     def finish(self, prefix: str, *, transcribe: bool = False) -> dict[str, Any]:
@@ -268,6 +285,26 @@ class VoiceTransport:
     def events(self) -> list[dict]:
         """The full timestamped data-channel event stream (QA telemetry)."""
         return self.provider.events() if self.provider else []
+
+    def _drain_signals(self) -> list[dict]:
+        """Return the {kind:"signal"} prediction frames that arrived since the last
+        drain, advancing the cursor. Each is a whissle-large-derived per-turn signal —
+        ``signal`` names the producer (``shadow`` | ``speculative`` | ``hesitation``) and
+        the payload carries its fields (predicted tools, eager draft, emotion-timeline
+        entropy/instability for hesitation). Fail-open: no provider / no frames → []."""
+        if self.provider is None:
+            return []
+        evs = self.provider.events()
+        new = evs[self._sig_cursor:]
+        self._sig_cursor = len(evs)
+        sigs = [
+            e["data"] for e in new
+            if e.get("type") == "server-message"
+            and isinstance(e.get("data"), dict)
+            and e["data"].get("kind") == "signal"
+        ]
+        self.signals.extend(sigs)
+        return sigs
 
     # -- internals ---------------------------------------------------------------
 
