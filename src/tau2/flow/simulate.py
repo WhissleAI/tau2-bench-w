@@ -107,6 +107,11 @@ def _signals_summary(turns: list[dict]) -> dict:
     by_kind: Counter = Counter()
     turns_with = 0
     hesitation_turns: list[int] = []
+    # Raw whissle-large metadata coverage across the session.
+    meta_frames = 0
+    meta_turns = 0
+    emotions: Counter = Counter()
+    intents: Counter = Counter()
     for t in turns:
         sigs = t.get("signals") or []
         if sigs:
@@ -118,11 +123,26 @@ def _signals_summary(turns: list[dict]) -> dict:
                 by_kind[k] += 1
             if k == "hesitation":
                 hesitation_turns.append(t.get("n"))
+        md = t.get("user_metadata") or []
+        if md:
+            meta_turns += 1
+            meta_frames += len(md)
+        fin = t.get("metadata_final") or {}
+        if fin.get("emotion"):
+            emotions[fin["emotion"]] += 1
+        if fin.get("intent"):
+            intents[fin["intent"]] += 1
     return {
         "total": total,
         "by_kind": dict(by_kind),
         "turns_with_signals": turns_with,
         "hesitation_turns": sorted(set(x for x in hesitation_turns if x is not None)),
+        # Raw acoustic-metadata coverage: per-interim frame count, turns with any
+        # metadata, and the emotion/intent label mix the whissle-large head reported.
+        "metadata_frames": meta_frames,
+        "turns_with_metadata": meta_turns,
+        "emotions_seen": dict(emotions),
+        "intents_seen": dict(intents),
     }
 
 
@@ -244,6 +264,7 @@ def run_session(
             # this turn. Text channel carries none → []. This is what makes the bench
             # exercise the meta-signal layer, not just flow + transcript.
             turn_signals = res.raw.get("signals") or []
+            turn_metadata = res.raw.get("user_metadata") or []
             rec = {
                 "n": i, "user_msg": user_msg, "agent_reply": res.reply,
                 "ended": ended, "current_state": res.current_state,
@@ -253,6 +274,11 @@ def run_session(
                 "drift": drift,
                 "signals": turn_signals,
                 "signal_kinds": sorted({s.get("signal") for s in turn_signals if s.get("signal")}),
+                # Raw whissle-large acoustic metadata frames (emotion/intent/age/gender +
+                # probs) pushed per interim+final this turn, and the last (settled) one.
+                "user_metadata": turn_metadata,
+                "metadata_final": turn_metadata[-1] if turn_metadata else None,
+                "hesitant_input": bool(res.raw.get("hesitant_input")),
             }
             turns.append(rec)
             _emit({"event": "turn", **rec})

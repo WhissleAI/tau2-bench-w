@@ -142,6 +142,59 @@ def dedup_texts(fragments: list[str]) -> str:
     return " ".join(kept).strip()
 
 
+# ── hesitant-speech synthesis (exercise the hesitation predictor) ────────────────
+
+_HESITANT_PREFIXES = ["Um, ", "Uh, ", "Well, ", "Hmm, ", "So, like, ", "Let me think, "]
+_HESITANT_INFIXES = [" um ", " uh ", " you know ", " like ", " I mean ", " sort of "]
+
+
+def _hesitant_prob(raw: str) -> float:
+    """Env → probability a turn is spoken haltingly. '1'/'true'/'yes' → 1.0, a bare
+    number → that fraction (clamped 0..1), anything else / '0' → 0.0."""
+    s = (raw or "").strip().lower()
+    if s in ("1", "true", "yes", "on"):
+        return 1.0
+    try:
+        return max(0.0, min(1.0, float(s)))
+    except ValueError:
+        return 0.0
+
+
+def _hesitate_text(text: str, seed: int) -> str:
+    """Insert disfluencies so the TTS renders halting speech (a leading filler + one
+    mid-utterance filler + an ellipsis pause). Deterministic in ``seed`` (the turn
+    index) so a run is reproducible without a global RNG."""
+    text = (text or "").strip()
+    if not text:
+        return text
+    pre = _HESITANT_PREFIXES[seed % len(_HESITANT_PREFIXES)]
+    words = text.split(" ")
+    if len(words) > 4:
+        j = 2 + (seed % max(1, len(words) - 3))
+        inf = _HESITANT_INFIXES[seed % len(_HESITANT_INFIXES)]
+        words[j] = words[j] + inf + "..."
+    return pre + " ".join(words)
+
+
+def _inject_pauses(pcm: bytes, sample_rate: int, gap_ms: int = 450, n: int = 2) -> bytes:
+    """Splice ``n`` silence gaps into a PCM16LE mono utterance at roughly even points,
+    so the acoustic emotion timeline the whissle-large head reads actually wobbles
+    (clean TTS is flat → the hesitation predictor never fires). No-op on tiny clips."""
+    if not pcm or len(pcm) < sample_rate:  # <0.25s @16k*2B — too short to split
+        return pcm
+    gap = b"\x00\x00" * int(sample_rate * gap_ms / 1000)
+    frames = len(pcm) // 2
+    step = frames // (n + 1)
+    out = bytearray()
+    for k in range(n + 1):
+        a = k * step * 2
+        b = len(pcm) if k == n else (k + 1) * step * 2
+        out += pcm[a:b]
+        if k < n:
+            out += gap
+    return bytes(out)
+
+
 # ── one voice turn ──────────────────────────────────────────────────────────────
 
 @dataclass
@@ -201,7 +254,14 @@ class VoiceTransport:
         # channel; the provider records every frame, so we filter+attach the per-turn
         # ones to each TurnResult.raw — the meta-signal layer, captured over real voice.
         self._sig_cursor = 0
-        self.signals: list[dict] = []   # every signal frame this session (session-level)
+        self.signals: list[dict] = []   # every {kind:"signal"} frame this session
+        self.metadata: list[dict] = []  # every {t:"user-metadata"} frame this session
+        # WHISSLE_VOICE_HESITANT=1 makes the simulated user speak haltingly (filler
+        # words + mid-utterance silence gaps) so the whissle-large emotion timeline
+        # wobbles and the hesitation predictor actually fires — clean TTS never does.
+        # A number 0<p<=1 makes only that fraction of turns hesitant (varies by turn).
+        self._hesitant_p = _hesitant_prob(os.getenv("WHISSLE_VOICE_HESITANT", "0"))
+        self._turn_i = 0
 
     # -- lifecycle ---------------------------------------------------------------
 
@@ -230,7 +290,17 @@ class VoiceTransport:
         trace PR). Voice extras land on ``.raw`` (latency_ms, bot_audio_bytes)."""
         if self.provider is None:
             raise VoiceTransportError("start() must be called before turn().")
-        pcm = self.tts.synth(user_msg)
+        self._turn_i += 1
+        # Halting delivery on the chosen fraction of turns (deterministic spread, no
+        # global RNG) so the hesitation predictor has a wobbling timeline to fire on.
+        hesitant = self._hesitant_p > 0 and (
+            self._hesitant_p >= 1.0
+            or ((self._turn_i * 997) % 1000) / 1000.0 < self._hesitant_p
+        )
+        spoken = _hesitate_text(user_msg, self._turn_i) if hesitant else user_msg
+        pcm = self.tts.synth(spoken)
+        if hesitant:
+            pcm = _inject_pauses(pcm, 16000)  # user TTS is pcm_16000
         audio_before = self.provider.agent_audio_total()
         t_send_done = self._send_user_audio(pcm)
         reply, boundary, first_audio_t, audio_after = self._await_reply(t_send_done)
@@ -241,9 +311,10 @@ class VoiceTransport:
         vres = VoiceTurnResult(
             reply=reply, latency_ms=latency_ms,
             bot_audio_bytes=max(0, audio_after - audio_before), boundary=boundary)
-        # Per-turn meta-signals (hesitation / shadow / speculative) emitted on the data
-        # channel during THIS turn — the whole point of running over real voice.
-        turn_signals = self._drain_signals()
+        # Per-turn meta-signals (hesitation / shadow / speculative) + raw whissle-large
+        # metadata (emotion / intent / age / gender per interim+final) emitted on the
+        # data channel during THIS turn — the whole point of running over real voice.
+        turn_signals, turn_metadata = self._drain_channel()
         return TurnResult(
             reply=reply,
             # PR #613: the persisted-trace key is the conversations id returned by
@@ -257,7 +328,8 @@ class VoiceTransport:
                  "conversation_id": self.conversation_id,
                  "latency_ms": latency_ms, "bot_audio_bytes": vres.bot_audio_bytes,
                  "boundary": boundary, "raw_fragments": vres.raw_fragments,
-                 "signals": turn_signals},
+                 "signals": turn_signals, "user_metadata": turn_metadata,
+                 "hesitant_input": hesitant},
         )
 
     def finish(self, prefix: str, *, transcribe: bool = False) -> dict[str, Any]:
@@ -286,25 +358,39 @@ class VoiceTransport:
         """The full timestamped data-channel event stream (QA telemetry)."""
         return self.provider.events() if self.provider else []
 
-    def _drain_signals(self) -> list[dict]:
-        """Return the {kind:"signal"} prediction frames that arrived since the last
-        drain, advancing the cursor. Each is a whissle-large-derived per-turn signal —
-        ``signal`` names the producer (``shadow`` | ``speculative`` | ``hesitation``) and
-        the payload carries its fields (predicted tools, eager draft, emotion-timeline
-        entropy/instability for hesitation). Fail-open: no provider / no frames → []."""
+    def _drain_channel(self) -> tuple[list[dict], list[dict]]:
+        """Drain the data-channel frames that arrived since the last call, advancing
+        the single cursor, and partition them into ``(signals, metadata)``:
+
+          * signals  — ``{kind:"signal"}`` prediction frames (shadow / speculative /
+            hesitation), each naming its producer + fields (predicted tools, eager
+            draft, emotion-timeline entropy/instability for hesitation).
+          * metadata — ``{t:"user-metadata"}`` frames the backend pushes on every
+            interim/final (MetadataPushProcessor): the whissle-large acoustic head's
+            live ``{emotion, intent, age, gender, probs}``. This is the per-interim +
+            per-turn metadata the bench needs, produced in parallel with transcription.
+
+        One cursor for both so a frame is never counted twice / dropped. Fail-open:
+        no provider / no frames → ([], [])."""
         if self.provider is None:
-            return []
+            return [], []
         evs = self.provider.events()
         new = evs[self._sig_cursor:]
         self._sig_cursor = len(evs)
-        sigs = [
-            e["data"] for e in new
-            if e.get("type") == "server-message"
-            and isinstance(e.get("data"), dict)
-            and e["data"].get("kind") == "signal"
-        ]
+        sigs, meta = [], []
+        for e in new:
+            if e.get("type") != "server-message":
+                continue
+            d = e.get("data")
+            if not isinstance(d, dict):
+                continue
+            if d.get("kind") == "signal":
+                sigs.append(d)
+            elif d.get("t") == "user-metadata":
+                meta.append(d)
         self.signals.extend(sigs)
-        return sigs
+        self.metadata.extend(meta)
+        return sigs, meta
 
     # -- internals ---------------------------------------------------------------
 
