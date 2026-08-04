@@ -45,6 +45,19 @@ tasks, and report task success + the text → voice delta.
 - **[WHISSLE_VOICE.md](WHISSLE_VOICE.md)** — the tick-based full-duplex provider
   (`--audio-native-provider whissle`), for latency / barge-in experiments.
 
+This fork also ships harnesses for the other product surfaces Whissle exposes:
+
+- **[WHISSLE_TRANSCRIBE.md](WHISSLE_TRANSCRIBE.md)** — the transcription (WER/CER)
+  and diarization (DER) suites (`./run_transcribe.sh`), driven through the
+  `whissle` CLI.
+- **[WHISSLE_FLOW.md](WHISSLE_FLOW.md)** — the conversation-FLOW state-machine suite
+  (`./run_flow.sh`). Authors a flow onto a throwaway agent and drives it over the
+  deterministic text channel to verify the in-call flow engine drives correctly
+  across multi-turn, multi-tool, multi-state sessions (say-markers, per-state
+  tool-gating, expression + `llm_condition` branches, loop guards). Asserts the
+  observable replies/tool-calls today and the flow step-trace once the
+  `flow-step-trace` backend PR is deployed.
+
 > **Backward compatibility note**: If you are evaluating an agent (not training), use the `base` task split to evaluate on the complete task set that matches the original τ-bench structure. This is the default.
 
 > **Upgrading from $\tau^2$-bench?** Installation now uses `uv` instead of `pip install -e .`, and Python `>=3.12, <3.14` is required (was `>=3.10`). Some internal APIs have been refactored — see [CHANGELOG.md](CHANGELOG.md) for details.

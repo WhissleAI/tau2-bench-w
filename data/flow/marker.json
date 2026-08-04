@@ -1,0 +1,43 @@
+{
+  "id": "marker",
+  "title": "marker (smoke canary)",
+  "description": "mark(say)->ask(conversation)->wrap(say)->end. The proven canary: verbatim say-markers prove each say-state executed and the llm_condition transition fired. Fully observable today; no trace field required to pass.",
+  "agent": {
+    "name": "flowbench-marker",
+    "system_prompt": "You are a concise test assistant. Follow the current conversation-state instructions exactly.",
+    "agent_type": "text_assistant"
+  },
+  "flow": {
+    "version": 1,
+    "enabled": true,
+    "start_state": "mark",
+    "states": [
+      {"id": "mark", "type": "say", "say": "FLOW-ACTIVE-MARKER-7788"},
+      {"id": "ask", "type": "conversation", "goal": "Ask the user to say the word BANANA. Keep it to one short sentence."},
+      {"id": "wrap", "type": "say", "say": "SECOND-MARKER-DONE-9911"},
+      {"id": "end", "type": "end"}
+    ],
+    "transitions": [
+      {"id": "t_mark_ask", "from": "mark", "to": "ask", "kind": "always"},
+      {"id": "t_ask_wrap", "from": "ask", "to": "wrap", "kind": "llm_condition", "condition": "the user has said the word banana"},
+      {"id": "t_wrap_end", "from": "wrap", "to": "end", "kind": "always"}
+    ]
+  },
+  "turns": [
+    {
+      "user": "hello there",
+      "expect_reply_contains": ["FLOW-ACTIVE-MARKER-7788"],
+      "expect_tools": [],
+      "expect_tools_absent": []
+    },
+    {
+      "user": "BANANA",
+      "expect_reply_contains": ["SECOND-MARKER-DONE-9911"],
+      "expect_tools": [],
+      "expect_tools_absent": []
+    }
+  ],
+  "expect_say_markers": ["FLOW-ACTIVE-MARKER-7788", "SECOND-MARKER-DONE-9911"],
+  "expect_state_sequence": ["mark", "ask", "wrap", "end"],
+  "expect_fired_transitions": ["t_mark_ask", "t_ask_wrap", "t_wrap_end"]
+}

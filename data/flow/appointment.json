@@ -1,0 +1,85 @@
+{
+  "id": "appointment",
+  "title": "multi-tool appointment (realistic, longer)",
+  "description": "greet->verify_identity(conversation)->lookup(tool)->offer_slots(conversation)->book(tool)->confirm(say)->goodbye(say)->end. Exercises per-state tool-gating (book_appointment is NOT offered in the verify/offer states) plus a branch that is BOTH an expression transition (verify->lookup when the caller_name variable is set by save_contact_field) AND an llm_condition fallback on the same edge (fires when the judge sees the caller gave a name, even if the model wrote it under a different key) — a real-world robustness pattern, and it lets the suite exercise the expression evaluator and the batched llm judge on one state. offer->book is a second llm_condition branch on slot choice.",
+  "agent": {
+    "name": "flowbench-appointment",
+    "system_prompt": "You are a concise appointment assistant for a clinic. Follow the current conversation-state instructions exactly and call only the tools you are told you may call.",
+    "agent_type": "text_assistant",
+    "tools": [
+      {"name": "save_contact_field", "enabled": true, "config": {}},
+      {"name": "check_availability", "enabled": true, "config": {}},
+      {"name": "book_appointment", "enabled": true, "config": {}}
+    ]
+  },
+  "flow": {
+    "version": 1,
+    "enabled": true,
+    "start_state": "greet",
+    "variables": [
+      {"key": "caller_name", "type": "string", "initial": ""}
+    ],
+    "settings": {"max_transitions_per_call": 40, "max_visits_per_state": 6},
+    "states": [
+      {"id": "greet", "type": "say", "say": "APPT-GREETING-MARKER-3001"},
+      {"id": "verify", "type": "conversation",
+       "goal": "Ask the caller for their full name so you can look up their booking. As soon as they give a name, call save_contact_field with key 'caller_name' and value set to the name they gave. Do not offer or discuss appointment times yet.",
+       "allowed_tools": ["save_contact_field"]},
+      {"id": "lookup", "type": "tool", "tool": "check_availability",
+       "allowed_tools": ["check_availability"]},
+      {"id": "offer", "type": "conversation",
+       "goal": "Tell the caller these two appointment slots are available and ask which one they would like: 2026-08-10 at 4:00 PM, or 2026-08-11 at 2:00 PM. Wait for them to pick one. Do not book anything yourself.",
+       "allowed_tools": []},
+      {"id": "book", "type": "tool", "tool": "book_appointment",
+       "allowed_tools": ["book_appointment"]},
+      {"id": "confirm", "type": "say", "say": "APPT-CONFIRMED-MARKER-3002"},
+      {"id": "goodbye", "type": "say", "say": "APPT-GOODBYE-MARKER-3003"},
+      {"id": "end", "type": "end"}
+    ],
+    "transitions": [
+      {"id": "t_greet_verify", "from": "greet", "to": "verify", "kind": "always"},
+      {"id": "t_verify_lookup_expr", "from": "verify", "to": "lookup", "kind": "expression", "expr": "caller_name != \"\"", "priority": 1},
+      {"id": "t_verify_lookup_llm", "from": "verify", "to": "lookup", "kind": "llm_condition", "condition": "the caller has told you their name", "priority": 2},
+      {"id": "t_lookup_offer", "from": "lookup", "to": "offer", "kind": "always"},
+      {"id": "t_offer_book", "from": "offer", "to": "book", "kind": "llm_condition", "condition": "the user has chosen or agreed to one of the offered appointment slots"},
+      {"id": "t_book_confirm", "from": "book", "to": "confirm", "kind": "always"},
+      {"id": "t_confirm_goodbye", "from": "confirm", "to": "goodbye", "kind": "always"},
+      {"id": "t_goodbye_end", "from": "goodbye", "to": "end", "kind": "always"}
+    ]
+  },
+  "turns": [
+    {
+      "user": "Hi, I'd like to book an appointment.",
+      "expect_reply_contains": ["APPT-GREETING-MARKER-3001"],
+      "expect_tools": [],
+      "expect_tools_absent": ["book_appointment", "check_availability"]
+    },
+    {
+      "user": "My name is Karan Sharma.",
+      "expect_reply_contains": [],
+      "expect_tools": ["save_contact_field"],
+      "expect_tools_absent": ["book_appointment"]
+    },
+    {
+      "user": "Can you check what's available on 2026-08-10 at 4:00 PM?",
+      "expect_reply_contains": [],
+      "expect_tools": ["check_availability"],
+      "expect_tools_absent": ["book_appointment"]
+    },
+    {
+      "user": "The 2026-08-10 at 4:00 PM slot works for me.",
+      "expect_reply_contains": [],
+      "expect_tools": [],
+      "expect_tools_absent": ["book_appointment"]
+    },
+    {
+      "user": "Yes, please book it — my name is Karan Sharma, it is for a dental checkup, on 2026-08-10 at 4:00 PM.",
+      "expect_reply_contains": ["APPT-CONFIRMED-MARKER-3002", "APPT-GOODBYE-MARKER-3003"],
+      "expect_tools": ["book_appointment"],
+      "expect_tools_absent": []
+    }
+  ],
+  "expect_say_markers": ["APPT-GREETING-MARKER-3001", "APPT-CONFIRMED-MARKER-3002", "APPT-GOODBYE-MARKER-3003"],
+  "expect_state_sequence": ["greet", "verify", "lookup", "offer", "book", "confirm", "goodbye", "end"],
+  "expect_fired_transitions": ["t_greet_verify", "t_lookup_offer", "t_offer_book", "t_book_confirm", "t_confirm_goodbye", "t_goodbye_end"]
+}

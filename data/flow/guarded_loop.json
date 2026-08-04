@@ -1,0 +1,50 @@
+{
+  "id": "guarded_loop",
+  "title": "guarded loop (max_visits guard)",
+  "description": "A re-entering loop (spin_a <-> spin_b, sustained by a to_override redirect) that the max_visits_per_state guard trips within N re-entries; on_guard_trip:fallback then escapes the machine to the landing state. Fully deterministic (say/set_variable/always only, no LLM judge) so it runs and proves loop guards in a single turn, today. The verbatim LOOP-ESCAPED marker only appears if the guard tripped and the fallback fired.",
+  "agent": {
+    "name": "flowbench-guarded-loop",
+    "system_prompt": "You are a concise test assistant.",
+    "agent_type": "text_assistant"
+  },
+  "flow": {
+    "version": 1,
+    "enabled": true,
+    "start_state": "loop_start",
+    "settings": {
+      "max_transitions_per_call": 40,
+      "max_visits_per_state": 3,
+      "on_guard_trip": "fallback",
+      "fallback_state": "landing"
+    },
+    "variables": [
+      {"key": "tick", "type": "string", "initial": ""},
+      {"key": "tock", "type": "string", "initial": ""}
+    ],
+    "states": [
+      {"id": "loop_start", "type": "say", "say": "LOOP-START-MARKER-8080"},
+      {"id": "spin_a", "type": "set_variable", "key": "tick", "value": "a"},
+      {"id": "spin_b", "type": "set_variable", "key": "tock", "value": "b"},
+      {"id": "landing", "type": "say", "say": "LOOP-ESCAPED-MARKER-9090"},
+      {"id": "end", "type": "end"}
+    ],
+    "transitions": [
+      {"id": "t_start_a", "from": "loop_start", "to": "spin_a", "kind": "always"},
+      {"id": "t_a_b", "from": "spin_a", "to": "spin_b", "kind": "always"},
+      {"id": "t_b_a", "from": "spin_b", "to": "landing", "to_override": "spin_a", "kind": "always"},
+      {"id": "t_land_end", "from": "landing", "to": "end", "kind": "always"}
+    ]
+  },
+  "turns": [
+    {
+      "user": "start the loop",
+      "expect_reply_contains": ["LOOP-START-MARKER-8080", "LOOP-ESCAPED-MARKER-9090"],
+      "expect_tools": [],
+      "expect_tools_absent": []
+    }
+  ],
+  "expect_say_markers": ["LOOP-START-MARKER-8080", "LOOP-ESCAPED-MARKER-9090"],
+  "expect_state_sequence": ["loop_start", "spin_a", "spin_b", "landing"],
+  "expect_fired_transitions": ["t_start_a", "t_a_b", "t_b_a"],
+  "expect_guard_trip": {"guard": "max_visits", "state": "spin_a"}
+}
