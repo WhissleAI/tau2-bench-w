@@ -91,6 +91,16 @@ class SeedContext:
                 return getattr(r, "_phone", None)
         return None
 
+    @property
+    def customer_id(self) -> Optional[str]:
+        """The seeded contact's id — threaded into chat/turn as ``customer_id`` so
+        the turn binds ToolContext.customer, exactly as a voice call binds
+        calls.customer_id. None when no customer was inserted (scope-skipped)."""
+        for r in self.resources:
+            if r.kind == "customer":
+                return r.id
+        return None
+
 
 # ── the identity fixtures used to seed + prime the sim ────────────────────────
 # Keyed by the debt persona name so the seeded customer + the sim's stated identity
@@ -174,11 +184,20 @@ class Seeder:
     # ── low-level best-effort inserts ──────────────────────────────────────────
 
     def _post_customer(self, agent_id: str, phone: str, name: str,
-                       attributes: dict, ctx: SeedContext) -> Optional[str]:
+                       attributes: dict, ctx: SeedContext,
+                       columns: Optional[dict] = None) -> Optional[str]:
         """POST /api/customers a contact BOUND to the agent. Best-effort: a key
-        lacking contacts:write degrades to a ``skipped`` note (tool then fail-softs)."""
-        body = {"agent_id": agent_id, "phone": phone, "name": name,
+        lacking contacts:write degrades to a ``skipped`` note (tool then fail-softs).
+
+        The endpoint requires ``phone_number`` (NOT ``phone`` — that is a 422). Real
+        first-class columns (due_amount, days_overdue, merchant_name, due_date, …) go
+        in ``columns`` so ``_build_var_map`` reads them from the row; anything WITHOUT
+        a column (loan_account_number, date_of_birth) goes in ``attributes`` where the
+        identity tool + the template's attribute loop read it."""
+        body = {"agent_id": agent_id, "phone_number": phone, "name": name,
                 "attributes": attributes}
+        if columns:
+            body.update({k: v for k, v in columns.items() if v is not None})
         try:
             d = self.client._req("POST", "/api/customers", json=body,
                                  action="seed_customer").json()
@@ -258,12 +277,20 @@ class Seeder:
                               ctx: SeedContext) -> None:
         name, dob, acct, amount, overdue = _DEBT_IDENTITY.get(task.id, _DEBT_DEFAULT)
         phone = _phone_for(task.id)
+        # loan_account_number + date_of_birth have NO customers column — verify_identity
+        # (identity._record_value) and the template's attribute loop read them from the
+        # attributes bag, so they MUST live there for last-4/DOB verification to match.
         attrs = {
-            "borrower_name": name, "due_amount": amount, "days_overdue": overdue,
-            "due_date": "2026-06-20", "loan_account_number": acct,
-            "merchant_name": "LoanTap", "phone": phone, "date_of_birth": dob,
+            "loan_account_number": acct, "date_of_birth": dob,
+            "borrower_name": name, "phone": phone,
         }
-        self._post_customer(agent_id, phone, name, attrs, ctx)
+        # due_amount/days_overdue/merchant_name/due_date ARE real columns — send them
+        # top-level so _build_var_map reads them straight off the row.
+        columns = {
+            "due_amount": amount, "days_overdue": overdue,
+            "merchant_name": "LoanTap", "due_date": "2026-06-20",
+        }
+        self._post_customer(agent_id, phone, name, attrs, ctx, columns=columns)
         # Within-scope fallback so the template has the amount even if the customer
         # insert was scope-skipped.
         self._patch_agent_vars(agent_id, {

@@ -182,8 +182,13 @@ def run_session(
             sim.goal_prefix = seed_ctx.goal_prefix
         user_msg = sim.first_utterance()
 
+        # Bind the seeded contact on every turn (the text-channel analogue of a voice
+        # call's calls.customer_id) so verify_identity has a record to match against.
+        bound_customer_id = seed_ctx.customer_id if seed_ctx is not None else None
         for i in range(1, task.max_turns + 1):
-            res: TurnResult = client.turn(agent_id, user_msg, conversation_id=conv_id)
+            res: TurnResult = client.turn(
+                agent_id, user_msg, conversation_id=conv_id,
+                customer_id=bound_customer_id)
             conv_id = res.conversation_id or conv_id
             ended = bool(res.raw.get("ended"))
             eng_turn = _engine_turn_of(res.steps)
