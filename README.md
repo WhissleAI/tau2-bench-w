@@ -50,13 +50,20 @@ This fork also ships harnesses for the other product surfaces Whissle exposes:
 - **[WHISSLE_TRANSCRIBE.md](WHISSLE_TRANSCRIBE.md)** — the transcription (WER/CER)
   and diarization (DER) suites (`./run_transcribe.sh`), driven through the
   `whissle` CLI.
-- **[WHISSLE_FLOW.md](WHISSLE_FLOW.md)** — the conversation-FLOW state-machine suite
-  (`./run_flow.sh`). Authors a flow onto a throwaway agent and drives it over the
-  deterministic text channel to verify the in-call flow engine drives correctly
-  across multi-turn, multi-tool, multi-state sessions (say-markers, per-state
-  tool-gating, expression + `llm_condition` branches, loop guards). Asserts the
-  observable replies/tool-calls today and the flow step-trace once the
-  `flow-step-trace` backend PR is deployed.
+- **[WHISSLE_FLOW_OVERVIEW.md](WHISSLE_FLOW_OVERVIEW.md)** — start here for the
+  in-call **conversation flow** engine. Indexes the whole flow-harness family (the
+  three live suites + the offline analyzer tests), a "which suite do I want" table,
+  the flow-sim engine + finding types, and how to run each.
+  - **[WHISSLE_FLOW.md](WHISSLE_FLOW.md)** — the authored-flow state-machine suite
+    (`./run_flow.sh`): authors a flow onto a throwaway agent and drives *scripted*
+    turns to verify the engine (say-markers, per-state tool-gating, expression +
+    `llm_condition` branches, loop guards).
+  - **[WHISSLE_FLOW_DEFAULTS.md](WHISSLE_FLOW_DEFAULTS.md)** — the default-flow
+    coverage suite (`./run_flow_defaults.sh`): proves every seeded agent **type**
+    auto-attaches a correct default flow that drives the call (15 types).
+  - **[WHISSLE_FLOW_SIM.md](WHISSLE_FLOW_SIM.md)** — the simulated-user bug finder
+    (`./run_flow_sim.sh`): drives an **LLM persona** off the happy path and runs a
+    deterministic rule-analyzer that emits typed findings.
 
 > **Backward compatibility note**: If you are evaluating an agent (not training), use the `base` task split to evaluate on the complete task set that matches the original τ-bench structure. This is the default.
 
