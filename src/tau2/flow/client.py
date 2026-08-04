@@ -9,6 +9,7 @@ come from the environment (``WHISSLE_API_KEY`` + ``WHISSLE_BASE``), matching
 
 Endpoints used (all under ``$WHISSLE_BASE``):
   POST   /api/agents                          create a throwaway agent
+  GET    /api/agents/{id}                       read an agent (incl. its ``flow``)
   PATCH  /api/agents/{id}                      author a flow (``{"flow": {...}}``)
   POST   /api/agents/{id}/chat/turn            drive one text turn
   GET    /api/agents/{id}/flow/trace           full accumulated step trace
@@ -105,6 +106,27 @@ class FlowClient:
         ``agent_type: text_assistant`` is the right pick for text-channel driving."""
         body = {"agent_type": "text_assistant", **spec}
         return self._req("POST", "/api/agents", json=body, action="create_agent").json()
+
+    def create_typed_agent(
+        self, name: str, agent_type: str, system_prompt: str,
+    ) -> dict[str, Any]:
+        """Create a throwaway agent of a specific seeded ``agent_type`` and supply
+        **no flow** — the backend auto-attaches that type's default
+        ``prompts/agent_types/<type>/flow.json`` on creation. Used by the
+        default-flow coverage suite to prove the loader auto-attach works live.
+
+        ``system_prompt`` is a required field on the create endpoint even though the
+        type ships its own prompt; it is not a flow and does not defeat the point."""
+        body = {"name": name, "agent_type": agent_type, "system_prompt": system_prompt}
+        return self._req(
+            "POST", "/api/agents", json=body, action="create_typed_agent",
+        ).json()
+
+    def get_agent(self, agent_id: str) -> dict[str, Any]:
+        """Read an agent, including its (possibly auto-attached) ``flow``."""
+        return self._req(
+            "GET", f"/api/agents/{agent_id}", action="get_agent",
+        ).json()
 
     def set_flow(self, agent_id: str, flow: dict[str, Any]) -> dict[str, Any]:
         """Author a flow onto an agent. A malformed/unsafe flow is a 422 here (the
