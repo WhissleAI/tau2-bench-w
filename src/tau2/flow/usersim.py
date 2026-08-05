@@ -26,6 +26,7 @@ from __future__ import annotations
 import json
 import os
 import re
+import time
 from dataclasses import dataclass, field
 from typing import Any, Optional
 
@@ -57,18 +58,38 @@ class WhissleModel:
         self.total_cost_usd = 0.0
         self.calls = 0
 
-    def chat(self, messages: list[dict[str, str]]) -> str:
-        r = self._s.post(f"{self.base}/api/models/chat",
-                         json={"messages": messages}, timeout=self.timeout)
-        if r.status_code >= 300:
-            raise ModelError(f"models/chat -> HTTP {r.status_code}: {r.text[:300]}")
-        d = r.json(strict=False)
-        self.calls += 1
-        try:
-            self.total_cost_usd += float(d.get("cost_usd") or 0.0)
-        except (TypeError, ValueError):
-            pass
-        return (d.get("text") or "").strip()
+    def chat(self, messages: list[dict[str, str]], *, attempts: int = 4) -> str:
+        """POST /api/models/chat with retry. The driver LLM intermittently returns a
+        transient 5xx or an EMPTY completion ("all providers failed; gemini empty
+        completion") — a single failure would kill the whole session (empty trace, the
+        ~40% drop). Retry those (+ network errors) with backoff; a 4xx is a real client
+        error and is NOT retried. Raises only after all attempts are exhausted."""
+        last = ""
+        for i in range(max(1, attempts)):
+            try:
+                r = self._s.post(f"{self.base}/api/models/chat",
+                                 json={"messages": messages}, timeout=self.timeout)
+            except requests.RequestException as e:  # conn/read timeout, conn reset…
+                last = f"request error: {e}"
+            else:
+                if r.status_code < 300:
+                    d = r.json(strict=False)
+                    text = (d.get("text") or "").strip()
+                    if text:
+                        self.calls += 1
+                        try:
+                            self.total_cost_usd += float(d.get("cost_usd") or 0.0)
+                        except (TypeError, ValueError):
+                            pass
+                        return text
+                    last = "empty completion"          # transient — retry
+                elif r.status_code < 500:
+                    raise ModelError(f"models/chat -> HTTP {r.status_code}: {r.text[:300]}")
+                else:
+                    last = f"HTTP {r.status_code}: {r.text[:200]}"  # 5xx — retry
+            if i < attempts - 1:
+                time.sleep(1.5 * (i + 1))              # 1.5s, 3s, 4.5s backoff
+        raise ModelError(f"models/chat failed after {attempts} attempts: {last}")
 
     def chat_json(self, messages: list[dict[str, str]]) -> dict[str, Any]:
         """Chat then best-effort parse a JSON object out of the reply."""
