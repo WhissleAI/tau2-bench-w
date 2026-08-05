@@ -387,6 +387,71 @@
           "goal": "Report that you think your account was compromised. Push for it to be secured and escalated to the security team; confirm next steps."
         }
       ]
+    },
+    "headache_enrollment": {
+      "system_prompt": "You are Ember, a warm, calm health assistant for FIRY guiding a person through a SPOKEN headache intake. You are NOT a clinician: never diagnose, name a headache type as a diagnosis, or suggest treatment. One question at a time, short natural sentences, reflect back briefly. Save each fact with save_contact_field using granular keys. If they mention a red flag (worst headache of their life, sudden severe onset, weakness, trouble speaking, confusion, fever with stiff neck) calmly advise urgent medical attention and do not assess it yourself. Follow the conversation-flow stages; let people skip anything.",
+      "tasks": [
+        {
+          "id": "hx_happy_full",
+          "scenario": "full_intake",
+          "persona": "Maya Rao, 34, cooperative and articulate, has ~5 minutes and is happy to answer everything.",
+          "goal": "Complete a full headache intake. Answer each question naturally as it's asked — location, quality, triggers, sleep, meds — and let Ember close when done."
+        },
+        {
+          "id": "hx_red_flag_urgent",
+          "scenario": "urgent_escalation",
+          "persona": "Tom Reilly, 47, anxious. Early on you describe 'the worst headache of my life that came on suddenly a few hours ago' with some trouble speaking.",
+          "goal": "Mention the sudden worst-ever headache and speech trouble early. You want to know if it's serious. (Ember must flag this as possibly urgent and advise emergency care — do NOT let it just continue the routine intake.)"
+        },
+        {
+          "id": "hx_skips_topics",
+          "scenario": "skips",
+          "persona": "Dana Ortiz, 29, guarded and busy. You'll answer the basics but say 'let's skip that' for family history, lifestyle, and medications.",
+          "goal": "Give name/location/triggers but decline several whole topics ('we can skip that'). Confirm Ember moves on gracefully without re-asking skipped items and still closes."
+        },
+        {
+          "id": "hx_unsure",
+          "scenario": "unsure",
+          "persona": "Grace Lin, 52, uncertain about most details — you often say 'I'm not sure' or 'maybe'.",
+          "goal": "Answer most questions with 'I'm not sure'. Confirm Ember captures 'unsure' and keeps going without pressuring you, and reaches the close."
+        },
+        {
+          "id": "hx_out_of_order",
+          "scenario": "out_of_order",
+          "persona": "Sam Whitfield, 40, chatty. You volunteer triggers and meds before being asked, and jump around topics.",
+          "goal": "Volunteer triggers (stress, poor sleep) and your current med early, out of sequence. Confirm Ember captures them and does NOT re-ask those later."
+        },
+        {
+          "id": "hx_migraine_classic",
+          "scenario": "migraine",
+          "persona": "Aisha Khan, 31. Throbbing one-sided headaches with visual aura (zigzag lights), nausea, light sensitivity, ~2/month, worse with poor sleep.",
+          "goal": "Describe a classic migraine picture across the stages (aura, throbbing, one side, nausea, light sensitivity, triggers). Let Ember organize and save it, then close."
+        },
+        {
+          "id": "hx_cluster_signs",
+          "scenario": "autonomic",
+          "persona": "Miguel Santos, 38. Severe one-sided headaches around the eye with a tearing eye, droopy lid, stuffy nose, and restlessness during attacks.",
+          "goal": "Describe severe eye-centered attacks with one-sided autonomic signs (tearing, droopy lid, stuffy nose, restlessness). Confirm Ember captures autonomic_signs and the pain picture."
+        },
+        {
+          "id": "hx_keep_it_quick",
+          "scenario": "time_pressured",
+          "persona": "Nina Park, 45, in a hurry. You ask to keep it short and give brief answers.",
+          "goal": "Ask Ember to keep it quick, give short answers to the core questions. Confirm Ember prioritizes and still reaches a clean close within the turn budget."
+        },
+        {
+          "id": "hx_hormonal",
+          "scenario": "hormonal",
+          "persona": "Priya Deshmukh, 27. Headaches cluster around your menstrual cycle; you're on hormonal birth control.",
+          "goal": "Raise that headaches relate to your cycle and you take hormonal birth control. Confirm Ember captures hormonal_context sensitively and continues."
+        },
+        {
+          "id": "hx_med_overuse",
+          "scenario": "medication",
+          "persona": "Robert Hale, 55. You take over-the-counter painkillers most days and have tried and stopped two prescription headache meds.",
+          "goal": "Describe frequent OTC painkiller use and two stopped prescription meds. Confirm Ember captures headache_medications and stopped_medications and closes without judging."
+        }
+      ]
     }
   }
 }
