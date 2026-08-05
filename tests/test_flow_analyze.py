@@ -233,3 +233,155 @@ def test_no_gate_before_call_is_not_judged():
         _tool_flow(), steps, tools_used_by_turn={1: ["check_availability"]})
     assert not [f for f in findings if f.type == "tool_leakage"], \
         [f.as_dict() for f in findings if f.type == "tool_leakage"]
+
+
+# ── F1 — termination-failure taxonomy ────────────────────────────────────────────
+#
+# A session that never reaches an end state must be CLASSIFIED, not lumped into one
+# `stuck_termination` bucket, so the agent's own failure to close (goal met, sim
+# cooperative, no flow_end — the confound that deflated "ended cleanly") is
+# separable from a flow that is genuinely too long for its turn budget.
+
+_TERM_TYPES = ("agent_no_close", "turn_cap_exceeded", "stuck_termination", "dead_end")
+
+
+def _intake_flow():
+    """A miniature intake flow with a proper closing terminal."""
+    return {
+        "start_state": "greet",
+        "states": [
+            {"id": "greet", "type": "collect"},
+            {"id": "profile", "type": "collect"},
+            {"id": "close", "type": "say", "say": "Thanks, goodbye!"},
+            {"id": "done", "type": "end"},
+        ],
+        "transitions": [
+            {"id": "t1", "from": "greet", "to": "profile", "kind": "always"},
+            {"id": "t2", "from": "profile", "to": "close", "kind": "always"},
+            {"id": "t3", "from": "close", "to": "done", "kind": "always"},
+        ],
+        "variables": [],
+        "settings": {},
+    }
+
+
+def _steps_stuck_in_profile():
+    """Synthetic transcript trace: the flow advanced greet → profile and stalled
+    there — never entered `close`/`done`, no flow_end."""
+    return [
+        {"seq": 0, "kind": "state_enter", "state": "greet"},
+        {"seq": 1, "kind": "transition_check", "transition_id": "t1",
+         "from": "greet", "result": "fired"},
+        {"seq": 2, "kind": "state_enter", "state": "profile"},
+    ]
+
+
+def _term(findings):
+    return [f for f in findings if f.type in _TERM_TYPES]
+
+
+def test_goal_met_cooperative_sim_is_agent_no_close():
+    """Judge says goal met, the sim kept cooperating 4 post-goal turns, agent never
+    closed → the AGENT's fault: exactly one `agent_no_close` (high), and neither
+    `stuck_termination` nor `turn_cap_exceeded`."""
+    findings = analyze_session(
+        _intake_flow(), _steps_stuck_in_profile(),
+        goal_met=True, sim_goal_met=True, post_goal_turns_driven=4,
+        turn_cap_hit=False)
+    term = _term(findings)
+    assert [f.type for f in term] == ["agent_no_close"], [f.as_dict() for f in term]
+    assert term[0].severity == "high"
+    assert term[0].state == "profile"
+    assert term[0].evidence["post_goal_turns_driven"] == 4
+
+
+def test_empty_agent_reply_on_goal_turn_is_agent_no_close():
+    """The hx_migraine_classic evidence class: the judge saw the goal met and the
+    agent replied EMPTY on the goal-met turn (sim never even got a wrap-up to answer)
+    — still the agent's fault, reported as `agent_no_close` with the empty turns in
+    evidence."""
+    findings = analyze_session(
+        _intake_flow(), _steps_stuck_in_profile(),
+        goal_met=True, sim_goal_met=False, post_goal_turns_driven=0,
+        turn_cap_hit=False, empty_reply_turns=[7])
+    term = _term(findings)
+    assert [f.type for f in term] == ["agent_no_close"], [f.as_dict() for f in term]
+    assert term[0].evidence["empty_reply_turns"] == [7]
+    assert "EMPTY" in term[0].detail
+
+
+def test_sim_goal_signal_alone_supports_agent_no_close():
+    """When the LLM judge is unavailable (None) the sim's own [[GOAL_MET]] signal
+    still supports the agent_no_close classification."""
+    findings = analyze_session(
+        _intake_flow(), _steps_stuck_in_profile(),
+        goal_met=None, sim_goal_met=True, post_goal_turns_driven=3,
+        turn_cap_hit=True)
+    term = _term(findings)
+    assert [f.type for f in term] == ["agent_no_close"], [f.as_dict() for f in term]
+
+
+def test_cap_before_goal_is_turn_cap_exceeded():
+    """Turn budget exhausted BEFORE the goal was met → the flow is genuinely too
+    long: `turn_cap_exceeded` (medium), not agent_no_close, not stuck."""
+    findings = analyze_session(
+        _intake_flow(), _steps_stuck_in_profile(),
+        goal_met=False, sim_goal_met=False, post_goal_turns_driven=0,
+        turn_cap_hit=True)
+    term = _term(findings)
+    assert [f.type for f in term] == ["turn_cap_exceeded"], [f.as_dict() for f in term]
+    assert term[0].severity == "medium"
+    assert term[0].evidence["turn_cap_hit"] is True
+
+
+def test_unknown_goal_no_cap_stays_stuck_termination():
+    """Legacy/unclassifiable stall (goal unknown, no cap hit) keeps the
+    backward-compatible `stuck_termination` type."""
+    findings = analyze_session(
+        _intake_flow(), _steps_stuck_in_profile(),
+        goal_met=None, sim_goal_met=False, post_goal_turns_driven=0,
+        turn_cap_hit=False)
+    term = _term(findings)
+    assert [f.type for f in term] == ["stuck_termination"], [f.as_dict() for f in term]
+
+
+def test_goal_met_without_closing_chance_is_not_agent_no_close():
+    """Goal met exactly on the final turn — the sim gave zero cooperative post-goal
+    turns and the agent never replied empty, so the agent had no fair chance to
+    close. Must NOT be blamed as agent_no_close (falls back to stuck_termination)."""
+    findings = analyze_session(
+        _intake_flow(), _steps_stuck_in_profile(),
+        goal_met=True, sim_goal_met=True, post_goal_turns_driven=0,
+        turn_cap_hit=True)
+    term = _term(findings)
+    assert [f.type for f in term] == ["stuck_termination"], [f.as_dict() for f in term]
+
+
+def test_reached_flow_end_yields_no_termination_finding():
+    """A session that reached the end state produces NO termination finding of any
+    type — the drive-through-closing fix makes this the expected happy path."""
+    steps = _steps_stuck_in_profile() + [
+        {"seq": 3, "kind": "transition_check", "transition_id": "t2",
+         "from": "profile", "result": "fired"},
+        {"seq": 4, "kind": "state_enter", "state": "close"},
+        {"seq": 5, "kind": "say_emitted", "state": "close", "text": "Thanks, goodbye!"},
+        {"seq": 6, "kind": "state_enter", "state": "done"},
+        {"seq": 7, "kind": "flow_end"},
+    ]
+    findings = analyze_session(
+        _intake_flow(), steps, goal_met=True, sim_goal_met=True,
+        post_goal_turns_driven=2, turn_cap_hit=False)
+    assert _term(findings) == [], [f.as_dict() for f in _term(findings)]
+
+
+def test_dead_end_still_wins_over_classification():
+    """A final non-end state with NO outgoing transitions stays `dead_end` (a flow-
+    authoring bug) regardless of goal/cooperation inputs."""
+    flow = _intake_flow()
+    flow["transitions"] = [t for t in flow["transitions"] if t["id"] != "t2"]
+    findings = analyze_session(
+        flow, _steps_stuck_in_profile(),
+        goal_met=True, sim_goal_met=True, post_goal_turns_driven=4,
+        turn_cap_hit=False)
+    term = _term(findings)
+    assert [f.type for f in term] == ["dead_end"], [f.as_dict() for f in term]

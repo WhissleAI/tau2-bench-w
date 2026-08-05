@@ -50,8 +50,10 @@ cp .env.example .env          # set WHISSLE_API_KEY=wsk_...   (agents:write scop
 2. `GET /api/agents/{id}` → read the **declared flow** (states, transitions,
    variables, settings, start_state) — the contract to audit against.
 3. Drive a simulated conversation: the user-sim opens, the agent replies, the
-   user-sim reacts, … until the agent flow `ended`, the user is done (goal met /
-   refused / would hang up), or a hard cap (~14 turns).
+   user-sim reacts, … until the agent flow `ended`, the user is done (the **agent**
+   closed / refused — goal-met alone does **not** end the call, see below), the
+   post-goal allowance is exhausted, or the per-task **turn budget** is hit
+   (fixture-declared per type/task; global fallback 24).
 4. `GET /api/agents/{id}/flow/trace` → the full accumulated step trace.
 5. Judge **task success** (LLM) and, optionally, per-turn **goal-drift** (LLM).
 6. Run the deterministic analyzer → typed findings.
@@ -60,12 +62,29 @@ cp .env.example .env          # set WHISSLE_API_KEY=wsk_...   (agents:write scop
 ## The simulated user (`usersim.py`)
 
 An LLM given a strict system prompt: *play only the customer, one natural utterance,
-pursue the goal, invent consistent details, behave like the persona, and append a
-`[[END]]` sentinel when the goal is met / refused / you would hang up.* The dialogue
+pursue the goal, invent consistent details, behave like the persona.* The dialogue
 is mapped so the **agent's** replies arrive as `user` messages and the sim's own
 lines are `assistant` messages — the model then generates the next user utterance.
 Two LLM judges share the same endpoint: `judge_task_success` (1 call/session) and
 `judge_goal_drift` (per turn, `--no-semantic` to disable).
+
+**Call-ending protocol (two sentinels).** Goal-met and hang-up are separate signals,
+so the sim never deflates the "ended cleanly" metric by going silent the moment its
+goal is satisfied:
+
+- `[[GOAL_MET]]` — appended once when the sim's goal is achieved. The call stays
+  open: the sim keeps responding naturally (brief acknowledgements, answering
+  "anything else?" with a no-thanks, returning the goodbye) so the **agent** gets to
+  deliver its closing and reach `flow_end`.
+- `[[END]]` — appended only when the call is actually over: the agent delivered its
+  goodbye/closing, clearly refused / cannot help, or the persona would genuinely
+  abandon the call.
+
+The runner grants the agent a **post-goal allowance** (`post_goal_turns`, default 4
+cooperative turns after `[[GOAL_MET]]`). If the agent still hasn't closed when the
+allowance runs out, that is the agent's failure and is reported as `agent_no_close`
+— never blamed on the sim. An EMPTY agent reply is surfaced to the sim as silence
+(it prompts once, "are you still there?", instead of hanging up).
 
 ## Finding types (`analyze.py`)
 
@@ -83,7 +102,9 @@ degrades safely (an expression it cannot parse is skipped, never a false positiv
 | `say_fidelity` | medium | a `say` state was entered but its exact text was not emitted |
 | `stuck_loop` | medium | the same state was re-entered ≥ N times |
 | `dead_end` | high | the session ended in a non-end state with **no outgoing transitions** |
-| `stuck_termination` | medium | never reached an end within the cap (stuck / loop) |
+| `agent_no_close` | high | the goal **was** met and the sim stayed cooperative through its post-goal allowance (or the agent replied EMPTY), yet the agent never delivered its closing / reached `flow_end` — the agent's own failure to close |
+| `turn_cap_exceeded` | medium | the turn budget ran out **before** the goal was met — the flow is genuinely too long for its declared budget |
+| `stuck_termination` | medium | never reached an end, for reasons the above two don't explain (no trace, judge unavailable, goal met on the very last turn, …) |
 | `premature_termination` | medium | reached an end state but the goal was **not** met (per the task-success judge) |
 | `compliance` | high | (parameterized per type) a forbidden disclosure happened **before** a required gate variable / verify-state became true — e.g. `debt_collection` must verify identity before disclosing any balance |
 | `coverage` | info | (aggregate) states / transitions never exercised across the session set |
@@ -98,6 +119,19 @@ sessions drive branch coverage:
 - **debt_collection** — right-party-pays / promise-to-pay / **dispute** / **wrong-party** / **refuse** (probes the verify-before-disclose gate)
 - **appointment_scheduling** — new / reschedule / cancel / out-of-hours / wrong-details
 - **customer_support** — resolvable / needs-escalation / angry / account-lookup
+- **headache_enrollment** — full spoken intake / red-flag escalation / skips / unsure / out-of-order / migraine / cluster / hormonal / medication-overuse
+
+### Fixture fields (budgets)
+
+Turn budgets are declared **where the flow length is known** instead of one global
+cap — resolution is most-specific-wins:
+
+| field | levels | default | meaning |
+|-------|--------|---------|---------|
+| `max_turns` | top-level → type block → task | 24 | per-session caller-turn budget. Sized to the flow: e.g. `headache_enrollment` (10-state spoken intake) declares 28; `dental_receptionist` declares 18; short scenarios override lower (`dental_hours_only`: 10, `hx_red_flag_urgent`: 14, `hx_keep_it_quick`: 18) |
+| `post_goal_turns` | top-level → type block → task | 4 | cooperative turns the sim grants **after** its goal is met for the agent to deliver its closing; exhausting it without a close ⇒ `agent_no_close` |
+
+`--max-turns` on the CLI still overrides everything for a run.
 
 ## Reporting
 
