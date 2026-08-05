@@ -58,12 +58,15 @@ class WhissleModel:
         self.total_cost_usd = 0.0
         self.calls = 0
 
-    def chat(self, messages: list[dict[str, str]], *, attempts: int = 4) -> str:
+    def chat(self, messages: list[dict[str, str]], *, attempts: int = 6) -> str:
         """POST /api/models/chat with retry. The driver LLM intermittently returns a
-        transient 5xx or an EMPTY completion ("all providers failed; gemini empty
-        completion") — a single failure would kill the whole session (empty trace, the
-        ~40% drop). Retry those (+ network errors) with backoff; a 4xx is a real client
-        error and is NOT retried. Raises only after all attempts are exhausted."""
+        transient 5xx / 502 (the backend chat worker is momentarily STARVED by a live
+        voice session sharing its event loop → gateway 502) or an EMPTY completion
+        ("all providers failed; gemini empty completion"). A single failure would kill
+        the whole session (empty trace — the ~40% drop). The driver isn't
+        latency-sensitive, so we retry generously with a LONG backoff (3,6,9,12,12s ≈
+        40s total) to span the busy window; a 4xx is a real client error and is NOT
+        retried. Raises only after all attempts are exhausted."""
         last = ""
         for i in range(max(1, attempts)):
             try:
@@ -88,7 +91,7 @@ class WhissleModel:
                 else:
                     last = f"HTTP {r.status_code}: {r.text[:200]}"  # 5xx — retry
             if i < attempts - 1:
-                time.sleep(1.5 * (i + 1))              # 1.5s, 3s, 4.5s backoff
+                time.sleep(min(3.0 * (i + 1), 12.0))   # 3,6,9,12,12s — spans the busy window
         raise ModelError(f"models/chat failed after {attempts} attempts: {last}")
 
     def chat_json(self, messages: list[dict[str, str]]) -> dict[str, Any]:
