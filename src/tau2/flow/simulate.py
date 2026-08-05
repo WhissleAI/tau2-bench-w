@@ -350,6 +350,14 @@ def run_session(
             full_steps.extend(t["steps"])
     full_steps = sorted(full_steps, key=lambda s: s.get("seq", 0))
 
+    # Derive termination from the TRACE, not just the per-turn flag. Over voice
+    # `res.raw["ended"]` is hardcoded False (the transport can't see the flow's
+    # terminal), so a flow that reached its `end`/handoff (a `flow_end` step —
+    # incl. the deferred closing-terminal) would wrongly read ended=False. If the
+    # persisted trace shows a flow_end, the flow DID terminate.
+    if not ended and any(s.get("kind") == "flow_end" for s in full_steps):
+        ended = True
+
     # ── judges + analyze ─────────────────────────────────────────────────────
     transcript = _render_transcript(turns, greeting=greeting)
     success = {"success": None, "reason": "not run"}
