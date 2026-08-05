@@ -70,7 +70,12 @@ def load_tasks(agent_type: str) -> list[Task]:
     if block is None:
         raise KeyError(f"no tasks for agent_type={agent_type!r} in {TASKS_FIXTURE}")
     defaults = {"compliance": block.get("compliance"),
-                "max_turns": d.get("max_turns", 14)}
+                # 14 was too low for VOICE: spoken turns burn more of the budget than
+                # text, so flows hit the cap before their terminal flow_end (the
+                # dominant `ended=False` finding in the 2026-08-04 5x5 voice bench).
+                # 24 gives voice flows room to reach termination; text ends earlier via
+                # ended/done so it's unaffected. Override per-run with --max-turns.
+                "max_turns": d.get("max_turns", 24)}
     return [Task.from_dict(agent_type, t, defaults) for t in block["tasks"]]
 
 
@@ -175,10 +180,14 @@ def run_session(
       * ``"text"`` — ``POST /chat/turn`` (deterministic; full retrievable step-trace).
       * ``"voice"`` — the real voice pipeline over LiveKit (STT→flow-brain→TTS), via
         :class:`VoiceTransport`. Same user-sim + judges; the agent's spoken transcript
-        (RTVI ``bot-transcription``) is the scored text. The flow runs but its
-        step-trace is not persisted for voice today, so the deterministic state-trace
-        analyzer degrades to a typed ``voice_trace_unavailable`` finding and duplex
-        audio (caller/bot/mix WAVs) is captured as evidence. See WHISSLE_VOICE_TESTING.md."""
+        (RTVI ``bot-transcription``) is the scored text. Since PR #613 the voice flow
+        step-trace IS persisted (``voice/start`` returns a real conversations id and the
+        pipeline writes the trace), so ``GET /flow/trace`` returns the VOICE steps and
+        the deterministic state-trace analyzer runs on them identically to text. Per-turn
+        emotion/intent + hesitation signals are captured off the data channel, and duplex
+        audio (caller/bot/mix WAVs) is captured as evidence. If a deploy hasn't rolled the
+        trace persistence yet, it degrades honestly to ``voice_trace_unavailable``. See
+        WHISSLE_VOICE_TESTING.md."""
     voice = mode == "voice"
     if voice:
         # No per-turn flow state is exposed over voice, so the goal-drift judge (which
