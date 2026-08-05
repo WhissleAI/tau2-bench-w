@@ -228,16 +228,30 @@ def run_session(
             _emit({"event": "conversation_end", "reason": "turn_cap",
                    "turn": task.max_turns})
 
-        # Full accumulated trace (authoritative for the analyzer). Text-only: the
-        # voice pipeline runs the flow but does not persist its step-trace (no
-        # conversations row / persist_fn), so there is nothing to GET for a voice
-        # room — full_steps stays [] and the analyzer degrades honestly below.
-        if agent_id and conv_id and not voice:
-            try:
-                tr = client.get_trace(agent_id, conv_id)
-                full_steps = list((tr or {}).get("steps") or [])
-            except FlowClientError as e:
-                _emit({"event": "trace_fetch_failed", "detail": str(e)})
+        # Full accumulated trace (authoritative for the analyzer). As of PR #613 the
+        # voice pipeline persists its step-trace too: real-mode voice/start creates a
+        # conversations row (its id threaded onto conv_id via the VoiceTransport), so
+        # GET /flow/trace returns the VOICE flow steps. If the backend hasn't persisted
+        # yet (deploy still rolling), full_steps stays [] and the voice branch below
+        # degrades honestly to a voice_trace_unavailable finding.
+        if agent_id and conv_id:
+            # Voice persists at turn boundaries/call-end asynchronously, so the last
+            # turn's steps can lag a beat — retry briefly before giving up (text is
+            # synchronous and returns on the first try).
+            attempts = 5 if voice else 1
+            for att in range(1, attempts + 1):
+                try:
+                    tr = client.get_trace(agent_id, conv_id)
+                    full_steps = list((tr or {}).get("steps") or [])
+                except FlowClientError as e:
+                    _emit({"event": "trace_fetch_failed", "detail": str(e)})
+                    break
+                if full_steps or not voice:
+                    break
+                time.sleep(2.0)
+            if voice:
+                _emit({"event": "voice_trace_fetch", "conversation_id": conv_id,
+                       "num_steps": len(full_steps), "attempts": att})
 
         # Voice: capture the duplex audio (real spoken-session evidence) + re-ASR.
         if voice and vt is not None:
@@ -361,6 +375,36 @@ def run_session(
     (out_dir / f"{task.id}.json").write_text(
         json.dumps({k: v for k, v in result.items() if k != "_full_steps"},
                    ensure_ascii=False, indent=2), encoding="utf-8")
+
+    # Per-session, ts-stamped sidecar carrying the FULL persisted flow-trace (every
+    # state_enter / transition_check / tools_gated / var_set / say_emitted / flow_end
+    # step), the full transcript incl. greeting, the outcome+metadata, and the analyzer
+    # findings — the complete structured record for each session (the <task>.json above
+    # strips _full_steps and is overwritten when a task repeats). This is the deliverable.
+    (out_dir / f"{task.id}_{ts}.session.json").write_text(
+        json.dumps({
+            "task_id": task.id, "agent_type": task.agent_type, "mode": mode, "ts": ts,
+            "agent_id": agent_id, "conversation_id": conv_id,
+            "voice_room": (vt.room if vt else None) if voice else None,
+            "scenario": task.scenario, "persona": task.persona, "goal": task.goal,
+            "compliance_spec": task.compliance,
+            "greeting": greeting or None,
+            "outcome": {"task_success": success.get("success"),
+                        "task_success_reason": success.get("reason"),
+                        "ended": ended,
+                        "final_state": turns[-1]["current_state"] if turns else None},
+            "metadata": {"num_turns": len(turns),
+                         "start_state": flow_spec.get("start_state"),
+                         "latencies_ms": (audio_evidence or {}).get("latencies_ms", []),
+                         "audio": audio_evidence or None,
+                         "setup_error": setup_error},
+            "transcript": transcript,
+            "turns": turns,                    # user/agent per turn + per-turn steps
+            "flow_trace": full_steps,          # the FULL persisted flow step-trace
+            "states_visited": result["states_visited"],
+            "analyzer_findings": [f.as_dict() for f in findings],
+            "flow_spec": flow_spec,
+        }, ensure_ascii=False, indent=2, default=str), encoding="utf-8")
     return result
 
 

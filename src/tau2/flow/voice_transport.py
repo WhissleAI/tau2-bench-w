@@ -192,6 +192,7 @@ class VoiceTransport:
         self._bg = BackgroundAsyncLoop()
         self.provider: Optional[WhissleRoomProvider] = None
         self.room: Optional[str] = None
+        self.conversation_id: Optional[str] = None  # PR #613: persisted voice trace key
         self.greeting: str = ""
         self.latencies_ms: list[int] = []
 
@@ -207,6 +208,7 @@ class VoiceTransport:
             self.provider.connect(system_prompt="", tools=[], real=True),
             timeout=self.config.connect_timeout_s + 15)
         self.room = self.provider.session_id
+        self.conversation_id = self.provider.conversation_id
         # Handshake that tells the bot the caller is subscribed → triggers greeting.
         self._bg.run_coroutine(self.provider.send_playback_ready(), timeout=10)
         self.greeting = self._collect_until_quiet(
@@ -234,11 +236,15 @@ class VoiceTransport:
             bot_audio_bytes=max(0, audio_after - audio_before), boundary=boundary)
         return TurnResult(
             reply=reply,
-            conversation_id=conversation_id or self.room or "",
+            # PR #613: the persisted-trace key is the conversations id returned by
+            # voice/start (not the LiveKit room). Thread it so simulate.py's end-of-
+            # session get_trace(agent_id, conv_id) retrieves the real voice step-trace.
+            conversation_id=self.conversation_id or conversation_id or self.room or "",
             tools_used=[],           # real-mode voice runs tools internally (no delegation)
             tool_events=[],
-            flow=None,               # no retrievable voice trace today (see module doc)
+            flow=None,               # per-turn trace not surfaced; full trace via GET /flow/trace
             raw={"ended": False, "voice": True, "room": self.room,
+                 "conversation_id": self.conversation_id,
                  "latency_ms": latency_ms, "bot_audio_bytes": vres.bot_audio_bytes,
                  "boundary": boundary, "raw_fragments": vres.raw_fragments},
         )
