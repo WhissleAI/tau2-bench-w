@@ -1,0 +1,218 @@
+{
+  "mutation": "tool_gate_add_consent",
+  "kind": "tool_gate",
+  "target": "consent",
+  "description": "add tool 'save_contact_field' to previously tool-less state 'consent'",
+  "expected_signal": "the 'consent' gate now admits 'save_contact_field'",
+  "ts": "20260806T213419Z",
+  "agent_id": "0af31129-7fb3-455a-9287-03bae696e994",
+  "agent_deleted": true,
+  "mode": "text",
+  "passed": true,
+  "error": null,
+  "phases": {
+    "baseline_flow_attached": {
+      "passed": true,
+      "expected": "type default flow auto-attached on create",
+      "observed": "flow with 10 states"
+    },
+    "validate_ok": {
+      "passed": true,
+      "expected": "mutated flow passes POST /flow/validate",
+      "observed": "valid=True errors=[] warnings=0"
+    },
+    "draft_staged": {
+      "passed": true,
+      "expected": "PATCH ?target=draft stages the edit in the pending overlay",
+      "observed": "has_draft=True draft_matches_mutation=True"
+    },
+    "live_unchanged_while_draft": {
+      "passed": true,
+      "expected": "the LIVE flow is byte-identical to baseline while the edit is draft-only",
+      "observed": "live flow unchanged"
+    },
+    "published": {
+      "passed": true,
+      "expected": "POST /publish promotes the draft: live flow == mutated flow",
+      "observed": "live flow matches the mutation"
+    },
+    "behavior": {
+      "passed": true,
+      "expected": "tools_gated for 'consent' includes 'save_contact_field'",
+      "observed": "gates seen for 'consent': [['save_contact_field']]"
+    }
+  },
+  "capture": {
+    "probe": {
+      "greeting": null,
+      "turns": [
+        {
+          "n": 1,
+          "user_msg": "Hello?",
+          "reply": "Hi, I'm Ember. I'd love to understand your headaches a little better. I'll ask you a few questions by voice — it takes about five minutes, and you can skip anything or pause and come back anytime. Ready to start?\nHi there, I'm Ember from FIRY. I'm here to help you with a quick headache intake — just a few questions to understand what's been going on with you. It'll take about five minutes, and you can skip anything you'd rather not answer.\n\nReady to get started?",
+          "current_state": "about_you",
+          "tools_used": [],
+          "ended": false
+        },
+        {
+          "n": 2,
+          "user_msg": "Yes, I'm ready to start. Let's begin.",
+          "reply": "Great. In your own words, what's been bringing you in today — what's the main reason you're seeking care right now?",
+          "current_state": "about_you",
+          "tools_used": [
+            "save_contact_field"
+          ],
+          "ended": false
+        }
+      ],
+      "states_entered": [
+        "greet",
+        "consent",
+        "about_you"
+      ],
+      "trace_steps": 14,
+      "trace": [
+        {
+          "seq": 0,
+          "kind": "state_enter",
+          "turn": 1,
+          "state": "greet",
+          "ts_ms": 1452770,
+          "state_type": "say"
+        },
+        {
+          "seq": 1,
+          "kind": "say_emitted",
+          "text": "Hi, I'm Ember. I'd love to understand your headaches a little better. I'll ask you a few questions by voice — it takes about five minutes, and you can skip anything or pause and come back anytime. Ready to start?",
+          "turn": 1,
+          "state": "greet",
+          "ts_ms": 1452770
+        },
+        {
+          "to": "consent",
+          "seq": 2,
+          "from": "greet",
+          "kind": "transition_check",
+          "turn": 1,
+          "ts_ms": 1452770,
+          "result": "fired",
+          "transition_id": "t1",
+          "transition_kind": "always"
+        },
+        {
+          "seq": 3,
+          "kind": "state_enter",
+          "turn": 1,
+          "state": "consent",
+          "ts_ms": 1452770,
+          "state_type": "conversation"
+        },
+        {
+          "seq": 4,
+          "kind": "tools_gated",
+          "turn": 1,
+          "state": "consent",
+          "ts_ms": 1452770,
+          "allowed": [
+            "save_contact_field"
+          ]
+        },
+        {
+          "seq": 5,
+          "from": "consent",
+          "kind": "transition_check",
+          "turn": 1,
+          "ts_ms": 1455622,
+          "result": "not_satisfied",
+          "condition": "the person describes a red-flag emergency — the worst headache of their life, sudden severe onset, weakness, trouble speaking, confusion, or fever with a stiff neck",
+          "transition_id": "t2",
+          "transition_kind": "llm_condition"
+        },
+        {
+          "to": "about_you",
+          "seq": 6,
+          "from": "consent",
+          "kind": "transition_check",
+          "turn": 1,
+          "ts_ms": 1455622,
+          "result": "fired",
+          "condition": "the person is ready to start the intake, agrees to continue, or has started talking about their headaches or answering intake questions — engaging with the questions counts as consent even without an explicit yes",
+          "transition_id": "t3",
+          "transition_kind": "llm_condition"
+        },
+        {
+          "seq": 7,
+          "from": "consent",
+          "kind": "transition_check",
+          "turn": 1,
+          "ts_ms": 1455622,
+          "result": "not_satisfied",
+          "condition": "the person does not want to do the intake right now",
+          "transition_id": "t4",
+          "transition_kind": "llm_condition"
+        },
+        {
+          "seq": 8,
+          "kind": "state_enter",
+          "turn": 1,
+          "state": "about_you",
+          "ts_ms": 1455622,
+          "state_type": "conversation"
+        },
+        {
+          "seq": 9,
+          "kind": "tools_gated",
+          "turn": 1,
+          "state": "about_you",
+          "ts_ms": 1455622,
+          "allowed": [
+            "save_contact_field"
+          ]
+        },
+        {
+          "key": "main_reason",
+          "seq": 10,
+          "kind": "var_set",
+          "turn": 2,
+          "ts_ms": 1457076,
+          "value": "headaches",
+          "source": "tool_result"
+        },
+        {
+          "seq": 11,
+          "from": "about_you",
+          "kind": "transition_check",
+          "turn": 2,
+          "ts_ms": 1458182,
+          "result": "not_satisfied",
+          "condition": "the person mentions a red-flag emergency symptom",
+          "transition_id": "t6",
+          "transition_kind": "llm_condition"
+        },
+        {
+          "seq": 12,
+          "from": "about_you",
+          "kind": "transition_check",
+          "turn": 2,
+          "ts_ms": 1458182,
+          "result": "not_satisfied",
+          "condition": "the caller says everything has been covered, has nothing more to add, or asks to wrap up, save, or end the call",
+          "transition_id": "t7_done",
+          "transition_kind": "llm_condition"
+        },
+        {
+          "seq": 13,
+          "from": "about_you",
+          "kind": "transition_check",
+          "turn": 2,
+          "ts_ms": 1458182,
+          "result": "not_satisfied",
+          "condition": "the person has answered, declined, or already volunteered earlier in the conversation the about-you basics (main reason for care, date of birth, sex at birth)",
+          "transition_id": "t7",
+          "transition_kind": "llm_condition"
+        }
+      ],
+      "bot_reasr": null
+    }
+  }
+}

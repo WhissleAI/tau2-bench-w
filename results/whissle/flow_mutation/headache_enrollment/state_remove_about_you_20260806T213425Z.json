@@ -1,0 +1,246 @@
+{
+  "mutation": "state_remove_about_you",
+  "kind": "state_remove",
+  "target": "about_you",
+  "description": "remove mid-flow state 'about_you', rewiring its inbound edges to 'headache_profile'",
+  "expected_signal": "the session skips 'about_you' and reaches 'headache_profile' directly",
+  "ts": "20260806T213425Z",
+  "agent_id": "0601d670-7d6d-46bf-a194-655dc46688f2",
+  "agent_deleted": true,
+  "mode": "text",
+  "passed": true,
+  "error": null,
+  "phases": {
+    "baseline_flow_attached": {
+      "passed": true,
+      "expected": "type default flow auto-attached on create",
+      "observed": "flow with 10 states"
+    },
+    "validate_ok": {
+      "passed": true,
+      "expected": "mutated flow passes POST /flow/validate",
+      "observed": "valid=True errors=[] warnings=0"
+    },
+    "draft_staged": {
+      "passed": true,
+      "expected": "PATCH ?target=draft stages the edit in the pending overlay",
+      "observed": "has_draft=True draft_matches_mutation=True"
+    },
+    "live_unchanged_while_draft": {
+      "passed": true,
+      "expected": "the LIVE flow is byte-identical to baseline while the edit is draft-only",
+      "observed": "live flow unchanged"
+    },
+    "published": {
+      "passed": true,
+      "expected": "POST /publish promotes the draft: live flow == mutated flow",
+      "observed": "live flow matches the mutation"
+    },
+    "behavior": {
+      "passed": true,
+      "expected": "removed state 'about_you' is never entered; flow goes straight to 'headache_profile'",
+      "observed": "states entered: ['greet', 'consent', 'headache_profile'] (skipped=True, reached_forward=True)"
+    }
+  },
+  "capture": {
+    "probe": {
+      "greeting": null,
+      "turns": [
+        {
+          "n": 1,
+          "user_msg": "Hello?",
+          "reply": "Hi, I'm Ember. I'd love to understand your headaches a little better. I'll ask you a few questions by voice — it takes about five minutes, and you can skip anything or pause and come back anytime. Ready to start?\nHi there! I'm Ember, a health assistant here at Whissle. I'm calling to help you go through a headache intake — it's really just a conversation, takes about five minutes, and you can skip anything you'd like. Does now work for you?",
+          "current_state": "consent",
+          "tools_used": [],
+          "ended": false
+        },
+        {
+          "n": 2,
+          "user_msg": "Yes, I'm ready to start. Let's begin.",
+          "reply": "Great. Let's start with the basics — what's been going on with your headaches?",
+          "current_state": "headache_profile",
+          "tools_used": [],
+          "ended": false
+        },
+        {
+          "n": 3,
+          "user_msg": "Okay.",
+          "reply": "When did these headaches first start for you, and roughly how many days a month do they happen?",
+          "current_state": "headache_profile",
+          "tools_used": [],
+          "ended": false
+        }
+      ],
+      "states_entered": [
+        "greet",
+        "consent",
+        "headache_profile"
+      ],
+      "trace_steps": 16,
+      "trace": [
+        {
+          "seq": 0,
+          "kind": "state_enter",
+          "turn": 1,
+          "state": "greet",
+          "ts_ms": 1459390,
+          "state_type": "say"
+        },
+        {
+          "seq": 1,
+          "kind": "say_emitted",
+          "text": "Hi, I'm Ember. I'd love to understand your headaches a little better. I'll ask you a few questions by voice — it takes about five minutes, and you can skip anything or pause and come back anytime. Ready to start?",
+          "turn": 1,
+          "state": "greet",
+          "ts_ms": 1459390
+        },
+        {
+          "to": "consent",
+          "seq": 2,
+          "from": "greet",
+          "kind": "transition_check",
+          "turn": 1,
+          "ts_ms": 1459390,
+          "result": "fired",
+          "transition_id": "t1",
+          "transition_kind": "always"
+        },
+        {
+          "seq": 3,
+          "kind": "state_enter",
+          "turn": 1,
+          "state": "consent",
+          "ts_ms": 1459390,
+          "state_type": "conversation"
+        },
+        {
+          "seq": 4,
+          "kind": "tools_gated",
+          "turn": 1,
+          "state": "consent",
+          "ts_ms": 1459390,
+          "allowed": []
+        },
+        {
+          "seq": 5,
+          "from": "consent",
+          "kind": "transition_check",
+          "turn": 1,
+          "ts_ms": 1461186,
+          "result": "not_satisfied",
+          "condition": "the person describes a red-flag emergency — the worst headache of their life, sudden severe onset, weakness, trouble speaking, confusion, or fever with a stiff neck",
+          "transition_id": "t2",
+          "transition_kind": "llm_condition"
+        },
+        {
+          "seq": 6,
+          "from": "consent",
+          "kind": "transition_check",
+          "turn": 1,
+          "ts_ms": 1461186,
+          "result": "not_satisfied",
+          "condition": "the person is ready to start the intake, agrees to continue, or has started talking about their headaches or answering intake questions — engaging with the questions counts as consent even without an explicit yes",
+          "transition_id": "t3",
+          "transition_kind": "llm_condition"
+        },
+        {
+          "seq": 7,
+          "from": "consent",
+          "kind": "transition_check",
+          "turn": 1,
+          "ts_ms": 1461186,
+          "result": "not_satisfied",
+          "condition": "the person does not want to do the intake right now",
+          "transition_id": "t4",
+          "transition_kind": "llm_condition"
+        },
+        {
+          "seq": 8,
+          "from": "consent",
+          "kind": "transition_check",
+          "turn": 2,
+          "ts_ms": 1463104,
+          "result": "not_satisfied",
+          "condition": "the person describes a red-flag emergency — the worst headache of their life, sudden severe onset, weakness, trouble speaking, confusion, or fever with a stiff neck",
+          "transition_id": "t2",
+          "transition_kind": "llm_condition"
+        },
+        {
+          "to": "headache_profile",
+          "seq": 9,
+          "from": "consent",
+          "kind": "transition_check",
+          "turn": 2,
+          "ts_ms": 1463104,
+          "result": "fired",
+          "condition": "the person is ready to start the intake, agrees to continue, or has started talking about their headaches or answering intake questions — engaging with the questions counts as consent even without an explicit yes",
+          "transition_id": "t3",
+          "transition_kind": "llm_condition"
+        },
+        {
+          "seq": 10,
+          "from": "consent",
+          "kind": "transition_check",
+          "turn": 2,
+          "ts_ms": 1463104,
+          "result": "not_satisfied",
+          "condition": "the person does not want to do the intake right now",
+          "transition_id": "t4",
+          "transition_kind": "llm_condition"
+        },
+        {
+          "seq": 11,
+          "kind": "state_enter",
+          "turn": 2,
+          "state": "headache_profile",
+          "ts_ms": 1463104,
+          "state_type": "conversation"
+        },
+        {
+          "seq": 12,
+          "kind": "tools_gated",
+          "turn": 2,
+          "state": "headache_profile",
+          "ts_ms": 1463104,
+          "allowed": [
+            "save_contact_field"
+          ]
+        },
+        {
+          "seq": 13,
+          "from": "headache_profile",
+          "kind": "transition_check",
+          "turn": 3,
+          "ts_ms": 1464534,
+          "result": "not_satisfied",
+          "condition": "the person describes a red-flag emergency symptom",
+          "transition_id": "t8",
+          "transition_kind": "llm_condition"
+        },
+        {
+          "seq": 14,
+          "from": "headache_profile",
+          "kind": "transition_check",
+          "turn": 3,
+          "ts_ms": 1464534,
+          "result": "not_satisfied",
+          "condition": "the caller says everything has been covered, has nothing more to add, or asks to wrap up, save, or end the call",
+          "transition_id": "t9_done",
+          "transition_kind": "llm_condition"
+        },
+        {
+          "seq": 15,
+          "from": "headache_profile",
+          "kind": "transition_check",
+          "turn": 3,
+          "ts_ms": 1464534,
+          "result": "not_satisfied",
+          "condition": "the headache onset, frequency, and pain description have been captured, skipped, or already volunteered earlier in the conversation",
+          "transition_id": "t9",
+          "transition_kind": "llm_condition"
+        }
+      ],
+      "bot_reasr": null
+    }
+  }
+}

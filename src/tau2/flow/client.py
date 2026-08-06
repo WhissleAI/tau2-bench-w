@@ -9,11 +9,14 @@ come from the environment (``WHISSLE_API_KEY`` + ``WHISSLE_BASE``), matching
 
 Endpoints used (all under ``$WHISSLE_BASE``):
   POST   /api/agents                          create a throwaway agent
-  GET    /api/agents/{id}                       read an agent (incl. its ``flow``)
-  PATCH  /api/agents/{id}                      author a flow (``{"flow": {...}}``)
+  GET    /api/agents/{id}[?include=draft]       read an agent (incl. its ``flow``)
+  PATCH  /api/agents/{id}[?target=draft]       author a flow (``{"flow": {...}}``)
+  POST   /api/agents/{id}/publish              promote the draft overlay to live
+  POST   /api/agents/{id}/draft/discard        drop the draft overlay
+  POST   /api/agents/{id}/flow/validate        dry-run flow validation (no save)
   POST   /api/agents/{id}/chat/turn            drive one text turn
   GET    /api/agents/{id}/flow/trace           full accumulated step trace
-  DELETE /api/agents/{id}                       teardown (never leave agents behind)
+  DELETE /api/agents/{id}[?confirm=true]        teardown (never leave agents behind)
 
 The text channel is deliberate: it drives the exact same ``FlowRuntime`` state
 machine the voice pipeline runs (services/flow/text_runner.py), with zero audio
@@ -122,22 +125,60 @@ class FlowClient:
             "POST", "/api/agents", json=body, action="create_typed_agent",
         ).json()
 
-    def get_agent(self, agent_id: str) -> dict[str, Any]:
-        """Read an agent, including its (possibly auto-attached) ``flow``."""
+    def get_agent(self, agent_id: str,
+                  include: Optional[str] = None) -> dict[str, Any]:
+        """Read an agent, including its (possibly auto-attached) ``flow``.
+        ``include="draft"`` also returns the pending edit overlay the studio
+        stages before publish: ``{...live, draft: {...}|null, has_draft: bool}``."""
+        path = f"/api/agents/{agent_id}"
+        if include:
+            path += f"?include={include}"
+        return self._req("GET", path, action="get_agent").json()
+
+    def set_flow(self, agent_id: str, flow: dict[str, Any], *,
+                 target: str = "live") -> dict[str, Any]:
+        """Author a flow onto an agent — the EXACT call the flow-designer UI makes
+        (``PATCH /api/agents/{id}`` with ``{"flow": ...}``). ``target="live"``
+        (default) writes the columns the call pipeline reads; ``target="draft"``
+        stages the edit in the pending overlay that NO live call sees until
+        :meth:`publish`. A malformed/unsafe flow is a 422 on the live path (the
+        backend validates at write time), surfaced as a FlowClientError."""
         return self._req(
-            "GET", f"/api/agents/{agent_id}", action="get_agent",
+            "PATCH", f"/api/agents/{agent_id}?target={target}",
+            json={"flow": flow}, action=f"set_flow[{target}]",
         ).json()
 
-    def set_flow(self, agent_id: str, flow: dict[str, Any]) -> dict[str, Any]:
-        """Author a flow onto an agent. A malformed/unsafe flow is a 422 here (the
-        backend validates at write time), which surfaces as a FlowClientError."""
+    def publish(self, agent_id: str) -> dict[str, Any]:
+        """Promote the staged draft overlay onto the LIVE agent — the studio's
+        Publish button (``POST /api/agents/{id}/publish``). This is the moment an
+        author's edits reach real calls."""
         return self._req(
-            "PATCH", f"/api/agents/{agent_id}", json={"flow": flow},
-            action="set_flow",
+            "POST", f"/api/agents/{agent_id}/publish", action="publish",
         ).json()
 
-    def delete_agent(self, agent_id: str) -> None:
-        self._req("DELETE", f"/api/agents/{agent_id}", action="delete_agent")
+    def discard_draft(self, agent_id: str) -> dict[str, Any]:
+        """Throw the pending draft away (``POST /api/agents/{id}/draft/discard``);
+        idempotent, live agent untouched."""
+        return self._req(
+            "POST", f"/api/agents/{agent_id}/draft/discard", action="discard_draft",
+        ).json()
+
+    def validate_flow(self, agent_id: str, flow: dict[str, Any]) -> dict[str, Any]:
+        """Dry-run validation of a candidate flow (``POST /flow/validate``) — the
+        same validator a live PATCH / publish runs, nothing saved. Returns
+        ``{ok, error?, warnings, compliance}``."""
+        return self._req(
+            "POST", f"/api/agents/{agent_id}/flow/validate", json={"flow": flow},
+            action="validate_flow",
+        ).json()
+
+    def delete_agent(self, agent_id: str, *, confirm: bool = False) -> None:
+        """Teardown. ``confirm=True`` also consents to deleting the agent's KB
+        documents (the backend requires it when the agent owns KB docs)."""
+        path = f"/api/agents/{agent_id}"
+        if confirm:
+            path += "?confirm=true"
+        self._req("DELETE", path, action="delete_agent")
 
     # ── driving a conversation ───────────────────────────────────────────────
 

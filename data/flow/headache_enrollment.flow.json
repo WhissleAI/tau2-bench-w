@@ -1,0 +1,230 @@
+{
+  "version": 1,
+  "enabled": true,
+  "start_state": "greet",
+  "settings": {
+    "max_transitions_per_call": 40,
+    "max_visits_per_state": 6,
+    "on_guard_trip": "fallback",
+    "fallback_state": "close"
+  },
+  "variables": [],
+  "states": [
+    {
+      "id": "greet",
+      "type": "say",
+      "say": "Hi, I'm Ember. I'd love to understand your headaches a little better. I'll ask you a few questions by voice — it takes about five minutes, and you can skip anything or pause and come back anytime. Ready to start?"
+    },
+    {
+      "id": "consent",
+      "type": "conversation",
+      "label": "Confirm ready to start",
+      "goal": "Confirm the person is ready to begin the intake. Reassure them it takes about five minutes and they can skip anything. If they start telling you about their headaches, that IS consent — don't re-ask permission, just continue. If they mention any red flag — the worst headache of their life, sudden severe onset, weakness, trouble speaking, confusion, or fever with a stiff neck — treat it as urgent. If they don't want to do it now, wrap up warmly.",
+      "allowed_tools": [],
+      "eager_reply": "require_full_turn"
+    },
+    {
+      "id": "about_you",
+      "type": "conversation",
+      "label": "About you",
+      "goal": "Gather the basics in TWO short turns, saving each with save_contact_field (keys: main_reason, birth_sex, date_of_birth, dominant_hand). First ask, in their own words, the main reason they're seeking care (main_reason). Then in one friendly question take a couple of quick basics together — date of birth, and sex assigned at birth. dominant_hand is optional: only capture it if they volunteer it, otherwise save 'skipped'. Reflect back briefly, never invent a value, and capture 'unsure' or 'skipped' if they'd rather not say.",
+      "allowed_tools": [
+        "save_contact_field"
+      ]
+    },
+    {
+      "id": "headache_profile",
+      "type": "conversation",
+      "label": "Headache basics and pain",
+      "goal": "Build the pain picture in about THREE turns by grouping related questions — never ask these one at a time. Save each with save_contact_field. Turn 1 — onset & frequency: when the headaches first started and roughly how many days a month they happen (keys: onset_age, days_by_severity). Turn 2 — the pain itself: where it is, which side, and what it feels like — throbbing, pressure, stabbing (keys: pain_location, pain_side, pain_quality). Turn 3 — severity & duration: how bad the worst days are out of ten, whether it stops them doing things, and how long one lasts untreated versus after taking something (keys: severity_worst, activity_limitation, duration_without_meds, duration_with_meds). Optional, only if volunteered: severity_average, multiple_types. Ask open questions, don't read long lists aloud, capture 'unsure'/'skipped' where needed.",
+      "allowed_tools": [
+        "save_contact_field"
+      ]
+    },
+    {
+      "id": "patterns_symptoms",
+      "type": "conversation",
+      "label": "Patterns and symptoms",
+      "goal": "Cover patterns and associated symptoms in about TWO grouped turns, saving each with save_contact_field. Turn 1 — warning signs & what comes with it: any aura or warning before it starts, and symptoms alongside it like nausea, or sensitivity to light or sound (keys: aura, associated_symptoms, autonomic_signs). Turn 2 — triggers & relief: anything that tends to set them off, anything that helps, and any time-of-day or cycle pattern (keys: triggers, relievers, timing). Keep it conversational and capture 'none' or 'skipped' where that fits.",
+      "allowed_tools": [
+        "save_contact_field"
+      ]
+    },
+    {
+      "id": "history_lifestyle",
+      "type": "conversation",
+      "label": "Medical background and lifestyle",
+      "optional": true,
+      "goal": "Keep this SHORT — one or two turns. The only required items are family headache/migraine history and any relevant hormonal context, plus major medical conditions if any (keys: family_history, hormonal_context, medical_conditions). Ask them together: whether migraine runs in the family and whether they have any other health conditions. Everything else here is OPTIONAL background for a later visit — only capture what the caller volunteers, and save 'skipped' for the rest rather than asking through the list (keys: surgeries, allergies, review_of_systems, sleep_hours, exercise_days, caffeine_per_day, alcohol_per_week, substances, occupation, pregnancy). Do not spend more than two turns here.",
+      "allowed_tools": [
+        "save_contact_field"
+      ]
+    },
+    {
+      "id": "medications",
+      "type": "conversation",
+      "label": "Medications",
+      "goal": "One or two turns. Ask together whether they currently take anything for the headaches and whether they take any other regular medicines or supplements (keys: headache_medications, other_medications). Only if they mention it, capture any headache medicine they tried and stopped (key: stopped_medications, else 'skipped'). Save each with save_contact_field. Never recommend or change a medication.",
+      "allowed_tools": [
+        "save_contact_field"
+      ]
+    },
+    {
+      "id": "urgent",
+      "type": "say",
+      "say": "What you're describing may need urgent medical attention. Please contact emergency services or your doctor right away — I can't assess this for you. Take care."
+    },
+    {
+      "id": "close",
+      "type": "say",
+      "say": "Thank you so much for sharing all of that. Your profile is saved, and I'll use it to give you personalized insights and a clear summary for your doctor. Take care and have a great day. Goodbye."
+    },
+    {
+      "id": "done",
+      "type": "end"
+    }
+  ],
+  "transitions": [
+    {
+      "id": "t1",
+      "from": "greet",
+      "to": "consent",
+      "kind": "always",
+      "priority": 10
+    },
+    {
+      "id": "t2",
+      "from": "consent",
+      "to": "urgent",
+      "kind": "llm_condition",
+      "condition": "the person describes a red-flag emergency — the worst headache of their life, sudden severe onset, weakness, trouble speaking, confusion, or fever with a stiff neck",
+      "priority": 10
+    },
+    {
+      "id": "t3",
+      "from": "consent",
+      "to": "about_you",
+      "kind": "llm_condition",
+      "condition": "the person is ready to start the intake, agrees to continue, or has started talking about their headaches or answering intake questions — engaging with the questions counts as consent even without an explicit yes",
+      "priority": 20
+    },
+    {
+      "id": "t4",
+      "from": "consent",
+      "to": "close",
+      "kind": "llm_condition",
+      "condition": "the person does not want to do the intake right now",
+      "priority": 30
+    },
+    {
+      "id": "t6",
+      "from": "about_you",
+      "to": "urgent",
+      "kind": "llm_condition",
+      "condition": "the person mentions a red-flag emergency symptom",
+      "priority": 20
+    },
+    {
+      "id": "t7",
+      "from": "about_you",
+      "to": "headache_profile",
+      "kind": "llm_condition",
+      "condition": "the person has answered, declined, or already volunteered earlier in the conversation the about-you basics (main reason for care, date of birth, sex at birth)",
+      "priority": 30
+    },
+    {
+      "id": "t7_done",
+      "from": "about_you",
+      "to": "close",
+      "kind": "llm_condition",
+      "condition": "the caller says everything has been covered, has nothing more to add, or asks to wrap up, save, or end the call",
+      "priority": 25
+    },
+    {
+      "id": "t8",
+      "from": "headache_profile",
+      "to": "urgent",
+      "kind": "llm_condition",
+      "condition": "the person describes a red-flag emergency symptom",
+      "priority": 10
+    },
+    {
+      "id": "t9_done",
+      "from": "headache_profile",
+      "to": "close",
+      "kind": "llm_condition",
+      "condition": "the caller says everything has been covered, has nothing more to add, or asks to wrap up, save, or end the call",
+      "priority": 15
+    },
+    {
+      "id": "t9",
+      "from": "headache_profile",
+      "to": "patterns_symptoms",
+      "kind": "llm_condition",
+      "condition": "the headache onset, frequency, and pain description have been captured, skipped, or already volunteered earlier in the conversation",
+      "priority": 20
+    },
+    {
+      "id": "t10",
+      "from": "patterns_symptoms",
+      "to": "urgent",
+      "kind": "llm_condition",
+      "condition": "the person describes a red-flag emergency symptom",
+      "priority": 10
+    },
+    {
+      "id": "t11_done",
+      "from": "patterns_symptoms",
+      "to": "close",
+      "kind": "llm_condition",
+      "condition": "the caller says everything has been covered, has nothing more to add, or asks to wrap up, save, or end the call",
+      "priority": 15
+    },
+    {
+      "id": "t11",
+      "from": "patterns_symptoms",
+      "to": "history_lifestyle",
+      "kind": "llm_condition",
+      "condition": "the patterns, aura, triggers and relieving factors have been captured, skipped, or already volunteered earlier in the conversation",
+      "priority": 20
+    },
+    {
+      "id": "t12_done",
+      "from": "history_lifestyle",
+      "to": "close",
+      "kind": "llm_condition",
+      "condition": "the caller says everything has been covered, has nothing more to add, or asks to wrap up, save, or end the call",
+      "priority": 5
+    },
+    {
+      "id": "t12",
+      "from": "history_lifestyle",
+      "to": "medications",
+      "kind": "llm_condition",
+      "condition": "the medical background and lifestyle questions have been captured, skipped, or already volunteered earlier in the conversation",
+      "priority": 10
+    },
+    {
+      "id": "t13",
+      "from": "medications",
+      "to": "close",
+      "kind": "llm_condition",
+      "condition": "the medication questions have been captured, skipped, or already volunteered and the intake is complete — or the caller signals they are done or asks to wrap up",
+      "priority": 10
+    },
+    {
+      "id": "t14",
+      "from": "urgent",
+      "to": "done",
+      "kind": "always",
+      "priority": 10
+    },
+    {
+      "id": "t15",
+      "from": "close",
+      "to": "done",
+      "kind": "always",
+      "priority": 10
+    }
+  ]
+}
