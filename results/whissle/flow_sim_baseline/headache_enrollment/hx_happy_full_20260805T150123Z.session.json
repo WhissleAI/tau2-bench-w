@@ -1,0 +1,282 @@
+{
+  "task_id": "hx_happy_full",
+  "agent_type": "headache_enrollment",
+  "mode": "voice",
+  "ts": "20260805T150123Z",
+  "agent_id": "7bfd23dc-dbe5-4ff3-a38f-c87016662164",
+  "conversation_id": "6f3a0a54-6ef7-4f16-856d-bd3ab8c0be3c",
+  "voice_room": "bench-65c2980e-f48c-4306-a64a-d3ceccce2a1a-5aab4315bf22",
+  "scenario": "full_intake",
+  "persona": "Maya Rao, 34, cooperative and articulate, has ~5 minutes and is happy to answer everything.",
+  "goal": "Complete a full headache intake. Answer each question naturally as it's asked — location, quality, triggers, sleep, meds — and let Ember close when done.",
+  "compliance_spec": null,
+  "greeting": "Hello! How can I help you today?",
+  "outcome": {
+    "task_success": null,
+    "task_success_reason": "not run",
+    "ended": false,
+    "final_state": null
+  },
+  "metadata": {
+    "num_turns": 2,
+    "start_state": "greet",
+    "latencies_ms": [],
+    "audio": null,
+    "signals_summary": {
+      "total": 0,
+      "by_kind": {},
+      "turns_with_signals": 0,
+      "hesitation_turns": [],
+      "metadata_frames": 0,
+      "turns_with_metadata": 0,
+      "emotions_seen": {},
+      "intents_seen": {}
+    },
+    "setup_error": "ModelError: models/chat failed after 6 attempts: HTTP 502: {\"detail\":\"LLM call failed: all LLM providers failed; last error: gemini returned an empty completion\"}"
+  },
+  "transcript": "AGENT: Hello! How can I help you today?\nUSER: Hi, yes, I'm calling about these headaches I've been getting and I'm hoping you can help me figure out what's going on.\nAGENT: I'm here whenever you're ready — no rush at all. Great, thanks for calling. Just so you know, I'm an AI assistant and this call is recorded for quality. What brings you in today? I hear you — headaches, got it. Just\nUSER: Yeah, so I've been dealing with these pretty intense headaches for about two weeks now and they're really affecting my work, so I figured I should try to get some answers.\nAGENT: ",
+  "turns": [
+    {
+      "n": 1,
+      "user_msg": "Hi, yes, I'm calling about these headaches I've been getting and I'm hoping you can help me figure out what's going on.",
+      "agent_reply": "I'm here whenever you're ready — no rush at all. Great, thanks for calling. Just so you know, I'm an AI assistant and this call is recorded for quality. What brings you in today? I hear you — headaches, got it. Just",
+      "ended": false,
+      "current_state": null,
+      "tools_used": [],
+      "tool_calls_in_reply": [],
+      "engine_turn": null,
+      "steps": [],
+      "drift": {},
+      "signals": [],
+      "signal_kinds": [],
+      "user_metadata": [],
+      "metadata_final": null,
+      "hesitant_input": true
+    },
+    {
+      "n": 2,
+      "user_msg": "Yeah, so I've been dealing with these pretty intense headaches for about two weeks now and they're really affecting my work, so I figured I should try to get some answers.",
+      "agent_reply": "",
+      "ended": false,
+      "current_state": null,
+      "tools_used": [],
+      "tool_calls_in_reply": [],
+      "engine_turn": null,
+      "steps": [],
+      "drift": {},
+      "signals": [],
+      "signal_kinds": [],
+      "user_metadata": [],
+      "metadata_final": null,
+      "hesitant_input": true
+    }
+  ],
+  "flow_trace": [],
+  "states_visited": [],
+  "analyzer_findings": [
+    {
+      "type": "stuck_termination",
+      "severity": "high",
+      "detail": "session failed to run: ModelError: models/chat failed after 6 attempts: HTTP 502: {\"detail\":\"LLM call failed: all LLM providers failed; last error: gemini returned an empty completion\"}",
+      "state": null,
+      "transition": null,
+      "evidence": {}
+    }
+  ],
+  "flow_spec": {
+    "states": [
+      {
+        "id": "greet",
+        "say": "Hi, I'm Ember. I'd love to understand your headaches a little better. I'll ask you a few questions by voice — it takes about five minutes, and you can skip anything or pause and come back anytime. Ready to start?",
+        "type": "say"
+      },
+      {
+        "id": "consent",
+        "goal": "Confirm the person is ready to begin the intake. Reassure them it takes about five minutes and they can skip anything. If they mention any red flag — the worst headache of their life, sudden severe onset, weakness, trouble speaking, confusion, or fever with a stiff neck — treat it as urgent. If they don't want to do it now, wrap up warmly.",
+        "type": "conversation",
+        "label": "Confirm ready to start",
+        "allowed_tools": []
+      },
+      {
+        "id": "about_you",
+        "goal": "Gently gather the basics and save each with save_contact_field, one field per call, using exactly these keys: main_reason (in their words, the main reason they're seeking care), birth_sex, dominant_hand, date_of_birth. Ask openly, reflect back briefly, and never invent a value — capture 'unsure' or 'skipped' if they'd rather not say.",
+        "type": "conversation",
+        "label": "About you",
+        "allowed_tools": [
+          "save_contact_field"
+        ]
+      },
+      {
+        "id": "headache_profile",
+        "goal": "Capture the headache history and pain picture, saving each with save_contact_field one field per call using these keys: onset_age, days_by_severity, multiple_types, pain_location, pain_side, pain_quality, severity_worst, severity_average, activity_limitation, duration_without_meds, duration_with_meds. Ask open questions, don't read long lists aloud, and capture 'unsure' or 'skipped' where needed.",
+        "type": "conversation",
+        "label": "Headache basics and pain",
+        "allowed_tools": [
+          "save_contact_field"
+        ]
+      },
+      {
+        "id": "patterns_symptoms",
+        "goal": "Explore patterns and associated symptoms, saving each with save_contact_field one field per call using these keys: aura, associated_symptoms, triggers, relievers, timing, autonomic_signs. Keep it conversational and capture 'none' or 'skipped' where that fits.",
+        "type": "conversation",
+        "label": "Patterns and symptoms",
+        "allowed_tools": [
+          "save_contact_field"
+        ]
+      },
+      {
+        "id": "history_lifestyle",
+        "goal": "Cover medical background, a quick body-system check, and lifestyle, saving each with save_contact_field one field per call using these keys: medical_conditions, surgeries, allergies, family_history, hormonal_context, review_of_systems, sleep_hours, exercise_days, caffeine_per_day, alcohol_per_week, substances, occupation, pregnancy. Keep the body-system check light and fast.",
+        "type": "conversation",
+        "label": "Medical background and lifestyle",
+        "allowed_tools": [
+          "save_contact_field"
+        ]
+      },
+      {
+        "id": "medications",
+        "goal": "Ask about medications, saving each with save_contact_field one field per call using these keys: headache_medications (anything taken specifically for headaches), other_medications (other regular medicines or supplements), stopped_medications (headache medicines tried and stopped). Never recommend or change a medication.",
+        "type": "conversation",
+        "label": "Medications",
+        "allowed_tools": [
+          "save_contact_field"
+        ]
+      },
+      {
+        "id": "urgent",
+        "say": "What you're describing may need urgent medical attention. Please contact emergency services or your doctor right away — I can't assess this for you. Take care.",
+        "type": "say"
+      },
+      {
+        "id": "close",
+        "say": "Thank you so much for sharing all of that. Your profile is saved, and I'll use it to give you personalized insights and a clear summary for your doctor. Take care and have a great day. Goodbye.",
+        "type": "say"
+      },
+      {
+        "id": "done",
+        "type": "end"
+      }
+    ],
+    "enabled": true,
+    "version": 1,
+    "settings": {
+      "on_guard_trip": "stay",
+      "fallback_state": null,
+      "max_visits_per_state": 6,
+      "max_transitions_per_call": 40
+    },
+    "variables": [],
+    "start_state": "greet",
+    "transitions": [
+      {
+        "id": "t1",
+        "to": "consent",
+        "from": "greet",
+        "kind": "always",
+        "priority": 10
+      },
+      {
+        "id": "t2",
+        "to": "urgent",
+        "from": "consent",
+        "kind": "llm_condition",
+        "priority": 10,
+        "condition": "the person describes a red-flag emergency — the worst headache of their life, sudden severe onset, weakness, trouble speaking, confusion, or fever with a stiff neck"
+      },
+      {
+        "id": "t3",
+        "to": "about_you",
+        "from": "consent",
+        "kind": "llm_condition",
+        "priority": 20,
+        "condition": "the person is ready to start the intake"
+      },
+      {
+        "id": "t4",
+        "to": "close",
+        "from": "consent",
+        "kind": "llm_condition",
+        "priority": 30,
+        "condition": "the person does not want to do the intake right now"
+      },
+      {
+        "id": "t6",
+        "to": "urgent",
+        "from": "about_you",
+        "kind": "llm_condition",
+        "priority": 20,
+        "condition": "the person mentions a red-flag emergency symptom"
+      },
+      {
+        "id": "t7",
+        "to": "headache_profile",
+        "from": "about_you",
+        "kind": "llm_condition",
+        "priority": 30,
+        "condition": "the person has answered or chosen to skip the about-you questions"
+      },
+      {
+        "id": "t8",
+        "to": "urgent",
+        "from": "headache_profile",
+        "kind": "llm_condition",
+        "priority": 10,
+        "condition": "the person describes a red-flag emergency symptom"
+      },
+      {
+        "id": "t9",
+        "to": "patterns_symptoms",
+        "from": "headache_profile",
+        "kind": "llm_condition",
+        "priority": 20,
+        "condition": "the headache history and pain description have been captured or skipped"
+      },
+      {
+        "id": "t10",
+        "to": "urgent",
+        "from": "patterns_symptoms",
+        "kind": "llm_condition",
+        "priority": 10,
+        "condition": "the person describes a red-flag emergency symptom"
+      },
+      {
+        "id": "t11",
+        "to": "history_lifestyle",
+        "from": "patterns_symptoms",
+        "kind": "llm_condition",
+        "priority": 20,
+        "condition": "the patterns, aura, triggers and relieving factors have been captured or skipped"
+      },
+      {
+        "id": "t12",
+        "to": "medications",
+        "from": "history_lifestyle",
+        "kind": "llm_condition",
+        "priority": 10,
+        "condition": "the medical background and lifestyle questions have been captured or skipped"
+      },
+      {
+        "id": "t13",
+        "to": "close",
+        "from": "medications",
+        "kind": "llm_condition",
+        "priority": 10,
+        "condition": "the medication questions have been captured or skipped and the intake is complete"
+      },
+      {
+        "id": "t14",
+        "to": "done",
+        "from": "urgent",
+        "kind": "always",
+        "priority": 10
+      },
+      {
+        "id": "t15",
+        "to": "done",
+        "from": "close",
+        "kind": "always",
+        "priority": 10
+      }
+    ]
+  }
+}
