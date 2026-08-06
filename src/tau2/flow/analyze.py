@@ -82,6 +82,10 @@ DEFAULT_SEVERITY = {
     "stuck_termination": "medium",
     "agent_no_close": "high",       # agent's own failure to close a met goal
     "turn_cap_exceeded": "medium",  # flow genuinely too long for its budget
+    # Infrastructure failure (transport / provider / credit outage): the session
+    # never measured the flow. Emitted by the runner, excluded from flow metrics
+    # in aggregation — its own bucket, never a stuck_termination.
+    "infra_fail": "high",
     "coverage": "info",
 }
 

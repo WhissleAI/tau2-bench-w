@@ -8,6 +8,7 @@ layer.  This module provides a thin helper that manages a dedicated
 """
 
 import asyncio
+import concurrent.futures
 import threading
 import time
 from typing import Any, Optional, TypeVar
@@ -90,3 +91,16 @@ class BackgroundAsyncLoop:
             )
         future = asyncio.run_coroutine_threadsafe(coro, self._loop)
         return future.result(timeout=timeout)
+
+    def submit(self, coro: Any) -> "concurrent.futures.Future":
+        """Schedule *coro* on the background loop WITHOUT blocking.
+
+        Returns the :class:`concurrent.futures.Future` so the caller can overlap
+        synchronous work (e.g. the next TTS request) with the coroutine's
+        execution and ``.result()`` it later. Raises RuntimeError if the loop is
+        not running."""
+        if self._loop is None:
+            raise RuntimeError(
+                "BackgroundAsyncLoop is not running. Call start() first."
+            )
+        return asyncio.run_coroutine_threadsafe(coro, self._loop)
