@@ -37,6 +37,7 @@ load_dotenv()
 
 DEFAULT_BASE = "https://aws-gateway-backend.whissle.ai/bot"
 END_SENTINEL = "[[END]]"
+GOAL_SENTINEL = "[[GOAL_MET]]"
 
 
 class ModelError(RuntimeError):
@@ -113,6 +114,12 @@ class Task:
     scenario: str = ""                       # e.g. "reschedule", "dispute"
     compliance: Optional[dict] = None        # forbidden-before-gate spec, per type
     max_turns: int = 14
+    # How many cooperative turns the sim grants AFTER its goal is met for the AGENT
+    # to deliver its closing and reach flow_end. Within the allowance the sim keeps
+    # responding naturally (acknowledgements, "no, that's all", returning the
+    # goodbye); if the agent still hasn't closed when it runs out, that is the
+    # agent's failure (analyze.py classifies it ``agent_no_close``), not the sim's.
+    post_goal_turns: int = 4
 
     @staticmethod
     def from_dict(agent_type: str, d: dict, defaults: dict) -> "Task":
@@ -124,6 +131,8 @@ class Task:
             scenario=d.get("scenario", ""),
             compliance=d.get("compliance") or defaults.get("compliance"),
             max_turns=d.get("max_turns", defaults.get("max_turns", 14)),
+            post_goal_turns=d.get("post_goal_turns",
+                                  defaults.get("post_goal_turns", 4)),
         )
 
 
@@ -149,9 +158,21 @@ does.
 know (make up plausible specifics — name, dates, amounts — and stay consistent).
 - Do not be maximally helpful or robotic; behave like your persona (impatient, \
 confused, skeptical, etc. as described).
-- When your goal is achieved, OR the agent has clearly refused/cannot help, OR you \
-would naturally hang up, end your final utterance and then append the token \
-{sentinel} on its own at the very end. Do not append {sentinel} before you are done.
+
+# Ending the call (follow this exactly)
+- The moment your goal has been achieved, append the token {goal_sentinel} at the \
+very end of that utterance (once only). This does NOT end the call.
+- After your goal is achieved, do NOT go silent and do NOT hang up on your own. A \
+real caller stays on the line for the wrap-up: give brief natural acknowledgements, \
+answer "anything else?" with a simple no-thanks, and return the agent's goodbye. \
+Keep these closing turns short (a few words).
+- Append the token {sentinel} at the very end of an utterance ONLY when the call is \
+actually over: the agent has delivered its goodbye/closing (return the goodbye and \
+append it), OR the agent has clearly refused / cannot help, OR your persona would \
+genuinely abandon the call. Never append {sentinel} merely because your goal was \
+just achieved — let the agent close first.
+- If the agent says nothing (silence), prompt them once ("Hello? Are you still \
+there?") rather than hanging up immediately.
 """
 
 
@@ -160,11 +181,13 @@ class UserSimulator:
     task: Task
     model: WhissleModel
     history: list[dict[str, str]] = field(default_factory=list)  # agent<->user turns
-    done: bool = False
+    done: bool = False        # the CALL is over (agent closed / refused / abandoned)
+    goal_met: bool = False    # the sim's goal is satisfied (call may still be open)
 
     def _system(self) -> dict[str, str]:
         return {"role": "system", "content": USER_SYSTEM_TEMPLATE.format(
-            persona=self.task.persona, goal=self.task.goal, sentinel=END_SENTINEL)}
+            persona=self.task.persona, goal=self.task.goal,
+            sentinel=END_SENTINEL, goal_sentinel=GOAL_SENTINEL)}
 
     def first_utterance(self) -> str:
         """Open the call (the user speaks first in the text channel)."""
@@ -175,8 +198,13 @@ class UserSimulator:
 
     def next_utterance(self, agent_reply: str) -> str:
         """Given the agent's latest reply, produce the next user turn."""
+        # An EMPTY agent reply (the agent stalled / produced nothing) must not be
+        # sent as empty content — surface the silence so the sim reacts naturally
+        # (prompting once instead of hanging up), per its closing rules.
+        content = (agent_reply or "").strip() or \
+            "(The agent said nothing — silence on the line.)"
         # Map: agent reply -> incoming "user" msg; our prior lines are "assistant".
-        self.history.append({"role": "user", "content": agent_reply})
+        self.history.append({"role": "user", "content": content})
         msgs = [self._system(), *self.history]
         return self._gen(msgs)
 
@@ -185,7 +213,10 @@ class UserSimulator:
         text = raw
         if END_SENTINEL in raw:
             self.done = True
-            text = raw.replace(END_SENTINEL, "").strip()
+            text = text.replace(END_SENTINEL, "").strip()
+        if GOAL_SENTINEL in text:
+            self.goal_met = True
+            text = text.replace(GOAL_SENTINEL, "").strip()
         # Strip any accidental role label the model prepended.
         text = re.sub(r"^\s*(user|customer)\s*:\s*", "", text, flags=re.I)
         self.history.append({"role": "assistant", "content": text})

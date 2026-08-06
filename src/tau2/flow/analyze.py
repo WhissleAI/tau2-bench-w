@@ -30,7 +30,20 @@ engine can exhibit:
                        in flow.variables.
   termination          never reached an end within the cap (stuck / loop), OR ended
                        prematurely (before the goal), OR dead-ended (final non-end
-                       state with no outgoing satisfiable transition).
+                       state with no outgoing satisfiable transition). Non-ending
+                       sessions are further CLASSIFIED (so the agent's fault is
+                       separable from measurement artifacts):
+                         agent_no_close     the goal was met and the sim stayed
+                                            cooperative through its post-goal
+                                            allowance (or the agent replied EMPTY),
+                                            but the agent never delivered its
+                                            closing / reached flow_end — the
+                                            agent's failure to close.
+                         turn_cap_exceeded  the goal was NOT yet met when the turn
+                                            budget ran out — the flow is genuinely
+                                            too long for its budget.
+                         stuck_termination  everything else (no trace, setup
+                                            failure, judge unavailable, …).
   say_fidelity         a ``say`` state was entered but its exact text was not emitted.
   stuck_loop           the same state was re-entered >= N times.
   compliance           (parameterized) a forbidden disclosure occurred before a
@@ -67,6 +80,8 @@ DEFAULT_SEVERITY = {
     "stuck_loop": "medium",
     "premature_termination": "medium",
     "stuck_termination": "medium",
+    "agent_no_close": "high",       # agent's own failure to close a met goal
+    "turn_cap_exceeded": "medium",  # flow genuinely too long for its budget
     "coverage": "info",
 }
 
@@ -260,12 +275,26 @@ def analyze_session(
     tools_used_by_turn: Optional[dict[int, list[str]]] = None,
     ended: bool = False,
     goal_met: Optional[bool] = None,
+    sim_goal_met: bool = False,
+    post_goal_turns_driven: int = 0,
+    turn_cap_hit: bool = False,
+    empty_reply_turns: Optional[list[int]] = None,
     stuck_loop_threshold: int = 3,
     compliance: Optional[dict[str, Any]] = None,
     transcript_lower: str = "",
 ) -> list[Finding]:
     """Run every deterministic check over one session. ``goal_met`` (from the LLM
     task-success judge, if available) sharpens the termination checks but is optional.
+
+    Termination-classification inputs (all optional; absent -> legacy behavior):
+      sim_goal_met            the user-sim itself signaled its goal satisfied
+                              ([[GOAL_MET]] sentinel) — a second, judge-independent
+                              goal signal.
+      post_goal_turns_driven  how many cooperative turns the sim kept responding
+                              AFTER the goal was met (the drive-through-closing
+                              allowance actually consumed).
+      turn_cap_hit            the runner exhausted the per-task turn budget.
+      empty_reply_turns       turn numbers on which the agent replied EMPTY.
     """
     findings: list[Finding] = []
     states = _states_by_id(flow)
@@ -527,6 +556,7 @@ def analyze_session(
     last_state = enters[-1] if enters else None
     reached_end = bool(end_ids & set(enters)) or any(
         s.get("kind") == "flow_end" for s in steps)
+    empty_replies = list(empty_reply_turns or [])
     if not reached_end:
         if last_state and last_state not in end_ids:
             # dead-end vs merely-stuck: does the final state have any outgoing edge?
@@ -537,10 +567,19 @@ def analyze_session(
                     f"and has NO outgoing transitions.",
                     state=last_state)
             else:
-                add("stuck_termination",
-                    f"session never reached an end state (cap/stuck); final state "
-                    f"{last_state!r} with {len(outgoing)} outgoing edge(s) un-fired.",
-                    state=last_state, evidence={"outgoing": [t.get("id") for t in outgoing]})
+                _add_no_end_finding(
+                    add, last_state=last_state, outgoing=outgoing,
+                    goal_met=goal_met, sim_goal_met=sim_goal_met,
+                    post_goal_turns_driven=post_goal_turns_driven,
+                    turn_cap_hit=turn_cap_hit, empty_replies=empty_replies)
+        elif last_state is None and enters == [] and steps:
+            # A trace with steps but no state_enter at all — classify identically so
+            # the failure mode is not silently dropped.
+            _add_no_end_finding(
+                add, last_state=None, outgoing=[],
+                goal_met=goal_met, sim_goal_met=sim_goal_met,
+                post_goal_turns_driven=post_goal_turns_driven,
+                turn_cap_hit=turn_cap_hit, empty_replies=empty_replies)
     elif goal_met is False:
         add("premature_termination",
             "flow reached an end state but the simulated user's goal was NOT met "
@@ -552,6 +591,53 @@ def analyze_session(
         findings += _compliance_findings(flow, steps, compliance, transcript_lower)
 
     return findings
+
+
+def _add_no_end_finding(add, *, last_state: Optional[str], outgoing: list[dict],
+                        goal_met: Optional[bool], sim_goal_met: bool,
+                        post_goal_turns_driven: int, turn_cap_hit: bool,
+                        empty_replies: list[int]) -> None:
+    """Classify a session that never reached an end state into one of three DISTINCT
+    finding types, so the agent's own failure to close is separable from a flow that
+    is genuinely too long and from residual/unknown stalls:
+
+      agent_no_close     the goal WAS met (per the LLM judge and/or the sim's own
+                         [[GOAL_MET]] signal) and the sim demonstrably cooperated —
+                         it kept responding after the goal (post_goal_turns_driven
+                         >= 1) or the agent went EMPTY on it — yet the agent never
+                         delivered its closing. The agent's fault; HIGH severity.
+      turn_cap_exceeded  the turn budget ran out BEFORE the goal was met — the flow
+                         is too long for its budget (or the budget is too small).
+      stuck_termination  everything else (goal unknown/judge failed and no cap hit,
+                         goal met on the very last turn with no closing chance, …).
+    """
+    goal_ok = (goal_met is True) or sim_goal_met
+    sim_cooperated = post_goal_turns_driven >= 1 or bool(empty_replies)
+    where = (f"final state {last_state!r} with {len(outgoing)} outgoing edge(s) "
+             f"un-fired" if last_state else "no state_enter recorded")
+    evidence = {
+        "goal_met_judge": goal_met, "sim_goal_met": sim_goal_met,
+        "post_goal_turns_driven": post_goal_turns_driven,
+        "turn_cap_hit": turn_cap_hit, "empty_reply_turns": empty_replies,
+        "outgoing": [t.get("id") for t in outgoing],
+    }
+    if goal_ok and sim_cooperated:
+        empties = (f"; the agent replied EMPTY on turn(s) {empty_replies}"
+                   if empty_replies else "")
+        add("agent_no_close",
+            f"goal met and the simulated user stayed cooperative for "
+            f"{post_goal_turns_driven} post-goal turn(s), but the agent never "
+            f"delivered its closing / reached flow_end{empties}; {where}.",
+            state=last_state, evidence=evidence)
+    elif turn_cap_hit and not goal_ok:
+        add("turn_cap_exceeded",
+            f"turn budget exhausted before the goal was met — the flow is genuinely "
+            f"too long for its budget; {where}.",
+            state=last_state, evidence=evidence)
+    else:
+        add("stuck_termination",
+            f"session never reached an end state (cap/stuck); {where}.",
+            state=last_state, evidence=evidence)
 
 
 def _priority(t: dict) -> int:

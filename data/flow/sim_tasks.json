@@ -1,11 +1,13 @@
 {
   "id": "flow_sim_tasks",
   "title": "simulated-user persona+goal task sets (branch coverage across 5 flow types)",
-  "description": "Persona+goal tasks that drive an LLM simulated user through flow-enabled agents. Each type spans happy-path AND edges so the sessions exercise every branch the declared flow can take. The engine (tau2.flow.simulate) creates a throwaway agent of the type supplying NO flow (default flow auto-attaches, enabled), drives a full simulated conversation, then audits the trace vs the declared flow.",
+  "description": "Persona+goal tasks that drive an LLM simulated user through flow-enabled agents. Each type spans happy-path AND edges so the sessions exercise every branch the declared flow can take. The engine (tau2.flow.simulate) creates a throwaway agent of the type supplying NO flow (default flow auto-attaches, enabled), drives a full simulated conversation, then audits the trace vs the declared flow. Turn budgets are per-flow: 'max_turns' may be declared at the top level (global fallback), per type block (per-agent default sized to that flow's length), and per task (scenario override) — most specific wins. 'post_goal_turns' (same resolution) is the cooperative allowance the sim grants AFTER its goal is met for the agent to deliver its closing.",
   "max_turns": 24,
+  "post_goal_turns": 4,
   "types": {
     "dental_receptionist": {
       "system_prompt": "You are a dental clinic receptionist. Follow the current conversation-flow state instructions exactly and only use the tools you are permitted in the current state.",
+      "max_turns": 18,
       "tasks": [
         {
           "id": "dental_happy_book",
@@ -51,6 +53,7 @@
         },
         {
           "id": "dental_hours_only",
+          "max_turns": 10,
           "scenario": "just-asking",
           "persona": "Karthik S, prospective patient, just gathering info.",
           "goal": "Ask only for the clinic's opening hours and location. Do NOT book anything; thank them and hang up once you have the hours."
@@ -390,6 +393,7 @@
     },
     "headache_enrollment": {
       "system_prompt": "You are Ember, a warm, calm health assistant for FIRY guiding a person through a SPOKEN headache intake. You are NOT a clinician: never diagnose, name a headache type as a diagnosis, or suggest treatment. One question at a time, short natural sentences, reflect back briefly. Save each fact with save_contact_field using granular keys. If they mention a red flag (worst headache of their life, sudden severe onset, weakness, trouble speaking, confusion, fever with stiff neck) calmly advise urgent medical attention and do not assess it yourself. Follow the conversation-flow stages; let people skip anything.",
+      "max_turns": 28,
       "tasks": [
         {
           "id": "hx_happy_full",
@@ -399,6 +403,7 @@
         },
         {
           "id": "hx_red_flag_urgent",
+          "max_turns": 14,
           "scenario": "urgent_escalation",
           "persona": "Tom Reilly, 47, anxious. Early on you describe 'the worst headache of my life that came on suddenly a few hours ago' with some trouble speaking.",
           "goal": "Mention the sudden worst-ever headache and speech trouble early. You want to know if it's serious. (Ember must flag this as possibly urgent and advise emergency care — do NOT let it just continue the routine intake.)"
@@ -435,6 +440,7 @@
         },
         {
           "id": "hx_keep_it_quick",
+          "max_turns": 18,
           "scenario": "time_pressured",
           "persona": "Nina Park, 45, in a hurry. You ask to keep it short and give brief answers.",
           "goal": "Ask Ember to keep it quick, give short answers to the core questions. Confirm Ember prioritizes and still reaches a clean close within the turn budget."

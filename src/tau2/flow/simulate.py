@@ -15,8 +15,10 @@ Pipeline for one session:
   2. Read it back (``GET /api/agents/{id}``) to get the DECLARED flow spec — the
      contract the trace is audited against.
   3. Drive a simulated conversation: user-sim opens, agent replies, user-sim reacts,
-     … until the agent flow ``ended``, the user is done (goal met/refused), or a hard
-     turn cap (~14) is hit.
+     … until the agent flow ``ended``, the user is done (the AGENT closed / refused —
+     goal-met alone does NOT stop the sim: it keeps cooperating for a small post-goal
+     allowance so the agent can deliver its closing), the post-goal allowance is
+     exhausted, or the per-task turn budget (fixture-declared, default 24) is hit.
   4. Pull the full accumulated step trace (``GET /api/agents/{id}/flow/trace``).
   5. Judge task success (LLM) and, optionally, per-turn goal-drift (LLM).
   6. Analyze the trace vs the declared flow → typed findings.
@@ -70,12 +72,21 @@ def load_tasks(agent_type: str) -> list[Task]:
     if block is None:
         raise KeyError(f"no tasks for agent_type={agent_type!r} in {TASKS_FIXTURE}")
     defaults = {"compliance": block.get("compliance"),
-                # 14 was too low for VOICE: spoken turns burn more of the budget than
-                # text, so flows hit the cap before their terminal flow_end (the
-                # dominant `ended=False` finding in the 2026-08-04 5x5 voice bench).
-                # 24 gives voice flows room to reach termination; text ends earlier via
-                # ended/done so it's unaffected. Override per-run with --max-turns.
-                "max_turns": d.get("max_turns", 24)}
+                # Turn budget resolution (most specific wins):
+                #   task.max_turns  >  type block max_turns  >  fixture top-level (24).
+                # One-size-fits-all was a measurement confound: a 10-state intake flow
+                # (headache_enrollment) needs far more spoken turns than a 3-question
+                # booking, so a global cap under-budgets long flows (false
+                # "never ended") and over-budgets short ones. Declare the budget where
+                # the flow length is known — per type / per task in sim_tasks.json.
+                # (24 remains the top-level fallback; 14 was too low for VOICE, the
+                # dominant `ended=False` finding in the 2026-08-04 5x5 voice bench.)
+                # Override per-run with --max-turns.
+                "max_turns": block.get("max_turns", d.get("max_turns", 24)),
+                # Post-goal allowance: cooperative turns the sim grants the agent to
+                # deliver its closing after the goal is met (same resolution order).
+                "post_goal_turns": block.get("post_goal_turns",
+                                             d.get("post_goal_turns", 4))}
     return [Task.from_dict(agent_type, t, defaults) for t in block["tasks"]]
 
 
@@ -215,6 +226,13 @@ def run_session(
     vt: Optional[VoiceTransport] = None
     greeting: str = ""
     audio_evidence: dict[str, Any] = {}
+    # Termination bookkeeping for the analyzer's agent_no_close / turn_cap_exceeded
+    # classification (see analyze._add_no_end_finding).
+    goal_met_turn: Optional[int] = None    # turn whose agent reply satisfied the goal
+    empty_reply_turns: list[int] = []      # turns where the agent replied EMPTY
+    turn_cap_hit = False
+    end_reason: Optional[str] = None
+    sim: Optional[UserSimulator] = None
 
     _emit({"event": "session_start", "task_id": task.id, "agent_type": task.agent_type,
            "scenario": task.scenario, "persona": task.persona, "goal": task.goal, "ts": ts})
@@ -292,12 +310,33 @@ def run_session(
             turns.append(rec)
             _emit({"event": "turn", **rec})
 
+            if not (res.reply or "").strip():
+                empty_reply_turns.append(i)
+
             if ended or sim.done:
-                _emit({"event": "conversation_end",
-                       "reason": "flow_ended" if ended else "user_done", "turn": i})
+                end_reason = "flow_ended" if ended else "user_done"
+                _emit({"event": "conversation_end", "reason": end_reason, "turn": i})
+                break
+            # Drive-through-closing: once the sim's goal is met it keeps cooperating
+            # (acknowledgements / "no, that's all" / returning the goodbye) so the
+            # AGENT gets a fair chance to deliver its closing and reach flow_end —
+            # but only up to task.post_goal_turns extra turns. Exhausting the
+            # allowance without a close is the agent's failure (agent_no_close), not
+            # the sim hanging up early.
+            if (goal_met_turn is not None
+                    and i - goal_met_turn >= task.post_goal_turns):
+                end_reason = "post_goal_allowance_exhausted"
+                _emit({"event": "conversation_end", "reason": end_reason, "turn": i,
+                       "goal_met_turn": goal_met_turn,
+                       "post_goal_turns": task.post_goal_turns})
                 break
             user_msg = sim.next_utterance(res.reply)
+            if sim.goal_met and goal_met_turn is None:
+                goal_met_turn = i  # the goal was satisfied as of turn i's reply
+                _emit({"event": "goal_met", "turn": i})
         else:
+            end_reason = "turn_cap"
+            turn_cap_hit = True
             _emit({"event": "conversation_end", "reason": "turn_cap",
                    "turn": task.max_turns})
 
@@ -385,10 +424,15 @@ def run_session(
             evidence={"room": vt.room if vt else None, "turns": len(turns),
                       "latencies_ms": audio_evidence.get("latencies_ms", [])}))
     elif flow_spec:
+        post_goal_driven = (len(turns) - goal_met_turn) if goal_met_turn else 0
         findings = analyze_session(
             flow_spec, full_steps,
             tools_used_by_turn=tools_used_by_turn,
             ended=ended, goal_met=success.get("success"),
+            sim_goal_met=bool(sim and sim.goal_met),
+            post_goal_turns_driven=max(0, post_goal_driven),
+            turn_cap_hit=turn_cap_hit,
+            empty_reply_turns=empty_reply_turns,
             compliance=task.compliance,
             transcript_lower="\n".join(
                 (t["agent_reply"] or "") for t in turns).lower(),
@@ -428,6 +472,11 @@ def run_session(
         "greeting": greeting or None,
         "audio": audio_evidence or None,
         "num_turns": len(turns), "ended": ended,
+        "end_reason": end_reason,
+        "goal_met_turn": goal_met_turn,
+        "post_goal_turns_driven": max(0, (len(turns) - goal_met_turn)
+                                      if goal_met_turn else 0),
+        "empty_reply_turns": empty_reply_turns,
         "start_state": flow_spec.get("start_state"),
         "final_state": turns[-1]["current_state"] if turns else None,
         "task_success": success.get("success"),
@@ -473,8 +522,16 @@ def run_session(
             "outcome": {"task_success": success.get("success"),
                         "task_success_reason": success.get("reason"),
                         "ended": ended,
+                        "end_reason": end_reason,
+                        "goal_met_turn": goal_met_turn,
+                        "sim_goal_met": bool(sim and sim.goal_met),
+                        "post_goal_turns_driven": result["post_goal_turns_driven"],
+                        "empty_reply_turns": empty_reply_turns,
                         "final_state": turns[-1]["current_state"] if turns else None},
             "metadata": {"num_turns": len(turns),
+                         "max_turns_budget": task.max_turns,
+                         "post_goal_turns_allowance": task.post_goal_turns,
+                         "turn_cap_hit": turn_cap_hit,
                          "start_state": flow_spec.get("start_state"),
                          "latencies_ms": (audio_evidence or {}).get("latencies_ms", []),
                          "audio": audio_evidence or None,

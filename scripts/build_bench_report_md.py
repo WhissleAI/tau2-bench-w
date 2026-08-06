@@ -32,6 +32,12 @@ def _reached_end(s):
 _INFRA_MARKERS = ("failed to run", "models/chat failed", "http 502", "http 503",
                   "http 504", "modelerror")
 
+# The termination-failure taxonomy (F1): sharpened types emitted by newer analyzer
+# runs, plus the legacy catch-all older session JSONs carry. dead_end is included so
+# stall-state attribution keeps covering the no-outgoing-edge case.
+_TERMINATION_TYPES = ("agent_no_close", "turn_cap_exceeded", "stuck_termination",
+                      "dead_end")
+
 
 def _infra_failed(s):
     """A session ABORTED by a harness/infra error — the LLM user-sim driver couldn't
@@ -124,10 +130,26 @@ def build(results_dir, title, label):
     stuck = [s for s in all_s if not _reached_end(s)]
     W(f"- **{len(stuck)}/{ran}** executed sessions did not reach a clean close "
       f"(the termination target: closing-terminal + guard-net fallback + shorter intake).")
+    # Classified termination taxonomy (F1). Newer sessions carry the split finding
+    # types; older session JSONs only have `stuck_termination` — both are counted, so
+    # pre-taxonomy result sets still render (backward compat with the #24 format).
+    term = Counter()
+    for s in stuck:
+        for f in s.get("analyzer_findings") or []:
+            if f.get("type") in _TERMINATION_TYPES:
+                term[f.get("type")] += 1
+    if term:
+        legend = {"agent_no_close": "goal met, sim cooperative — the AGENT never closed",
+                  "turn_cap_exceeded": "turn budget ran out before the goal — flow too long",
+                  "stuck_termination": "other/unclassified stall (incl. pre-taxonomy sessions)",
+                  "dead_end": "final non-end state with no outgoing transitions"}
+        W("- **Termination classification** (non-closing sessions):")
+        for t, c in term.most_common():
+            W(f"  - `{t}` ×{c} — {legend.get(t, '')}")
     # length pressure manifests as sticking in a collector state before the turn cap,
     # not always as >=20 turns; report the states where sessions stall.
     stall = Counter(f.get("state") for s in stuck for f in (s.get("analyzer_findings") or [])
-                    if f.get("type") == "stuck_termination" and f.get("state"))
+                    if f.get("type") in _TERMINATION_TYPES and f.get("state"))
     if stall:
         W("- **Stall states** (where executed sessions stuck without closing): "
           + ", ".join(f"`{s}`×{c}" for s, c in stall.most_common()))
