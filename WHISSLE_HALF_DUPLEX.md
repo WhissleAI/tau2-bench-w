@@ -85,7 +85,15 @@ ELEVENLABS_API_KEY=<user-simulator TTS — the "caller" voice>
 Install deps (once):
 
 ```bash
-uv sync      # pulls livekit-agents / livekit.rtc, needed for the room client
+uv sync --extra voice   # livekit-agents / livekit.rtc, needed for the room client
+```
+
+`livekit-agents` lives in the `voice` extra, **not** the base dependency set — a
+plain `uv sync` leaves it out and every task then fails the same way:
+
+```
+livekit.rtc is required for the whissle provider but failed to import:
+No module named 'livekit'
 ```
 
 ---
@@ -164,3 +172,4 @@ Both are live on the AWS backend (`aws-gateway-backend.whissle.ai/bot`) and on
 | `404 Agent not found in this org` | `WHISSLE_AGENT_ID` isn't an agent in the key's org — re-fetch with `GET /api/agents`. |
 | Hangs at "waiting for room" / no audio | Backend missing `LIVEKIT_ENABLED=1`, or `ELEVENLABS_API_KEY` unset (no caller audio to publish). |
 | `resume? (y/n)` EOF crash | A checkpoint from a prior run — `run_hd.sh` removes it; if running raw, delete `data/simulations/<save-to>` first. |
+| Every task fails `No module named 'livekit'` | Deps installed without the voice extra — `uv sync --extra voice`. |

@@ -48,7 +48,9 @@ their own text.
 2. The backend must expose `/api/bench/voice/start` with `LIVEKIT_ENABLED=1` and
    LiveKit configured (this is live on `whissle-gw`; the AWS backend needs the
    bench-voice PR deployed + LiveKit enabled).
-3. `uv sync` (installs `livekit-agents`, which brings `livekit.rtc`).
+3. `uv sync --extra voice` (installs `livekit-agents`, which brings `livekit.rtc`).
+   The `voice` extra is required — a plain `uv sync` omits `livekit-agents` and
+   every task fails with `No module named 'livekit'`.
 
 ```bash
 export WHISSLE_BASE=https://aws-gateway-backend.whissle.ai/bot   # or the gw host
