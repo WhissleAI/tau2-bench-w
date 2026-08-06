@@ -90,6 +90,47 @@ def test_line_repeated_beyond_the_window_still_recorded():
     assert texts.count("Anything else?") == 2
 
 
+def test_flow_say_after_llm_reply_is_recorded():
+    """Flow `say` states — scripted greetings, goodbyes, urgent escalations,
+    spoken via TTSSpeakFrame with no LLM involved — surface ONLY as `bot-output`
+    (`bot-transcription` derives exclusively from LLM text). The first cut of
+    the triplication fix gated bot-output on "ever saw a bot-transcription",
+    which recorded EMPTY agent turns for every say after the first LLM reply
+    while the audio played the goodbye (headache_enrollment flow bench,
+    2026-08-06: hx_happy_full turns 15-18 empty; the dental control's transcript
+    died after turn 1). New words on bot-output must be recorded; only a replay
+    of already-recorded text is dropped."""
+    p = _provider()
+    _feed(p, _transcription("Got it — that's everything I need."))
+    # bot-output replay of the SAME reply → still dropped (no triplication).
+    _feed(p, _output("Got it — that's everything I need."))
+    # The flow's closing say: new words, bot-output only → MUST be recorded.
+    _feed(p, _output("Thank you so much for sharing all of that. Your profile is saved."))
+    _feed(p, _output("Take care, and have a great day. Goodbye."))
+
+    assert p.drain_agent_texts() == [
+        "Got it — that's everything I need.",
+        "Thank you so much for sharing all of that. Your profile is saved.",
+        "Take care, and have a great day. Goodbye.",
+    ]
+
+
+def test_urgent_say_mid_call_is_recorded():
+    """The medical red-flag shape: an LLM reply has been transcribed, then the
+    flow speaks its urgent-escalation say. The say is what the user simulator
+    (and a compliance judge) must see."""
+    p = _provider()
+    _feed(p, _transcription("I'm listening — take your time. What's going on?"))
+    _feed(p, _output("I'm listening — take your time."))     # replay fragment → dropped
+    _feed(p, _output("What you're describing may need urgent medical attention. "
+                     "Please contact emergency services right away."))
+
+    texts = p.drain_agent_texts()
+    assert any("urgent medical attention" in t for t in texts), (
+        "the flow's say line arrived only on bot-output and must be recorded"
+    )
+
+
 def test_bench_agent_text_still_captured():
     """The documented bench envelope is unaffected by the fallback gating."""
     p = _provider()
