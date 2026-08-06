@@ -22,6 +22,7 @@ from __future__ import annotations
 
 import asyncio
 import json
+import re
 from collections import deque
 from typing import Any, Optional
 
@@ -66,14 +67,20 @@ class WhissleRoomProvider:
         self._agent_lock = asyncio.Lock()
         self._tool_calls: deque[dict] = deque()  # incoming bench-tool-call payloads
         self._agent_texts: deque[str] = deque()  # incoming bench-agent-text
-        # `bot-output` is only a FALLBACK for agents that never emit
-        # `bot-transcription` — see _on_data. Agents that emit both would otherwise
-        # have every turn recorded twice.
-        self._saw_bot_transcription = False
-        # Recently recorded fallback sentences. A bot-output stream that replays the
-        # whole turn is suppressed by exact match within this window, while a line
-        # legitimately repeated later in the call still gets through.
-        self._recent_output: deque[str] = deque(maxlen=32)
+        # Duplicate suppression for `bot-output` — see _on_data. NOT a binary
+        # session gate: `bot-transcription` derives ONLY from LLM text
+        # (pipecat's RTVIObserver aggregates LLMTextFrames), so a flow `say`
+        # state — spoken via TTSSpeakFrame, no LLM involved — surfaces
+        # EXCLUSIVELY as sentence-aggregated `bot-output`. Gating bot-output on
+        # "ever saw a bot-transcription" (the first cut of the triplication
+        # fix) made every say after the agent's first LLM reply invisible: the
+        # sim recorded empty agent turns while the audio played the goodbye /
+        # urgent-escalation line (headache_enrollment bench, 2026-08-06).
+        # Instead, dedupe by CONTENT: normalized keys of recently recorded
+        # lines, so a bot-output replay of a transcribed turn is dropped while
+        # a say line (new words) is recorded. The window, rather than a
+        # permanent set, keeps a phrase the agent legitimately repeats later.
+        self._recent_norm: deque[str] = deque(maxlen=32)
         self._consume_tasks: list[asyncio.Task] = []
         self._connected = False
         # QA telemetry: EVERY data-channel message the bot emits, timestamped, so
@@ -346,29 +353,33 @@ class WhissleRoomProvider:
         # `bot-transcription` message ({type, data:{text}}) — use it as the agent
         # transcript (the user sim also hears the audio; this feeds scoring/content).
         if mtype == "bot-transcription":
-            self._saw_bot_transcription = True
             text = str((msg.get("data") or {}).get("text") or "").strip()
             if text:
                 self._agent_texts.append(text)
+                self._recent_norm.append(self._norm_line(text))
                 _DBG("says:", text[:200])
             return
-        # Some agents (notably the companion) never emit `bot-transcription` — they
-        # stream the reply as sentence-aggregated `bot-output`. Read those too, else
-        # a talking bot is mis-recorded as silent. Take the sentence granularity
-        # (the pre-speech full line) to avoid stitching word fragments.
-        #
-        # FALLBACK ONLY: agents that emit both channels carry the same words twice,
-        # and the bot-output stream can itself repeat a turn — left unguarded that
-        # triples every utterance in the transcript the user simulator reads and
-        # communicate-info scoring checks.
+        # `bot-output` carries the SPOKEN text (pipecat aggregates the TTS's
+        # TTSTextFrames), while `bot-transcription` derives only from LLM text.
+        # Two consequences:
+        #   * an agent turn the LLM produced arrives on BOTH channels — recording
+        #     both triples every utterance (the bot-output stream also replays);
+        #   * a flow `say` state (scripted line via TTSSpeakFrame — greetings,
+        #     goodbyes, urgent escalations) arrives ONLY on bot-output. A binary
+        #     "ignore bot-output once bot-transcription was seen" gate silenced
+        #     every say after the first LLM reply — the sim saw empty agent
+        #     turns while the audio played the goodbye.
+        # So: dedupe by content, not by channel. Take the sentence granularity
+        # (the pre-speech full line) to avoid stitching word fragments; drop a
+        # line whose normalized text already sits in (or inside) a recently
+        # recorded line; record everything else.
         if mtype == "bot-output":
-            if self._saw_bot_transcription:
-                return
             _d = msg.get("data") or {}
             if isinstance(_d, dict) and _d.get("aggregated_by") == "sentence":
                 text = str(_d.get("text") or "").strip()
-                if text and text not in self._recent_output:
-                    self._recent_output.append(text)
+                key = self._norm_line(text)
+                if key and not any(key in seen for seen in self._recent_norm):
+                    self._recent_norm.append(key)
                     self._agent_texts.append(text)
                     _DBG("says(bot-output):", text[:200])
             return
@@ -386,6 +397,13 @@ class WhissleRoomProvider:
             if text:
                 self._agent_texts.append(text)
                 _DBG("says:", text[:200])
+
+    @staticmethod
+    def _norm_line(s: str) -> str:
+        """Normalized dedupe key: letters/digits only, lowercase — the same
+        collapsing the flow transport's `dedup_texts` uses, so punctuation or
+        spacing drift between the two channels never defeats the match."""
+        return re.sub(r"[\s\W]+", "", s or "").lower()
 
     def agent_audio_total(self) -> int:
         """Monotonic total bot PCM bytes received (thread-safe read of an int)."""
