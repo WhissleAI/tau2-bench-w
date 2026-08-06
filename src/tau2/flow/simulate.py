@@ -48,13 +48,14 @@ from typer import Option, Typer
 from tau2.flow.analyze import Finding, analyze_session, coverage_findings
 from tau2.flow.client import FlowClient, FlowClientError
 from tau2.flow.usersim import (
+    ModelError,
     Task,
     UserSimulator,
     WhissleModel,
     judge_goal_drift,
     judge_task_success,
 )
-from tau2.flow.voice_transport import VoiceTransport
+from tau2.flow.voice_transport import VoiceInfraError, VoiceTransport
 
 app = Typer(add_completion=False)
 console = Console()
@@ -178,11 +179,30 @@ def _tool_calls_from_reply(reply: str) -> list[str]:
     return out
 
 
+def _pctl(vals: list, q: float) -> Optional[int]:
+    """Nearest-rank percentile of a numeric list (None on empty)."""
+    vs = sorted(v for v in vals if v is not None)
+    if not vs:
+        return None
+    k = min(len(vs) - 1, max(0, round(q * (len(vs) - 1))))
+    return vs[k]
+
+
+def _is_infra_error(exc: BaseException) -> bool:
+    """Infrastructure failure (transport / provider / credit / connectivity) —
+    the session could not be measured; NOT a flow bug of the agent under test."""
+    import requests as _requests
+
+    return isinstance(exc, (VoiceInfraError, ModelError,
+                            _requests.RequestException, TimeoutError))
+
+
 # ── one simulated session ────────────────────────────────────────────────────────
 
 def run_session(
     client: FlowClient, model: WhissleModel, task: Task, system_prompt: str, *,
     semantic: bool = True, keep_agent: bool = False, mode: str = "text",
+    attempt: int = 1,
 ) -> dict[str, Any]:
     """Create the agent, drive a full simulated conversation, analyze, ALWAYS clean
     up. Returns a JSON-serializable session result (also written to disk).
@@ -233,6 +253,7 @@ def run_session(
     turn_cap_hit = False
     end_reason: Optional[str] = None
     sim: Optional[UserSimulator] = None
+    infra_fail = False  # infrastructure failure — bucketed out of flow metrics
 
     _emit({"event": "session_start", "task_id": task.id, "agent_type": task.agent_type,
            "scenario": task.scenario, "persona": task.persona, "goal": task.goal, "ts": ts})
@@ -264,7 +285,10 @@ def run_session(
             _emit({"event": "voice_session", "room": vt.room, "greeting": greeting})
 
         sim = UserSimulator(task=task, model=model)
+        _t_llm = time.monotonic()
         user_msg = sim.first_utterance()
+        if voice and vt is not None:
+            vt.note_llm_ms(round((time.monotonic() - _t_llm) * 1000))
 
         for i in range(1, task.max_turns + 1):
             if voice:
@@ -306,12 +330,24 @@ def run_session(
                 "user_metadata": turn_metadata,
                 "metadata_final": turn_metadata[-1] if turn_metadata else None,
                 "hesitant_input": bool(res.raw.get("hesitant_input")),
+                # Sim-reply latency breakdown: bot-turn-final → the sim STARTS
+                # publishing its reply audio (wait/LLM/TTS components). Voice only.
+                "sim_reply": res.raw.get("sim_reply"),
             }
             turns.append(rec)
             _emit({"event": "turn", **rec})
 
             if not (res.reply or "").strip():
                 empty_reply_turns.append(i)
+
+            # Transport says the transcript surface has DIED (bot audio flows but no
+            # transcript events, streak survived a handshake retry) — driving more
+            # turns measures nothing. Stop and classify the session infra_fail.
+            if voice and res.raw.get("transcript_dead"):
+                end_reason = "transcript_dead"
+                infra_fail = True
+                _emit({"event": "conversation_end", "reason": end_reason, "turn": i})
+                break
 
             if ended or sim.done:
                 end_reason = "flow_ended" if ended else "user_done"
@@ -330,7 +366,10 @@ def run_session(
                        "goal_met_turn": goal_met_turn,
                        "post_goal_turns": task.post_goal_turns})
                 break
+            _t_llm = time.monotonic()
             user_msg = sim.next_utterance(res.reply)
+            if voice and vt is not None:
+                vt.note_llm_ms(round((time.monotonic() - _t_llm) * 1000))
             if sim.goal_met and goal_met_turn is None:
                 goal_met_turn = i  # the goal was satisfied as of turn i's reply
                 _emit({"event": "goal_met", "turn": i})
@@ -381,7 +420,15 @@ def run_session(
         _emit({"event": "error", "phase": "setup/drive", "detail": setup_error})
     except Exception as e:  # noqa: BLE001
         setup_error = f"{type(e).__name__}: {e}"
+        if _is_infra_error(e):
+            infra_fail = True
         _emit({"event": "error", "phase": "setup/drive", "detail": setup_error})
+
+    # A session that NEVER executed a turn (agent create / voice join / first LLM
+    # call failed) is an infrastructure failure by definition — nothing about the
+    # flow was measured, so it must not read as a flow finding.
+    if setup_error and not turns:
+        infra_fail = True
 
     # Fall back to per-turn steps if the trace GET was unavailable.
     if not full_steps:
@@ -405,7 +452,14 @@ def run_session(
         _emit({"event": "task_success", **success})
 
     findings: list[Finding] = []
-    if setup_error:
+    if infra_fail:
+        findings.append(Finding(
+            "infra_fail", "high",
+            "infrastructure failure — the session could not be measured "
+            f"(attempt {attempt}): {setup_error or end_reason}",
+            evidence={"attempt": attempt, "turns_driven": len(turns),
+                      "end_reason": end_reason}))
+    elif setup_error:
         findings.append(Finding("stuck_termination", "high",
                                 f"session failed to run: {setup_error}"))
     elif voice and not full_steps:
@@ -463,11 +517,24 @@ def run_session(
 
     sev_counts = Counter(f.severity for f in findings)
     type_counts = Counter(f.type for f in findings)
+    # Sim-reply latency rollup (voice): per-turn breakdowns + p50/p95 of the total.
+    _sim_replies = [t.get("sim_reply") for t in turns if t.get("sim_reply")]
+    sim_reply_summary = {
+        "turns_measured": len(_sim_replies),
+        "p50_ms": _pctl([r["total_ms"] for r in _sim_replies], 0.50),
+        "p95_ms": _pctl([r["total_ms"] for r in _sim_replies], 0.95),
+        "p50_wait_ms": _pctl([r["wait_ms"] for r in _sim_replies], 0.50),
+        "p50_llm_ms": _pctl([r.get("llm_ms") for r in _sim_replies], 0.50),
+        "p50_tts_ms": _pctl([r["tts_ms"] for r in _sim_replies], 0.50),
+    } if _sim_replies else None
     result = {
         "task_id": task.id, "agent_type": task.agent_type, "scenario": task.scenario,
         "ts": ts, "agent_id": agent_id, "agent_deleted": deleted or keep_agent,
         "conversation_id": conv_id,
         "mode": mode,
+        "infra_fail": infra_fail,
+        "attempt": attempt,
+        "sim_reply_latency": sim_reply_summary,
         "voice_room": (vt.room if vt else None) if voice else None,
         "greeting": greeting or None,
         "audio": audio_evidence or None,
@@ -534,8 +601,11 @@ def run_session(
                          "turn_cap_hit": turn_cap_hit,
                          "start_state": flow_spec.get("start_state"),
                          "latencies_ms": (audio_evidence or {}).get("latencies_ms", []),
+                         "sim_reply_latency_ms": sim_reply_summary,
                          "audio": audio_evidence or None,
                          "signals_summary": _signals_summary(turns),
+                         "infra_fail": infra_fail,
+                         "attempt": attempt,
                          "setup_error": setup_error},
             "transcript": transcript,
             "turns": turns,                    # user/agent per turn + per-turn steps
@@ -561,9 +631,16 @@ def _render_transcript(turns: list[dict], greeting: str = "") -> str:
 
 def aggregate_agent_type(agent_type: str, flow_spec: dict,
                          results: list[dict]) -> dict[str, Any]:
-    """Coverage + finding rollup for one agent type over its sessions."""
+    """Coverage + finding rollup for one agent type over its sessions.
+
+    Infra-failed sessions (``infra_fail``: transport / provider / credit outages,
+    already retried once by the runner) are counted in their OWN bucket and
+    excluded from the flow metrics — a session that never measured the flow must
+    not read as the flow failing."""
+    ran = [r for r in results if not r.get("infra_fail")]
+    infra = [r for r in results if r.get("infra_fail")]
     cov_findings, cov_table = coverage_findings(
-        flow_spec, [r["_full_steps"] for r in results])
+        flow_spec, [r["_full_steps"] for r in ran])
     type_counter: Counter = Counter()
     sev_counter: Counter = Counter()
     for r in results:
@@ -577,9 +654,11 @@ def aggregate_agent_type(agent_type: str, flow_spec: dict,
         "agent_type": agent_type,
         "ts": datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ"),
         "sessions": len(results),
-        "sessions_ended_cleanly": sum(1 for r in results if r["ended"]),
-        "task_success": sum(1 for r in results if r["task_success"] is True),
-        "sessions_with_high_findings": sum(1 for r in results if r["high_severity"]),
+        "sessions_ran": len(ran),
+        "sessions_infra": len(infra),
+        "sessions_ended_cleanly": sum(1 for r in ran if r["ended"]),
+        "task_success": sum(1 for r in ran if r["task_success"] is True),
+        "sessions_with_high_findings": sum(1 for r in ran if r["high_severity"]),
         "finding_counts_by_type": dict(type_counter),
         "finding_counts_by_severity": dict(sev_counter),
         "coverage": cov_table,
@@ -587,7 +666,8 @@ def aggregate_agent_type(agent_type: str, flow_spec: dict,
         "sessions_detail": [
             {k: r[k] for k in ("task_id", "scenario", "num_turns", "ended",
                                "task_success", "final_state", "high_severity",
-                               "finding_counts_by_type", "agent_deleted")}
+                               "finding_counts_by_type", "agent_deleted",
+                               "infra_fail", "attempt")}
             for r in results
         ],
     }
@@ -606,10 +686,12 @@ def _write_agent_markdown(path: Path, s: dict) -> None:
         "",
         f"- **run**: {s['ts']}",
         f"- **sessions**: {s['sessions']}  •  **ended cleanly**: "
-        f"{s['sessions_ended_cleanly']}/{s['sessions']}  •  **task success**: "
-        f"{s['task_success']}/{s['sessions']}",
+        f"{s['sessions_ended_cleanly']}/{s['sessions_ran']}  •  **task success**: "
+        f"{s['task_success']}/{s['sessions_ran']}",
         f"- **sessions with HIGH-severity findings**: "
-        f"{s['sessions_with_high_findings']}/{s['sessions']}",
+        f"{s['sessions_with_high_findings']}/{s['sessions_ran']}",
+        f"- **infra failures (excluded from flow metrics)**: "
+        f"{s['sessions_infra']}/{s['sessions']}",
         "",
         "## Findings by type",
         "",
@@ -663,17 +745,18 @@ def _write_overall_markdown(agent_summaries: list[dict]) -> None:
         f"- **run**: {ts}",
         f"- **agent types**: {len(agent_summaries)}",
         "",
-        "| agent_type | sessions | ended | task_success | high-sev sessions | "
+        "| agent_type | sessions | infra | ended | task_success | high-sev sessions | "
         "states cov | trans cov |",
-        "|------------|----------|-------|--------------|-------------------|"
+        "|------------|----------|-------|-------|--------------|-------------------|"
         "-----------|-----------|",
     ]
     for s in agent_summaries:
         cov = s["coverage"]
         lines.append(
             f"| `{s['agent_type']}` | {s['sessions']} | "
-            f"{s['sessions_ended_cleanly']}/{s['sessions']} | "
-            f"{s['task_success']}/{s['sessions']} | "
+            f"{s.get('sessions_infra', 0)} | "
+            f"{s['sessions_ended_cleanly']}/{s['sessions_ran']} | "
+            f"{s['task_success']}/{s['sessions_ran']} | "
             f"{s['sessions_with_high_findings']} | "
             f"{cov['states_visited']}/{cov['states_total']} | "
             f"{cov['transitions_fired']}/{cov['transitions_total']} |")
@@ -751,6 +834,14 @@ def run(
         t0 = time.time()
         res = run_session(client, model, task, system_prompt,
                           semantic=semantic, keep_agent=keep_agent, mode=mode)
+        # Infra failure (session never ran / transport died): retry the WHOLE
+        # session once before recording it; a second infra failure is recorded in
+        # the infra bucket (excluded from flow metrics), never as a flow finding.
+        if res.get("infra_fail"):
+            console.print("    [yellow]infra failure — retrying session once[/yellow]")
+            res = run_session(client, model, task, system_prompt,
+                              semantic=semantic, keep_agent=keep_agent, mode=mode,
+                              attempt=2)
         dt = time.time() - t0
         results.append(res)
         _print_session_line(res, dt)
@@ -808,8 +899,13 @@ def _print_session_line(res: dict, dt: float) -> None:
         lats = ((res.get("audio") or {}).get("latencies_ms")) or []
         bot = ((res.get("audio") or {}).get("bot")) or {}
         p50 = sorted(lats)[len(lats) // 2] if lats else None
+        sr = res.get("sim_reply_latency") or {}
         voice_note = (f"  [cyan]voice[/cyan] room={res.get('voice_room')!r} "
-                      f"turn-latency-p50={p50}ms bot-audio={bot.get('seconds')}s")
+                      f"turn-latency-p50={p50}ms "
+                      f"sim-reply-p50={sr.get('p50_ms')}ms "
+                      f"bot-audio={bot.get('seconds')}s")
+    if res.get("infra_fail"):
+        voice_note += "  [yellow]INFRA-FAIL[/yellow]"
     console.print(
         f"    turns={res['num_turns']} ended={res['ended']} "
         f"success={res['task_success']} final={res['final_state']!r}  "

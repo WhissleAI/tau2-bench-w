@@ -67,6 +67,13 @@ class VoiceTransportError(RuntimeError):
     pass
 
 
+class VoiceInfraError(VoiceTransportError):
+    """Transport/infrastructure failure — the session could not produce a valid
+    measurement (dead data channel while audio flowed, provider outage, credit
+    exhaustion). The runner classifies these as ``infra_fail`` (retried once, then
+    bucketed OUT of the flow metrics), never as a flow finding."""
+
+
 # ── user-side TTS (Whissle's own à-la-carte model API) ──────────────────────────
 
 class WhissleTTS:
@@ -195,6 +202,31 @@ def _inject_pauses(pcm: bytes, sample_rate: int, gap_ms: int = 450, n: int = 2) 
     return bytes(out)
 
 
+# ── sentence split (TTS pipelining) ─────────────────────────────────────────────
+
+_SENT_SPLIT_RE = re.compile(r"(?<=[.!?…])\s+")
+_MIN_SENT_CHARS = 25
+
+
+def _split_sentences(text: str) -> list[str]:
+    """Split an utterance into sentences for pipelined TTS: the first sentence is
+    synthesized and PUBLISHED while the rest synthesize in parallel, so the sim's
+    time-to-first-audio is one short TTS call, not the whole utterance's. Tiny
+    fragments are merged forward so we never fire a TTS call for "Okay."-sized
+    slivers (call overhead would exceed the win)."""
+    text = (text or "").strip()
+    if not text:
+        return []
+    parts = [p for p in _SENT_SPLIT_RE.split(text) if p.strip()]
+    merged: list[str] = []
+    for p in parts:
+        if merged and (len(merged[-1]) < _MIN_SENT_CHARS or len(p) < _MIN_SENT_CHARS):
+            merged[-1] = f"{merged[-1]} {p}"
+        else:
+            merged.append(p)
+    return merged or [text]
+
+
 # ── one voice turn ──────────────────────────────────────────────────────────────
 
 @dataclass
@@ -238,6 +270,12 @@ class VoiceTransport:
         self._quiet_gap_s = float(
             quiet_gap_s if quiet_gap_s is not None
             else os.getenv("WHISSLE_VOICE_QUIET_GAP_S", "2.0"))
+        # Residual gap AFTER the bot's own bot-stopped-speaking event: the bot has
+        # declared its turn over, so we only wait this long for a trailing transcript
+        # fragment, not the full quiet-gap. This is the event-driven fast path that
+        # takes the sim's reply latency from ~2s of dead air to human range; the
+        # quiet-gap remains the fallback when no speaking-state events arrive.
+        self._post_stop_gap_s = float(os.getenv("WHISSLE_VOICE_POST_STOP_GAP_S", "0.35"))
         self._max_turn_s = float(
             max_turn_s if max_turn_s is not None
             else os.getenv("WHISSLE_VOICE_MAX_TURN_S", "45"))
@@ -262,6 +300,18 @@ class VoiceTransport:
         # A number 0<p<=1 makes only that fraction of turns hesitant (varies by turn).
         self._hesitant_p = _hesitant_prob(os.getenv("WHISSLE_VOICE_HESITANT", "0"))
         self._turn_i = 0
+        # Sim-reply latency instrumentation (the user-facing turn-taking metric):
+        # monotonic time of the bot's LAST activity in its finished turn (set by
+        # _collect_until_quiet), the sim's LLM time for the upcoming reply (noted by
+        # the driver via note_llm_ms), and the per-turn breakdown records.
+        self._bot_final_t: Optional[float] = None
+        self._pending_llm_ms: Optional[int] = None
+        self.sim_reply: list[dict] = []
+        # Transcript-death robustness: one handshake retry per session, and a streak
+        # counter of consecutive turns where bot AUDIO flowed but no transcript
+        # event arrived (the dead-data-channel signature).
+        self._handshake_retried = False
+        self._dead_streak = 0
 
     # -- lifecycle ---------------------------------------------------------------
 
@@ -270,17 +320,37 @@ class VoiceTransport:
         (real-mode agents speak first, like a real answered call). Returns the
         greeting transcript (may be "" if the agent doesn't greet)."""
         self._bg.start()
-        self.provider = WhissleRoomProvider(self.config)
-        self._bg.run_coroutine(
-            self.provider.connect(system_prompt="", tools=[], real=True),
-            timeout=self.config.connect_timeout_s + 15)
+        if self.provider is None:  # tests may inject a fake provider before start()
+            self.provider = WhissleRoomProvider(self.config)
+            self._bg.run_coroutine(
+                self.provider.connect(system_prompt="", tools=[], real=True),
+                timeout=self.config.connect_timeout_s + 15)
         self.room = self.provider.session_id
         self.conversation_id = self.provider.conversation_id
         # Handshake that tells the bot the caller is subscribed → triggers greeting.
-        self._bg.run_coroutine(self.provider.send_playback_ready(), timeout=10)
+        # (send_playback_ready now waits for the room mesh to settle first, so the
+        # packet can't outrun our participant registration on the bot — the
+        # participant=None crash that silently ate this handshake.)
+        self._bg.run_coroutine(self.provider.send_playback_ready(), timeout=20)
         self.greeting = self._collect_until_quiet(
             deadline_s=self._greeting_wait_s, quiet_gap_s=self._quiet_gap_s,
             require_output=True)[0]
+        # Robustness: bot AUDIO flowed but not one transcript event → the data
+        # channel is dead on one side (crashed handler / lost subscription). Retry
+        # the ready handshake ONCE; if the transcript surface stays dark while audio
+        # flows, this session cannot be measured — raise a typed infra error so the
+        # runner classifies it infra_fail (and retries the whole session) instead of
+        # polluting the flow metrics as a stuck_termination.
+        if not self.greeting and self.provider.agent_audio_total() > 0:
+            self._handshake_retried = True
+            self._bg.run_coroutine(self.provider.send_playback_ready(), timeout=20)
+            self.greeting = self._collect_until_quiet(
+                deadline_s=min(8.0, self._greeting_wait_s),
+                quiet_gap_s=self._quiet_gap_s, require_output=True)[0]
+            if not self.greeting:
+                raise VoiceInfraError(
+                    "bot audio is flowing but no transcript events arrived "
+                    "(data channel dead) — after one ready-handshake retry")
         return self.greeting
 
     def turn(self, user_msg: str, conversation_id: Optional[str] = None) -> TurnResult:
@@ -298,11 +368,23 @@ class VoiceTransport:
             or ((self._turn_i * 997) % 1000) / 1000.0 < self._hesitant_p
         )
         spoken = _hesitate_text(user_msg, self._turn_i) if hesitant else user_msg
-        pcm = self.tts.synth(spoken)
-        if hesitant:
-            pcm = _inject_pauses(pcm, 16000)  # user TTS is pcm_16000
         audio_before = self.provider.agent_audio_total()
-        t_send_done = self._send_user_audio(pcm)
+        bot_final_prev = self._bot_final_t  # last activity of the bot's finished turn
+        t_send_done, t_pub_start, tts_first_ms, tts_full_ms = self._speak_turn(
+            spoken, hesitant)
+        # Sim-reply latency (the user-complaint metric): bot-turn-final → the sim
+        # STARTS publishing its reply audio, broken into wait / LLM / TTS. The LLM
+        # component is noted by the driver (note_llm_ms) between transport calls.
+        sim_reply: Optional[dict] = None
+        if bot_final_prev is not None:
+            total_ms = round((t_pub_start - bot_final_prev) * 1000)
+            llm_ms = self._pending_llm_ms
+            wait_ms = max(0, total_ms - (llm_ms or 0) - tts_first_ms)
+            sim_reply = {"total_ms": total_ms, "wait_ms": wait_ms,
+                         "llm_ms": llm_ms, "tts_ms": tts_first_ms,
+                         "tts_full_ms": tts_full_ms}
+            self.sim_reply.append(sim_reply)
+        self._pending_llm_ms = None
         reply, boundary, first_audio_t, audio_after = self._await_reply(t_send_done)
         latency_ms = (round((first_audio_t - t_send_done) * 1000)
                       if first_audio_t is not None else None)
@@ -311,6 +393,22 @@ class VoiceTransport:
         vres = VoiceTurnResult(
             reply=reply, latency_ms=latency_ms,
             bot_audio_bytes=max(0, audio_after - audio_before), boundary=boundary)
+        # Transcript-death detection: audio flowed this turn but not one transcript
+        # event. Retry the ready handshake once per session (it re-exercises the
+        # data channel in both directions); a persisting streak is surfaced to the
+        # runner as transcript_dead so it can stop driving a dead session and
+        # classify it infra_fail instead of chalking up empty agent turns.
+        if not (reply or "").strip() and vres.bot_audio_bytes > 0:
+            self._dead_streak += 1
+            if not self._handshake_retried:
+                self._handshake_retried = True
+                try:
+                    self._bg.run_coroutine(self.provider.send_playback_ready(),
+                                           timeout=20)
+                except Exception:  # noqa: BLE001 — best-effort recovery
+                    pass
+        else:
+            self._dead_streak = 0
         # Per-turn meta-signals (hesitation / shadow / speculative) + raw whissle-large
         # metadata (emotion / intent / age / gender per interim+final) emitted on the
         # data channel during THIS turn — the whole point of running over real voice.
@@ -329,7 +427,9 @@ class VoiceTransport:
                  "latency_ms": latency_ms, "bot_audio_bytes": vres.bot_audio_bytes,
                  "boundary": boundary, "raw_fragments": vres.raw_fragments,
                  "signals": turn_signals, "user_metadata": turn_metadata,
-                 "hesitant_input": hesitant},
+                 "hesitant_input": hesitant,
+                 "sim_reply": sim_reply,
+                 "transcript_dead": self._dead_streak >= 2},
         )
 
     def finish(self, prefix: str, *, transcribe: bool = False) -> dict[str, Any]:
@@ -341,6 +441,7 @@ class VoiceTransport:
             return {}
         out: dict[str, Any] = self.provider.write_wav(prefix)
         out["latencies_ms"] = list(self.latencies_ms)
+        out["sim_reply_ms"] = list(self.sim_reply)
         if transcribe and isinstance(out.get("bot"), dict) and out["bot"].get("path"):
             out["bot_reasr"] = self._transcribe_wav(out["bot"]["path"])
         return out
@@ -392,7 +493,48 @@ class VoiceTransport:
         self.metadata.extend(meta)
         return sigs, meta
 
+    def note_llm_ms(self, ms: Optional[int]) -> None:
+        """Driver hook: record how long the sim's LLM took to produce the NEXT
+        user utterance, so the next turn's sim-reply breakdown attributes it."""
+        self._pending_llm_ms = ms
+
     # -- internals ---------------------------------------------------------------
+
+    def _speak_turn(self, spoken: str, hesitant: bool
+                    ) -> tuple[float, float, int, int]:
+        """Synthesize + publish one user turn. Returns
+        ``(t_send_done, t_pub_start, tts_first_ms, tts_full_ms)`` (monotonic).
+
+        Default path is PIPELINED: the first sentence is synthesized and starts
+        publishing immediately; each later sentence synthesizes WHILE the previous
+        one's audio drains into the room (send_audio paces near real-time), so the
+        sim starts speaking after one short TTS call instead of after the whole
+        utterance's synthesis. Hesitant mode keeps the whole-utterance path (its
+        silence gaps are spliced across the complete clip) — intentionally off the
+        default path."""
+        t_tts0 = time.monotonic()
+        if hesitant or not spoken.strip():
+            pcm = self.tts.synth(spoken)
+            if hesitant:
+                pcm = _inject_pauses(pcm, 16000)  # user TTS is pcm_16000
+            tts_first_ms = tts_full_ms = round((time.monotonic() - t_tts0) * 1000)
+            t_pub_start = time.monotonic()
+            return self._send_user_audio(pcm), t_pub_start, tts_first_ms, tts_full_ms
+        sents = _split_sentences(spoken)
+        first_pcm = self.tts.synth(sents[0])
+        tts_first_ms = round((time.monotonic() - t_tts0) * 1000)
+        t_pub_start = time.monotonic()
+        fut = self._bg.submit(self.provider.send_audio(first_pcm))
+        for s in sents[1:]:
+            nxt = self.tts.synth(s)   # overlaps the previous chunk's publish drain
+            fut.result(timeout=90)
+            fut = self._bg.submit(self.provider.send_audio(nxt))
+        fut.result(timeout=90)
+        tts_full_ms = round((time.monotonic() - t_tts0) * 1000)
+        # Trailing 0.5s silence so the agent's endpointer fires end-of-turn.
+        self._bg.run_coroutine(
+            self.provider.send_audio(b"\x00\x00" * int(16000 * 0.5)), timeout=30)
+        return time.monotonic(), t_pub_start, tts_first_ms, tts_full_ms
 
     def _send_user_audio(self, pcm: bytes) -> float:
         """Publish the whole utterance + a trailing 0.5 s of silence so the agent's
@@ -415,15 +557,25 @@ class VoiceTransport:
     def _collect_until_quiet(self, *, deadline_s: float, quiet_gap_s: float,
                              require_output: bool, t_ref: Optional[float] = None,
                              want_first_audio: bool = False):
-        """Poll the provider's thread-safe queues until the agent has produced output
-        and then stayed quiet (no new transcript AND no new audio) for ``quiet_gap_s``.
+        """Wait (event-driven) until the agent has produced output and then stayed
+        quiet. Two end-of-turn signals, fastest wins:
 
-        Returns (deduped_text, boundary, first_audio_t, audio_total) when
+          * the bot's own RTVI ``bot-stopped-speaking`` event → only a short
+            ``post_stop_gap`` for trailing transcript fragments (the human-speed
+            path: the bot said it is done, so reply like a person would);
+          * no new transcript AND no new audio for ``quiet_gap_s`` (fallback when
+            the deploy emits no speaking-state events).
+
+        Blocks on the provider's activity event rather than a fixed poll sleep.
+        Records the bot's last-activity time in ``self._bot_final_t`` (the anchor
+        for the next turn's sim-reply latency). Returns
+        (deduped_text, boundary, first_audio_t, audio_total) when
         ``want_first_audio`` else (deduped_text, boundary)."""
         assert self.provider is not None
         deadline = time.monotonic() + deadline_s
         frags: list[str] = []
         last_audio = self.provider.agent_audio_total()
+        stop_snapshot = self.provider.bot_stopped_total()
         saw_output = False
         last_activity = time.monotonic()
         first_audio_t: Optional[float] = None
@@ -444,12 +596,19 @@ class VoiceTransport:
                 if boundary == "silent":
                     boundary = "text"
                 last_activity = time.monotonic()
-            if saw_output and (time.monotonic() - last_activity) >= quiet_gap_s:
-                break
-            time.sleep(0.1)
+            if saw_output:
+                gap = quiet_gap_s
+                if (self.provider.bot_stopped_total() > stop_snapshot
+                        and not self.provider.bot_speaking()):
+                    gap = min(self._post_stop_gap_s, quiet_gap_s)
+                if (time.monotonic() - last_activity) >= gap:
+                    break
+            self.provider.wait_activity(0.05)
         else:
             if not saw_output:
                 boundary = "timeout"
+        if saw_output:
+            self._bot_final_t = last_activity
         text = dedup_texts(frags)
         if want_first_audio:
             return text, boundary, first_audio_t, self.provider.agent_audio_total()

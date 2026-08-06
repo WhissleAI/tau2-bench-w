@@ -23,6 +23,7 @@ from __future__ import annotations
 import asyncio
 import json
 import re
+import threading
 from collections import deque
 from typing import Any, Optional
 
@@ -90,6 +91,27 @@ class WhissleRoomProvider:
         self._time = _time
         self._t0: float = _time.monotonic()
         self._events: list[dict] = []
+        # Event-driven turn-taking (replaces the transport's 100ms poll): set on ANY
+        # bot activity — an audio frame, a transcript fragment, any data-channel
+        # message. The transport blocks on it instead of sleeping, so it reacts to
+        # the bot's turn boundary at event latency, not poll latency.
+        self._activity_evt = threading.Event()
+        # RTVI speaking-state counters (bot-started-speaking / bot-stopped-speaking
+        # server events). bot-stopped-speaking is the AUTHORITATIVE end-of-bot-turn
+        # signal — the transport uses it to reply as soon as the bot finishes instead
+        # of waiting out a fixed quiet-gap.
+        self._bot_started_count = 0
+        self._bot_stopped_count = 0
+        # Data-channel readiness: set once we are subscribed to the bot's audio track
+        # (the SFU has fully meshed both peers by then). Publishing client data
+        # BEFORE the mesh settles is what produced participant=None packets on the
+        # bot: livekit's receive side resolves DataPacket.participant with
+        # `room._remote_participants.get(identity)` — a data packet that outruns the
+        # sender's participant-connected event resolves to None, and pipecat's
+        # `data.participant.sid` handler dies on it (transport.py:536). See
+        # wait_data_ready().
+        self._bot_track_evt = threading.Event()
+        self._data_settled = False
 
     # -- lifecycle ---------------------------------------------------------------
 
@@ -286,6 +308,7 @@ class WhissleRoomProvider:
     def _on_track(self, track, publication, participant) -> None:  # noqa: ANN001
         _DBG("track-subscribed kind=", getattr(track,"kind",None))
         if getattr(track, "kind", None) == rtc.TrackKind.KIND_AUDIO:
+            self._bot_track_evt.set()
             self._consume_tasks.append(asyncio.ensure_future(self._consume_audio(track)))
 
     async def _consume_audio(self, track) -> None:  # noqa: ANN001
@@ -303,6 +326,7 @@ class WhissleRoomProvider:
                     self._agent_pcm.extend(data)
                     self._agent_pcm_total += len(data)
                     self._bot_audio.extend(data)  # capture the full bot track
+                self._activity_evt.set()
                 _rx += 1
                 if _rx % 100 == 1:
                     _DBG("bot-audio-frame#", _rx, "bytes=", len(data))
@@ -349,6 +373,14 @@ class WhissleRoomProvider:
             "data": _rec if mtype != "metrics" else None,  # metrics kept as count only
         })
         _DBG("data", "type=", mtype, "inner=", _inner_type)
+        # RTVI speaking-state: bot-stopped-speaking is the bot's own declaration that
+        # its turn's audio is done — the transport keys its reply timing off this
+        # (event-driven end-of-turn) instead of a fixed quiet-gap.
+        if mtype == "bot-started-speaking":
+            self._bot_started_count += 1
+        elif mtype == "bot-stopped-speaking":
+            self._bot_stopped_count += 1
+        self._activity_evt.set()
         # The bot broadcasts its own spoken transcript as a standard RTVI
         # `bot-transcription` message ({type, data:{text}}) — use it as the agent
         # transcript (the user sim also hears the audio; this feeds scoring/content).
@@ -409,6 +441,26 @@ class WhissleRoomProvider:
         """Monotonic total bot PCM bytes received (thread-safe read of an int)."""
         return self._agent_pcm_total
 
+    def bot_stopped_total(self) -> int:
+        """Monotonic count of RTVI ``bot-stopped-speaking`` events received."""
+        return self._bot_stopped_count
+
+    def bot_speaking(self) -> bool:
+        """True while the bot has declared started-speaking without a matching stop."""
+        return self._bot_started_count > self._bot_stopped_count
+
+    def wait_activity(self, timeout: float) -> bool:
+        """Block up to ``timeout`` seconds for ANY new bot activity (audio frame,
+        transcript fragment, data message). Event-driven replacement for the
+        transport's fixed 100ms poll sleep. Returns True if activity was signaled.
+
+        The flag is cleared after the wait; the caller re-reads the monotonic
+        counters/queues each iteration, so a set() racing the clear() costs at most
+        one extra ``timeout`` slice, never a lost event."""
+        fired = self._activity_evt.wait(timeout)
+        self._activity_evt.clear()
+        return fired
+
     def events(self) -> list[dict]:
         """The full timestamped data-channel event stream for this session."""
         return list(self._events)
@@ -425,29 +477,73 @@ class WhissleRoomProvider:
             texts.append(self._agent_texts.popleft())
         return texts
 
+    async def wait_data_ready(self, timeout: float = 10.0) -> bool:
+        """Wait until the room mesh is demonstrably established before publishing
+        client data, so a packet is never delivered on the bot side ahead of our
+        participant registration.
+
+        Root cause this closes: EVERY sim publish goes over our own CONNECTED
+        participant (``local_participant.publish_data`` — never the LiveKit
+        server API, whose packets carry no participant), yet the bot still saw
+        ``packet.participant is None``. livekit's receive side resolves the sender
+        with ``room._remote_participants.get(identity)``: a reliable-data packet
+        that arrives before the receiver processes our participant-connected event
+        resolves to None, and pipecat's ``data.participant.sid``
+        (transports/livekit/transport.py:536) crashes its handler task — the
+        packet (our playback-ready / tool-result) is silently lost. The old code
+        published playback-ready IMMEDIATELY after ``connect()`` returned, right
+        inside that race window (~1.3s after pipeline start in the prod log).
+
+        Readiness signal: we are SUBSCRIBED to the bot's audio track — by the time
+        the SFU delivered the bot's track to us, both joins have propagated. A
+        short one-time settle then covers the reverse direction. Fail-open on
+        timeout (publish anyway) so a signal-less room can't hang the session."""
+        deadline = asyncio.get_event_loop().time() + timeout
+        ready = False
+        while asyncio.get_event_loop().time() < deadline:
+            if (self.room is not None
+                    and getattr(self.room, "remote_participants", None)
+                    and self._bot_track_evt.is_set()):
+                ready = True
+                break
+            await asyncio.sleep(0.05)
+        if not ready:
+            _DBG("wait_data_ready timeout — publishing anyway (fail-open)")
+        if not self._data_settled:
+            await asyncio.sleep(0.25)
+            self._data_settled = True
+        return ready
+
+    async def _publish(self, envelope: dict) -> None:
+        """The ONLY data-publish path: over our own connected participant, reliable,
+        after :meth:`wait_data_ready`. One retry on a transient publish error."""
+        if self.room is None:
+            return
+        await self.wait_data_ready()
+        raw = json.dumps(envelope).encode("utf-8")
+        for attempt in (1, 2):
+            try:
+                try:
+                    await self.room.local_participant.publish_data(raw, reliable=True)
+                except TypeError:
+                    # Older rtc: positional-only reliability flag.
+                    await self.room.local_participant.publish_data(raw)
+                return
+            except Exception as exc:  # noqa: BLE001 — one retry, then surface
+                if attempt == 2:
+                    raise
+                _DBG("publish_data failed (retrying):", str(exc)[:120])
+                await asyncio.sleep(0.25)
+
     async def send_playback_ready(self) -> None:
         """Tell the bot the caller is subscribed + playing — triggers the greeting
         (real-agent mode; mirrors the browser's playback-ready handshake)."""
-        if self.room is None:
-            return
-        raw = json.dumps({"type": "client-message", "data": {"t": "playback-ready"}}).encode("utf-8")
-        try:
-            await self.room.local_participant.publish_data(raw, reliable=True)
-        except TypeError:
-            await self.room.local_participant.publish_data(raw)
+        await self._publish({"type": "client-message", "data": {"t": "playback-ready"}})
 
     async def send_tool_result(self, call_id: str, result: Any) -> None:
         """Reply to a delegated tool call over the data channel (reliable)."""
-        if self.room is None:
-            return
-        envelope = {
+        _DBG("tool-result", call_id, str(result)[:160])
+        await self._publish({
             "type": "client-message",
             "data": {"t": "bench-tool-result", "d": {"id": call_id, "result": result}},
-        }
-        raw = json.dumps(envelope).encode("utf-8")
-        _DBG("tool-result", call_id, str(result)[:160])
-        try:
-            await self.room.local_participant.publish_data(raw, reliable=True)
-        except TypeError:
-            # Older rtc: positional-only reliability flag.
-            await self.room.local_participant.publish_data(raw)
+        })
