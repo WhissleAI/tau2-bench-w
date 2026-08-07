@@ -20,8 +20,10 @@ Data-channel envelopes (must match pipecat-bot bot/runners.py exactly):
 
 from __future__ import annotations
 
+import array
 import asyncio
 import json
+import os
 import re
 import threading
 from collections import deque
@@ -97,11 +99,25 @@ class WhissleRoomProvider:
         # the bot's turn boundary at event latency, not poll latency.
         self._activity_evt = threading.Event()
         # RTVI speaking-state counters (bot-started-speaking / bot-stopped-speaking
-        # server events). bot-stopped-speaking is the AUTHORITATIVE end-of-bot-turn
-        # signal — the transport uses it to reply as soon as the bot finishes instead
-        # of waiting out a fixed quiet-gap.
+        # server events). bot-stopped-speaking is a CONFIRMATION end-of-bot-turn
+        # signal — the transport uses it to shorten its residual wait, never as the
+        # only trigger (see speech-energy tracking below).
         self._bot_started_count = 0
         self._bot_stopped_count = 0
+        self._bot_stopped_last_t: Optional[float] = None
+        # Speech-energy tracking — the PRIMARY end-of-bot-turn signal. The bot's
+        # LiveKit track is CONTINUOUS: the receive-side jitter buffer delivers
+        # 10ms frames of digital silence between bot utterances, forever. So
+        # "received audio bytes grew" is NOT a speech signal — treating it as one
+        # made the transport's quiet-gap unreachable and every turn ran to its
+        # full deadline (the 18–40s sim-reply stall, debt_collection 2026-08-07).
+        # Classify each received frame by peak amplitude (measured floor: peak≈1
+        # digital-zero silence vs ≥1700 during speech, so 300 is generous) and
+        # track speech bytes + the monotonic time of the last speech frame — the
+        # transport keys end-of-turn off what a human actually HEARS.
+        self._speech_peak_thresh = int(os.getenv("WHISSLE_VOICE_SPEECH_PEAK", "300"))
+        self._agent_speech_total = 0            # bytes of speech-classified frames
+        self._last_speech_t: Optional[float] = None  # monotonic, last speech frame
         # Data-channel readiness: set once we are subscribed to the bot's audio track
         # (the SFU has fully meshed both peers by then). Publishing client data
         # BEFORE the mesh settles is what produced participant=None packets on the
@@ -322,11 +338,18 @@ class WhissleRoomProvider:
             async for event in stream:
                 frame = getattr(event, "frame", event)
                 data = frame.data.tobytes() if hasattr(frame.data, "tobytes") else bytes(frame.data)
+                is_speech = self._frame_is_speech(data)
                 async with self._agent_lock:
                     self._agent_pcm.extend(data)
                     self._agent_pcm_total += len(data)
                     self._bot_audio.extend(data)  # capture the full bot track
-                self._activity_evt.set()
+                    if is_speech:
+                        self._agent_speech_total += len(data)
+                        self._last_speech_t = self._time.monotonic()
+                # Wake the transport only on frames that carry SPEECH: silence
+                # frames stream continuously (10ms cadence) and are not activity.
+                if is_speech:
+                    self._activity_evt.set()
                 _rx += 1
                 if _rx % 100 == 1:
                     _DBG("bot-audio-frame#", _rx, "bytes=", len(data))
@@ -334,6 +357,19 @@ class WhissleRoomProvider:
             raise
         except Exception as exc:  # noqa: BLE001
             logger.warning("whissle audio consume ended: {}", exc)
+
+    def _frame_is_speech(self, data: bytes) -> bool:
+        """Cheap energy gate for one received PCM16 frame (~10ms → ~160 samples):
+        peak |amplitude| above the threshold. The bot track's silence is digital
+        zero (measured peak ≤ 1), speech ≥ ~1700, so this is a wide margin, not a
+        tuned VAD."""
+        n = len(data) - (len(data) % 2)
+        if n <= 0:
+            return False
+        a = array.array("h")
+        a.frombytes(data[:n])
+        thr = self._speech_peak_thresh
+        return any(x > thr or x < -thr for x in a)
 
     # -- data channel ------------------------------------------------------------
 
@@ -380,6 +416,7 @@ class WhissleRoomProvider:
             self._bot_started_count += 1
         elif mtype == "bot-stopped-speaking":
             self._bot_stopped_count += 1
+            self._bot_stopped_last_t = self._time.monotonic()
         self._activity_evt.set()
         # The bot broadcasts its own spoken transcript as a standard RTVI
         # `bot-transcription` message ({type, data:{text}}) — use it as the agent
@@ -438,12 +475,30 @@ class WhissleRoomProvider:
         return re.sub(r"[\s\W]+", "", s or "").lower()
 
     def agent_audio_total(self) -> int:
-        """Monotonic total bot PCM bytes received (thread-safe read of an int)."""
+        """Monotonic total bot PCM bytes received (thread-safe read of an int).
+
+        NOTE: the track is continuous — this grows every ~10ms whether or not the
+        bot is speaking. It measures capture volume, NOT speech activity; use
+        :meth:`agent_speech_total` / :meth:`agent_speech_last_t` for turn-taking."""
         return self._agent_pcm_total
+
+    def agent_speech_total(self) -> int:
+        """Monotonic total bot PCM bytes classified as SPEECH (energy above the
+        silence floor). This is the turn-taking signal — what a human hears."""
+        return self._agent_speech_total
+
+    def agent_speech_last_t(self) -> Optional[float]:
+        """Monotonic time of the most recent speech-classified bot frame, or None
+        if the bot has not spoken yet. The transport's end-of-turn anchor."""
+        return self._last_speech_t
 
     def bot_stopped_total(self) -> int:
         """Monotonic count of RTVI ``bot-stopped-speaking`` events received."""
         return self._bot_stopped_count
+
+    def bot_stopped_last_t(self) -> Optional[float]:
+        """Monotonic arrival time of the most recent ``bot-stopped-speaking``."""
+        return self._bot_stopped_last_t
 
     def bot_speaking(self) -> bool:
         """True while the bot has declared started-speaking without a matching stop."""

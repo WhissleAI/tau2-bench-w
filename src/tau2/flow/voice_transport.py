@@ -276,6 +276,14 @@ class VoiceTransport:
         # takes the sim's reply latency from ~2s of dead air to human range; the
         # quiet-gap remains the fallback when no speaking-state events arrive.
         self._post_stop_gap_s = float(os.getenv("WHISSLE_VOICE_POST_STOP_GAP_S", "0.35"))
+        # PRIMARY end-of-turn detector: sustained SILENCE in the received bot
+        # audio — trigger off what a human HEARS. The bot's LiveKit track streams
+        # continuously (silence frames every ~10ms between turns), so any detector
+        # keyed on "received audio bytes grew" can never see quiet: that bug made
+        # every collect run to its full deadline (greeting 18s, turns 45s) — the
+        # 18–40s sim-reply stall. The provider now classifies frames by energy;
+        # this gap is how much sustained post-speech silence ends the bot's turn.
+        self._silence_gap_s = float(os.getenv("WHISSLE_VOICE_SILENCE_GAP_S", "0.9"))
         self._max_turn_s = float(
             max_turn_s if max_turn_s is not None
             else os.getenv("WHISSLE_VOICE_MAX_TURN_S", "45"))
@@ -301,10 +309,17 @@ class VoiceTransport:
         self._hesitant_p = _hesitant_prob(os.getenv("WHISSLE_VOICE_HESITANT", "0"))
         self._turn_i = 0
         # Sim-reply latency instrumentation (the user-facing turn-taking metric):
-        # monotonic time of the bot's LAST activity in its finished turn (set by
-        # _collect_until_quiet), the sim's LLM time for the upcoming reply (noted by
-        # the driver via note_llm_ms), and the per-turn breakdown records.
+        # monotonic time the bot's finished turn actually ENDED — its last SPEECH
+        # frame, i.e. audio end as a human hears it (set by _collect_until_quiet;
+        # falls back to last transcript activity on speech-less turns) — plus the
+        # arrival time of that turn's bot-stopped-speaking event (if any), the
+        # sim's LLM time for the upcoming reply (noted by the driver via
+        # note_llm_ms), and the per-turn breakdown records. Anchoring on AUDIO end
+        # (not detector exit) is what keeps wait_ms honest: a slow end-of-turn
+        # detector shows up as a big wait_ms instead of hiding.
         self._bot_final_t: Optional[float] = None
+        self._bot_stop_event_t: Optional[float] = None
+        self._last_end_reason: Optional[str] = None
         self._pending_llm_ms: Optional[int] = None
         self.sim_reply: list[dict] = []
         # Transcript-death robustness: one handshake retry per session, and a streak
@@ -335,13 +350,14 @@ class VoiceTransport:
         self.greeting = self._collect_until_quiet(
             deadline_s=self._greeting_wait_s, quiet_gap_s=self._quiet_gap_s,
             require_output=True)[0]
-        # Robustness: bot AUDIO flowed but not one transcript event → the data
+        # Robustness: bot SPEECH flowed but not one transcript event → the data
         # channel is dead on one side (crashed handler / lost subscription). Retry
         # the ready handshake ONCE; if the transcript surface stays dark while audio
         # flows, this session cannot be measured — raise a typed infra error so the
         # runner classifies it infra_fail (and retries the whole session) instead of
-        # polluting the flow metrics as a stuck_termination.
-        if not self.greeting and self.provider.agent_audio_total() > 0:
+        # polluting the flow metrics as a stuck_termination. (Raw received bytes
+        # would be >0 even for a mute bot — the track streams silence frames.)
+        if not self.greeting and self.provider.agent_speech_total() > 0:
             self._handshake_retried = True
             self._bg.run_coroutine(self.provider.send_playback_ready(), timeout=20)
             self.greeting = self._collect_until_quiet(
@@ -369,20 +385,35 @@ class VoiceTransport:
         )
         spoken = _hesitate_text(user_msg, self._turn_i) if hesitant else user_msg
         audio_before = self.provider.agent_audio_total()
-        bot_final_prev = self._bot_final_t  # last activity of the bot's finished turn
+        speech_before = self.provider.agent_speech_total()
+        bot_final_prev = self._bot_final_t          # bot AUDIO end, finished turn
+        stop_event_prev = self._bot_stop_event_t    # its stop-event arrival (if any)
+        end_reason_prev = self._last_end_reason     # how that turn-end was detected
         t_send_done, t_pub_start, tts_first_ms, tts_full_ms = self._speak_turn(
             spoken, hesitant)
-        # Sim-reply latency (the user-complaint metric): bot-turn-final → the sim
+        # Sim-reply latency (the user-complaint metric): bot AUDIO end → the sim
         # STARTS publishing its reply audio, broken into wait / LLM / TTS. The LLM
         # component is noted by the driver (note_llm_ms) between transport calls.
+        # ``wait_ms`` is anchored on the bot's audible turn end (what a human
+        # hears), so end-of-turn detector lag lands in wait_ms instead of hiding;
+        # ``wait_from_event_ms`` is the same residual anchored on the RTVI
+        # bot-stopped-speaking arrival, for comparing the two references.
         sim_reply: Optional[dict] = None
         if bot_final_prev is not None:
             total_ms = round((t_pub_start - bot_final_prev) * 1000)
             llm_ms = self._pending_llm_ms
             wait_ms = max(0, total_ms - (llm_ms or 0) - tts_first_ms)
+            wait_from_event_ms: Optional[int] = None
+            if stop_event_prev is not None:
+                wait_from_event_ms = max(0, round(
+                    (t_pub_start - stop_event_prev) * 1000)
+                    - (llm_ms or 0) - tts_first_ms)
             sim_reply = {"total_ms": total_ms, "wait_ms": wait_ms,
+                         "wait_from_audio_end_ms": wait_ms,
+                         "wait_from_event_ms": wait_from_event_ms,
                          "llm_ms": llm_ms, "tts_ms": tts_first_ms,
-                         "tts_full_ms": tts_full_ms}
+                         "tts_full_ms": tts_full_ms,
+                         "bot_end_reason": end_reason_prev}
             self.sim_reply.append(sim_reply)
         self._pending_llm_ms = None
         reply, boundary, first_audio_t, audio_after = self._await_reply(t_send_done)
@@ -393,12 +424,17 @@ class VoiceTransport:
         vres = VoiceTurnResult(
             reply=reply, latency_ms=latency_ms,
             bot_audio_bytes=max(0, audio_after - audio_before), boundary=boundary)
-        # Transcript-death detection: audio flowed this turn but not one transcript
-        # event. Retry the ready handshake once per session (it re-exercises the
-        # data channel in both directions); a persisting streak is surfaced to the
-        # runner as transcript_dead so it can stop driving a dead session and
-        # classify it infra_fail instead of chalking up empty agent turns.
-        if not (reply or "").strip() and vres.bot_audio_bytes > 0:
+        # SPEECH bytes this turn — the honest "did the bot actually talk" signal.
+        # (bot_audio_bytes counts raw received frames, which include the track's
+        # continuous silence — it is >0 every turn by construction.)
+        bot_speech_bytes = max(
+            0, self.provider.agent_speech_total() - speech_before)
+        # Transcript-death detection: bot SPEECH flowed this turn but not one
+        # transcript event. Retry the ready handshake once per session (it
+        # re-exercises the data channel in both directions); a persisting streak is
+        # surfaced to the runner as transcript_dead so it can stop driving a dead
+        # session and classify it infra_fail instead of chalking up empty turns.
+        if not (reply or "").strip() and bot_speech_bytes > 0:
             self._dead_streak += 1
             if not self._handshake_retried:
                 self._handshake_retried = True
@@ -425,6 +461,8 @@ class VoiceTransport:
             raw={"ended": False, "voice": True, "room": self.room,
                  "conversation_id": self.conversation_id,
                  "latency_ms": latency_ms, "bot_audio_bytes": vres.bot_audio_bytes,
+                 "bot_speech_bytes": bot_speech_bytes,
+                 "end_reason": self._last_end_reason,
                  "boundary": boundary, "raw_fragments": vres.raw_fragments,
                  "signals": turn_signals, "user_metadata": turn_metadata,
                  "hesitant_input": hesitant,
@@ -558,28 +596,38 @@ class VoiceTransport:
                              require_output: bool, t_ref: Optional[float] = None,
                              want_first_audio: bool = False):
         """Wait (event-driven) until the agent has produced output and then stayed
-        quiet. Two end-of-turn signals, fastest wins:
+        quiet. Three end-of-turn signals, EARLIEST wins:
 
-          * the bot's own RTVI ``bot-stopped-speaking`` event → only a short
-            ``post_stop_gap`` for trailing transcript fragments (the human-speed
-            path: the bot said it is done, so reply like a person would);
-          * no new transcript AND no new audio for ``quiet_gap_s`` (fallback when
-            the deploy emits no speaking-state events).
+          * PRIMARY — audio silence: the received bot frame stream shows speech
+            followed by ``silence_gap_s`` of sustained silence (what a human
+            hears). Robust by construction to any server-side event lag. The
+            bot's LiveKit track streams continuously — silence frames every
+            ~10ms — so this keys on the provider's SPEECH-energy counters, never
+            on raw received bytes (raw bytes grow forever; gating on them made
+            every collect run to its full deadline: the 18–40s sim-reply stall).
+          * CONFIRMATION — the bot's own RTVI ``bot-stopped-speaking`` event →
+            only a short ``post_stop_gap`` of no further speech/transcript;
+          * FALLBACK — no new transcript AND no new speech for ``quiet_gap_s``
+            (covers text-only turns and deploys with odd event behavior).
 
         Blocks on the provider's activity event rather than a fixed poll sleep.
-        Records the bot's last-activity time in ``self._bot_final_t`` (the anchor
-        for the next turn's sim-reply latency). Returns
+        Records the bot's AUDIO-end time in ``self._bot_final_t`` (the honest
+        anchor for the next turn's sim-reply latency) and that turn's stop-event
+        arrival in ``self._bot_stop_event_t``. Returns
         (deduped_text, boundary, first_audio_t, audio_total) when
         ``want_first_audio`` else (deduped_text, boundary)."""
         assert self.provider is not None
-        deadline = time.monotonic() + deadline_s
+        t_start = time.monotonic()
+        deadline = t_start + deadline_s
         frags: list[str] = []
-        last_audio = self.provider.agent_audio_total()
+        last_speech = self.provider.agent_speech_total()
         stop_snapshot = self.provider.bot_stopped_total()
         saw_output = False
-        last_activity = time.monotonic()
+        saw_speech = False
+        last_activity = t_start
         first_audio_t: Optional[float] = None
         boundary = "silent"
+        end_reason: Optional[str] = None
         while time.monotonic() < deadline:
             texts = self.provider.drain_agent_texts()
             if texts:
@@ -587,28 +635,59 @@ class VoiceTransport:
                 saw_output = True
                 boundary = "text"
                 last_activity = time.monotonic()
-            audio_total = self.provider.agent_audio_total()
-            if audio_total > last_audio:
+            speech_total = self.provider.agent_speech_total()
+            if speech_total > last_speech:
                 if first_audio_t is None:
-                    first_audio_t = time.monotonic()
-                last_audio = audio_total
+                    # The frame's arrival time, not this loop's wakeup time.
+                    first_audio_t = (self.provider.agent_speech_last_t()
+                                     or time.monotonic())
+                last_speech = speech_total
                 saw_output = True
+                saw_speech = True
                 if boundary == "silent":
                     boundary = "text"
                 last_activity = time.monotonic()
             if saw_output:
-                gap = quiet_gap_s
-                if (self.provider.bot_stopped_total() > stop_snapshot
-                        and not self.provider.bot_speaking()):
-                    gap = min(self._post_stop_gap_s, quiet_gap_s)
-                if (time.monotonic() - last_activity) >= gap:
+                now = time.monotonic()
+                last_sp_t = self.provider.agent_speech_last_t()
+                stop_seen = (self.provider.bot_stopped_total() > stop_snapshot
+                             and not self.provider.bot_speaking())
+                # CONFIRMATION: bot declared done + short residual quiet.
+                if stop_seen and (now - last_activity) >= min(
+                        self._post_stop_gap_s, quiet_gap_s):
+                    end_reason = "stop_event"
+                    break
+                # PRIMARY: sustained silence after speech. If the event stream
+                # claims the bot is STILL speaking (started without stop), be
+                # conservative and require the full quiet-gap of silence instead —
+                # a mid-turn pause must not trigger a barge-in.
+                if saw_speech and last_sp_t is not None:
+                    need = self._silence_gap_s
+                    if self.provider.bot_speaking():
+                        need = max(need, quiet_gap_s)
+                    if (now - last_sp_t) >= need:
+                        end_reason = "audio_silence"
+                        break
+                # FALLBACK: nothing at all (speech or transcript) for quiet_gap_s.
+                if (now - last_activity) >= quiet_gap_s:
+                    end_reason = "quiet_gap"
                     break
             self.provider.wait_activity(0.05)
         else:
+            end_reason = "deadline"
             if not saw_output:
                 boundary = "timeout"
         if saw_output:
-            self._bot_final_t = last_activity
+            # HONEST anchor: the bot's turn ends when its AUDIO ends, not when
+            # this detector exits — so detector lag can never hide in wait_ms.
+            audio_end = self.provider.agent_speech_last_t() if saw_speech else None
+            self._bot_final_t = audio_end if audio_end is not None else last_activity
+            stop_t = self.provider.bot_stopped_last_t()
+            self._bot_stop_event_t = (
+                stop_t if (stop_t is not None and stop_t >= t_start
+                           and self.provider.bot_stopped_total() > stop_snapshot)
+                else None)
+        self._last_end_reason = end_reason
         text = dedup_texts(frags)
         if want_first_audio:
             return text, boundary, first_audio_t, self.provider.agent_audio_total()

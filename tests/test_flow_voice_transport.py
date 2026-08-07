@@ -51,7 +51,10 @@ class FakeProvider:
         self.conversation_id = "fake-conv"
         self._texts: list[str] = []
         self._audio_total = 0
+        self._speech_total = 0
+        self._last_speech_t: float | None = None
         self._stopped = 0
+        self._stopped_last_t: float | None = None
         self._speaking = False
         self._activity = threading.Event()
         self._lock = threading.Lock()
@@ -63,6 +66,12 @@ class FakeProvider:
     def agent_audio_total(self) -> int:
         return self._audio_total
 
+    def agent_speech_total(self) -> int:
+        return self._speech_total
+
+    def agent_speech_last_t(self) -> float | None:
+        return self._last_speech_t
+
     def drain_agent_texts(self) -> list[str]:
         with self._lock:
             out, self._texts = self._texts, []
@@ -70,6 +79,9 @@ class FakeProvider:
 
     def bot_stopped_total(self) -> int:
         return self._stopped
+
+    def bot_stopped_last_t(self) -> float | None:
+        return self._stopped_last_t
 
     def bot_speaking(self) -> bool:
         return self._speaking
@@ -108,21 +120,73 @@ class FakeProvider:
         with self._lock:
             self._speaking = True
             self._audio_total += 32000
+            self._speech_total += 32000
+            self._last_speech_t = time.monotonic()
             if self.emits_text:
                 self._texts.append(text or self._reply_text)
             self._speaking = False
             if self.emits_stop_events:
                 self._stopped += 1
+                self._stopped_last_t = time.monotonic()
             self._reply_pending = False
         self._activity.set()
 
 
+class ContinuousTrackFakeProvider(FakeProvider):
+    """Models what LiveKit actually delivers: a CONTINUOUS bot audio track whose
+    silence frames keep arriving every 10ms between bot utterances (raw byte
+    counters grow forever), with speech frames only during scripted speech windows.
+    This is the prod condition that made the pre-fix detector run every collect to
+    its full deadline (18–40s sim-reply stall)."""
+
+    def __init__(self, **kw):
+        super().__init__(**kw)
+        self._run = True
+        self._speak_until = 0.0
+        self._pump = threading.Thread(target=self._pump_frames, daemon=True)
+        self._pump.start()
+
+    def _pump_frames(self) -> None:
+        while self._run:
+            now = time.monotonic()
+            with self._lock:
+                self._audio_total += 320          # a 10ms silence-or-speech frame
+                if now < self._speak_until:
+                    self._speech_total += 320
+                    self._last_speech_t = now
+                    self._activity.set()          # provider wakes only on speech
+            time.sleep(0.01)
+
+    def speak_for(self, seconds: float, text: str | None = None,
+                  stop_event_delay_s: float | None = None) -> None:
+        """Bot speaks for ``seconds`` (frames pumped in real time). The RTVI stop
+        event fires ``stop_event_delay_s`` after the audio ends (None = never —
+        the late/absent-event condition the detector must survive)."""
+        with self._lock:
+            self._speak_until = time.monotonic() + seconds
+            if self.emits_text:
+                self._texts.append(text or self._reply_text)
+        if stop_event_delay_s is not None:
+            def _late_stop():
+                time.sleep(seconds + stop_event_delay_s)
+                with self._lock:
+                    self._stopped += 1
+                    self._stopped_last_t = time.monotonic()
+                self._activity.set()
+            threading.Thread(target=_late_stop, daemon=True).start()
+
+    def close(self) -> None:
+        self._run = False
+
+
 def make_vt(provider: FakeProvider, *, quiet_gap_s: float = 2.0,
-            post_stop_gap_s: float = 0.35) -> VoiceTransport:
+            post_stop_gap_s: float = 0.35,
+            silence_gap_s: float = 0.9) -> VoiceTransport:
     vt = VoiceTransport(
         "fake-agent", api_key="wsk_test", tts=FakeTTS(),
         quiet_gap_s=quiet_gap_s, max_turn_s=10.0)
     vt._post_stop_gap_s = post_stop_gap_s
+    vt._silence_gap_s = silence_gap_s
     vt._hesitant_p = 0.0  # deterministic regardless of ambient env
     vt.provider = provider
     vt._bg.start()
@@ -183,6 +247,78 @@ def test_quiet_gap_fallback_without_stop_events():
     vt._bg.stop()
 
 
+# ── audio-energy end-of-turn (the 18–40s stall regression) ──────────────────────
+
+def test_continuous_silence_frames_do_not_stall_collect():
+    """THE prod bug: the bot track streams silence frames forever, so a detector
+    keyed on raw received bytes never sees quiet and runs to the full deadline
+    (45s/turn → the 18–40s sim-reply stall). The fix must exit ~silence_gap after
+    the SPEECH ends, even when the stop event arrives absurdly late."""
+    p = ContinuousTrackFakeProvider()
+    vt = make_vt(p, quiet_gap_s=2.0, silence_gap_s=0.5)
+    try:
+        p.speak_for(0.6, stop_event_delay_s=30.0)  # event 30s late — must not matter
+        t0 = time.monotonic()
+        text, boundary = vt._collect_until_quiet(
+            deadline_s=8.0, quiet_gap_s=vt._quiet_gap_s, require_output=True)
+        elapsed = time.monotonic() - t0
+        assert text == "I can help with that."
+        assert elapsed < 2.0, (
+            f"collect took {elapsed:.2f}s — silence frames stalled the detector")
+        assert vt._last_end_reason == "audio_silence"
+        # The honest anchor: bot turn end = last SPEECH frame, not detector exit.
+        assert vt._bot_final_t == pytest.approx(p.agent_speech_last_t(), abs=1e-6)
+        assert time.monotonic() - vt._bot_final_t >= 0.4
+    finally:
+        p.close()
+        vt._bg.stop()
+
+
+def test_prompt_stop_event_still_wins_over_silence_gap():
+    """When the RTVI stop event arrives promptly it confirms end-of-turn after only
+    the short post-stop gap — earlier than the audio-silence gap."""
+    p = ContinuousTrackFakeProvider()
+    vt = make_vt(p, quiet_gap_s=2.0, post_stop_gap_s=0.2, silence_gap_s=1.5)
+    try:
+        p.speak_for(0.4, stop_event_delay_s=0.05)
+        t0 = time.monotonic()
+        vt._collect_until_quiet(
+            deadline_s=8.0, quiet_gap_s=vt._quiet_gap_s, require_output=True)
+        elapsed = time.monotonic() - t0
+        assert vt._last_end_reason == "stop_event"
+        assert elapsed < 1.2, f"stop-event path took {elapsed:.2f}s"
+        assert vt._bot_stop_event_t is not None
+    finally:
+        p.close()
+        vt._bg.stop()
+
+
+def test_wait_ms_is_anchored_on_audio_end():
+    """Instrumentation honesty: wait/total are measured from the bot's audible
+    audio end, so any detector lag lands in wait_ms instead of hiding. With a
+    0.5s silence-gap detector the wait must REPORT ≥ ~0.5s."""
+    p = ContinuousTrackFakeProvider()
+    vt = make_vt(p, quiet_gap_s=2.0, silence_gap_s=0.5)
+    try:
+        p.speak_for(0.3)  # no stop event at all
+        vt._collect_until_quiet(
+            deadline_s=8.0, quiet_gap_s=vt._quiet_gap_s, require_output=True)
+        vt.note_llm_ms(120)
+        time.sleep(0.12)  # the sim LLM actually thinking for the noted 120ms
+        res = vt.turn("Understood, thanks — that all sounds right to me.")
+        sim = res.raw["sim_reply"]
+        assert sim is not None
+        assert sim["bot_end_reason"] == "audio_silence"
+        assert sim["wait_from_event_ms"] is None       # no event ever arrived
+        assert sim["wait_from_audio_end_ms"] == sim["wait_ms"]
+        assert sim["wait_ms"] >= 450, (
+            f"wait_ms {sim['wait_ms']}ms hides the detector's 0.5s silence gap")
+        assert sim["total_ms"] >= sim["wait_ms"]
+    finally:
+        p.close()
+        vt._bg.stop()
+
+
 # ── sim reply latency instrumentation ───────────────────────────────────────────
 
 def test_turn_records_sim_reply_breakdown():
@@ -224,7 +360,10 @@ def test_sim_reply_latency_before_after():
     pre-fix behavior) vs NEW (event-driven stop + pipelined TTS)."""
     def run_turns(emits_stop: bool, quiet_gap: float, n: int = 6) -> list[int]:
         p = FakeProvider(emits_stop_events=emits_stop)
-        vt = make_vt(p, quiet_gap_s=quiet_gap, post_stop_gap_s=0.3)
+        # The OLD configuration also had no audio-silence detector — neutralize it
+        # so the quiet-gap alone governs, as pre-fix.
+        vt = make_vt(p, quiet_gap_s=quiet_gap, post_stop_gap_s=0.3,
+                     silence_gap_s=99.0 if not emits_stop else 0.9)
         vt._bot_final_t = None
         totals: list[int] = []
         p.speak_bot_turn_later(0.05)  # greeting
