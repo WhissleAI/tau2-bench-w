@@ -1,60 +1,94 @@
 {
   "agent_type": "car_rental",
-  "ts": "20260805T173902Z",
-  "sessions": 5,
-  "sessions_ended_cleanly": 1,
-  "task_success": 3,
-  "sessions_with_high_findings": 0,
+  "ts": "20260806T153416Z",
+  "sessions": 11,
+  "sessions_ended_cleanly": 0,
+  "task_success": 0,
+  "sessions_with_high_findings": 11,
   "finding_counts_by_type": {
-    "stuck_termination": 4,
+    "stuck_termination": 11,
     "coverage": 2
   },
   "finding_counts_by_severity": {
-    "medium": 4,
+    "high": 11,
     "info": 2
   },
   "coverage": {
-    "states_total": 10,
-    "states_visited": 8,
+    "states_total": 11,
+    "states_visited": 0,
     "states_unvisited": [
+      "greet",
+      "capture_details",
+      "search_fleet",
+      "quote",
+      "mark_selected",
+      "collect_contact",
       "book",
-      "confirm"
+      "no_availability",
+      "confirm",
+      "close",
+      "end"
     ],
-    "transitions_total": 11,
-    "transitions_fired": 7,
+    "transitions_total": 12,
+    "transitions_fired": 0,
     "transitions_unfired": [
+      "greet_to_capture",
+      "capture_to_search",
+      "search_to_quote",
+      "quote_selected",
+      "quote_no_match",
+      "selected_to_contact",
       "contact_to_book",
       "book_to_confirm",
       "noavail_to_capture",
-      "confirm_to_end"
+      "noavail_to_end",
+      "confirm_to_end",
+      "close_to_end"
     ]
   },
   "coverage_findings": [
     {
       "type": "coverage",
       "severity": "info",
-      "detail": "2/10 states never entered across the session set: ['book', 'confirm'].",
+      "detail": "11/11 states never entered across the session set: ['greet', 'capture_details', 'search_fleet', 'quote', 'mark_selected', 'collect_contact', 'book', 'no_availability', 'confirm', 'close', 'end'].",
       "state": null,
       "transition": null,
       "evidence": {
         "unvisited_states": [
+          "greet",
+          "capture_details",
+          "search_fleet",
+          "quote",
+          "mark_selected",
+          "collect_contact",
           "book",
-          "confirm"
+          "no_availability",
+          "confirm",
+          "close",
+          "end"
         ]
       }
     },
     {
       "type": "coverage",
       "severity": "info",
-      "detail": "4/11 transitions never fired across the session set: ['contact_to_book', 'book_to_confirm', 'noavail_to_capture', 'confirm_to_end'].",
+      "detail": "12/12 transitions never fired across the session set: ['greet_to_capture', 'capture_to_search', 'search_to_quote', 'quote_selected', 'quote_no_match', 'selected_to_contact', 'contact_to_book', 'book_to_confirm', 'noavail_to_capture', 'noavail_to_end', 'confirm_to_end', 'close_to_end'].",
       "state": null,
       "transition": null,
       "evidence": {
         "unfired_transitions": [
+          "greet_to_capture",
+          "capture_to_search",
+          "search_to_quote",
+          "quote_selected",
+          "quote_no_match",
+          "selected_to_contact",
           "contact_to_book",
           "book_to_confirm",
           "noavail_to_capture",
-          "confirm_to_end"
+          "noavail_to_end",
+          "confirm_to_end",
+          "close_to_end"
         ]
       }
     }
@@ -63,11 +97,24 @@
     {
       "task_id": "car_happy_suv",
       "scenario": "book",
-      "num_turns": 11,
+      "num_turns": 0,
       "ended": false,
-      "task_success": true,
+      "task_success": null,
       "final_state": null,
-      "high_severity": 0,
+      "high_severity": 1,
+      "finding_counts_by_type": {
+        "stuck_termination": 1
+      },
+      "agent_deleted": false
+    },
+    {
+      "task_id": "car_happy_economy",
+      "scenario": "book",
+      "num_turns": 0,
+      "ended": false,
+      "task_success": null,
+      "final_state": null,
+      "high_severity": 1,
       "finding_counts_by_type": {
         "stuck_termination": 1
       },
@@ -76,35 +123,50 @@
     {
       "task_id": "car_no_availability",
       "scenario": "no-availability",
-      "num_turns": 4,
-      "ended": true,
-      "task_success": true,
-      "final_state": null,
-      "high_severity": 0,
-      "finding_counts_by_type": {},
-      "agent_deleted": false
-    },
-    {
-      "task_id": "car_change_vehicle",
-      "scenario": "change vehicle",
-      "num_turns": 9,
+      "num_turns": 0,
       "ended": false,
-      "task_success": true,
+      "task_success": null,
       "final_state": null,
-      "high_severity": 0,
+      "high_severity": 1,
       "finding_counts_by_type": {
         "stuck_termination": 1
       },
       "agent_deleted": false
     },
     {
-      "task_id": "car_price_too_high",
-      "scenario": "just-asking",
-      "num_turns": 10,
+      "task_id": "car_change_vehicle",
+      "scenario": "change vehicle",
+      "num_turns": 0,
       "ended": false,
-      "task_success": false,
+      "task_success": null,
       "final_state": null,
-      "high_severity": 0,
+      "high_severity": 1,
+      "finding_counts_by_type": {
+        "stuck_termination": 1
+      },
+      "agent_deleted": false
+    },
+    {
+      "task_id": "car_just_asking",
+      "scenario": "just-asking",
+      "num_turns": 0,
+      "ended": false,
+      "task_success": null,
+      "final_state": null,
+      "high_severity": 1,
+      "finding_counts_by_type": {
+        "stuck_termination": 1
+      },
+      "agent_deleted": false
+    },
+    {
+      "task_id": "car_long_term",
+      "scenario": "book",
+      "num_turns": 0,
+      "ended": false,
+      "task_success": null,
+      "final_state": null,
+      "high_severity": 1,
       "finding_counts_by_type": {
         "stuck_termination": 1
       },
@@ -113,11 +175,63 @@
     {
       "task_id": "car_one_way",
       "scenario": "book",
-      "num_turns": 9,
+      "num_turns": 0,
       "ended": false,
-      "task_success": false,
+      "task_success": null,
       "final_state": null,
-      "high_severity": 0,
+      "high_severity": 1,
+      "finding_counts_by_type": {
+        "stuck_termination": 1
+      },
+      "agent_deleted": false
+    },
+    {
+      "task_id": "car_add_driver",
+      "scenario": "change vehicle",
+      "num_turns": 0,
+      "ended": false,
+      "task_success": null,
+      "final_state": null,
+      "high_severity": 1,
+      "finding_counts_by_type": {
+        "stuck_termination": 1
+      },
+      "agent_deleted": false
+    },
+    {
+      "task_id": "car_price_too_high",
+      "scenario": "just-asking",
+      "num_turns": 0,
+      "ended": false,
+      "task_success": null,
+      "final_state": null,
+      "high_severity": 1,
+      "finding_counts_by_type": {
+        "stuck_termination": 1
+      },
+      "agent_deleted": false
+    },
+    {
+      "task_id": "car_wrong_dates",
+      "scenario": "no-availability",
+      "num_turns": 0,
+      "ended": false,
+      "task_success": null,
+      "final_state": null,
+      "high_severity": 1,
+      "finding_counts_by_type": {
+        "stuck_termination": 1
+      },
+      "agent_deleted": false
+    },
+    {
+      "task_id": "car_luxury_upgrade",
+      "scenario": "book",
+      "num_turns": 0,
+      "ended": false,
+      "task_success": null,
+      "final_state": null,
+      "high_severity": 1,
       "finding_counts_by_type": {
         "stuck_termination": 1
       },

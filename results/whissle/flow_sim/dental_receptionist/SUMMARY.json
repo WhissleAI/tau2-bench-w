@@ -1,103 +1,77 @@
 {
   "agent_type": "dental_receptionist",
-  "ts": "20260805T165223Z",
-  "sessions": 5,
-  "sessions_ended_cleanly": 0,
-  "task_success": 2,
-  "sessions_with_high_findings": 3,
+  "ts": "20260807T011833Z",
+  "sessions": 11,
+  "sessions_ran": 9,
+  "sessions_infra": 2,
+  "sessions_ended_cleanly": 4,
+  "task_success": 5,
+  "sessions_with_high_findings": 2,
   "finding_counts_by_type": {
-    "stuck_termination": 5,
+    "infra_fail": 2,
+    "stuck_termination": 3,
+    "stuck_loop": 1,
+    "premature_termination": 1,
+    "agent_no_close": 2,
     "coverage": 2
   },
   "finding_counts_by_severity": {
-    "medium": 2,
-    "high": 3,
+    "high": 4,
+    "medium": 5,
     "info": 2
   },
   "coverage": {
     "states_total": 14,
-    "states_visited": 6,
+    "states_visited": 12,
     "states_unvisited": [
-      "send_confirmation",
-      "reschedule_do",
       "reschedule_confirm",
-      "cancel",
-      "cancel_do",
-      "cancel_confirm",
-      "close",
-      "done"
+      "cancel_confirm"
     ],
     "transitions_total": 24,
-    "transitions_fired": 5,
+    "transitions_fired": 15,
     "transitions_unfired": [
-      "t4",
-      "t5",
       "t7",
-      "t9",
-      "t10",
       "t11",
-      "t12",
-      "t13",
       "t13b",
       "t13c",
       "t13d",
       "t13e",
       "t14",
-      "t15",
-      "t15b",
       "t15c",
-      "t15d",
-      "t15e",
-      "t16"
+      "t15e"
     ]
   },
   "coverage_findings": [
     {
       "type": "coverage",
       "severity": "info",
-      "detail": "8/14 states never entered across the session set: ['send_confirmation', 'reschedule_do', 'reschedule_confirm', 'cancel', 'cancel_do', 'cancel_confirm', 'close', 'done'].",
+      "detail": "2/14 states never entered across the session set: ['reschedule_confirm', 'cancel_confirm'].",
       "state": null,
       "transition": null,
       "evidence": {
         "unvisited_states": [
-          "send_confirmation",
-          "reschedule_do",
           "reschedule_confirm",
-          "cancel",
-          "cancel_do",
-          "cancel_confirm",
-          "close",
-          "done"
+          "cancel_confirm"
         ]
       }
     },
     {
       "type": "coverage",
       "severity": "info",
-      "detail": "19/24 transitions never fired across the session set: ['t4', 't5', 't7', 't9', 't10', 't11', 't12', 't13', 't13b', 't13c', 't13d', 't13e', 't14', 't15', 't15b', 't15c', 't15d', 't15e', 't16'].",
+      "detail": "9/24 transitions never fired across the session set: ['t7', 't11', 't13b', 't13c', 't13d', 't13e', 't14', 't15c', 't15e'].",
       "state": null,
       "transition": null,
       "evidence": {
         "unfired_transitions": [
-          "t4",
-          "t5",
           "t7",
-          "t9",
-          "t10",
           "t11",
-          "t12",
-          "t13",
           "t13b",
           "t13c",
           "t13d",
           "t13e",
           "t14",
-          "t15",
-          "t15b",
           "t15c",
-          "t15d",
-          "t15e",
-          "t16"
+          "t15e"
         ]
       }
     }
@@ -106,6 +80,95 @@
     {
       "task_id": "dental_happy_book",
       "scenario": "book",
+      "num_turns": 0,
+      "ended": false,
+      "task_success": null,
+      "final_state": null,
+      "high_severity": 1,
+      "finding_counts_by_type": {
+        "infra_fail": 1
+      },
+      "agent_deleted": true,
+      "infra_fail": true,
+      "attempt": 1
+    },
+    {
+      "task_id": "dental_book_specific_time",
+      "scenario": "book",
+      "num_turns": 8,
+      "ended": true,
+      "task_success": true,
+      "final_state": null,
+      "high_severity": 0,
+      "finding_counts_by_type": {},
+      "agent_deleted": true,
+      "infra_fail": false,
+      "attempt": 1
+    },
+    {
+      "task_id": "dental_reschedule",
+      "scenario": "reschedule",
+      "num_turns": 0,
+      "ended": false,
+      "task_success": null,
+      "final_state": null,
+      "high_severity": 1,
+      "finding_counts_by_type": {
+        "infra_fail": 1
+      },
+      "agent_deleted": true,
+      "infra_fail": true,
+      "attempt": 1
+    },
+    {
+      "task_id": "dental_reschedule_then_cancel",
+      "scenario": "reschedule",
+      "num_turns": 8,
+      "ended": false,
+      "task_success": true,
+      "final_state": null,
+      "high_severity": 0,
+      "finding_counts_by_type": {
+        "stuck_termination": 1
+      },
+      "agent_deleted": true,
+      "infra_fail": false,
+      "attempt": 1
+    },
+    {
+      "task_id": "dental_cancel",
+      "scenario": "cancel",
+      "num_turns": 15,
+      "ended": true,
+      "task_success": false,
+      "final_state": null,
+      "high_severity": 0,
+      "finding_counts_by_type": {
+        "stuck_loop": 1,
+        "premature_termination": 1
+      },
+      "agent_deleted": true,
+      "infra_fail": false,
+      "attempt": 1
+    },
+    {
+      "task_id": "dental_cancel_no_reason",
+      "scenario": "cancel",
+      "num_turns": 8,
+      "ended": false,
+      "task_success": false,
+      "final_state": null,
+      "high_severity": 0,
+      "finding_counts_by_type": {
+        "stuck_termination": 1
+      },
+      "agent_deleted": true,
+      "infra_fail": false,
+      "attempt": 1
+    },
+    {
+      "task_id": "dental_no_slot",
+      "scenario": "no-slot",
       "num_turns": 9,
       "ended": false,
       "task_success": true,
@@ -114,59 +177,65 @@
       "finding_counts_by_type": {
         "stuck_termination": 1
       },
-      "agent_deleted": true
+      "agent_deleted": true,
+      "infra_fail": false,
+      "attempt": 1
     },
     {
-      "task_id": "dental_reschedule",
-      "scenario": "reschedule",
-      "num_turns": 4,
-      "ended": false,
-      "task_success": null,
-      "final_state": null,
-      "high_severity": 1,
-      "finding_counts_by_type": {
-        "stuck_termination": 1
-      },
-      "agent_deleted": true
-    },
-    {
-      "task_id": "dental_cancel",
-      "scenario": "cancel",
-      "num_turns": 4,
-      "ended": false,
+      "task_id": "dental_hours_only",
+      "scenario": "just-asking",
+      "num_turns": 2,
+      "ended": true,
       "task_success": true,
       "final_state": null,
       "high_severity": 0,
-      "finding_counts_by_type": {
-        "stuck_termination": 1
-      },
-      "agent_deleted": true
+      "finding_counts_by_type": {},
+      "agent_deleted": true,
+      "infra_fail": false,
+      "attempt": 1
     },
     {
-      "task_id": "dental_no_slot",
-      "scenario": "no-slot",
-      "num_turns": 3,
+      "task_id": "dental_wrong_info",
+      "scenario": "wrong info",
+      "num_turns": 10,
       "ended": false,
-      "task_success": null,
+      "task_success": false,
       "final_state": null,
       "high_severity": 1,
       "finding_counts_by_type": {
-        "stuck_termination": 1
+        "agent_no_close": 1
       },
-      "agent_deleted": true
+      "agent_deleted": true,
+      "infra_fail": false,
+      "attempt": 1
     },
     {
       "task_id": "dental_emergency",
       "scenario": "book",
-      "num_turns": 10,
+      "num_turns": 7,
       "ended": false,
-      "task_success": null,
+      "task_success": false,
       "final_state": null,
       "high_severity": 1,
       "finding_counts_by_type": {
-        "stuck_termination": 1
+        "agent_no_close": 1
       },
-      "agent_deleted": true
+      "agent_deleted": true,
+      "infra_fail": false,
+      "attempt": 1
+    },
+    {
+      "task_id": "dental_message_for_staff",
+      "scenario": "just-asking",
+      "num_turns": 4,
+      "ended": true,
+      "task_success": true,
+      "final_state": null,
+      "high_severity": 0,
+      "finding_counts_by_type": {},
+      "agent_deleted": true,
+      "infra_fail": false,
+      "attempt": 1
     }
   ]
 }

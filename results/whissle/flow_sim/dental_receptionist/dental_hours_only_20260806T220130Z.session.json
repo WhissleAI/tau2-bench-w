@@ -1,0 +1,372 @@
+{
+  "task_id": "dental_hours_only",
+  "agent_type": "dental_receptionist",
+  "mode": "voice",
+  "ts": "20260806T220130Z",
+  "agent_id": "a456665d-6cb0-4205-863a-024006dcc1e0",
+  "conversation_id": null,
+  "voice_room": "bench-65c2980e-f48c-4306-a64a-d3ceccce2a1a-8f3e3ee04c21",
+  "scenario": "just-asking",
+  "persona": "Karthik S, prospective patient, just gathering info.",
+  "goal": "Ask only for the clinic's opening hours and location. Do NOT book anything; thank them and hang up once you have the hours.",
+  "compliance_spec": null,
+  "greeting": null,
+  "outcome": {
+    "task_success": null,
+    "task_success_reason": "not run",
+    "ended": false,
+    "end_reason": null,
+    "goal_met_turn": null,
+    "sim_goal_met": false,
+    "post_goal_turns_driven": 0,
+    "empty_reply_turns": [],
+    "final_state": null
+  },
+  "metadata": {
+    "num_turns": 0,
+    "max_turns_budget": 10,
+    "post_goal_turns_allowance": 4,
+    "turn_cap_hit": false,
+    "start_state": "greet",
+    "latencies_ms": [],
+    "sim_reply_latency_ms": null,
+    "audio": null,
+    "signals_summary": {
+      "total": 0,
+      "by_kind": {},
+      "turns_with_signals": 0,
+      "hesitation_turns": [],
+      "metadata_frames": 0,
+      "turns_with_metadata": 0,
+      "emotions_seen": {},
+      "intents_seen": {}
+    },
+    "infra_fail": true,
+    "attempt": 1,
+    "setup_error": "VoiceInfraError: bot audio is flowing but no transcript events arrived (data channel dead) — after one ready-handshake retry"
+  },
+  "transcript": "",
+  "turns": [],
+  "flow_trace": [],
+  "states_visited": [],
+  "analyzer_findings": [
+    {
+      "type": "infra_fail",
+      "severity": "high",
+      "detail": "infrastructure failure — the session could not be measured (attempt 1): VoiceInfraError: bot audio is flowing but no transcript events arrived (data channel dead) — after one ready-handshake retry",
+      "state": null,
+      "transition": null,
+      "evidence": {
+        "attempt": 1,
+        "turns_driven": 0,
+        "end_reason": null
+      }
+    }
+  ],
+  "flow_spec": {
+    "states": [
+      {
+        "id": "greet",
+        "say": "Thanks for calling. I can book, move or cancel an appointment, or tell you our opening hours — what can I do for you?",
+        "type": "say"
+      },
+      {
+        "id": "triage",
+        "goal": "Lead the caller with a one-line menu and find out what they need: book a new appointment, reschedule or cancel an existing one, or hear the opening hours. If they describe a dental problem or pain, treat it as a booking request. Use get_hours to answer any hours question. For a genuine dental emergency offer to transfer to a person, and if the request is after hours or beyond scheduling take a message.",
+        "type": "conversation",
+        "label": "Understand the request",
+        "allowed_tools": [
+          "get_hours",
+          "take_message",
+          "transfer_call"
+        ]
+      },
+      {
+        "id": "book_collect",
+        "goal": "Classify the appointment type (exam & cleaning, consultation, filling/crown/follow-up, or emergency) and confirm it back. Ask whether the caller is a new or existing patient, collect their full name and date of birth once, and for an existing patient scheduling a new visit use lookup_record to verify them. Collect a callback phone number and save it with save_contact_field under the key callback_number. Ask for each detail only once — anything the caller already mentioned earlier in the call (even in passing) counts as collected; never re-ask it.",
+        "type": "conversation",
+        "label": "Classify visit and collect details",
+        "allowed_tools": [
+          "lookup_record",
+          "collect_digits",
+          "save_contact_field",
+          "save_email"
+        ],
+        "turn_taking_override": {
+          "barge_in": "off",
+          "vad_stop_secs": 1.6,
+          "user_speech_timeout": 2.5
+        }
+      },
+      {
+        "id": "book_schedule",
+        "goal": "Ask for the caller's preferred date and time, then use check_availability with an ISO date to confirm the slot is open. If it is taken, offer the alternatives the tool returns and let the caller choose one. Only offer times that fall inside the practice hours.",
+        "type": "conversation",
+        "label": "Find an open slot",
+        "allowed_tools": [
+          "check_availability"
+        ]
+      },
+      {
+        "id": "book_confirm",
+        "tool": "book_appointment",
+        "type": "tool",
+        "label": "Book the appointment"
+      },
+      {
+        "id": "send_confirmation",
+        "tool": "send_sms",
+        "type": "tool",
+        "label": "Text the confirmation"
+      },
+      {
+        "id": "reschedule",
+        "goal": "Ask what new date and time the caller would like and confirm it back before proceeding. The change is looked up by phone number — do not look up patient records first. If a previous attempt found no appointment, ask which phone number the booking was made under.",
+        "type": "conversation",
+        "label": "Collect the new time",
+        "allowed_tools": []
+      },
+      {
+        "id": "reschedule_do",
+        "tool": "reschedule_appointment",
+        "type": "tool",
+        "label": "Move the appointment"
+      },
+      {
+        "id": "reschedule_confirm",
+        "goal": "The appointment has just been moved. Read the new date and time back to the caller exactly as the tool returned them, in one clear sentence, so they know the change is done. Never invent a time the tool did not return.",
+        "type": "conversation",
+        "label": "Confirm the new time",
+        "allowed_tools": []
+      },
+      {
+        "id": "cancel",
+        "goal": "Before cancelling, warmly offer to reschedule instead. If the caller still wants to cancel, confirm you will cancel their appointment. The cancellation is located by phone number — if a previous attempt found no appointment, ask which phone number the booking was made under.",
+        "type": "conversation",
+        "label": "Retention first, then confirm cancel",
+        "allowed_tools": []
+      },
+      {
+        "id": "cancel_do",
+        "tool": "cancel_appointment",
+        "type": "tool",
+        "label": "Cancel the appointment"
+      },
+      {
+        "id": "cancel_confirm",
+        "goal": "The appointment has just been cancelled. Confirm to the caller in one clear sentence that it is cancelled. Do not claim anything the tool did not confirm.",
+        "type": "conversation",
+        "label": "Confirm the cancellation",
+        "allowed_tools": []
+      },
+      {
+        "id": "close",
+        "say": "You're all set. If anything else comes up, just call us back. Take care — goodbye.",
+        "type": "say"
+      },
+      {
+        "id": "done",
+        "type": "end"
+      }
+    ],
+    "enabled": true,
+    "version": 1,
+    "settings": {
+      "on_guard_trip": "fallback",
+      "fallback_state": "close",
+      "max_visits_per_state": 6,
+      "max_transitions_per_call": 40
+    },
+    "variables": [],
+    "start_state": "greet",
+    "transitions": [
+      {
+        "id": "t1",
+        "to": "triage",
+        "from": "greet",
+        "kind": "always",
+        "priority": 10
+      },
+      {
+        "id": "t2",
+        "to": "book_collect",
+        "from": "triage",
+        "kind": "llm_condition",
+        "priority": 10,
+        "condition": "the caller wants to book a new appointment, or described tooth pain or a dental problem that needs a visit"
+      },
+      {
+        "id": "t3",
+        "to": "reschedule",
+        "from": "triage",
+        "kind": "llm_condition",
+        "priority": 20,
+        "condition": "the caller wants to move or change an existing appointment"
+      },
+      {
+        "id": "t4",
+        "to": "cancel",
+        "from": "triage",
+        "kind": "llm_condition",
+        "priority": 30,
+        "condition": "the caller wants to cancel an existing appointment"
+      },
+      {
+        "id": "t5",
+        "to": "close",
+        "from": "triage",
+        "kind": "llm_condition",
+        "priority": 40,
+        "condition": "the caller only needed the opening hours or general information and has no appointment to change, or declined further help, or signalled they were done with the call"
+      },
+      {
+        "id": "t6",
+        "to": "book_schedule",
+        "from": "book_collect",
+        "kind": "llm_condition",
+        "priority": 10,
+        "condition": "the appointment type, the caller's name, and a callback phone number have all been collected or were already volunteered earlier in the conversation"
+      },
+      {
+        "id": "t7",
+        "to": "close",
+        "from": "book_collect",
+        "kind": "llm_condition",
+        "priority": 20,
+        "condition": "the caller decided not to proceed with booking, asked to end the call, or an existing patient could not be verified and a message was taken instead"
+      },
+      {
+        "id": "t8",
+        "to": "book_confirm",
+        "from": "book_schedule",
+        "kind": "llm_condition",
+        "priority": 10,
+        "condition": "the caller has agreed to a specific date and time that check_availability confirmed is open (the preference may have been volunteered earlier in the conversation)"
+      },
+      {
+        "id": "t9",
+        "to": "close",
+        "from": "book_schedule",
+        "kind": "llm_condition",
+        "priority": 20,
+        "condition": "no suitable appointment time could be found and a message was taken instead"
+      },
+      {
+        "id": "t10",
+        "to": "send_confirmation",
+        "from": "book_confirm",
+        "kind": "llm_condition",
+        "priority": 10,
+        "condition": "the book_appointment tool confirmed the appointment is booked"
+      },
+      {
+        "id": "t11",
+        "to": "close",
+        "from": "book_confirm",
+        "kind": "llm_condition",
+        "priority": 20,
+        "condition": "the booking could not be completed and the caller was told a staff member will follow up"
+      },
+      {
+        "id": "t12",
+        "to": "close",
+        "from": "send_confirmation",
+        "kind": "always",
+        "priority": 10
+      },
+      {
+        "id": "t13",
+        "to": "reschedule_do",
+        "from": "reschedule",
+        "kind": "llm_condition",
+        "priority": 10,
+        "condition": "the caller has given a new date and time they want to move the appointment to"
+      },
+      {
+        "id": "t13b",
+        "to": "close",
+        "from": "reschedule",
+        "kind": "llm_condition",
+        "priority": 20,
+        "condition": "no appointment could be located even after asking for the phone number, or the caller decided not to change anything"
+      },
+      {
+        "id": "t13c",
+        "to": "reschedule_confirm",
+        "from": "reschedule_do",
+        "kind": "llm_condition",
+        "priority": 10,
+        "condition": "the reschedule_appointment tool reported the appointment was moved to the new time"
+      },
+      {
+        "id": "t13d",
+        "to": "reschedule",
+        "from": "reschedule_do",
+        "kind": "llm_condition",
+        "priority": 20,
+        "condition": "the reschedule_appointment tool found no matching appointment"
+      },
+      {
+        "id": "t13e",
+        "to": "close",
+        "from": "reschedule_confirm",
+        "kind": "always",
+        "priority": 10
+      },
+      {
+        "id": "t14",
+        "to": "reschedule",
+        "from": "cancel",
+        "kind": "llm_condition",
+        "priority": 10,
+        "condition": "the caller accepted the offer to move the appointment to a new time instead of cancelling"
+      },
+      {
+        "id": "t15",
+        "to": "cancel_do",
+        "from": "cancel",
+        "kind": "llm_condition",
+        "priority": 20,
+        "condition": "the caller confirmed they still want to cancel the appointment"
+      },
+      {
+        "id": "t15b",
+        "to": "close",
+        "from": "cancel",
+        "kind": "llm_condition",
+        "priority": 30,
+        "condition": "the caller chose to keep their existing appointment, or no appointment could be located even after asking for the phone number"
+      },
+      {
+        "id": "t15c",
+        "to": "cancel_confirm",
+        "from": "cancel_do",
+        "kind": "llm_condition",
+        "priority": 10,
+        "condition": "the cancel_appointment tool reported the appointment was cancelled"
+      },
+      {
+        "id": "t15d",
+        "to": "cancel",
+        "from": "cancel_do",
+        "kind": "llm_condition",
+        "priority": 20,
+        "condition": "the cancel_appointment tool found no matching appointment"
+      },
+      {
+        "id": "t15e",
+        "to": "close",
+        "from": "cancel_confirm",
+        "kind": "always",
+        "priority": 10
+      },
+      {
+        "id": "t16",
+        "to": "done",
+        "from": "close",
+        "kind": "always",
+        "priority": 10
+      }
+    ]
+  }
+}

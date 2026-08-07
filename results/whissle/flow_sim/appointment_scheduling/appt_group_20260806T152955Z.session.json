@@ -1,0 +1,267 @@
+{
+  "task_id": "appt_group",
+  "agent_type": "appointment_scheduling",
+  "mode": "voice",
+  "ts": "20260806T152955Z",
+  "agent_id": "2d0dcd2b-a336-4628-a53c-a75c43cb63a5",
+  "conversation_id": null,
+  "voice_room": "bench-65c2980e-f48c-4306-a64a-d3ceccce2a1a-ad358b492e61",
+  "scenario": "new",
+  "persona": "Zoe Bennett, scheduling for two people together.",
+  "goal": "Schedule a new appointment and ask whether two people can be seen back-to-back. Confirm whatever arrangement the agent offers.",
+  "compliance_spec": null,
+  "greeting": "Hello! How can I help you today?",
+  "outcome": {
+    "task_success": null,
+    "task_success_reason": "not run",
+    "ended": false,
+    "end_reason": null,
+    "goal_met_turn": null,
+    "sim_goal_met": false,
+    "post_goal_turns_driven": 0,
+    "empty_reply_turns": [],
+    "final_state": null
+  },
+  "metadata": {
+    "num_turns": 0,
+    "max_turns_budget": 24,
+    "post_goal_turns_allowance": 4,
+    "turn_cap_hit": false,
+    "start_state": "greet",
+    "latencies_ms": [],
+    "audio": null,
+    "signals_summary": {
+      "total": 0,
+      "by_kind": {},
+      "turns_with_signals": 0,
+      "hesitation_turns": [],
+      "metadata_frames": 0,
+      "turns_with_metadata": 0,
+      "emotions_seen": {},
+      "intents_seen": {}
+    },
+    "setup_error": "ModelError: models/chat -> HTTP 402: {\"detail\":\"Insufficient credit. Top up your workspace wallet to use the model API.\"}"
+  },
+  "transcript": "AGENT: Hello! How can I help you today?",
+  "turns": [],
+  "flow_trace": [],
+  "states_visited": [],
+  "analyzer_findings": [
+    {
+      "type": "stuck_termination",
+      "severity": "high",
+      "detail": "session failed to run: ModelError: models/chat -> HTTP 402: {\"detail\":\"Insufficient credit. Top up your workspace wallet to use the model API.\"}",
+      "state": null,
+      "transition": null,
+      "evidence": {}
+    }
+  ],
+  "flow_spec": {
+    "states": [
+      {
+        "id": "greet",
+        "goal": "Greet the caller warmly for {{business_name}} and ask how you can help. If they ask about opening hours or which days you're open, call get_hours and answer from what it returns. Figure out whether they want to book a new appointment or change an existing one.",
+        "type": "conversation",
+        "label": "Greet & triage",
+        "allowed_tools": [
+          "get_hours"
+        ]
+      },
+      {
+        "id": "capture_need",
+        "goal": "Confirm the reason or type of appointment and repeat it back so it isn't misheard. Collect the caller's full name and a callback phone number using save_contact_field — only ask for what you don't already have, and never re-ask for something they already gave.",
+        "type": "conversation",
+        "label": "Capture reason & contact",
+        "allowed_tools": [
+          "save_contact_field",
+          "save_email"
+        ]
+      },
+      {
+        "id": "check_slot",
+        "goal": "Ask for their preferred date and time. Use check_availability (ISO date, YYYY-MM-DD) to confirm the slot is open — never guess availability. If it's taken, offer the alternative slots the tool returns and let the caller choose. If the caller gives a name or callback number here that you don't already have, save it with save_contact_field. If scheduling is unavailable, apologize and offer to transfer to a human.",
+        "type": "conversation",
+        "label": "Check availability",
+        "allowed_tools": [
+          "check_availability",
+          "get_hours",
+          "transfer_call",
+          "save_contact_field"
+        ]
+      },
+      {
+        "id": "book",
+        "tool": "book_appointment",
+        "type": "tool",
+        "label": "Book the appointment"
+      },
+      {
+        "id": "confirm_booked",
+        "goal": "The appointment has just been booked. Read back the final date, time, and provider clearly, exactly as the booking tool returned them, so the caller knows it is confirmed. Keep it to one clear sentence. Do not offer to book anything else and never invent a time the tool did not return.",
+        "type": "conversation",
+        "label": "Confirm the booking",
+        "allowed_tools": [],
+        "entry_actions": [
+          {
+            "key": "booking_confirmed",
+            "kind": "set_variable",
+            "value": true
+          }
+        ]
+      },
+      {
+        "id": "send_confirmation",
+        "tool": "send_sms",
+        "type": "tool",
+        "label": "Text confirmation"
+      },
+      {
+        "id": "reschedule_or_cancel",
+        "goal": "The caller wants to change an existing appointment. To reschedule, ask the new date/time and call reschedule_appointment. To cancel, gently offer to reschedule first, then call cancel_appointment if they still want to cancel. These tools locate the appointment by phone number — do not look up records first. If none is found, ask for the phone number the booking was made under and try again; if still not found, offer to transfer to a human.",
+        "type": "conversation",
+        "label": "Reschedule / cancel",
+        "allowed_tools": [
+          "reschedule_appointment",
+          "cancel_appointment",
+          "transfer_call"
+        ]
+      },
+      {
+        "id": "confirm_change",
+        "goal": "Read back exactly what changed so the caller knows it is done: for a reschedule, state the new date and time clearly; for a cancellation, confirm the appointment is cancelled. Keep it to one clear sentence, then let them know they're all set.",
+        "type": "conversation",
+        "label": "Confirm the change",
+        "allowed_tools": []
+      },
+      {
+        "id": "close",
+        "say": "You're all set. Thanks for calling, and take care. Goodbye!",
+        "type": "say",
+        "label": "Close"
+      },
+      {
+        "id": "done",
+        "type": "end"
+      }
+    ],
+    "enabled": true,
+    "version": 1,
+    "settings": {
+      "on_guard_trip": "fallback",
+      "fallback_state": "close",
+      "max_visits_per_state": 4,
+      "max_transitions_per_call": 40
+    },
+    "variables": [
+      {
+        "key": "booking_confirmed",
+        "type": "boolean",
+        "initial": false
+      }
+    ],
+    "start_state": "greet",
+    "transitions": [
+      {
+        "id": "t_new",
+        "to": "capture_need",
+        "from": "greet",
+        "kind": "llm_condition",
+        "priority": 20,
+        "condition": "the caller wants to book a new appointment"
+      },
+      {
+        "id": "t_change",
+        "to": "reschedule_or_cancel",
+        "from": "greet",
+        "kind": "llm_condition",
+        "priority": 15,
+        "condition": "the caller wants to reschedule or cancel an existing appointment"
+      },
+      {
+        "id": "t_captured",
+        "to": "check_slot",
+        "from": "capture_need",
+        "kind": "llm_condition",
+        "priority": 10,
+        "condition": "the caller has given both their full name and a callback phone number"
+      },
+      {
+        "id": "t_slot_ok",
+        "to": "book",
+        "from": "check_slot",
+        "kind": "llm_condition",
+        "priority": 20,
+        "condition": "check_availability confirmed the requested slot, or an alternative the caller chose, is open"
+      },
+      {
+        "id": "t_slot_transfer",
+        "to": "close",
+        "from": "check_slot",
+        "kind": "llm_condition",
+        "priority": 10,
+        "condition": "scheduling is unavailable or the caller was transferred to a human"
+      },
+      {
+        "id": "t_booked",
+        "to": "confirm_booked",
+        "from": "book",
+        "kind": "llm_condition",
+        "priority": 20,
+        "condition": "the book_appointment tool ran and confirmed the appointment is booked"
+      },
+      {
+        "id": "t_book_fail",
+        "to": "close",
+        "from": "book",
+        "kind": "llm_condition",
+        "priority": 10,
+        "condition": "the booking could not be completed and the caller was told a staff member will follow up"
+      },
+      {
+        "id": "t_book_flag",
+        "to": "send_confirmation",
+        "expr": "booking_confirmed == true",
+        "from": "confirm_booked",
+        "kind": "expression",
+        "priority": 10
+      },
+      {
+        "id": "t_sms_done",
+        "to": "close",
+        "from": "send_confirmation",
+        "kind": "always",
+        "priority": 10
+      },
+      {
+        "id": "t_change_ok",
+        "to": "confirm_change",
+        "from": "reschedule_or_cancel",
+        "kind": "llm_condition",
+        "priority": 20,
+        "condition": "reschedule_appointment or cancel_appointment reported the change succeeded"
+      },
+      {
+        "id": "t_change_transfer",
+        "to": "close",
+        "from": "reschedule_or_cancel",
+        "kind": "llm_condition",
+        "priority": 10,
+        "condition": "no matching appointment could be found and the caller was transferred to a human, or the caller decided to keep their existing appointment"
+      },
+      {
+        "id": "t_change_confirmed",
+        "to": "close",
+        "from": "confirm_change",
+        "kind": "always",
+        "priority": 10
+      },
+      {
+        "id": "t_end",
+        "to": "done",
+        "from": "close",
+        "kind": "always",
+        "priority": 10
+      }
+    ]
+  }
+}

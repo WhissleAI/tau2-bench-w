@@ -1,0 +1,270 @@
+{
+  "task_id": "car_change_vehicle",
+  "agent_type": "car_rental",
+  "mode": "voice",
+  "ts": "20260806T153131Z",
+  "agent_id": "669247af-dbf3-4151-b4f4-72aa5fa1e4e1",
+  "conversation_id": null,
+  "voice_room": "bench-65c2980e-f48c-4306-a64a-d3ceccce2a1a-ac1c6f9f35be",
+  "scenario": "change vehicle",
+  "persona": "Grace Kim, starts wanting a sedan then upgrades her mind mid-call.",
+  "goal": "Begin booking a sedan, then partway through change to wanting an SUV instead. Complete the booking for the SUV.",
+  "compliance_spec": null,
+  "greeting": "Hello! How can I help you today?",
+  "outcome": {
+    "task_success": null,
+    "task_success_reason": "not run",
+    "ended": false,
+    "end_reason": null,
+    "goal_met_turn": null,
+    "sim_goal_met": false,
+    "post_goal_turns_driven": 0,
+    "empty_reply_turns": [],
+    "final_state": null
+  },
+  "metadata": {
+    "num_turns": 0,
+    "max_turns_budget": 24,
+    "post_goal_turns_allowance": 4,
+    "turn_cap_hit": false,
+    "start_state": "greet",
+    "latencies_ms": [],
+    "audio": null,
+    "signals_summary": {
+      "total": 0,
+      "by_kind": {},
+      "turns_with_signals": 0,
+      "hesitation_turns": [],
+      "metadata_frames": 0,
+      "turns_with_metadata": 0,
+      "emotions_seen": {},
+      "intents_seen": {}
+    },
+    "setup_error": "ModelError: models/chat -> HTTP 402: {\"detail\":\"Insufficient credit. Top up your workspace wallet to use the model API.\"}"
+  },
+  "transcript": "AGENT: Hello! How can I help you today?",
+  "turns": [],
+  "flow_trace": [],
+  "states_visited": [],
+  "analyzer_findings": [
+    {
+      "type": "stuck_termination",
+      "severity": "high",
+      "detail": "session failed to run: ModelError: models/chat -> HTTP 402: {\"detail\":\"Insufficient credit. Top up your workspace wallet to use the model API.\"}",
+      "state": null,
+      "transition": null,
+      "evidence": {}
+    }
+  ],
+  "flow_spec": {
+    "states": [
+      {
+        "id": "greet",
+        "goal": "Greet the caller warmly and find their intent — a booking, a quote, or a question. Lead the caller: if they're quiet or vague, offer the menu in one short sentence ('I can book you a car, give you a quote, or answer a question — what would you like?'). Never leave a turn open-ended.",
+        "type": "conversation",
+        "label": "Greet & find intent",
+        "allowed_tools": []
+      },
+      {
+        "id": "capture_details",
+        "goal": "Collect the booking essentials one or two at a time, confirming as you go: pickup city or office, pickup and return date and time, the driver's age (most cars need 21+, SUVs and luxury need 25+), and any preference on size, transmission, fuel or budget. Answer policy, office and hours questions from the knowledge base with search_knowledge_base — never guess a policy.",
+        "type": "conversation",
+        "label": "Capture booking essentials",
+        "allowed_tools": [
+          "search_knowledge_base",
+          "transfer_call",
+          "take_message"
+        ]
+      },
+      {
+        "id": "search_fleet",
+        "tool": "search_records",
+        "type": "tool",
+        "label": "Search the fleet",
+        "allowed_tools": [
+          "search_records"
+        ]
+      },
+      {
+        "id": "quote",
+        "goal": "Read back two or three good matches with their daily rates. Once the caller picks a car, offer the one or two most relevant extras (Damage Waiver, Unlimited Kilometres, Additional Driver, GPS, child seat) and restate the new daily total. Don't push extras more than twice. Use search_knowledge_base for rate or policy questions.",
+        "type": "conversation",
+        "label": "Quote matches & extras",
+        "allowed_tools": [
+          "search_knowledge_base"
+        ]
+      },
+      {
+        "id": "mark_selected",
+        "key": "vehicle_selected",
+        "type": "set_variable",
+        "label": "Record vehicle selection",
+        "value": true
+      },
+      {
+        "id": "collect_contact",
+        "goal": "Take the caller's name, mobile and email (save_contact_field / save_email), state the documents needed at pickup and the deposit, and read the whole booking back for confirmation. Wait for a clear 'yes' before booking.",
+        "type": "conversation",
+        "label": "Collect contact & confirm booking",
+        "allowed_tools": [
+          "save_contact_field",
+          "save_email",
+          "search_knowledge_base"
+        ],
+        "turn_taking_override": {
+          "barge_in": "off",
+          "vad_stop_secs": 1.6,
+          "user_speech_timeout": 2.5
+        }
+      },
+      {
+        "id": "book",
+        "tool": "reserve",
+        "type": "tool",
+        "label": "Create the reservation"
+      },
+      {
+        "id": "no_availability",
+        "goal": "No suitable car is available for what they asked. Offer alternatives — different dates, a different vehicle size, or another office. If you genuinely can't help, take a message so the office can call back (take_message), or transfer to the office (transfer_call) for an accident, breakdown or upset caller.",
+        "type": "conversation",
+        "label": "Offer alternatives",
+        "allowed_tools": [
+          "search_knowledge_base",
+          "take_message",
+          "transfer_call"
+        ]
+      },
+      {
+        "id": "confirm",
+        "goal": "Give the caller the booking reference the reservation returned, plus the pickup office address, hours and phone. Text the details with send_sms. Then ask if there's anything else you can help with.",
+        "type": "conversation",
+        "label": "Confirm & text details",
+        "allowed_tools": [
+          "send_sms",
+          "search_knowledge_base"
+        ]
+      },
+      {
+        "id": "close",
+        "say": "You're all set — thanks for calling, and safe travels. Goodbye!",
+        "type": "say"
+      },
+      {
+        "id": "end",
+        "type": "end",
+        "label": "End call"
+      }
+    ],
+    "enabled": true,
+    "version": 1,
+    "settings": {
+      "on_guard_trip": "fallback",
+      "fallback_state": "close",
+      "max_visits_per_state": 6,
+      "max_transitions_per_call": 40
+    },
+    "variables": [
+      {
+        "key": "vehicle_selected",
+        "type": "boolean",
+        "initial": false
+      }
+    ],
+    "start_state": "greet",
+    "transitions": [
+      {
+        "id": "greet_to_capture",
+        "to": "capture_details",
+        "from": "greet",
+        "kind": "llm_condition",
+        "priority": 10,
+        "condition": "The caller wants to make a booking or get a quote, or has chosen booking after you offered the menu."
+      },
+      {
+        "id": "capture_to_search",
+        "to": "search_fleet",
+        "from": "capture_details",
+        "kind": "llm_condition",
+        "priority": 10,
+        "condition": "The caller has stated a pickup date, a rental duration or return date, and a vehicle type or size preference — enough to search the fleet."
+      },
+      {
+        "id": "search_to_quote",
+        "to": "quote",
+        "from": "search_fleet",
+        "kind": "always",
+        "priority": 100
+      },
+      {
+        "id": "quote_selected",
+        "to": "mark_selected",
+        "from": "quote",
+        "kind": "llm_condition",
+        "priority": 10,
+        "condition": "The caller has chosen one of the cars you offered."
+      },
+      {
+        "id": "quote_no_match",
+        "to": "no_availability",
+        "from": "quote",
+        "kind": "llm_condition",
+        "priority": 20,
+        "condition": "No suitable car is available, or nothing matches what the caller needs."
+      },
+      {
+        "id": "selected_to_contact",
+        "to": "collect_contact",
+        "expr": "vehicle_selected == true",
+        "from": "mark_selected",
+        "kind": "expression",
+        "priority": 10
+      },
+      {
+        "id": "contact_to_book",
+        "to": "book",
+        "from": "collect_contact",
+        "kind": "llm_condition",
+        "priority": 10,
+        "condition": "The caller confirmed the full booking with a clear yes, and their name, mobile and email are captured."
+      },
+      {
+        "id": "book_to_confirm",
+        "to": "confirm",
+        "from": "book",
+        "kind": "always",
+        "priority": 100
+      },
+      {
+        "id": "noavail_to_capture",
+        "to": "capture_details",
+        "from": "no_availability",
+        "kind": "llm_condition",
+        "priority": 10,
+        "condition": "The caller wants to try different dates, a different vehicle, or another office."
+      },
+      {
+        "id": "noavail_to_end",
+        "to": "close",
+        "from": "no_availability",
+        "kind": "llm_condition",
+        "priority": 20,
+        "condition": "A message was taken or the caller is ready to end with no booking to make."
+      },
+      {
+        "id": "confirm_to_end",
+        "to": "close",
+        "from": "confirm",
+        "kind": "llm_condition",
+        "priority": 10,
+        "condition": "The caller has nothing else they need and the call is complete."
+      },
+      {
+        "id": "close_to_end",
+        "to": "end",
+        "from": "close",
+        "kind": "always",
+        "priority": 10
+      }
+    ]
+  }
+}
