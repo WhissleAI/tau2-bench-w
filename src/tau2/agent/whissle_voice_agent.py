@@ -207,7 +207,10 @@ class WhissleVoiceAgent(HalfDuplexAgent[WhissleVoiceState]):
         transcript_parts: list[str] = []
         last_activity = time.monotonic()
         saw_output = False
-        last_audio_total = self.provider.agent_audio_total()
+        # SPEECH bytes, not raw received bytes: the bot's LiveKit track streams
+        # continuous silence frames, so raw byte growth never goes quiet and the
+        # quiet-gap would only ever exit at the max-turn deadline.
+        last_audio_total = self.provider.agent_speech_total()
         while time.monotonic() < deadline:
             calls = self.provider.drain_tool_calls()
             if calls:
@@ -217,7 +220,7 @@ class WhissleVoiceAgent(HalfDuplexAgent[WhissleVoiceState]):
                 transcript_parts.extend(texts)
                 saw_output = True
                 last_activity = time.monotonic()
-            audio_total = self.provider.agent_audio_total()
+            audio_total = self.provider.agent_speech_total()
             if audio_total > last_audio_total:
                 last_audio_total = audio_total
                 saw_output = True

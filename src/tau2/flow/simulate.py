@@ -518,14 +518,21 @@ def run_session(
     sev_counts = Counter(f.severity for f in findings)
     type_counts = Counter(f.type for f in findings)
     # Sim-reply latency rollup (voice): per-turn breakdowns + p50/p95 of the total.
+    # total/wait are anchored on the bot's AUDIO end (the audible turn boundary),
+    # so an end-of-turn detector stall shows up here instead of hiding.
     _sim_replies = [t.get("sim_reply") for t in turns if t.get("sim_reply")]
     sim_reply_summary = {
         "turns_measured": len(_sim_replies),
         "p50_ms": _pctl([r["total_ms"] for r in _sim_replies], 0.50),
         "p95_ms": _pctl([r["total_ms"] for r in _sim_replies], 0.95),
         "p50_wait_ms": _pctl([r["wait_ms"] for r in _sim_replies], 0.50),
+        "p50_wait_from_event_ms": _pctl(
+            [r["wait_from_event_ms"] for r in _sim_replies
+             if r.get("wait_from_event_ms") is not None], 0.50),
         "p50_llm_ms": _pctl([r.get("llm_ms") for r in _sim_replies], 0.50),
         "p50_tts_ms": _pctl([r["tts_ms"] for r in _sim_replies], 0.50),
+        "bot_end_reasons": dict(Counter(
+            r.get("bot_end_reason") for r in _sim_replies if r.get("bot_end_reason"))),
     } if _sim_replies else None
     result = {
         "task_id": task.id, "agent_type": task.agent_type, "scenario": task.scenario,
