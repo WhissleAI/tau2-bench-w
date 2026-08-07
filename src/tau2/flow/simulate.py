@@ -112,6 +112,78 @@ def _engine_turn_of(steps: list[dict]) -> Optional[int]:
     return Counter(turns).most_common(1)[0][0] if turns else None
 
 
+def backfill_turn_states(turns: list[dict], full_steps: list[dict]) -> dict:
+    """Join each harness turn to the engine state it ran in, using the end-of-session
+    flow trace. Mutates ``turns`` in place; returns a small provenance dict.
+
+    WHY THIS EXISTS. ``turns[].current_state`` / ``engine_turn`` / ``steps`` come
+    from the per-turn transport response, which only the TEXT channel populates —
+    voice returned ``flow=None`` unconditionally. So across every voice session ever
+    recorded those three fields are ``null`` on all 156 turns: a turn cannot be
+    joined to its state, ``outcome.final_state`` is always null, and the goal-drift
+    judge is disabled outright. Yet the information was already in the file the
+    whole time: ``flow_trace`` carries every step stamped with the engine ``turn``
+    it belongs to. This joins them.
+
+    ALIGNMENT. Engine turn numbers do not necessarily start at 1 for harness turn 1
+    (turn 0 holds the session's start/greeting steps, and the controller advances
+    its counter once per NEW caller utterance). We therefore align by ORDINAL of the
+    distinct non-zero engine turns, and record the offset used. Turn 0's steps are
+    the pre-first-turn slice and are attributed to no harness turn.
+
+    ``current_state`` is CARRIED FORWARD: a turn with no ``state_enter`` of its own
+    ran in whatever state the last entry established (including the start state,
+    from turn 0). That carry-forward is what makes "which state was this turn in"
+    answerable for the many turns that fire no transition — the same rule
+    services/call_trace.py's group_flow_steps uses.
+
+    Idempotent and non-destructive: a turn that ALREADY has a real per-turn value
+    (text, or voice against a backend that pushes ``flow-state``) is left untouched.
+    """
+    provenance = {"joined_turns": 0, "engine_turn_offset": None,
+                  "source": "flow_trace", "trace_steps": len(full_steps or [])}
+    if not turns:
+        return provenance
+
+    by_turn: dict[int, list[dict]] = {}
+    for step in (full_steps or []):
+        if not isinstance(step, dict):
+            continue
+        t = step.get("turn")
+        if isinstance(t, int):
+            by_turn.setdefault(t, []).append(step)
+    if not by_turn:
+        return provenance
+
+    # State at the end of turn 0 (start_state + anything the greeting advanced
+    # through) is where harness turn 1 began.
+    def _last_state(steps: list[dict]) -> Optional[str]:
+        for s in reversed(steps):
+            if s.get("kind") == "state_enter" and isinstance(s.get("state"), str):
+                return s["state"]
+        return None
+
+    engine_turns = sorted(k for k in by_turn if k > 0)
+    offset = (engine_turns[0] - 1) if engine_turns else 0
+    provenance["engine_turn_offset"] = offset
+
+    carried = _last_state(by_turn.get(0, []))
+    for i, rec in enumerate(turns, start=1):
+        eng = i + offset
+        steps = by_turn.get(eng, [])
+        entered = _last_state(steps)
+        if entered is not None:
+            carried = entered
+        if not rec.get("steps"):
+            rec["steps"] = steps
+        if rec.get("engine_turn") is None and steps:
+            rec["engine_turn"] = eng
+        if rec.get("current_state") is None and carried is not None:
+            rec["current_state"] = carried
+            provenance["joined_turns"] += 1
+    return provenance
+
+
 def _signals_summary(turns: list[dict]) -> dict:
     """Aggregate the per-turn meta-signal capture across a session.
 
@@ -220,10 +292,6 @@ def run_session(
         trace persistence yet, it degrades honestly to ``voice_trace_unavailable``. See
         WHISSLE_VOICE_TESTING.md."""
     voice = mode == "voice"
-    if voice:
-        # No per-turn flow state is exposed over voice, so the goal-drift judge (which
-        # grades against the active state's goal) has nothing to key on — disable it.
-        semantic = False
     ts = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     out_dir = RESULTS_ROOT / task.agent_type
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -240,6 +308,8 @@ def run_session(
     turns: list[dict[str, Any]] = []
     tools_used_by_turn: dict[int, list[str]] = {}
     full_steps: list[dict] = []
+    # The engine's own answer for where the flow ended up, from the trace response.
+    trace_final_state: Optional[str] = None
     setup_error: Optional[str] = None
     ended = False
     drift_flags: list[dict] = []
@@ -303,7 +373,12 @@ def run_session(
                 tools_used_by_turn.setdefault(eng_turn, []).extend(res.tools_used)
 
             drift = {}
-            if semantic:
+            # The goal-drift judge grades a reply against the ACTIVE state's goal, so
+            # it needs the per-turn state. Text always has it; voice has it only when
+            # the backend pushes `flow-state` (it previously had none at all, which is
+            # why voice used to disable the judge outright). Gate on the datum rather
+            # than on the channel, so voice grades itself the moment it can.
+            if semantic and res.current_state:
                 drift = judge_goal_drift(
                     model, _state_goal(flow_spec, res.current_state), res.reply, user_msg)
                 if drift.get("on_goal") is False:
@@ -403,6 +478,9 @@ def run_session(
             if voice:
                 _emit({"event": "voice_trace_fetch", "conversation_id": conv_id,
                        "num_steps": len(full_steps), "attempts": att})
+            # The trace response knows the final state authoritatively; keep it, so
+            # a session whose last turn recorded no state still reports one.
+            trace_final_state = (tr or {}).get("current_state") or trace_final_state
 
         # Voice: capture the duplex audio (real spoken-session evidence) + re-ASR.
         if voice and vt is not None:
@@ -423,6 +501,15 @@ def run_session(
         if _is_infra_error(e):
             infra_fail = True
         _emit({"event": "error", "phase": "setup/drive", "detail": setup_error})
+
+    # Join every turn to the state it ran in. A voice turn carries no per-turn flow
+    # state unless the backend pushes `flow-state`, so without this the whole
+    # turn<->state relationship — and therefore every per-turn flow analysis — is
+    # unreconstructable from the session file even though the trace is right there.
+    # Runs OUTSIDE the drive try/except so a session that errored mid-way still gets
+    # whatever join its partial trace supports.
+    turn_join = backfill_turn_states(turns, full_steps)
+    _emit({"event": "turn_state_join", **turn_join})
 
     # A session that NEVER executed a turn (agent create / voice join / first LLM
     # call failed) is an infrastructure failure by definition — nothing about the
@@ -552,7 +639,7 @@ def run_session(
                                       if goal_met_turn else 0),
         "empty_reply_turns": empty_reply_turns,
         "start_state": flow_spec.get("start_state"),
-        "final_state": turns[-1]["current_state"] if turns else None,
+        "final_state": trace_final_state or (turns[-1]["current_state"] if turns else None),
         "task_success": success.get("success"),
         "task_success_reason": success.get("reason"),
         "goal_drift_turns": drift_flags,
@@ -601,7 +688,7 @@ def run_session(
                         "sim_goal_met": bool(sim and sim.goal_met),
                         "post_goal_turns_driven": result["post_goal_turns_driven"],
                         "empty_reply_turns": empty_reply_turns,
-                        "final_state": turns[-1]["current_state"] if turns else None},
+                        "final_state": trace_final_state or (turns[-1]["current_state"] if turns else None)},
             "metadata": {"num_turns": len(turns),
                          "max_turns_budget": task.max_turns,
                          "post_goal_turns_allowance": task.post_goal_turns,
@@ -612,6 +699,7 @@ def run_session(
                          "audio": audio_evidence or None,
                          "signals_summary": _signals_summary(turns),
                          "infra_fail": infra_fail,
+                         "turn_state_join": turn_join,
                          "attempt": attempt,
                          "setup_error": setup_error},
             "transcript": transcript,
