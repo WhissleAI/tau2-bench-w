@@ -53,6 +53,24 @@ import requests
 from dotenv import load_dotenv
 
 from tau2.flow.client import TurnResult
+
+
+def _tool_names(tool_events: list[dict]) -> list[str]:
+    """The distinct tool names in a turn's ``{kind:"tool"}`` frames, first-seen
+    order. Prefers ``phase:"result"`` frames (a tool that actually RAN); falls back
+    to ``phase:"started"`` so a tool whose result frame was lost is still counted
+    rather than silently dropped."""
+    def _names(phase: str) -> list[str]:
+        out: list[str] = []
+        for e in tool_events:
+            if e.get("phase") != phase:
+                continue
+            name = e.get("function_name") or e.get("name")
+            if isinstance(name, str) and name.strip() and name not in out:
+                out.append(name)
+        return out
+
+    return _names("result") or _names("started")
 from tau2.voice.audio_native.async_loop import BackgroundAsyncLoop
 from tau2.voice.audio_native.whissle.config import WhissleConfig
 from tau2.voice.audio_native.whissle.provider import WhissleRoomProvider
@@ -302,6 +320,8 @@ class VoiceTransport:
         self._sig_cursor = 0
         self.signals: list[dict] = []   # every {kind:"signal"} frame this session
         self.metadata: list[dict] = []  # every {t:"user-metadata"} frame this session
+        self.tool_events: list[dict] = []   # every {kind:"tool"} frame this session
+        self.flow_states: list[dict] = []   # per-turn {t:"flow-state"} frames
         # WHISSLE_VOICE_HESITANT=1 makes the simulated user speak haltingly (filler
         # words + mid-utterance silence gaps) so the whissle-large emotion timeline
         # wobbles and the hesitation predictor actually fires — clean TTS never does.
@@ -448,16 +468,27 @@ class VoiceTransport:
         # Per-turn meta-signals (hesitation / shadow / speculative) + raw whissle-large
         # metadata (emotion / intent / age / gender per interim+final) emitted on the
         # data channel during THIS turn — the whole point of running over real voice.
-        turn_signals, turn_metadata = self._drain_channel()
+        turn_signals, turn_metadata, turn_flow, turn_tools = self._drain_channel()
         return TurnResult(
             reply=reply,
             # PR #613: the persisted-trace key is the conversations id returned by
             # voice/start (not the LiveKit room). Thread it so simulate.py's end-of-
             # session get_trace(agent_id, conv_id) retrieves the real voice step-trace.
             conversation_id=self.conversation_id or conversation_id or self.room or "",
-            tools_used=[],           # real-mode voice runs tools internally (no delegation)
-            tool_events=[],
-            flow=None,               # per-turn trace not surfaced; full trace via GET /flow/trace
+            # Real-mode voice runs its tools INTERNALLY (no bench delegation), which
+            # is why this used to be hardcoded []. It is not unobservable, though:
+            # the backend already emits a `{"kind":"tool"}` server-message for every
+            # tool start and result (services/tool_events.py, the same payload the
+            # product UI renders), and we were simply not reading it. Hardcoding []
+            # produced a "44 sessions with zero tool calls" signal that was pure
+            # artifact — the exact kind of false lead this instrumentation exists to
+            # prevent.
+            tools_used=_tool_names(turn_tools),
+            tool_events=turn_tools,
+            # Per-turn flow state, when the backend pushes it (`flow-state`
+            # server-message). Older backends push nothing → None here, and
+            # simulate.py back-fills from the end-of-session trace instead.
+            flow=turn_flow,
             raw={"ended": False, "voice": True, "room": self.room,
                  "conversation_id": self.conversation_id,
                  "latency_ms": latency_ms, "bot_audio_bytes": vres.bot_audio_bytes,
@@ -497,9 +528,11 @@ class VoiceTransport:
         """The full timestamped data-channel event stream (QA telemetry)."""
         return self.provider.events() if self.provider else []
 
-    def _drain_channel(self) -> tuple[list[dict], list[dict]]:
+    def _drain_channel(self) -> tuple[list[dict], list[dict],
+                                      Optional[dict], list[dict]]:
         """Drain the data-channel frames that arrived since the last call, advancing
-        the single cursor, and partition them into ``(signals, metadata)``:
+        the single cursor, and partition them into
+        ``(signals, metadata, flow_state, tool_events)``:
 
           * signals  — ``{kind:"signal"}`` prediction frames (shadow / speculative /
             hesitation), each naming its producer + fields (predicted tools, eager
@@ -508,15 +541,24 @@ class VoiceTransport:
             interim/final (MetadataPushProcessor): the whissle-large acoustic head's
             live ``{emotion, intent, age, gender, probs}``. This is the per-interim +
             per-turn metadata the bench needs, produced in parallel with transcription.
+          * flow_state — the LAST ``{t:"flow-state"}`` frame of this turn, normalized
+            into the same ``{current_state, steps, engine_turn}`` shape the TEXT
+            channel returns, so a voice turn can be joined to the state it ran in.
+            Any earlier frames' steps are folded in so nothing is dropped.
+          * tool_events — ``{kind:"tool"}`` frames (services/tool_events.py), the
+            product's own tool start/result payloads.
 
-        One cursor for both so a frame is never counted twice / dropped. Fail-open:
-        no provider / no frames → ([], [])."""
+        One cursor for all four so a frame is never counted twice / dropped.
+        Fail-open: no provider / no frames → ``([], [], None, [])``."""
         if self.provider is None:
-            return [], []
+            return [], [], None, []
         evs = self.provider.events()
         new = evs[self._sig_cursor:]
         self._sig_cursor = len(evs)
-        sigs, meta = [], []
+        sigs: list[dict] = []
+        meta: list[dict] = []
+        tools: list[dict] = []
+        flow_frames: list[dict] = []
         for e in new:
             if e.get("type") != "server-message":
                 continue
@@ -527,9 +569,25 @@ class VoiceTransport:
                 sigs.append(d)
             elif d.get("t") == "user-metadata":
                 meta.append(d)
+            elif d.get("t") == "flow-state":
+                flow_frames.append(d)
+            elif d.get("kind") == "tool":
+                tools.append(d)
         self.signals.extend(sigs)
         self.metadata.extend(meta)
-        return sigs, meta
+        self.tool_events.extend(tools)
+        flow: Optional[dict] = None
+        if flow_frames:
+            steps: list[dict] = []
+            for f in flow_frames:
+                steps.extend(s for s in (f.get("steps") or []) if isinstance(s, dict))
+            last = flow_frames[-1]
+            flow = {"current_state": last.get("current_state"),
+                    "engine_turn": last.get("engine_turn"),
+                    "terminated": last.get("terminated"),
+                    "steps": steps}
+            self.flow_states.append(flow)
+        return sigs, meta, flow, tools
 
     def note_llm_ms(self, ms: Optional[int]) -> None:
         """Driver hook: record how long the sim's LLM took to produce the NEXT
