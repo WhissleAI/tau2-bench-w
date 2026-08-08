@@ -1,0 +1,400 @@
+{
+  "scenario_id": "NEJM-1",
+  "scenario_index": 1,
+  "dataset": "NEJM",
+  "mode": "text",
+  "correct_diagnosis": "Paracoccidiomycosis",
+  "answer_options": [
+    "Actinomycosis",
+    "Blastomycosis",
+    "Coccidiomycosis",
+    "Hodgkin’s Lymphoma",
+    "Paracoccidiomycosis"
+  ],
+  "score": {
+    "outcome": "incorrect",
+    "correctness": false,
+    "doctor_diagnosis": "Cat-Scratch Disease (Bartonella henselae infection)",
+    "doctor_final_text": "That's a critical detail. Given your cat exposure, the bilateral cervical lymphadenopathy, fever, weight loss, eosinophilia, and the timeline matching cat-scratch disease, I believe I have enough information. DIAGNOSIS READY: Cat-Scratch Disease (Bartonella henselae infection)",
+    "moderator_raw": "no",
+    "moderator_lenient": false,
+    "declined": false,
+    "refusal_evidence": [],
+    "format_deviation": false,
+    "decline_source": null,
+    "decline_reason": "",
+    "spurious_commit": false
+  },
+  "infra_fail": false,
+  "error": null,
+  "findings": [],
+  "inferences_used": 13,
+  "max_inferences": 20,
+  "tests_ordered": [
+    "Neck_Ultrasound",
+    "Complete_Blood_Count",
+    "Toxoplasma_Serology",
+    "Bartonella_Serology"
+  ],
+  "images_requested": 0,
+  "image": null,
+  "image_error": null,
+  "vision": "off",
+  "refusals": [],
+  "dialogue": [
+    {
+      "role": "doctor",
+      "inference": 1,
+      "kind": "question",
+      "text": "Good morning, I'm Dr. Agent. I'm here to help figure out what's going on with your health today. What brings you in to see me, and what symptoms have you been experiencing?",
+      "payload": null,
+      "latency_ms": 1627,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Good morning, Doctor. Um, my neck has been really swollen for about three weeks now, and I've been getting fevers too. Also, my mom says I've been losing weight, but I haven't been trying to do that."
+    },
+    {
+      "role": "doctor",
+      "inference": 2,
+      "kind": "question",
+      "text": "I see—neck swelling for three weeks along with fevers and unintentional weight loss is concerning. Have you noticed any difficulty swallowing, or does your throat feel sore when you eat or drink?",
+      "payload": null,
+      "latency_ms": 1179,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Um, not really sore, Doctor, but sometimes it feels a little harder to swallow when I eat. The bumps in my neck feel kind of tender when I touch them, especially behind my ears and under my jaw."
+    },
+    {
+      "role": "doctor",
+      "inference": 3,
+      "kind": "question",
+      "text": "Thank you for that detail. Let me ask—have you had any recent infections, like a cold or sore throat, in the past month or so before the swelling started?",
+      "payload": null,
+      "latency_ms": 1020,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "I had a cold maybe a month ago, but it went away pretty quickly. I don't remember having a really bad sore throat or anything like that, Doctor."
+    },
+    {
+      "role": "doctor",
+      "inference": 4,
+      "kind": "question",
+      "text": "That's helpful to know. Now, have you experienced any night sweats—waking up drenched in sweat—or noticed any lumps or swelling anywhere else on your body besides your neck?",
+      "payload": null,
+      "latency_ms": 1393,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "No, I don't think I've had night sweats, Doctor, but sometimes I feel really hot at night when I have the fevers. I haven't noticed any lumps anywhere else on my body, just in my neck."
+    },
+    {
+      "role": "doctor",
+      "inference": 5,
+      "kind": "test",
+      "text": "I'd like to get a better look at what we're dealing with. REQUEST TEST: Neck_Ultrasound\n\nThis will help me see the size and nature of those swollen nodes in your neck.",
+      "payload": "Neck_Ultrasound",
+      "latency_ms": 1330,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: CT scan of the neck shows hyperattenuating cervical lymphadenopathy on both sides."
+    },
+    {
+      "role": "doctor",
+      "inference": 6,
+      "kind": "test",
+      "text": "Thank you for that result—the swollen lymph nodes on both sides of your neck are confirmed. Given the three-week duration, fever, weight loss, and tender lymph nodes, I need to check your blood work. REQUEST TEST: Complete_Blood_Count\n\nThis will help me understand what's happening in your system.",
+      "payload": "Complete_Blood_Count",
+      "latency_ms": 1865,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: Peripheral eosinophilia present. Tests for cryptococcus: Negative. Tests for histoplasmosis: Negative. Tests for human immunodeficiency virus (HIV): Negative."
+    },
+    {
+      "role": "doctor",
+      "inference": 7,
+      "kind": "question",
+      "text": "The eosinophilia is an important finding. Have you traveled anywhere recently, or been exposed to any animals—cats, dogs, or anything unusual—in the past few months?",
+      "payload": null,
+      "latency_ms": 1456,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Well, we just moved here from Brazil a few months ago, so maybe I was around some different things there, but I don't remember being around any sick animals or anything like that. I do remember playing outside a lot there though, and there were lots of bugs and plants I'd never seen before."
+    },
+    {
+      "role": "doctor",
+      "inference": 8,
+      "kind": "question",
+      "text": "That's very relevant information. Have you eaten any undercooked meat, unpasteurized dairy, or any raw or undercooked foods since you've been in Brazil or since moving?",
+      "payload": null,
+      "latency_ms": 1062,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Hmm, I think so—my grandmother in Brazil made a lot of food, and sometimes the meat wasn't cooked all the way through, and we drank fresh milk from neighbors sometimes. I'm not sure if that's the problem though, Doctor."
+    },
+    {
+      "role": "doctor",
+      "inference": 9,
+      "kind": "question",
+      "text": "That could be significant. Have you had any abdominal pain, diarrhea, or any digestive issues at all during these three weeks of illness?",
+      "payload": null,
+      "latency_ms": 928,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "No, I don't think I've had any stomach problems or diarrhea, Doctor—mostly just the fevers and the swelling in my neck. My appetite hasn't been great though, which is probably why I've been losing weight."
+    },
+    {
+      "role": "doctor",
+      "inference": 10,
+      "kind": "test",
+      "text": "I understand. Let me request some additional blood work to look for parasitic infections, given your time in Brazil and the dietary exposure. REQUEST TEST: Toxoplasma_Serology",
+      "payload": "Toxoplasma_Serology",
+      "latency_ms": 1241,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: Toxoplasma serology testing is not available in the current laboratory data. NORMAL READINGS."
+    },
+    {
+      "role": "doctor",
+      "inference": 11,
+      "kind": "test",
+      "text": "Let me try a different approach given your history. REQUEST TEST: Bartonella_Serology\n\nThis will help rule out cat-scratch disease, which can cause lymph node swelling and fever, especially with exposure to outdoor environments.",
+      "payload": "Bartonella_Serology",
+      "latency_ms": 1260,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: Bartonella serology testing is not available in the current laboratory data. NORMAL READINGS."
+    },
+    {
+      "role": "doctor",
+      "inference": 12,
+      "kind": "question",
+      "text": "I see those aren't available here. Let me ask you directly—did you have any cat scratches, bites, or close contact with cats while in Brazil or since moving?",
+      "payload": null,
+      "latency_ms": 883,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Yes, actually—my grandmother had a cat in Brazil, and I played with it a lot, and I think it scratched me a few times on my arms and hands. I didn't think it was a big deal at the time, Doctor."
+    },
+    {
+      "role": "doctor",
+      "inference": 13,
+      "kind": "diagnosis",
+      "text": "That's a critical detail. Given your cat exposure, the bilateral cervical lymphadenopathy, fever, weight loss, eosinophilia, and the timeline matching cat-scratch disease, I believe I have enough information. DIAGNOSIS READY: Cat-Scratch Disease (Bartonella henselae infection)",
+      "payload": "Cat-Scratch Disease (Bartonella henselae infection)",
+      "latency_ms": 1497,
+      "refusal": null,
+      "via": "marker"
+    }
+  ],
+  "latency_ms": [
+    1627,
+    1179,
+    1020,
+    1393,
+    1330,
+    1865,
+    1456,
+    1062,
+    928,
+    1241,
+    1260,
+    883,
+    1497
+  ],
+  "wall_s": 32.2,
+  "doctor_turns": [
+    {
+      "inference": 1,
+      "incoming": "",
+      "reply": "Good morning, I'm Dr. Agent. I'm here to help figure out what's going on with your health today. What brings you in to see me, and what symptoms have you been experiencing?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 2,
+      "incoming": "Good morning, Doctor. Um, my neck has been really swollen for about three weeks now, and I've been getting fevers too. Also, my mom says I've been losing weight, but I haven't been trying to do that.",
+      "reply": "I see—neck swelling for three weeks along with fevers and unintentional weight loss is concerning. Have you noticed any difficulty swallowing, or does your throat feel sore when you eat or drink?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 3,
+      "incoming": "Um, not really sore, Doctor, but sometimes it feels a little harder to swallow when I eat. The bumps in my neck feel kind of tender when I touch them, especially behind my ears and under my jaw.",
+      "reply": "Thank you for that detail. Let me ask—have you had any recent infections, like a cold or sore throat, in the past month or so before the swelling started?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 4,
+      "incoming": "I had a cold maybe a month ago, but it went away pretty quickly. I don't remember having a really bad sore throat or anything like that, Doctor.",
+      "reply": "That's helpful to know. Now, have you experienced any night sweats—waking up drenched in sweat—or noticed any lumps or swelling anywhere else on your body besides your neck?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 5,
+      "incoming": "No, I don't think I've had night sweats, Doctor, but sometimes I feel really hot at night when I have the fevers. I haven't noticed any lumps anywhere else on my body, just in my neck.",
+      "reply": "I'd like to get a better look at what we're dealing with. REQUEST TEST: Neck_Ultrasound\n\nThis will help me see the size and nature of those swollen nodes in your neck.",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Neck_Ultrasound",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 6,
+      "incoming": "RESULTS: CT scan of the neck shows hyperattenuating cervical lymphadenopathy on both sides.",
+      "reply": "Thank you for that result—the swollen lymph nodes on both sides of your neck are confirmed. Given the three-week duration, fever, weight loss, and tender lymph nodes, I need to check your blood work. REQUEST TEST: Complete_Blood_Count\n\nThis will help me understand what's happening in your system.",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Complete_Blood_Count",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 7,
+      "incoming": "RESULTS: Peripheral eosinophilia present. Tests for cryptococcus: Negative. Tests for histoplasmosis: Negative. Tests for human immunodeficiency virus (HIV): Negative.",
+      "reply": "The eosinophilia is an important finding. Have you traveled anywhere recently, or been exposed to any animals—cats, dogs, or anything unusual—in the past few months?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 8,
+      "incoming": "Well, we just moved here from Brazil a few months ago, so maybe I was around some different things there, but I don't remember being around any sick animals or anything like that. I do remember playing outside a lot there though, and there were lots of bugs and plants I'd never seen before.",
+      "reply": "That's very relevant information. Have you eaten any undercooked meat, unpasteurized dairy, or any raw or undercooked foods since you've been in Brazil or since moving?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 9,
+      "incoming": "Hmm, I think so—my grandmother in Brazil made a lot of food, and sometimes the meat wasn't cooked all the way through, and we drank fresh milk from neighbors sometimes. I'm not sure if that's the problem though, Doctor.",
+      "reply": "That could be significant. Have you had any abdominal pain, diarrhea, or any digestive issues at all during these three weeks of illness?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 10,
+      "incoming": "No, I don't think I've had any stomach problems or diarrhea, Doctor—mostly just the fevers and the swelling in my neck. My appetite hasn't been great though, which is probably why I've been losing weight.",
+      "reply": "I understand. Let me request some additional blood work to look for parasitic infections, given your time in Brazil and the dietary exposure. REQUEST TEST: Toxoplasma_Serology",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Toxoplasma_Serology",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 11,
+      "incoming": "RESULTS: Toxoplasma serology testing is not available in the current laboratory data. NORMAL READINGS.",
+      "reply": "Let me try a different approach given your history. REQUEST TEST: Bartonella_Serology\n\nThis will help rule out cat-scratch disease, which can cause lymph node swelling and fever, especially with exposure to outdoor environments.",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Bartonella_Serology",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 12,
+      "incoming": "RESULTS: Bartonella serology testing is not available in the current laboratory data. NORMAL READINGS.",
+      "reply": "I see those aren't available here. Let me ask you directly—did you have any cat scratches, bites, or close contact with cats while in Brazil or since moving?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 13,
+      "incoming": "Yes, actually—my grandmother had a cat in Brazil, and I played with it a lot, and I think it scratched me a few times on my arms and hands. I didn't think it was a big deal at the time, Doctor.",
+      "reply": "That's a critical detail. Given your cat exposure, the bilateral cervical lymphadenopathy, fever, weight loss, eosinophilia, and the timeline matching cat-scratch disease, I believe I have enough information. DIAGNOSIS READY: Cat-Scratch Disease (Bartonella henselae infection)",
+      "tool_calls": [],
+      "kind": "diagnosis",
+      "payload": "Cat-Scratch Disease (Bartonella henselae infection)",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": "end_turn"
+    }
+  ],
+  "support_llm": "whissle:/api/models/chat",
+  "support_llm_cost_usd": 0.00056
+}
