@@ -26,8 +26,10 @@ engine can exhibit:
                        the turn did not admit (the ``tools_gated`` set in effect
                        before that turn's boundary transition excludes it) — judged
                        against the live gate, never the state advanced into afterward.
-  variable_desync      an expression / var_set references a variable never declared
-                       in flow.variables.
+  variable_desync      an expression gates on a variable the machine can never
+                       populate — neither declared in flow.variables, nor RESERVED
+                       (engine-derived: see :data:`RESERVED_VARIABLES`), nor ever
+                       written at runtime.
   termination          never reached an end within the cap (stuck / loop), OR ended
                        prematurely (before the goal), OR dead-ended (final non-end
                        state with no outgoing satisfiable transition). Non-ending
@@ -124,6 +126,62 @@ def _transitions(flow: dict) -> list[dict]:
 
 def _declared_var_keys(flow: dict) -> set[str]:
     return {v.get("key") for v in (flow.get("variables") or [])}
+
+
+# ── RESERVED (engine-derived) variables ────────────────────────────────────────
+#
+# The Whissle flow engine OWNS these three names and recomputes them itself against
+# the CURRENT state on every entry and every transition evaluation — see
+# whissle_gateway_backend/pipecat-bot/services/flow/variables.py (DERIVED_VARIABLES):
+#
+#   state_goal_met       every item the current state declares it collects is present
+#   state_missing_count  how many are still missing
+#   state_missing_items  comma-joined names of the missing ones
+#
+# A flow may READ them in an ``expression`` gate but may NOT declare them (the
+# backend's validate_flow rejects that with a 422 — a shadowed derived variable makes
+# gating unprovable). So "declared in flow.variables" is exactly the WRONG test for
+# them, and applying it produced 5 HIGH-severity ``variable_desync`` findings per
+# headache_enrollment session — crying wolf on the engine's own machinery, which the
+# same traces show demonstrably firing (21 ``state_missing_count`` var_sets in the
+# 2026-08-07 sweep).
+#
+# They are also not reliably present in ``ever_set``: the engine traces a derived
+# variable only when its VALUE CHANGES, and a session trace is length-capped, so a
+# gate can be evaluated on a boundary whose trace window contains no var_set for it.
+# Absence from the trace is therefore not evidence of a phantom.
+RESERVED_VARIABLES = frozenset(
+    {"state_goal_met", "state_missing_count", "state_missing_items"}
+)
+
+
+def _derives_completion(flow: dict) -> bool:
+    """True when this flow gives the engine something to derive the completion
+    variables FROM: at least one state declaring ``collects``, or a bound ``tool``
+    state whose output mapping names the variables it writes.
+
+    This is what keeps the check honest. Reserved names are not blanket-exempted —
+    a gate on ``state_goal_met`` in a flow where NOTHING declares what it collects
+    really is dead, and is still flagged (with the accurate reason)."""
+    for s in (flow.get("states") or []):
+        if not isinstance(s, dict):
+            continue
+        collects = s.get("collects")
+        if isinstance(collects, (list, tuple)) and any(
+            isinstance(k, str) and k.strip() for k in collects
+        ):
+            return True
+        if s.get("type") == "tool":
+            b = s.get("binding")
+            if isinstance(b, dict) and b.get("outputs"):
+                return True
+    return False
+
+
+def _reserved_derivable(flow: dict) -> set[str]:
+    """The reserved names this flow's engine will actually populate (empty when the
+    flow declares nothing to collect)."""
+    return set(RESERVED_VARIABLES) if _derives_completion(flow) else set()
 
 
 def _var_initials(flow: dict) -> dict[str, Any]:
@@ -360,6 +418,14 @@ def analyze_session(
         result = s.get("result")
         if truth is None:
             continue  # unevaluable → skip (no false positives)
+        # A RESERVED (engine-derived) variable whose value is not in the
+        # reconstructed context is UNEVALUABLE, not false: the engine traces a
+        # derived variable only when its value CHANGES, and session traces are
+        # length-capped, so "no var_set seen yet" says nothing about its value at
+        # this seq. Guessing "" here would report every legitimate goal-complete
+        # advance as an ``expression_integrity`` gate-opened-without-its-variable.
+        if any(n in RESERVED_VARIABLES and n not in ctx for n in names):
+            continue
         if result == "fired" and truth is False:
             add("expression_integrity",
                 f"expression transition {tid!r} FIRED but its expression "
@@ -410,25 +476,43 @@ def analyze_session(
 
     # ── variable_desync ───────────────────────────────────────────────────────
     # The meaningful desync is a transition EXPRESSION that references a variable
-    # the machine can never populate: neither declared in flow.variables NOR ever
-    # written by a var_set in the trace. (Runtime var_sets of undeclared keys —
-    # tool_result / llm slot capture — are NORMAL and are NOT flagged; only a
-    # phantom variable an expression gates on is a real state-rule bug.)
+    # the machine can never populate: neither declared in flow.variables, nor
+    # RESERVED (engine-derived), nor ever written by a var_set in the trace.
+    # (Runtime var_sets of undeclared keys — tool_result / llm slot capture — are
+    # NORMAL and are NOT flagged; only a phantom variable an expression gates on is
+    # a real state-rule bug.)
     declared_vars = _declared_var_keys(flow)
     ever_set = {s.get("key") for s in steps if s.get("kind") == "var_set"}
-    resolvable = declared_vars | ever_set
+    derivable = _reserved_derivable(flow)
+    resolvable = declared_vars | ever_set | derivable
     for t in trans:
         if t.get("kind") == "expression" and t.get("expr"):
             for name in _referenced_names(t["expr"]):
-                if name not in resolvable:
+                if name in resolvable:
+                    continue
+                if name in RESERVED_VARIABLES:
+                    # Reserved, but this flow can never derive it: NO state declares
+                    # what it collects, so the engine writes none of the completion
+                    # variables and the gate is dead. A real authoring bug — reported
+                    # with the reason, not as a "phantom variable".
                     add("variable_desync",
-                        f"transition {t.get('id')!r} gates on variable {name!r} which "
-                        f"is neither declared in flow.variables nor ever set at runtime "
-                        f"— the gate references a phantom variable.",
+                        f"transition {t.get('id')!r} gates on the engine-derived "
+                        f"variable {name!r}, but no state in this flow declares "
+                        f"`collects` (and no bound tool state declares outputs), so "
+                        f"the engine never derives it — the gate can never open.",
                         transition=t.get("id"),
-                        evidence={"expr": t.get("expr"),
+                        evidence={"expr": t.get("expr"), "reserved": True,
                                   "declared": sorted(declared_vars),
-                                  "ever_set": sorted(ever_set)})
+                                  "ever_set": sorted(x for x in ever_set if x)})
+                    continue
+                add("variable_desync",
+                    f"transition {t.get('id')!r} gates on variable {name!r} which "
+                    f"is neither declared in flow.variables nor ever set at runtime "
+                    f"— the gate references a phantom variable.",
+                    transition=t.get("id"),
+                    evidence={"expr": t.get("expr"),
+                              "declared": sorted(declared_vars),
+                              "ever_set": sorted(x for x in ever_set if x)})
 
     # ── tool_leakage ──────────────────────────────────────────────────────────
     # Attribute each tool call to the gate that was LIVE when the model produced

@@ -12,6 +12,7 @@
          verified (the ``identity_verified`` var_set / ``mark_verified`` entry).
 """
 from tau2.flow.analyze import (
+    RESERVED_VARIABLES,
     _referenced_names,
     analyze_session,
     eval_expr,
@@ -385,3 +386,132 @@ def test_dead_end_still_wins_over_classification():
         turn_cap_hit=False)
     term = _term(findings)
     assert [f.type for f in term] == ["dead_end"], [f.as_dict() for f in term]
+
+
+# ── BUG 4 — engine-derived RESERVED variables are not phantoms ──────────────────
+#
+# ``state_goal_met`` / ``state_missing_count`` / ``state_missing_items`` are owned and
+# recomputed by the flow ENGINE (services/flow/variables.py::DERIVED_VARIABLES). A
+# flow may READ them in an expression gate but MUST NOT declare them — the backend's
+# validate_flow returns 422 for that. Testing them against "declared in
+# flow.variables" therefore fails by construction, and did: the 2026-08-07
+# headache_enrollment sweep reported 5 HIGH ``variable_desync`` findings PER SESSION
+# against the engine's own machinery, which the same traces show firing (21
+# ``state_missing_count`` var_sets across the sweep).
+
+
+def _completion_flow(*, with_collects: bool = True) -> dict:
+    """An intake flow whose stage advance is gated on the engine's goal-complete
+    signal — the headache_enrollment shape that produced the false positives."""
+    profile = {"id": "profile", "type": "conversation", "goal": "Build the pain picture."}
+    if with_collects:
+        profile["collects"] = ["pain_side", "pain_quality"]
+    return {
+        "start_state": "profile",
+        "states": [
+            profile,
+            {"id": "close", "type": "say", "say": "Thanks, goodbye!"},
+            {"id": "done", "type": "end"},
+        ],
+        "transitions": [
+            {"id": "t7_complete", "from": "profile", "to": "close",
+             "kind": "expression", "expr": "state_goal_met == true", "priority": 20},
+            {"id": "t_end", "from": "close", "to": "done", "kind": "always"},
+        ],
+        # Deliberately EMPTY, exactly as a real packaged flow has it: the reserved
+        # variables may not be declared here.
+        "variables": [],
+        "settings": {},
+    }
+
+
+def test_reserved_variables_are_not_flagged_as_phantoms():
+    """The false positive that cried wolf 5×/session: a gate on `state_goal_met`
+    in a flow that declares `collects` must NOT desync-flag, even when the trace
+    window happens to contain no var_set for it (the engine traces a derived
+    variable only when its value CHANGES, and traces are length-capped)."""
+    findings = analyze_session(_completion_flow(), [
+        {"seq": 0, "kind": "state_enter", "state": "profile"},
+        {"seq": 1, "kind": "transition_check", "transition_id": "t7_complete",
+         "transition_kind": "expression", "expr": "state_goal_met == true",
+         "from": "profile", "result": "not_satisfied"},
+    ])
+    assert not [f for f in findings if f.type == "variable_desync"], \
+        [f.as_dict() for f in findings if f.type == "variable_desync"]
+
+
+def test_every_reserved_variable_is_exempt():
+    """All three derived names, not just the one the sweep happened to gate on."""
+    flow = _completion_flow()
+    flow["transitions"][0]["expr"] = (
+        "state_goal_met == true and state_missing_count == 0 "
+        "and state_missing_items == \"\""
+    )
+    findings = analyze_session(flow, [{"seq": 0, "kind": "state_enter", "state": "profile"}])
+    assert not [f for f in findings if f.type == "variable_desync"], \
+        [f.as_dict() for f in findings if f.type == "variable_desync"]
+    assert RESERVED_VARIABLES == {
+        "state_goal_met", "state_missing_count", "state_missing_items"}
+
+
+def test_reserved_gate_in_a_flow_that_collects_nothing_still_desyncs():
+    """The check stays HONEST: reserved names are not blanket-exempted. A flow where
+    NO state declares `collects` gives the engine nothing to derive from, so the gate
+    genuinely can never open — still flagged, with the accurate reason."""
+    findings = analyze_session(_completion_flow(with_collects=False), [
+        {"seq": 0, "kind": "state_enter", "state": "profile"},
+    ])
+    desync = [f for f in findings if f.type == "variable_desync"]
+    assert len(desync) == 1, [f.as_dict() for f in desync]
+    assert "state_goal_met" in desync[0].detail
+    assert "collects" in desync[0].detail
+    assert desync[0].evidence.get("reserved") is True
+
+
+def test_bound_tool_outputs_also_derive_completion():
+    """A C1 bound `tool` state derives the completion variables from its declared
+    output mapping — no explicit `collects` needed (services/flow/runtime.py::
+    state_collects)."""
+    flow = _completion_flow(with_collects=False)
+    flow["states"][0] = {
+        "id": "profile", "type": "tool",
+        "binding": {"tool": "lookup_record", "outputs": {"record_id": "record_id"}},
+    }
+    assert not [f for f in analyze_session(flow, [
+        {"seq": 0, "kind": "state_enter", "state": "profile"},
+    ]) if f.type == "variable_desync"]
+
+
+def test_reserved_gate_that_fires_is_not_an_expression_integrity_violation():
+    """The forward-looking half: once persistence works, `t7_complete` FIRES. Its
+    `state_goal_met = true` var_set may be outside the captured trace window (change-
+    only emission + length cap), and guessing "" for a reserved variable would report
+    every legitimate goal-complete advance as a HIGH `expression_integrity` finding."""
+    findings = analyze_session(_completion_flow(), [
+        {"seq": 0, "kind": "state_enter", "state": "profile"},
+        {"seq": 1, "kind": "transition_check", "transition_id": "t7_complete",
+         "transition_kind": "expression", "expr": "state_goal_met == true",
+         "from": "profile", "result": "fired", "to": "close"},
+        {"seq": 2, "kind": "state_enter", "state": "close"},
+        {"seq": 3, "kind": "say_emitted", "state": "close", "text": "Thanks, goodbye!"},
+        {"seq": 4, "kind": "state_enter", "state": "done"},
+        {"seq": 5, "kind": "flow_end"},
+    ], goal_met=True, sim_goal_met=True, post_goal_turns_driven=2)
+    assert not [f for f in findings if f.type == "expression_integrity"], \
+        [f.as_dict() for f in findings if f.type == "expression_integrity"]
+
+
+def test_reserved_variable_present_in_the_trace_is_still_checked():
+    """When the trace DOES carry the derived value, it is authoritative and the
+    value-dependent checks still run — an edge that fired on a false gate is a real
+    engine bug and must not be lost to the exemption."""
+    findings = analyze_session(_completion_flow(), [
+        {"seq": 0, "kind": "state_enter", "state": "profile"},
+        {"seq": 1, "kind": "var_set", "key": "state_goal_met", "value": False},
+        {"seq": 2, "kind": "transition_check", "transition_id": "t7_complete",
+         "transition_kind": "expression", "expr": "state_goal_met == true",
+         "from": "profile", "result": "fired", "to": "close"},
+    ])
+    integrity = [f for f in findings if f.type == "expression_integrity"]
+    assert len(integrity) == 1, [f.as_dict() for f in findings]
+    assert integrity[0].transition == "t7_complete"
