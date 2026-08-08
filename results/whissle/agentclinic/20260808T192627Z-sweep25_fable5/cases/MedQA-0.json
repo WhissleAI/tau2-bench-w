@@ -1,0 +1,550 @@
+{
+  "scenario_id": "MedQA-0",
+  "scenario_index": 0,
+  "dataset": "MedQA",
+  "mode": "text",
+  "correct_diagnosis": "Myasthenia gravis",
+  "answer_options": [],
+  "score": {
+    "outcome": "correct",
+    "correctness": true,
+    "doctor_diagnosis": "Myasthenia Gravis — confirmed by fatigable weakness with diurnal worsening, ptosis, diplopia, fatigable chewing, and positive acetylcholine receptor antibodies, with no thymoma on chest CT.",
+    "doctor_final_text": "DIAGNOSIS READY: Myasthenia Gravis — confirmed by fatigable weakness with diurnal worsening, ptosis, diplopia, fatigable chewing, and positive acetylcholine receptor antibodies, with no thymoma on chest CT.",
+    "moderator_raw": "yes",
+    "moderator_raw_text": "Yes",
+    "moderator_lenient": true,
+    "moderator_attempts": 1,
+    "moderator_normalized": false,
+    "moderator_unconstrained": false,
+    "declined": false,
+    "refusal_evidence": [],
+    "format_deviation": false,
+    "decline_source": null,
+    "decline_reason": "",
+    "spurious_commit": false
+  },
+  "infra_fail": false,
+  "error": null,
+  "findings": [],
+  "inferences_used": 5,
+  "max_inferences": 20,
+  "tests_ordered": [
+    "Acetylcholine_Receptor_Antibody_Test",
+    "Chest_CT"
+  ],
+  "images_requested": 0,
+  "image": null,
+  "image_error": null,
+  "vision": "off",
+  "refusals": [],
+  "dialogue": [
+    {
+      "role": "doctor",
+      "inference": 1,
+      "kind": "question",
+      "text": "Hello, I'm Dr. Agent. I understand you've been having double vision, trouble climbing stairs, and weakness in your arms. Can you tell me — do these symptoms get worse as the day goes on or after activity, and do they improve with rest?",
+      "payload": null,
+      "latency_ms": 5744,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Yes, exactly! I've noticed that after I've been working at my computer for a while or after doing any physical activity, the double vision gets worse and my arms feel so weak I can barely lift them. But if I take a break and rest for a few hours, I feel much better — it's like the symptoms just fade away."
+    },
+    {
+      "role": "doctor",
+      "inference": 2,
+      "kind": "question",
+      "text": "That fatigable weakness pattern is very telling. Have you noticed any drooping of your eyelids, especially later in the day, or any trouble chewing, swallowing, or changes in your speech?",
+      "payload": null,
+      "latency_ms": 6333,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Now that you mention it, yes — sometimes by the end of the day my eyelids do feel heavy and kind of droop a bit. I haven't really had trouble swallowing or with my speech, but chewing does seem to get tiring if I'm eating something that requires a lot of work, like a tough piece of meat."
+    },
+    {
+      "role": "doctor",
+      "inference": 3,
+      "kind": "test",
+      "text": "Thank you — ptosis and fatigable chewing fit a clear pattern. I'd like to run some tests to confirm my suspicion.\n\nREQUEST TEST: Acetylcholine_Receptor_Antibody_Test",
+      "payload": "Acetylcholine_Receptor_Antibody_Test",
+      "latency_ms": 7665,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: Acetylcholine Receptor Antibodies - **Present (elevated)**\n\nThis positive result supports the clinical suspicion of myasthenia gravis, as elevated acetylcholine receptor antibodies are found in approximately 80-90% of patients with generalized myasthenia gravis."
+    },
+    {
+      "role": "doctor",
+      "inference": 4,
+      "kind": "test",
+      "text": "The elevated acetylcholine receptor antibodies, combined with your fatigable weakness, ptosis, and double vision, confirm the picture. Before we finalize, I'd like one more test to check for an associated thymus abnormality.\n\nREQUEST TEST: Chest_CT",
+      "payload": "Chest_CT",
+      "latency_ms": 4128,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: Chest CT - **Normal, no thymoma or other masses detected.**"
+    },
+    {
+      "role": "doctor",
+      "inference": 5,
+      "kind": "diagnosis",
+      "text": "DIAGNOSIS READY: Myasthenia Gravis — confirmed by fatigable weakness with diurnal worsening, ptosis, diplopia, fatigable chewing, and positive acetylcholine receptor antibodies, with no thymoma on chest CT.",
+      "payload": "Myasthenia Gravis — confirmed by fatigable weakness with diurnal worsening, ptosis, diplopia, fatigable chewing, and positive acetylcholine receptor antibodies, with no thymoma on chest CT.",
+      "latency_ms": 4925,
+      "refusal": null,
+      "via": "marker"
+    }
+  ],
+  "latency_ms": [
+    5744,
+    6333,
+    7665,
+    4128,
+    4925
+  ],
+  "wall_s": 39.41,
+  "doctor_turns": [
+    {
+      "inference": 1,
+      "incoming": "",
+      "reply": "Hello, I'm Dr. Agent. I understand you've been having double vision, trouble climbing stairs, and weakness in your arms. Can you tell me — do these symptoms get worse as the day goes on or after activity, and do they improve with rest?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 5721,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 141,
+        "output_tokens_details": {
+          "thinking_tokens": 58
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 2,
+      "incoming": "Yes, exactly! I've noticed that after I've been working at my computer for a while or after doing any physical activity, the double vision gets worse and my arms feel so weak I can barely lift them. But if I take a break and rest for a few hours, I feel much better — it's like the symptoms just fade away.",
+      "reply": "That fatigable weakness pattern is very telling. Have you noticed any drooping of your eyelids, especially later in the day, or any trouble chewing, swallowing, or changes in your speech?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 5898,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 111,
+        "output_tokens_details": {
+          "thinking_tokens": 47
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 3,
+      "incoming": "Now that you mention it, yes — sometimes by the end of the day my eyelids do feel heavy and kind of droop a bit. I haven't really had trouble swallowing or with my speech, but chewing does seem to get tiring if I'm eating something that requires a lot of work, like a tough piece of meat.",
+      "reply": "Thank you — ptosis and fatigable chewing fit a clear pattern. I'd like to run some tests to confirm my suspicion.\n\nREQUEST TEST: Acetylcholine_Receptor_Antibody_Test",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Acetylcholine_Receptor_Antibody_Test",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 6061,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 155,
+        "output_tokens_details": {
+          "thinking_tokens": 78
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 4,
+      "incoming": "RESULTS: Acetylcholine Receptor Antibodies - **Present (elevated)**\n\nThis positive result supports the clinical suspicion of myasthenia gravis, as elevated acetylcholine receptor antibodies are found in approximately 80-90% of patients with generalized myasthenia gravis.",
+      "reply": "The elevated acetylcholine receptor antibodies, combined with your fatigable weakness, ptosis, and double vision, confirm the picture. Before we finalize, I'd like one more test to check for an associated thymus abnormality.\n\nREQUEST TEST: Chest_CT",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Chest_CT",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 6239,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 173,
+        "output_tokens_details": {
+          "thinking_tokens": 80
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 5,
+      "incoming": "RESULTS: Chest CT - **Normal, no thymoma or other masses detected.**",
+      "reply": "DIAGNOSIS READY: Myasthenia Gravis — confirmed by fatigable weakness with diurnal worsening, ptosis, diplopia, fatigable chewing, and positive acetylcholine receptor antibodies, with no thymoma on chest CT.",
+      "tool_calls": [],
+      "kind": "diagnosis",
+      "payload": "Myasthenia Gravis — confirmed by fatigable weakness with diurnal worsening, ptosis, diplopia, fatigable chewing, and positive acetylcholine receptor antibodies, with no thymoma on chest CT.",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 6362,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 104,
+        "output_tokens_details": {
+          "thinking_tokens": 11
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    }
+  ],
+  "support_llm": "anthropic:claude-sonnet-4-5",
+  "support_llm_cost_usd": 0.0102,
+  "support_llm_calls": 5,
+  "voice_subset": false,
+  "diagnostics": {
+    "schema": "tau2.health.diagnostics/v1",
+    "benchmark": "agentclinic",
+    "case_id": "MedQA-0",
+    "mode": "text",
+    "availability": {
+      "flow_available": false,
+      "flow_reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "signals_available": false,
+      "signals_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "metadata_sidecar_available": false,
+      "metadata_sidecar_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "tools_available": true,
+      "tools_reason": null
+    },
+    "provenance": {
+      "benchmark": "agentclinic",
+      "mode": "text",
+      "transport_endpoint": "POST /api/bench/agent-turn",
+      "agent_id": "c2761ec7-d3f7-4bd7-b68c-40a87f1b1ab3",
+      "base_url": "https://aws-gateway-backend.whissle.ai/bot",
+      "seed": 42,
+      "stratum": {
+        "dataset": "MedQA",
+        "scenario_index": 0,
+        "selection": "head",
+        "limit": 25
+      },
+      "judge": {
+        "judge_provider": "anthropic",
+        "judge_model": "claude-sonnet-4-5",
+        "judge_endpoint": "anthropic:claude-sonnet-4-5",
+        "judge_independent": true,
+        "judge_independence_note": "Judge independence: this run's simulators and graders were routed through an external provider, independent of the agent under test. This is the stronger footing for a published comparison against the paper's numbers."
+      },
+      "judge_provider": "anthropic",
+      "judge_independent": true,
+      "run_id": null,
+      "run_dir": "results/whissle/agentclinic/20260808T192627Z-sweep25_fable5",
+      "harness_commit": "86b4475",
+      "captured_at": "2026-08-08T19:27:06+00:00",
+      "protocol": "markers",
+      "history": "agentclinic",
+      "prompt_mode": "override",
+      "vision": "off",
+      "agent_type": null,
+      "total_inferences": 20,
+      "inferences_used": 5,
+      "support_llm": "anthropic:claude-sonnet-4-5",
+      "patient_bias": null,
+      "doctor_bias": null,
+      "voice_subset": false
+    },
+    "cost": {
+      "available": true,
+      "reason": null,
+      "judge_calls": 5,
+      "judge_cost_usd": 0.0102,
+      "agent_calls": 5
+    },
+    "flow": {
+      "available": false,
+      "reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "source": null,
+      "turns": null,
+      "summary": null,
+      "conversation_id": null,
+      "current_state": null,
+      "start_state": null,
+      "final_state": null,
+      "ended": null,
+      "flow_end": null,
+      "num_steps": null,
+      "step_counts_by_kind": null,
+      "states_visited": null,
+      "states_declared": null,
+      "states_unvisited": null,
+      "transitions": null,
+      "transitions_fired": null,
+      "var_sets": null,
+      "var_sources": null,
+      "guard_trips": null,
+      "state_divergences": null,
+      "tools_gated": null,
+      "says": null,
+      "steps": null
+    },
+    "signals": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "metadata_sidecar": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "tools": {
+      "available": true,
+      "reason": null,
+      "source": "doctor actions parsed from /api/bench/agent-turn replies",
+      "calls": [
+        {
+          "turn": 3,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Acetylcholine_Receptor_Antibody_Test"
+          },
+          "result": "RESULTS: Acetylcholine Receptor Antibodies - **Present (elevated)**\n\nThis positive result supports the clinical suspicion of myasthenia gravis, as elevated acetylcholine receptor antibodies are found in approximately 80-90% of patients with generalized myasthenia gravis.",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 7665,
+          "terminal": false
+        },
+        {
+          "turn": 4,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Chest_CT"
+          },
+          "result": "RESULTS: Chest CT - **Normal, no thymoma or other masses detected.**",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 4128,
+          "terminal": false
+        },
+        {
+          "turn": 5,
+          "id": null,
+          "name": "give_diagnosis",
+          "arguments": {
+            "request": "Myasthenia Gravis — confirmed by fatigable weakness with diurnal worsening, ptosis, diplopia, fatigable chewing, and positive acetylcholine receptor antibodies, with no thymoma on chest CT."
+          },
+          "result": null,
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 4925,
+          "terminal": true
+        }
+      ],
+      "summary": {
+        "n_calls": 3,
+        "by_name": {
+          "request_test": 2,
+          "give_diagnosis": 1
+        },
+        "n_ok": 3,
+        "n_error": 0,
+        "errors": []
+      },
+      "writes": {
+        "available": false,
+        "reason": "this benchmark issues no writes, so there is no said-vs-emitted-vs-landed distinction to record"
+      }
+    },
+    "turns": [
+      {
+        "inference": 1,
+        "incoming": "",
+        "reply": "Hello, I'm Dr. Agent. I understand you've been having double vision, trouble climbing stairs, and weakness in your arms. Can you tell me — do these symptoms get worse as the day goes on or after activity, and do they improve with rest?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 5721,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 141,
+          "output_tokens_details": {
+            "thinking_tokens": 58
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 2,
+        "incoming": "Yes, exactly! I've noticed that after I've been working at my computer for a while or after doing any physical activity, the double vision gets worse and my arms feel so weak I can barely lift them. But if I take a break and rest for a few hours, I feel much better — it's like the symptoms just fade away.",
+        "reply": "That fatigable weakness pattern is very telling. Have you noticed any drooping of your eyelids, especially later in the day, or any trouble chewing, swallowing, or changes in your speech?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 5898,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 111,
+          "output_tokens_details": {
+            "thinking_tokens": 47
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 3,
+        "incoming": "Now that you mention it, yes — sometimes by the end of the day my eyelids do feel heavy and kind of droop a bit. I haven't really had trouble swallowing or with my speech, but chewing does seem to get tiring if I'm eating something that requires a lot of work, like a tough piece of meat.",
+        "reply": "Thank you — ptosis and fatigable chewing fit a clear pattern. I'd like to run some tests to confirm my suspicion.\n\nREQUEST TEST: Acetylcholine_Receptor_Antibody_Test",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Acetylcholine_Receptor_Antibody_Test",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 6061,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 155,
+          "output_tokens_details": {
+            "thinking_tokens": 78
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 4,
+        "incoming": "RESULTS: Acetylcholine Receptor Antibodies - **Present (elevated)**\n\nThis positive result supports the clinical suspicion of myasthenia gravis, as elevated acetylcholine receptor antibodies are found in approximately 80-90% of patients with generalized myasthenia gravis.",
+        "reply": "The elevated acetylcholine receptor antibodies, combined with your fatigable weakness, ptosis, and double vision, confirm the picture. Before we finalize, I'd like one more test to check for an associated thymus abnormality.\n\nREQUEST TEST: Chest_CT",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Chest_CT",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 6239,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 173,
+          "output_tokens_details": {
+            "thinking_tokens": 80
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 5,
+        "incoming": "RESULTS: Chest CT - **Normal, no thymoma or other masses detected.**",
+        "reply": "DIAGNOSIS READY: Myasthenia Gravis — confirmed by fatigable weakness with diurnal worsening, ptosis, diplopia, fatigable chewing, and positive acetylcholine receptor antibodies, with no thymoma on chest CT.",
+        "tool_calls": [],
+        "kind": "diagnosis",
+        "payload": "Myasthenia Gravis — confirmed by fatigable weakness with diurnal worsening, ptosis, diplopia, fatigable chewing, and positive acetylcholine receptor antibodies, with no thymoma on chest CT.",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 6362,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 104,
+          "output_tokens_details": {
+            "thinking_tokens": 11
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      }
+    ],
+    "audio": null
+  }
+}

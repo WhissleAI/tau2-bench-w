@@ -1,0 +1,550 @@
+{
+  "scenario_id": "MedQA-13",
+  "scenario_index": 13,
+  "dataset": "MedQA",
+  "mode": "text",
+  "correct_diagnosis": "Hirschsprung’s disease",
+  "answer_options": [],
+  "score": {
+    "outcome": "correct",
+    "correctness": true,
+    "doctor_diagnosis": "Hirschsprung's disease (congenital aganglionic megacolon) — confirmed by rectosigmoid transition zone on contrast enema and squirt sign on rectal exam; recommend rectal suction biopsy to confirm absence of ganglion cells and surgical consult.",
+    "doctor_final_text": "DIAGNOSIS READY: Hirschsprung's disease (congenital aganglionic megacolon) — confirmed by rectosigmoid transition zone on contrast enema and squirt sign on rectal exam; recommend rectal suction biopsy to confirm absence of ganglion cells and surgical consult.",
+    "moderator_raw": "yes",
+    "moderator_raw_text": "Yes",
+    "moderator_lenient": true,
+    "moderator_attempts": 1,
+    "moderator_normalized": false,
+    "moderator_unconstrained": false,
+    "declined": false,
+    "refusal_evidence": [],
+    "format_deviation": false,
+    "decline_source": null,
+    "decline_reason": "",
+    "spurious_commit": false
+  },
+  "infra_fail": false,
+  "error": null,
+  "findings": [],
+  "inferences_used": 5,
+  "max_inferences": 20,
+  "tests_ordered": [
+    "Digital_Rectal_Exam",
+    "Abdominal_X-Ray and Contrast_Enema"
+  ],
+  "images_requested": 0,
+  "image": null,
+  "image_error": null,
+  "vision": "off",
+  "refusals": [],
+  "dialogue": [
+    {
+      "role": "doctor",
+      "inference": 1,
+      "kind": "question",
+      "text": "Doctor: How old is the infant, and how long ago did the vomiting and inability to pass meconium begin?",
+      "payload": null,
+      "latency_ms": 3208,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "He's only 2 days old, doctor. The vomiting started yesterday, the day after he was born, and he still hasn't had a bowel movement since birth."
+    },
+    {
+      "role": "doctor",
+      "inference": 2,
+      "kind": "question",
+      "text": "Doctor: Has the abdominal distension been getting worse, and does he have a tight, weak, or absent anal sphincter tone on exam?",
+      "payload": null,
+      "latency_ms": 2115,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Yes, his belly does seem to be getting more swollen and tight. I haven't really checked his bottom myself, doctor - I was hoping you could examine that."
+    },
+    {
+      "role": "doctor",
+      "inference": 3,
+      "kind": "test",
+      "text": "REQUEST TEST: Digital_Rectal_Exam",
+      "payload": "Digital_Rectal_Exam",
+      "latency_ms": 2548,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS:\n\n**Digital Rectal Exam:**\n- **Anal Tone:** Tight anal sphincter\n- **Rectal Vault:** Empty rectal vault with no stool present\n- **Withdrawal:** Explosive discharge of gas and liquid stool upon finger withdrawal (positive \"squirt sign\")\n- **Findings:** Consistent with functional obstruction; highly suggestive of Hirschsprung's disease given the clinical presentation"
+    },
+    {
+      "role": "doctor",
+      "inference": 4,
+      "kind": "test",
+      "text": "That squirt sign strongly points to Hirschsprung's disease. I'd like to confirm with imaging — REQUEST TEST: Abdominal_X-Ray and Contrast_Enema",
+      "payload": "Abdominal_X-Ray and Contrast_Enema",
+      "latency_ms": 2633,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS:\n\n**Abdominal X-Ray:**\n- **Findings:** Dilated loops of bowel with no gas in the rectum, suggestive of a distal obstruction.\n\n**Contrast Enema:**\n- **Findings:** The contrast study shows a transition zone in the rectosigmoid region with a narrowed distal segment and dilated proximal bowel loops, characteristic of Hirschsprung's disease. The contrast enema demonstrates the classic \"cone-shaped\" transition from the aganglionic narrow segment to the dilated ganglionic bowel."
+    },
+    {
+      "role": "doctor",
+      "inference": 5,
+      "kind": "diagnosis",
+      "text": "DIAGNOSIS READY: Hirschsprung's disease (congenital aganglionic megacolon) — confirmed by rectosigmoid transition zone on contrast enema and squirt sign on rectal exam; recommend rectal suction biopsy to confirm absence of ganglion cells and surgical consult.",
+      "payload": "Hirschsprung's disease (congenital aganglionic megacolon) — confirmed by rectosigmoid transition zone on contrast enema and squirt sign on rectal exam; recommend rectal suction biopsy to confirm absence of ganglion cells and surgical consult.",
+      "latency_ms": 3519,
+      "refusal": null,
+      "via": "marker"
+    }
+  ],
+  "latency_ms": [
+    3208,
+    2115,
+    2548,
+    2633,
+    3519
+  ],
+  "wall_s": 26.42,
+  "doctor_turns": [
+    {
+      "inference": 1,
+      "incoming": "",
+      "reply": "Doctor: How old is the infant, and how long ago did the vomiting and inability to pass meconium begin?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 5732,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 37,
+        "output_tokens_details": {
+          "thinking_tokens": 0
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 2,
+      "incoming": "He's only 2 days old, doctor. The vomiting started yesterday, the day after he was born, and he still hasn't had a bowel movement since birth.",
+      "reply": "Doctor: Has the abdominal distension been getting worse, and does he have a tight, weak, or absent anal sphincter tone on exam?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 5817,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 48,
+        "output_tokens_details": {
+          "thinking_tokens": 0
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 3,
+      "incoming": "Yes, his belly does seem to be getting more swollen and tight. I haven't really checked his bottom myself, doctor - I was hoping you could examine that.",
+      "reply": "REQUEST TEST: Digital_Rectal_Exam",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Digital_Rectal_Exam",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 5916,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 23,
+        "output_tokens_details": {
+          "thinking_tokens": 0
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 4,
+      "incoming": "RESULTS:\n\n**Digital Rectal Exam:**\n- **Anal Tone:** Tight anal sphincter\n- **Rectal Vault:** Empty rectal vault with no stool present\n- **Withdrawal:** Explosive discharge of gas and liquid stool upon finger withdrawal (positive \"squirt sign\")\n- **Findings:** Consistent with functional obstruction; highly suggestive of Hirschsprung's disease given the clinical presentation",
+      "reply": "That squirt sign strongly points to Hirschsprung's disease. I'd like to confirm with imaging — REQUEST TEST: Abdominal_X-Ray and Contrast_Enema",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Abdominal_X-Ray and Contrast_Enema",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 6095,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 66,
+        "output_tokens_details": {
+          "thinking_tokens": 0
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 5,
+      "incoming": "RESULTS:\n\n**Abdominal X-Ray:**\n- **Findings:** Dilated loops of bowel with no gas in the rectum, suggestive of a distal obstruction.\n\n**Contrast Enema:**\n- **Findings:** The contrast study shows a transition zone in the rectosigmoid region with a narrowed distal segment and dilated proximal bowel loops, characteristic of Hirschsprung's disease. The contrast enema demonstrates the classic \"cone-shaped\" transition from the aganglionic narrow segment to the dilated ganglionic bowel.",
+      "reply": "DIAGNOSIS READY: Hirschsprung's disease (congenital aganglionic megacolon) — confirmed by rectosigmoid transition zone on contrast enema and squirt sign on rectal exam; recommend rectal suction biopsy to confirm absence of ganglion cells and surgical consult.",
+      "tool_calls": [],
+      "kind": "diagnosis",
+      "payload": "Hirschsprung's disease (congenital aganglionic megacolon) — confirmed by rectosigmoid transition zone on contrast enema and squirt sign on rectal exam; recommend rectal suction biopsy to confirm absence of ganglion cells and surgical consult.",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 6352,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 106,
+        "output_tokens_details": {
+          "thinking_tokens": 0
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    }
+  ],
+  "support_llm": "anthropic:claude-sonnet-4-5",
+  "support_llm_cost_usd": 0.01049,
+  "support_llm_calls": 5,
+  "voice_subset": false,
+  "diagnostics": {
+    "schema": "tau2.health.diagnostics/v1",
+    "benchmark": "agentclinic",
+    "case_id": "MedQA-13",
+    "mode": "text",
+    "availability": {
+      "flow_available": false,
+      "flow_reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "signals_available": false,
+      "signals_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "metadata_sidecar_available": false,
+      "metadata_sidecar_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "tools_available": true,
+      "tools_reason": null
+    },
+    "provenance": {
+      "benchmark": "agentclinic",
+      "mode": "text",
+      "transport_endpoint": "POST /api/bench/agent-turn",
+      "agent_id": "c2761ec7-d3f7-4bd7-b68c-40a87f1b1ab3",
+      "base_url": "https://aws-gateway-backend.whissle.ai/bot",
+      "seed": 42,
+      "stratum": {
+        "dataset": "MedQA",
+        "scenario_index": 13,
+        "selection": "head",
+        "limit": 25
+      },
+      "judge": {
+        "judge_provider": "anthropic",
+        "judge_model": "claude-sonnet-4-5",
+        "judge_endpoint": "anthropic:claude-sonnet-4-5",
+        "judge_independent": true,
+        "judge_independence_note": "Judge independence: this run's simulators and graders were routed through an external provider, independent of the agent under test. This is the stronger footing for a published comparison against the paper's numbers."
+      },
+      "judge_provider": "anthropic",
+      "judge_independent": true,
+      "run_id": null,
+      "run_dir": "results/whissle/agentclinic/20260808T191547Z-sweep25_sonnet5",
+      "harness_commit": "86b4475",
+      "captured_at": "2026-08-08T19:18:11+00:00",
+      "protocol": "markers",
+      "history": "agentclinic",
+      "prompt_mode": "override",
+      "vision": "off",
+      "agent_type": null,
+      "total_inferences": 20,
+      "inferences_used": 5,
+      "support_llm": "anthropic:claude-sonnet-4-5",
+      "patient_bias": null,
+      "doctor_bias": null,
+      "voice_subset": false
+    },
+    "cost": {
+      "available": true,
+      "reason": null,
+      "judge_calls": 5,
+      "judge_cost_usd": 0.01049,
+      "agent_calls": 5
+    },
+    "flow": {
+      "available": false,
+      "reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "source": null,
+      "turns": null,
+      "summary": null,
+      "conversation_id": null,
+      "current_state": null,
+      "start_state": null,
+      "final_state": null,
+      "ended": null,
+      "flow_end": null,
+      "num_steps": null,
+      "step_counts_by_kind": null,
+      "states_visited": null,
+      "states_declared": null,
+      "states_unvisited": null,
+      "transitions": null,
+      "transitions_fired": null,
+      "var_sets": null,
+      "var_sources": null,
+      "guard_trips": null,
+      "state_divergences": null,
+      "tools_gated": null,
+      "says": null,
+      "steps": null
+    },
+    "signals": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "metadata_sidecar": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "tools": {
+      "available": true,
+      "reason": null,
+      "source": "doctor actions parsed from /api/bench/agent-turn replies",
+      "calls": [
+        {
+          "turn": 3,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Digital_Rectal_Exam"
+          },
+          "result": "RESULTS:\n\n**Digital Rectal Exam:**\n- **Anal Tone:** Tight anal sphincter\n- **Rectal Vault:** Empty rectal vault with no stool present\n- **Withdrawal:** Explosive discharge of gas and liquid stool upon finger withdrawal (positive \"squirt sign\")\n- **Findings:** Consistent with functional obstruction; highly suggestive of Hirschsprung's disease given the clinical presentation",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 2548,
+          "terminal": false
+        },
+        {
+          "turn": 4,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Abdominal_X-Ray and Contrast_Enema"
+          },
+          "result": "RESULTS:\n\n**Abdominal X-Ray:**\n- **Findings:** Dilated loops of bowel with no gas in the rectum, suggestive of a distal obstruction.\n\n**Contrast Enema:**\n- **Findings:** The contrast study shows a transition zone in the rectosigmoid region with a narrowed distal segment and dilated proximal bowel loops, characteristic of Hirschsprung's disease. The contrast enema demonstrates the classic \"cone-shaped\" transition from the aganglionic narrow segment to the dilated ganglionic bowel.",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 2633,
+          "terminal": false
+        },
+        {
+          "turn": 5,
+          "id": null,
+          "name": "give_diagnosis",
+          "arguments": {
+            "request": "Hirschsprung's disease (congenital aganglionic megacolon) — confirmed by rectosigmoid transition zone on contrast enema and squirt sign on rectal exam; recommend rectal suction biopsy to confirm absence of ganglion cells and surgical consult."
+          },
+          "result": null,
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 3519,
+          "terminal": true
+        }
+      ],
+      "summary": {
+        "n_calls": 3,
+        "by_name": {
+          "request_test": 2,
+          "give_diagnosis": 1
+        },
+        "n_ok": 3,
+        "n_error": 0,
+        "errors": []
+      },
+      "writes": {
+        "available": false,
+        "reason": "this benchmark issues no writes, so there is no said-vs-emitted-vs-landed distinction to record"
+      }
+    },
+    "turns": [
+      {
+        "inference": 1,
+        "incoming": "",
+        "reply": "Doctor: How old is the infant, and how long ago did the vomiting and inability to pass meconium begin?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 5732,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 37,
+          "output_tokens_details": {
+            "thinking_tokens": 0
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 2,
+        "incoming": "He's only 2 days old, doctor. The vomiting started yesterday, the day after he was born, and he still hasn't had a bowel movement since birth.",
+        "reply": "Doctor: Has the abdominal distension been getting worse, and does he have a tight, weak, or absent anal sphincter tone on exam?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 5817,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 48,
+          "output_tokens_details": {
+            "thinking_tokens": 0
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 3,
+        "incoming": "Yes, his belly does seem to be getting more swollen and tight. I haven't really checked his bottom myself, doctor - I was hoping you could examine that.",
+        "reply": "REQUEST TEST: Digital_Rectal_Exam",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Digital_Rectal_Exam",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 5916,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 23,
+          "output_tokens_details": {
+            "thinking_tokens": 0
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 4,
+        "incoming": "RESULTS:\n\n**Digital Rectal Exam:**\n- **Anal Tone:** Tight anal sphincter\n- **Rectal Vault:** Empty rectal vault with no stool present\n- **Withdrawal:** Explosive discharge of gas and liquid stool upon finger withdrawal (positive \"squirt sign\")\n- **Findings:** Consistent with functional obstruction; highly suggestive of Hirschsprung's disease given the clinical presentation",
+        "reply": "That squirt sign strongly points to Hirschsprung's disease. I'd like to confirm with imaging — REQUEST TEST: Abdominal_X-Ray and Contrast_Enema",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Abdominal_X-Ray and Contrast_Enema",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 6095,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 66,
+          "output_tokens_details": {
+            "thinking_tokens": 0
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 5,
+        "incoming": "RESULTS:\n\n**Abdominal X-Ray:**\n- **Findings:** Dilated loops of bowel with no gas in the rectum, suggestive of a distal obstruction.\n\n**Contrast Enema:**\n- **Findings:** The contrast study shows a transition zone in the rectosigmoid region with a narrowed distal segment and dilated proximal bowel loops, characteristic of Hirschsprung's disease. The contrast enema demonstrates the classic \"cone-shaped\" transition from the aganglionic narrow segment to the dilated ganglionic bowel.",
+        "reply": "DIAGNOSIS READY: Hirschsprung's disease (congenital aganglionic megacolon) — confirmed by rectosigmoid transition zone on contrast enema and squirt sign on rectal exam; recommend rectal suction biopsy to confirm absence of ganglion cells and surgical consult.",
+        "tool_calls": [],
+        "kind": "diagnosis",
+        "payload": "Hirschsprung's disease (congenital aganglionic megacolon) — confirmed by rectosigmoid transition zone on contrast enema and squirt sign on rectal exam; recommend rectal suction biopsy to confirm absence of ganglion cells and surgical consult.",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 6352,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 106,
+          "output_tokens_details": {
+            "thinking_tokens": 0
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      }
+    ],
+    "audio": null
+  }
+}

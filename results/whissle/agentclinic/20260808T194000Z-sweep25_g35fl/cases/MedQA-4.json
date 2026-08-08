@@ -1,0 +1,607 @@
+{
+  "scenario_id": "MedQA-4",
+  "scenario_index": 4,
+  "dataset": "MedQA",
+  "mode": "text",
+  "correct_diagnosis": "Acute interstitial nephritis",
+  "answer_options": [],
+  "score": {
+    "outcome": "correct",
+    "correctness": true,
+    "doctor_diagnosis": "Acute Interstitial Nephritis",
+    "doctor_final_text": "DIAGNOSIS READY: Acute Interstitial Nephritis",
+    "moderator_raw": "yes",
+    "moderator_raw_text": "Yes",
+    "moderator_lenient": true,
+    "moderator_attempts": 1,
+    "moderator_normalized": false,
+    "moderator_unconstrained": false,
+    "declined": false,
+    "refusal_evidence": [],
+    "format_deviation": false,
+    "decline_source": null,
+    "decline_reason": "",
+    "spurious_commit": false
+  },
+  "infra_fail": false,
+  "error": null,
+  "findings": [],
+  "inferences_used": 8,
+  "max_inferences": 20,
+  "tests_ordered": [
+    "Urinalysis",
+    "Serum_Creatinine"
+  ],
+  "images_requested": 0,
+  "image": null,
+  "image_error": null,
+  "vision": "off",
+  "refusals": [],
+  "dialogue": [
+    {
+      "role": "doctor",
+      "inference": 1,
+      "kind": "question",
+      "text": "Hello, I'm Dr. Agent. Can you tell me more about the flank pain you've been experiencing?",
+      "payload": null,
+      "latency_ms": 889,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "The pain is on both sides of my lower back, kind of a dull ache that's been there for about a week now. It's not excruciating, but it's definitely uncomfortable and doesn't seem to be going away."
+    },
+    {
+      "role": "doctor",
+      "inference": 2,
+      "kind": "question",
+      "text": "Have you noticed any changes in your urination, such as increased frequency, urgency, or any blood in your urine?",
+      "payload": null,
+      "latency_ms": 660,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "No, I haven't noticed any changes in how often I go to the bathroom or any urgency. And I haven't seen any blood in my urine either."
+    },
+    {
+      "role": "doctor",
+      "inference": 3,
+      "kind": "question",
+      "text": "Have you had any chills, nausea, or vomiting alongside your fever?",
+      "payload": null,
+      "latency_ms": 601,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "No, I haven't had any chills, nausea, or vomiting. Just the fever that comes and goes, along with feeling really tired all the time."
+    },
+    {
+      "role": "doctor",
+      "inference": 4,
+      "kind": "test",
+      "text": "REQUEST TEST: Urinalysis",
+      "payload": "Urinalysis",
+      "latency_ms": 562,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: Urinalysis shows the following findings:\n\n- **Leukocyturia**: Present (white blood cells in urine)\n- **Bacterial Culture**: Negative (no bacterial growth)\n- **Cytospin Stained With Hansel's Solution**: 3% binucleated cells with eosinophilic, granular cytoplasm detected\n\nThese findings are significant as they show white blood cells in the urine without bacterial infection, and the presence of eosinophils (a type of white blood cell) in the urine, which can suggest an inflammatory process affecting the kidneys."
+    },
+    {
+      "role": "doctor",
+      "inference": 5,
+      "kind": "question",
+      "text": "Based on those urinalysis results showing eosinophiluria and leukocyturia without a bacterial infection, were you taking a specific antibiotic like a penicillin or cephalosporin for your sinusitis?",
+      "payload": null,
+      "latency_ms": 828,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Yes, I was first on amoxicillin for about 12 days, but I developed a rash so they switched me to cephalexin for another week. The rash went away after they changed the antibiotic."
+    },
+    {
+      "role": "doctor",
+      "inference": 6,
+      "kind": "test",
+      "text": "REQUEST TEST: Serum_Creatinine",
+      "payload": "Serum_Creatinine",
+      "latency_ms": 733,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: Serum Creatinine is **Elevated**\n\n(Note: The serum biochemistry panel shows elevated creatinine levels, indicating impaired kidney function. This elevation, combined with the elevated urea levels also present in your results, suggests acute kidney injury.)"
+    },
+    {
+      "role": "doctor",
+      "inference": 7,
+      "kind": "question",
+      "text": "Did you experience any joint pain or muscle aches after starting those antibiotics?",
+      "payload": null,
+      "latency_ms": 599,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "No, I haven't had any joint pain or muscle aches. Just the fatigue, the flank pain, and this fever that won't seem to go away completely."
+    },
+    {
+      "role": "doctor",
+      "inference": 8,
+      "kind": "diagnosis",
+      "text": "DIAGNOSIS READY: Acute Interstitial Nephritis",
+      "payload": "Acute Interstitial Nephritis",
+      "latency_ms": 811,
+      "refusal": null,
+      "via": "marker"
+    }
+  ],
+  "latency_ms": [
+    889,
+    660,
+    601,
+    562,
+    828,
+    733,
+    599,
+    811
+  ],
+  "wall_s": 23.46,
+  "doctor_turns": [
+    {
+      "inference": 1,
+      "incoming": "",
+      "reply": "Hello, I'm Dr. Agent. Can you tell me more about the flank pain you've been experiencing?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 3949,
+        "output_tokens": 24,
+        "thinking_tokens": 0,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    },
+    {
+      "inference": 2,
+      "incoming": "The pain is on both sides of my lower back, kind of a dull ache that's been there for about a week now. It's not excruciating, but it's definitely uncomfortable and doesn't seem to be going away.",
+      "reply": "Have you noticed any changes in your urination, such as increased frequency, urgency, or any blood in your urine?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4023,
+        "output_tokens": 23,
+        "thinking_tokens": 0,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    },
+    {
+      "inference": 3,
+      "incoming": "No, I haven't noticed any changes in how often I go to the bathroom or any urgency. And I haven't seen any blood in my urine either.",
+      "reply": "Have you had any chills, nausea, or vomiting alongside your fever?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4082,
+        "output_tokens": 14,
+        "thinking_tokens": 0,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    },
+    {
+      "inference": 4,
+      "incoming": "No, I haven't had any chills, nausea, or vomiting. Just the fever that comes and goes, along with feeling really tired all the time.",
+      "reply": "REQUEST TEST: Urinalysis",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Urinalysis",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4130,
+        "output_tokens": 6,
+        "thinking_tokens": 0,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    },
+    {
+      "inference": 5,
+      "incoming": "RESULTS: Urinalysis shows the following findings:\n\n- **Leukocyturia**: Present (white blood cells in urine)\n- **Bacterial Culture**: Negative (no bacterial growth)\n- **Cytospin Stained With Hansel's Solution**: 3% binucleated cells with eosinophilic, granular cytoplasm detected\n\nThese findings are significant as they show white blood cells in the urine without bacterial infection, and the presence of eosinophils (a type of white blood cell) in the urine, which can suggest an inflammatory process affecting the kidneys.",
+      "reply": "Based on those urinalysis results showing eosinophiluria and leukocyturia without a bacterial infection, were you taking a specific antibiotic like a penicillin or cephalosporin for your sinusitis?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4252,
+        "output_tokens": 36,
+        "thinking_tokens": 0,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    },
+    {
+      "inference": 6,
+      "incoming": "Yes, I was first on amoxicillin for about 12 days, but I developed a rash so they switched me to cephalexin for another week. The rash went away after they changed the antibiotic.",
+      "reply": "REQUEST TEST: Serum_Creatinine",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Serum_Creatinine",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4333,
+        "output_tokens": 7,
+        "thinking_tokens": 0,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    },
+    {
+      "inference": 7,
+      "incoming": "RESULTS: Serum Creatinine is **Elevated**\n\n(Note: The serum biochemistry panel shows elevated creatinine levels, indicating impaired kidney function. This elevation, combined with the elevated urea levels also present in your results, suggests acute kidney injury.)",
+      "reply": "Did you experience any joint pain or muscle aches after starting those antibiotics?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4390,
+        "output_tokens": 14,
+        "thinking_tokens": 0,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    },
+    {
+      "inference": 8,
+      "incoming": "No, I haven't had any joint pain or muscle aches. Just the fatigue, the flank pain, and this fever that won't seem to go away completely.",
+      "reply": "DIAGNOSIS READY: Acute Interstitial Nephritis",
+      "tool_calls": [],
+      "kind": "diagnosis",
+      "payload": "Acute Interstitial Nephritis",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4441,
+        "output_tokens": 11,
+        "thinking_tokens": 0,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    }
+  ],
+  "support_llm": "anthropic:claude-sonnet-4-5",
+  "support_llm_cost_usd": 0.01999,
+  "support_llm_calls": 8,
+  "voice_subset": false,
+  "diagnostics": {
+    "schema": "tau2.health.diagnostics/v1",
+    "benchmark": "agentclinic",
+    "case_id": "MedQA-4",
+    "mode": "text",
+    "availability": {
+      "flow_available": false,
+      "flow_reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "signals_available": false,
+      "signals_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "metadata_sidecar_available": false,
+      "metadata_sidecar_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "tools_available": true,
+      "tools_reason": null
+    },
+    "provenance": {
+      "benchmark": "agentclinic",
+      "mode": "text",
+      "transport_endpoint": "POST /api/bench/agent-turn",
+      "agent_id": "c2761ec7-d3f7-4bd7-b68c-40a87f1b1ab3",
+      "base_url": "https://aws-gateway-backend.whissle.ai/bot",
+      "seed": 42,
+      "stratum": {
+        "dataset": "MedQA",
+        "scenario_index": 4,
+        "selection": "head",
+        "limit": 25
+      },
+      "judge": {
+        "judge_provider": "anthropic",
+        "judge_model": "claude-sonnet-4-5",
+        "judge_endpoint": "anthropic:claude-sonnet-4-5",
+        "judge_independent": true,
+        "judge_independence_note": "Judge independence: this run's simulators and graders were routed through an external provider, independent of the agent under test. This is the stronger footing for a published comparison against the paper's numbers."
+      },
+      "judge_provider": "anthropic",
+      "judge_independent": true,
+      "run_id": null,
+      "run_dir": "results/whissle/agentclinic/20260808T194000Z-sweep25_g35fl",
+      "harness_commit": "86b4475",
+      "captured_at": "2026-08-08T19:40:37+00:00",
+      "protocol": "markers",
+      "history": "agentclinic",
+      "prompt_mode": "override",
+      "vision": "off",
+      "agent_type": null,
+      "total_inferences": 20,
+      "inferences_used": 8,
+      "support_llm": "anthropic:claude-sonnet-4-5",
+      "patient_bias": null,
+      "doctor_bias": null,
+      "voice_subset": false
+    },
+    "cost": {
+      "available": true,
+      "reason": null,
+      "judge_calls": 8,
+      "judge_cost_usd": 0.01999,
+      "agent_calls": 8
+    },
+    "flow": {
+      "available": false,
+      "reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "source": null,
+      "turns": null,
+      "summary": null,
+      "conversation_id": null,
+      "current_state": null,
+      "start_state": null,
+      "final_state": null,
+      "ended": null,
+      "flow_end": null,
+      "num_steps": null,
+      "step_counts_by_kind": null,
+      "states_visited": null,
+      "states_declared": null,
+      "states_unvisited": null,
+      "transitions": null,
+      "transitions_fired": null,
+      "var_sets": null,
+      "var_sources": null,
+      "guard_trips": null,
+      "state_divergences": null,
+      "tools_gated": null,
+      "says": null,
+      "steps": null
+    },
+    "signals": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "metadata_sidecar": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "tools": {
+      "available": true,
+      "reason": null,
+      "source": "doctor actions parsed from /api/bench/agent-turn replies",
+      "calls": [
+        {
+          "turn": 4,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Urinalysis"
+          },
+          "result": "RESULTS: Urinalysis shows the following findings:\n\n- **Leukocyturia**: Present (white blood cells in urine)\n- **Bacterial Culture**: Negative (no bacterial growth)\n- **Cytospin Stained With Hansel's Solution**: 3% binucleated cells with eosinophilic, granular cytoplasm detected\n\nThese findings are significant as they show white blood cells in the urine without bacterial infection, and the presence of eosinophils (a type of white blood cell) in the urine, which can suggest an inflammatory process affecting the kidneys.",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 562,
+          "terminal": false
+        },
+        {
+          "turn": 6,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Serum_Creatinine"
+          },
+          "result": "RESULTS: Serum Creatinine is **Elevated**\n\n(Note: The serum biochemistry panel shows elevated creatinine levels, indicating impaired kidney function. This elevation, combined with the elevated urea levels also present in your results, suggests acute kidney injury.)",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 733,
+          "terminal": false
+        },
+        {
+          "turn": 8,
+          "id": null,
+          "name": "give_diagnosis",
+          "arguments": {
+            "request": "Acute Interstitial Nephritis"
+          },
+          "result": null,
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 811,
+          "terminal": true
+        }
+      ],
+      "summary": {
+        "n_calls": 3,
+        "by_name": {
+          "request_test": 2,
+          "give_diagnosis": 1
+        },
+        "n_ok": 3,
+        "n_error": 0,
+        "errors": []
+      },
+      "writes": {
+        "available": false,
+        "reason": "this benchmark issues no writes, so there is no said-vs-emitted-vs-landed distinction to record"
+      }
+    },
+    "turns": [
+      {
+        "inference": 1,
+        "incoming": "",
+        "reply": "Hello, I'm Dr. Agent. Can you tell me more about the flank pain you've been experiencing?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 3949,
+          "output_tokens": 24,
+          "thinking_tokens": 0,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      },
+      {
+        "inference": 2,
+        "incoming": "The pain is on both sides of my lower back, kind of a dull ache that's been there for about a week now. It's not excruciating, but it's definitely uncomfortable and doesn't seem to be going away.",
+        "reply": "Have you noticed any changes in your urination, such as increased frequency, urgency, or any blood in your urine?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4023,
+          "output_tokens": 23,
+          "thinking_tokens": 0,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      },
+      {
+        "inference": 3,
+        "incoming": "No, I haven't noticed any changes in how often I go to the bathroom or any urgency. And I haven't seen any blood in my urine either.",
+        "reply": "Have you had any chills, nausea, or vomiting alongside your fever?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4082,
+          "output_tokens": 14,
+          "thinking_tokens": 0,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      },
+      {
+        "inference": 4,
+        "incoming": "No, I haven't had any chills, nausea, or vomiting. Just the fever that comes and goes, along with feeling really tired all the time.",
+        "reply": "REQUEST TEST: Urinalysis",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Urinalysis",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4130,
+          "output_tokens": 6,
+          "thinking_tokens": 0,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      },
+      {
+        "inference": 5,
+        "incoming": "RESULTS: Urinalysis shows the following findings:\n\n- **Leukocyturia**: Present (white blood cells in urine)\n- **Bacterial Culture**: Negative (no bacterial growth)\n- **Cytospin Stained With Hansel's Solution**: 3% binucleated cells with eosinophilic, granular cytoplasm detected\n\nThese findings are significant as they show white blood cells in the urine without bacterial infection, and the presence of eosinophils (a type of white blood cell) in the urine, which can suggest an inflammatory process affecting the kidneys.",
+        "reply": "Based on those urinalysis results showing eosinophiluria and leukocyturia without a bacterial infection, were you taking a specific antibiotic like a penicillin or cephalosporin for your sinusitis?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4252,
+          "output_tokens": 36,
+          "thinking_tokens": 0,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      },
+      {
+        "inference": 6,
+        "incoming": "Yes, I was first on amoxicillin for about 12 days, but I developed a rash so they switched me to cephalexin for another week. The rash went away after they changed the antibiotic.",
+        "reply": "REQUEST TEST: Serum_Creatinine",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Serum_Creatinine",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4333,
+          "output_tokens": 7,
+          "thinking_tokens": 0,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      },
+      {
+        "inference": 7,
+        "incoming": "RESULTS: Serum Creatinine is **Elevated**\n\n(Note: The serum biochemistry panel shows elevated creatinine levels, indicating impaired kidney function. This elevation, combined with the elevated urea levels also present in your results, suggests acute kidney injury.)",
+        "reply": "Did you experience any joint pain or muscle aches after starting those antibiotics?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4390,
+          "output_tokens": 14,
+          "thinking_tokens": 0,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      },
+      {
+        "inference": 8,
+        "incoming": "No, I haven't had any joint pain or muscle aches. Just the fatigue, the flank pain, and this fever that won't seem to go away completely.",
+        "reply": "DIAGNOSIS READY: Acute Interstitial Nephritis",
+        "tool_calls": [],
+        "kind": "diagnosis",
+        "payload": "Acute Interstitial Nephritis",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4441,
+          "output_tokens": 11,
+          "thinking_tokens": 0,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      }
+    ],
+    "audio": null
+  }
+}

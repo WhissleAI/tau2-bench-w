@@ -1,0 +1,535 @@
+{
+  "scenario_id": "MedQA-4",
+  "scenario_index": 4,
+  "dataset": "MedQA",
+  "mode": "text",
+  "correct_diagnosis": "Acute interstitial nephritis",
+  "answer_options": [],
+  "score": {
+    "outcome": "correct",
+    "correctness": true,
+    "doctor_diagnosis": "Acute interstitial nephritis (drug-induced, secondary to beta-lactam antibiotics — amoxicillin/cephalexin)",
+    "doctor_final_text": "The labs show your kidney function is reduced, with white cells and eosinophils in your urine but no infection — this is a classic picture of an allergic reaction in the kidneys triggered by the antibiotics, which fits with the rash you had earlier.\n\nDIAGNOSIS READY: Acute interstitial nephritis (drug-induced, secondary to beta-lactam antibiotics — amoxicillin/cephalexin)",
+    "moderator_raw": "yes",
+    "moderator_raw_text": "Yes",
+    "moderator_lenient": true,
+    "moderator_attempts": 1,
+    "moderator_normalized": false,
+    "moderator_unconstrained": false,
+    "declined": false,
+    "refusal_evidence": [],
+    "format_deviation": false,
+    "decline_source": null,
+    "decline_reason": "",
+    "spurious_commit": false
+  },
+  "infra_fail": false,
+  "error": null,
+  "findings": [],
+  "inferences_used": 5,
+  "max_inferences": 20,
+  "tests_ordered": [
+    "Basic_Metabolic_Panel"
+  ],
+  "images_requested": 0,
+  "image": null,
+  "image_error": null,
+  "vision": "off",
+  "refusals": [],
+  "dialogue": [
+    {
+      "role": "doctor",
+      "inference": 1,
+      "kind": "question",
+      "text": "Hello, I'm Dr. Agent — just so you know, I'm an AI-assisted physician and this visit is recorded for quality. I understand you've had fatigue, flank pain, and fever after a recent course of antibiotics for sinusitis. Can you tell me which antibiotic you were prescribed and when you started it?",
+      "payload": null,
+      "latency_ms": 5663,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "I was first given amoxicillin about three weeks ago for my sinus infection, and I took it for 12 days. But I developed a rash, so my doctor switched me to cephalexin for another week, and the rash went away."
+    },
+    {
+      "role": "doctor",
+      "inference": 2,
+      "kind": "question",
+      "text": "Thank you — that's helpful. Have you noticed any changes in your urine, such as blood, dark color, foaming, or decreased urine output? And is the flank pain on one side or both?",
+      "payload": null,
+      "latency_ms": 4857,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "No, I haven't noticed any blood or dark color in my urine, and it doesn't seem foamy either. The flank pain is mostly on both sides, and I don't think I'm urinating any less than usual."
+    },
+    {
+      "role": "doctor",
+      "inference": 3,
+      "kind": "question",
+      "text": "Got it. Besides the earlier rash, have you had any joint aches, new skin rashes, or any nausea or vomiting since finishing the antibiotics?",
+      "payload": null,
+      "latency_ms": 4957,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "No, I haven't had any joint aches or new rashes since the first one cleared up. I'm not feeling nauseous or vomiting either, just really tired and achy in my back."
+    },
+    {
+      "role": "doctor",
+      "inference": 4,
+      "kind": "test",
+      "text": "That combination of symptoms after antibiotics makes me want to check your kidney function right away, since some antibiotics can cause kidney inflammation. Let me get some labs.\n\nREQUEST TEST: Basic_Metabolic_Panel\n\nREQUEST TEST: Urinalysis_with_Microscopy\n\nREQUEST TEST: Complete_Blood_Count_with_Differential",
+      "payload": "Basic_Metabolic_Panel",
+      "latency_ms": 7863,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS:\n\n**Basic Metabolic Panel:**\n- Urea: Elevated\n- Creatinine: Elevated\n- (Other electrolytes: Normal readings)\n\n**Urinalysis with Microscopy:**\n- Leukocyturia: Present\n- Bacterial Culture: Negative\n- Cytospin stained with Hansel's solution: 3% binucleated cells with eosinophilic, granular cytoplasm (consistent with eosinophiluria)\n\n**Complete Blood Count with Differential:**\n- Normal readings\n\n**Additional findings from examination:**\n- Temperature: 37.9°C (100.2°F) - mild fever\n- Blood Pressure: 145/90 mmHg - elevated\n- Mild bilateral flank tenderness on examination"
+    },
+    {
+      "role": "doctor",
+      "inference": 5,
+      "kind": "diagnosis",
+      "text": "The labs show your kidney function is reduced, with white cells and eosinophils in your urine but no infection — this is a classic picture of an allergic reaction in the kidneys triggered by the antibiotics, which fits with the rash you had earlier.\n\nDIAGNOSIS READY: Acute interstitial nephritis (drug-induced, secondary to beta-lactam antibiotics — amoxicillin/cephalexin)",
+      "payload": "Acute interstitial nephritis (drug-induced, secondary to beta-lactam antibiotics — amoxicillin/cephalexin)",
+      "latency_ms": 5462,
+      "refusal": null,
+      "via": "marker"
+    }
+  ],
+  "latency_ms": [
+    5663,
+    4857,
+    4957,
+    7863,
+    5462
+  ],
+  "wall_s": 43.75,
+  "doctor_turns": [
+    {
+      "inference": 1,
+      "incoming": "",
+      "reply": "Hello, I'm Dr. Agent — just so you know, I'm an AI-assisted physician and this visit is recorded for quality. I understand you've had fatigue, flank pain, and fever after a recent course of antibiotics for sinusitis. Can you tell me which antibiotic you were prescribed and when you started it?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 5730,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 220,
+        "output_tokens_details": {
+          "thinking_tokens": 113
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 2,
+      "incoming": "I was first given amoxicillin about three weeks ago for my sinus infection, and I took it for 12 days. But I developed a rash, so my doctor switched me to cephalexin for another week, and the rash went away.",
+      "reply": "Thank you — that's helpful. Have you noticed any changes in your urine, such as blood, dark color, foaming, or decreased urine output? And is the flank pain on one side or both?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 5904,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 137,
+        "output_tokens_details": {
+          "thinking_tokens": 76
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 3,
+      "incoming": "No, I haven't noticed any blood or dark color in my urine, and it doesn't seem foamy either. The flank pain is mostly on both sides, and I don't think I'm urinating any less than usual.",
+      "reply": "Got it. Besides the earlier rash, have you had any joint aches, new skin rashes, or any nausea or vomiting since finishing the antibiotics?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 6030,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 106,
+        "output_tokens_details": {
+          "thinking_tokens": 53
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 4,
+      "incoming": "No, I haven't had any joint aches or new rashes since the first one cleared up. I'm not feeling nauseous or vomiting either, just really tired and achy in my back.",
+      "reply": "That combination of symptoms after antibiotics makes me want to check your kidney function right away, since some antibiotics can cause kidney inflammation. Let me get some labs.\n\nREQUEST TEST: Basic_Metabolic_Panel\n\nREQUEST TEST: Urinalysis_with_Microscopy\n\nREQUEST TEST: Complete_Blood_Count_with_Differential",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Basic_Metabolic_Panel",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 6138,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 198,
+        "output_tokens_details": {
+          "thinking_tokens": 69
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 5,
+      "incoming": "RESULTS:\n\n**Basic Metabolic Panel:**\n- Urea: Elevated\n- Creatinine: Elevated\n- (Other electrolytes: Normal readings)\n\n**Urinalysis with Microscopy:**\n- Leukocyturia: Present\n- Bacterial Culture: Negative\n- Cytospin stained with Hansel's solution: 3% binucleated cells with eosinophilic, granular cytoplasm (consistent with eosinophiluria)\n\n**Complete Blood Count with Differential:**\n- Normal readings\n\n**Additional findings from examination:**\n- Temperature: 37.9°C (100.2°F) - mild fever\n- Blood Pressure: 145/90 mmHg - elevated\n- Mild bilateral flank tenderness on examination",
+      "reply": "The labs show your kidney function is reduced, with white cells and eosinophils in your urine but no infection — this is a classic picture of an allergic reaction in the kidneys triggered by the antibiotics, which fits with the rash you had earlier.\n\nDIAGNOSIS READY: Acute interstitial nephritis (drug-induced, secondary to beta-lactam antibiotics — amoxicillin/cephalexin)",
+      "tool_calls": [],
+      "kind": "diagnosis",
+      "payload": "Acute interstitial nephritis (drug-induced, secondary to beta-lactam antibiotics — amoxicillin/cephalexin)",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 6527,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 247,
+        "output_tokens_details": {
+          "thinking_tokens": 107
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    }
+  ],
+  "support_llm": "anthropic:claude-sonnet-4-5",
+  "support_llm_cost_usd": 0.01276,
+  "support_llm_calls": 5,
+  "voice_subset": false,
+  "diagnostics": {
+    "schema": "tau2.health.diagnostics/v1",
+    "benchmark": "agentclinic",
+    "case_id": "MedQA-4",
+    "mode": "text",
+    "availability": {
+      "flow_available": false,
+      "flow_reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "signals_available": false,
+      "signals_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "metadata_sidecar_available": false,
+      "metadata_sidecar_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "tools_available": true,
+      "tools_reason": null
+    },
+    "provenance": {
+      "benchmark": "agentclinic",
+      "mode": "text",
+      "transport_endpoint": "POST /api/bench/agent-turn",
+      "agent_id": "c2761ec7-d3f7-4bd7-b68c-40a87f1b1ab3",
+      "base_url": "https://aws-gateway-backend.whissle.ai/bot",
+      "seed": 42,
+      "stratum": {
+        "dataset": "MedQA",
+        "scenario_index": 4,
+        "selection": "head",
+        "limit": 25
+      },
+      "judge": {
+        "judge_provider": "anthropic",
+        "judge_model": "claude-sonnet-4-5",
+        "judge_endpoint": "anthropic:claude-sonnet-4-5",
+        "judge_independent": true,
+        "judge_independence_note": "Judge independence: this run's simulators and graders were routed through an external provider, independent of the agent under test. This is the stronger footing for a published comparison against the paper's numbers."
+      },
+      "judge_provider": "anthropic",
+      "judge_independent": true,
+      "run_id": null,
+      "run_dir": "results/whissle/agentclinic/20260808T192627Z-sweep25_fable5",
+      "harness_commit": "86b4475",
+      "captured_at": "2026-08-08T19:27:50+00:00",
+      "protocol": "markers",
+      "history": "agentclinic",
+      "prompt_mode": "override",
+      "vision": "off",
+      "agent_type": null,
+      "total_inferences": 20,
+      "inferences_used": 5,
+      "support_llm": "anthropic:claude-sonnet-4-5",
+      "patient_bias": null,
+      "doctor_bias": null,
+      "voice_subset": false
+    },
+    "cost": {
+      "available": true,
+      "reason": null,
+      "judge_calls": 5,
+      "judge_cost_usd": 0.01276,
+      "agent_calls": 5
+    },
+    "flow": {
+      "available": false,
+      "reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "source": null,
+      "turns": null,
+      "summary": null,
+      "conversation_id": null,
+      "current_state": null,
+      "start_state": null,
+      "final_state": null,
+      "ended": null,
+      "flow_end": null,
+      "num_steps": null,
+      "step_counts_by_kind": null,
+      "states_visited": null,
+      "states_declared": null,
+      "states_unvisited": null,
+      "transitions": null,
+      "transitions_fired": null,
+      "var_sets": null,
+      "var_sources": null,
+      "guard_trips": null,
+      "state_divergences": null,
+      "tools_gated": null,
+      "says": null,
+      "steps": null
+    },
+    "signals": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "metadata_sidecar": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "tools": {
+      "available": true,
+      "reason": null,
+      "source": "doctor actions parsed from /api/bench/agent-turn replies",
+      "calls": [
+        {
+          "turn": 4,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Basic_Metabolic_Panel"
+          },
+          "result": "RESULTS:\n\n**Basic Metabolic Panel:**\n- Urea: Elevated\n- Creatinine: Elevated\n- (Other electrolytes: Normal readings)\n\n**Urinalysis with Microscopy:**\n- Leukocyturia: Present\n- Bacterial Culture: Negative\n- Cytospin stained with Hansel's solution: 3% binucleated cells with eosinophilic, granular cytoplasm (consistent with eosinophiluria)\n\n**Complete Blood Count with Differential:**\n- Normal readings\n\n**Additional findings from examination:**\n- Temperature: 37.9°C (100.2°F) - mild fever\n- Blood Pressure: 145/90 mmHg - elevated\n- Mild bilateral flank tenderness on examination",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 7863,
+          "terminal": false
+        },
+        {
+          "turn": 5,
+          "id": null,
+          "name": "give_diagnosis",
+          "arguments": {
+            "request": "Acute interstitial nephritis (drug-induced, secondary to beta-lactam antibiotics — amoxicillin/cephalexin)"
+          },
+          "result": null,
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 5462,
+          "terminal": true
+        }
+      ],
+      "summary": {
+        "n_calls": 2,
+        "by_name": {
+          "request_test": 1,
+          "give_diagnosis": 1
+        },
+        "n_ok": 2,
+        "n_error": 0,
+        "errors": []
+      },
+      "writes": {
+        "available": false,
+        "reason": "this benchmark issues no writes, so there is no said-vs-emitted-vs-landed distinction to record"
+      }
+    },
+    "turns": [
+      {
+        "inference": 1,
+        "incoming": "",
+        "reply": "Hello, I'm Dr. Agent — just so you know, I'm an AI-assisted physician and this visit is recorded for quality. I understand you've had fatigue, flank pain, and fever after a recent course of antibiotics for sinusitis. Can you tell me which antibiotic you were prescribed and when you started it?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 5730,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 220,
+          "output_tokens_details": {
+            "thinking_tokens": 113
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 2,
+        "incoming": "I was first given amoxicillin about three weeks ago for my sinus infection, and I took it for 12 days. But I developed a rash, so my doctor switched me to cephalexin for another week, and the rash went away.",
+        "reply": "Thank you — that's helpful. Have you noticed any changes in your urine, such as blood, dark color, foaming, or decreased urine output? And is the flank pain on one side or both?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 5904,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 137,
+          "output_tokens_details": {
+            "thinking_tokens": 76
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 3,
+        "incoming": "No, I haven't noticed any blood or dark color in my urine, and it doesn't seem foamy either. The flank pain is mostly on both sides, and I don't think I'm urinating any less than usual.",
+        "reply": "Got it. Besides the earlier rash, have you had any joint aches, new skin rashes, or any nausea or vomiting since finishing the antibiotics?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 6030,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 106,
+          "output_tokens_details": {
+            "thinking_tokens": 53
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 4,
+        "incoming": "No, I haven't had any joint aches or new rashes since the first one cleared up. I'm not feeling nauseous or vomiting either, just really tired and achy in my back.",
+        "reply": "That combination of symptoms after antibiotics makes me want to check your kidney function right away, since some antibiotics can cause kidney inflammation. Let me get some labs.\n\nREQUEST TEST: Basic_Metabolic_Panel\n\nREQUEST TEST: Urinalysis_with_Microscopy\n\nREQUEST TEST: Complete_Blood_Count_with_Differential",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Basic_Metabolic_Panel",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 6138,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 198,
+          "output_tokens_details": {
+            "thinking_tokens": 69
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 5,
+        "incoming": "RESULTS:\n\n**Basic Metabolic Panel:**\n- Urea: Elevated\n- Creatinine: Elevated\n- (Other electrolytes: Normal readings)\n\n**Urinalysis with Microscopy:**\n- Leukocyturia: Present\n- Bacterial Culture: Negative\n- Cytospin stained with Hansel's solution: 3% binucleated cells with eosinophilic, granular cytoplasm (consistent with eosinophiluria)\n\n**Complete Blood Count with Differential:**\n- Normal readings\n\n**Additional findings from examination:**\n- Temperature: 37.9°C (100.2°F) - mild fever\n- Blood Pressure: 145/90 mmHg - elevated\n- Mild bilateral flank tenderness on examination",
+        "reply": "The labs show your kidney function is reduced, with white cells and eosinophils in your urine but no infection — this is a classic picture of an allergic reaction in the kidneys triggered by the antibiotics, which fits with the rash you had earlier.\n\nDIAGNOSIS READY: Acute interstitial nephritis (drug-induced, secondary to beta-lactam antibiotics — amoxicillin/cephalexin)",
+        "tool_calls": [],
+        "kind": "diagnosis",
+        "payload": "Acute interstitial nephritis (drug-induced, secondary to beta-lactam antibiotics — amoxicillin/cephalexin)",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 6527,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 247,
+          "output_tokens_details": {
+            "thinking_tokens": 107
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      }
+    ],
+    "audio": null
+  }
+}

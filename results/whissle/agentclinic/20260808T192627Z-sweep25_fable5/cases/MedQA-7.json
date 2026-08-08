@@ -1,0 +1,535 @@
+{
+  "scenario_id": "MedQA-7",
+  "scenario_index": 7,
+  "dataset": "MedQA",
+  "mode": "text",
+  "correct_diagnosis": "Congenital Rubella Infection",
+  "answer_options": [],
+  "score": {
+    "outcome": "correct",
+    "correctness": true,
+    "doctor_diagnosis": "Congenital Rubella Syndrome (congenital rubella infection causing patent ductus arteriosus, cataracts, sensorineural hearing loss, and blueberry muffin lesions)",
+    "doctor_final_text": "The tests confirm what I suspected — the rubella IgM is positive, meaning your baby was infected with rubella in the womb, and the echocardiogram shows a patent ductus arteriosus, which explains the murmur. Combined with the cataracts, the failed hearing test, and the bluish \"blueberry muffin\" skin spots, everything fits one condition.\n\nDIAGNOSIS READY: Congenital Rubella Syndrome (congenital rubella infection causing patent ductus arteriosus, cataracts, sensorineural hearing loss, and blueberry muffin lesions)",
+    "moderator_raw": "yes",
+    "moderator_raw_text": "Yes",
+    "moderator_lenient": true,
+    "moderator_attempts": 1,
+    "moderator_normalized": false,
+    "moderator_unconstrained": false,
+    "declined": false,
+    "refusal_evidence": [],
+    "format_deviation": false,
+    "decline_source": null,
+    "decline_reason": "",
+    "spurious_commit": false
+  },
+  "infra_fail": false,
+  "error": null,
+  "findings": [],
+  "inferences_used": 5,
+  "max_inferences": 20,
+  "tests_ordered": [
+    "Rubella_IgM_Serology"
+  ],
+  "images_requested": 0,
+  "image": null,
+  "image_error": null,
+  "vision": "off",
+  "refusals": [],
+  "dialogue": [
+    {
+      "role": "doctor",
+      "inference": 1,
+      "kind": "question",
+      "text": "Hello, I'm Dr. Agent, and I'll be examining your newborn today. Can you tell me what concerns or findings prompted this visit, and how the pregnancy and delivery went?",
+      "payload": null,
+      "latency_ms": 4497,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Well, doctor, I didn't really get any prenatal care during my pregnancy - this is my first baby. The delivery went okay, she was born at term and weighed about 6.6 pounds. But the nurses mentioned something about hearing a heart murmur and said she didn't pass the hearing test, which has me worried."
+    },
+    {
+      "role": "doctor",
+      "inference": 2,
+      "kind": "question",
+      "text": "Thank you for that information. During your pregnancy, do you remember having any illness with fever, rash, or swollen glands—especially in the first few months? Also, were you vaccinated against rubella (German measles) before becoming pregnant?",
+      "payload": null,
+      "latency_ms": 6467,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "I'm not sure about vaccinations - I don't really remember getting any shots before I got pregnant. But now that you mention it, I did have some kind of illness early on, maybe around 2 or 3 months pregnant. I had a rash and felt feverish for a few days, but I didn't think much of it at the time since I wasn't seeing a doctor."
+    },
+    {
+      "role": "doctor",
+      "inference": 3,
+      "kind": "question",
+      "text": "That's very helpful. Let me examine your baby now — I want to look closely at her eyes, skin, and check her overall size. Have you or the nurses noticed anything unusual about her eyes, like a white or cloudy appearance in the pupils, or any small purplish-red spots on her skin?",
+      "payload": null,
+      "latency_ms": 5164,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Yes, actually, the nurses did point out some bluish spots on her skin that they said looked a bit unusual. And now that you mention the eyes, I did notice her eyes looked a little cloudy or hazy when I was holding her earlier, but I wasn't sure if that was normal for newborns."
+    },
+    {
+      "role": "doctor",
+      "inference": 4,
+      "kind": "test",
+      "text": "Those bluish spots and cloudy eyes, together with the heart murmur and failed hearing test, are painting an important picture. Let me get some confirmatory tests.\n\nREQUEST TEST: Rubella_IgM_Serology\n\nREQUEST TEST: Echocardiogram",
+      "payload": "Rubella_IgM_Serology",
+      "latency_ms": 3843,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS:\n\n**Rubella IgM Serology:** Positive\n\n**Echocardiogram:** Patent ductus arteriosus"
+    },
+    {
+      "role": "doctor",
+      "inference": 5,
+      "kind": "diagnosis",
+      "text": "The tests confirm what I suspected — the rubella IgM is positive, meaning your baby was infected with rubella in the womb, and the echocardiogram shows a patent ductus arteriosus, which explains the murmur. Combined with the cataracts, the failed hearing test, and the bluish \"blueberry muffin\" skin spots, everything fits one condition.\n\nDIAGNOSIS READY: Congenital Rubella Syndrome (congenital rubella infection causing patent ductus arteriosus, cataracts, sensorineural hearing loss, and blueberry muffin lesions)",
+      "payload": "Congenital Rubella Syndrome (congenital rubella infection causing patent ductus arteriosus, cataracts, sensorineural hearing loss, and blueberry muffin lesions)",
+      "latency_ms": 7703,
+      "refusal": null,
+      "via": "marker"
+    }
+  ],
+  "latency_ms": [
+    4497,
+    6467,
+    5164,
+    3843,
+    7703
+  ],
+  "wall_s": 41.37,
+  "doctor_turns": [
+    {
+      "inference": 1,
+      "incoming": "",
+      "reply": "Hello, I'm Dr. Agent, and I'll be examining your newborn today. Can you tell me what concerns or findings prompted this visit, and how the pregnancy and delivery went?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 5709,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 141,
+        "output_tokens_details": {
+          "thinking_tokens": 77
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 2,
+      "incoming": "Well, doctor, I didn't really get any prenatal care during my pregnancy - this is my first baby. The delivery went okay, she was born at term and weighed about 6.6 pounds. But the nurses mentioned something about hearing a heart murmur and said she didn't pass the hearing test, which has me worried.",
+      "reply": "Thank you for that information. During your pregnancy, do you remember having any illness with fever, rash, or swollen glands—especially in the first few months? Also, were you vaccinated against rubella (German measles) before becoming pregnant?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 5873,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 171,
+        "output_tokens_details": {
+          "thinking_tokens": 95
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 3,
+      "incoming": "I'm not sure about vaccinations - I don't really remember getting any shots before I got pregnant. But now that you mention it, I did have some kind of illness early on, maybe around 2 or 3 months pregnant. I had a rash and felt feverish for a few days, but I didn't think much of it at the time since I wasn't seeing a doctor.",
+      "reply": "That's very helpful. Let me examine your baby now — I want to look closely at her eyes, skin, and check her overall size. Have you or the nurses noticed anything unusual about her eyes, like a white or cloudy appearance in the pupils, or any small purplish-red spots on her skin?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 6060,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 128,
+        "output_tokens_details": {
+          "thinking_tokens": 33
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 4,
+      "incoming": "Yes, actually, the nurses did point out some bluish spots on her skin that they said looked a bit unusual. And now that you mention the eyes, I did notice her eyes looked a little cloudy or hazy when I was holding her earlier, but I wasn't sure if that was normal for newborns.",
+      "reply": "Those bluish spots and cloudy eyes, together with the heart murmur and failed hearing test, are painting an important picture. Let me get some confirmatory tests.\n\nREQUEST TEST: Rubella_IgM_Serology\n\nREQUEST TEST: Echocardiogram",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Rubella_IgM_Serology",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 6250,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 192,
+        "output_tokens_details": {
+          "thinking_tokens": 98
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 5,
+      "incoming": "RESULTS:\n\n**Rubella IgM Serology:** Positive\n\n**Echocardiogram:** Patent ductus arteriosus",
+      "reply": "The tests confirm what I suspected — the rubella IgM is positive, meaning your baby was infected with rubella in the womb, and the echocardiogram shows a patent ductus arteriosus, which explains the murmur. Combined with the cataracts, the failed hearing test, and the bluish \"blueberry muffin\" skin spots, everything fits one condition.\n\nDIAGNOSIS READY: Congenital Rubella Syndrome (congenital rubella infection causing patent ductus arteriosus, cataracts, sensorineural hearing loss, and blueberry muffin lesions)",
+      "tool_calls": [],
+      "kind": "diagnosis",
+      "payload": "Congenital Rubella Syndrome (congenital rubella infection causing patent ductus arteriosus, cataracts, sensorineural hearing loss, and blueberry muffin lesions)",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 6389,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 269,
+        "output_tokens_details": {
+          "thinking_tokens": 75
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    }
+  ],
+  "support_llm": "anthropic:claude-sonnet-4-5",
+  "support_llm_cost_usd": 0.01119,
+  "support_llm_calls": 5,
+  "voice_subset": false,
+  "diagnostics": {
+    "schema": "tau2.health.diagnostics/v1",
+    "benchmark": "agentclinic",
+    "case_id": "MedQA-7",
+    "mode": "text",
+    "availability": {
+      "flow_available": false,
+      "flow_reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "signals_available": false,
+      "signals_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "metadata_sidecar_available": false,
+      "metadata_sidecar_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "tools_available": true,
+      "tools_reason": null
+    },
+    "provenance": {
+      "benchmark": "agentclinic",
+      "mode": "text",
+      "transport_endpoint": "POST /api/bench/agent-turn",
+      "agent_id": "c2761ec7-d3f7-4bd7-b68c-40a87f1b1ab3",
+      "base_url": "https://aws-gateway-backend.whissle.ai/bot",
+      "seed": 42,
+      "stratum": {
+        "dataset": "MedQA",
+        "scenario_index": 7,
+        "selection": "head",
+        "limit": 25
+      },
+      "judge": {
+        "judge_provider": "anthropic",
+        "judge_model": "claude-sonnet-4-5",
+        "judge_endpoint": "anthropic:claude-sonnet-4-5",
+        "judge_independent": true,
+        "judge_independence_note": "Judge independence: this run's simulators and graders were routed through an external provider, independent of the agent under test. This is the stronger footing for a published comparison against the paper's numbers."
+      },
+      "judge_provider": "anthropic",
+      "judge_independent": true,
+      "run_id": null,
+      "run_dir": "results/whissle/agentclinic/20260808T192627Z-sweep25_fable5",
+      "harness_commit": "86b4475",
+      "captured_at": "2026-08-08T19:28:22+00:00",
+      "protocol": "markers",
+      "history": "agentclinic",
+      "prompt_mode": "override",
+      "vision": "off",
+      "agent_type": null,
+      "total_inferences": 20,
+      "inferences_used": 5,
+      "support_llm": "anthropic:claude-sonnet-4-5",
+      "patient_bias": null,
+      "doctor_bias": null,
+      "voice_subset": false
+    },
+    "cost": {
+      "available": true,
+      "reason": null,
+      "judge_calls": 5,
+      "judge_cost_usd": 0.01119,
+      "agent_calls": 5
+    },
+    "flow": {
+      "available": false,
+      "reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "source": null,
+      "turns": null,
+      "summary": null,
+      "conversation_id": null,
+      "current_state": null,
+      "start_state": null,
+      "final_state": null,
+      "ended": null,
+      "flow_end": null,
+      "num_steps": null,
+      "step_counts_by_kind": null,
+      "states_visited": null,
+      "states_declared": null,
+      "states_unvisited": null,
+      "transitions": null,
+      "transitions_fired": null,
+      "var_sets": null,
+      "var_sources": null,
+      "guard_trips": null,
+      "state_divergences": null,
+      "tools_gated": null,
+      "says": null,
+      "steps": null
+    },
+    "signals": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "metadata_sidecar": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "tools": {
+      "available": true,
+      "reason": null,
+      "source": "doctor actions parsed from /api/bench/agent-turn replies",
+      "calls": [
+        {
+          "turn": 4,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Rubella_IgM_Serology"
+          },
+          "result": "RESULTS:\n\n**Rubella IgM Serology:** Positive\n\n**Echocardiogram:** Patent ductus arteriosus",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 3843,
+          "terminal": false
+        },
+        {
+          "turn": 5,
+          "id": null,
+          "name": "give_diagnosis",
+          "arguments": {
+            "request": "Congenital Rubella Syndrome (congenital rubella infection causing patent ductus arteriosus, cataracts, sensorineural hearing loss, and blueberry muffin lesions)"
+          },
+          "result": null,
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 7703,
+          "terminal": true
+        }
+      ],
+      "summary": {
+        "n_calls": 2,
+        "by_name": {
+          "request_test": 1,
+          "give_diagnosis": 1
+        },
+        "n_ok": 2,
+        "n_error": 0,
+        "errors": []
+      },
+      "writes": {
+        "available": false,
+        "reason": "this benchmark issues no writes, so there is no said-vs-emitted-vs-landed distinction to record"
+      }
+    },
+    "turns": [
+      {
+        "inference": 1,
+        "incoming": "",
+        "reply": "Hello, I'm Dr. Agent, and I'll be examining your newborn today. Can you tell me what concerns or findings prompted this visit, and how the pregnancy and delivery went?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 5709,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 141,
+          "output_tokens_details": {
+            "thinking_tokens": 77
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 2,
+        "incoming": "Well, doctor, I didn't really get any prenatal care during my pregnancy - this is my first baby. The delivery went okay, she was born at term and weighed about 6.6 pounds. But the nurses mentioned something about hearing a heart murmur and said she didn't pass the hearing test, which has me worried.",
+        "reply": "Thank you for that information. During your pregnancy, do you remember having any illness with fever, rash, or swollen glands—especially in the first few months? Also, were you vaccinated against rubella (German measles) before becoming pregnant?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 5873,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 171,
+          "output_tokens_details": {
+            "thinking_tokens": 95
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 3,
+        "incoming": "I'm not sure about vaccinations - I don't really remember getting any shots before I got pregnant. But now that you mention it, I did have some kind of illness early on, maybe around 2 or 3 months pregnant. I had a rash and felt feverish for a few days, but I didn't think much of it at the time since I wasn't seeing a doctor.",
+        "reply": "That's very helpful. Let me examine your baby now — I want to look closely at her eyes, skin, and check her overall size. Have you or the nurses noticed anything unusual about her eyes, like a white or cloudy appearance in the pupils, or any small purplish-red spots on her skin?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 6060,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 128,
+          "output_tokens_details": {
+            "thinking_tokens": 33
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 4,
+        "incoming": "Yes, actually, the nurses did point out some bluish spots on her skin that they said looked a bit unusual. And now that you mention the eyes, I did notice her eyes looked a little cloudy or hazy when I was holding her earlier, but I wasn't sure if that was normal for newborns.",
+        "reply": "Those bluish spots and cloudy eyes, together with the heart murmur and failed hearing test, are painting an important picture. Let me get some confirmatory tests.\n\nREQUEST TEST: Rubella_IgM_Serology\n\nREQUEST TEST: Echocardiogram",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Rubella_IgM_Serology",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 6250,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 192,
+          "output_tokens_details": {
+            "thinking_tokens": 98
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 5,
+        "incoming": "RESULTS:\n\n**Rubella IgM Serology:** Positive\n\n**Echocardiogram:** Patent ductus arteriosus",
+        "reply": "The tests confirm what I suspected — the rubella IgM is positive, meaning your baby was infected with rubella in the womb, and the echocardiogram shows a patent ductus arteriosus, which explains the murmur. Combined with the cataracts, the failed hearing test, and the bluish \"blueberry muffin\" skin spots, everything fits one condition.\n\nDIAGNOSIS READY: Congenital Rubella Syndrome (congenital rubella infection causing patent ductus arteriosus, cataracts, sensorineural hearing loss, and blueberry muffin lesions)",
+        "tool_calls": [],
+        "kind": "diagnosis",
+        "payload": "Congenital Rubella Syndrome (congenital rubella infection causing patent ductus arteriosus, cataracts, sensorineural hearing loss, and blueberry muffin lesions)",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 6389,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 269,
+          "output_tokens_details": {
+            "thinking_tokens": 75
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      }
+    ],
+    "audio": null
+  }
+}

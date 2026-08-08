@@ -1,0 +1,818 @@
+{
+  "scenario_id": "MedQA-11",
+  "scenario_index": 11,
+  "dataset": "MedQA",
+  "mode": "text",
+  "correct_diagnosis": "Complex partial seizure",
+  "answer_options": [],
+  "score": {
+    "outcome": "correct",
+    "correctness": true,
+    "doctor_diagnosis": "Focal (temporal lobe) epilepsy with impaired awareness, non-lesional, presenting with gustatory aura, automatisms, and post-ictal confusion.",
+    "doctor_final_text": "Doctor: Good news — no structural cause on MRI. Based on the aura, hand automatisms, confusion afterward, and EEG findings, this points to focal (temporal lobe) epilepsy, likely non-lesional.\n\nDIAGNOSIS READY: Focal (temporal lobe) epilepsy with impaired awareness, non-lesional, presenting with gustatory aura, automatisms, and post-ictal confusion.",
+    "moderator_raw": "yes",
+    "moderator_raw_text": "Yes",
+    "moderator_lenient": true,
+    "moderator_attempts": 1,
+    "moderator_normalized": false,
+    "moderator_unconstrained": false,
+    "declined": false,
+    "refusal_evidence": [],
+    "format_deviation": false,
+    "decline_source": null,
+    "decline_reason": "",
+    "spurious_commit": false
+  },
+  "infra_fail": false,
+  "error": null,
+  "findings": [],
+  "inferences_used": 9,
+  "max_inferences": 20,
+  "tests_ordered": [
+    "EEG",
+    "MRI_Brain"
+  ],
+  "images_requested": 0,
+  "image": null,
+  "image_error": null,
+  "vision": "off",
+  "refusals": [],
+  "dialogue": [
+    {
+      "role": "doctor",
+      "inference": 1,
+      "kind": "question",
+      "text": "Can you tell me more about these episodes — how long do they last, and how often do they happen?",
+      "payload": null,
+      "latency_ms": 2602,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "They last about 3 or 4 minutes each time. It's been happening pretty often this past month - maybe a few times, but I'm not really sure exactly how many because I don't remember them happening."
+    },
+    {
+      "role": "doctor",
+      "inference": 2,
+      "kind": "question",
+      "text": "Do you notice anything before an episode starts, like an unusual smell, taste, or feeling — an \"aura\"?",
+      "payload": null,
+      "latency_ms": 2082,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Yes, actually! Right before it happens, I get this weird muddy taste in my mouth. It's really strange and then I don't remember anything after that."
+    },
+    {
+      "role": "doctor",
+      "inference": 3,
+      "kind": "question",
+      "text": "Does anyone who's witnessed these episodes mention how long it takes you to become fully alert and act normal again afterward?",
+      "payload": null,
+      "latency_ms": 2314,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "My brother said I seemed really tired and confused for a while after. Mom says it takes me maybe 10 or 15 minutes before I'm really back to normal and can answer questions properly."
+    },
+    {
+      "role": "doctor",
+      "inference": 4,
+      "kind": "question",
+      "text": "Do you ever bite your tongue, lose bladder control, or have jerking movements during these episodes, based on what witnesses have told you?",
+      "payload": null,
+      "latency_ms": 2900,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "My brother said he saw me making some hand gestures during one of them, but I don't think anyone mentioned anything about biting my tongue or wetting myself."
+    },
+    {
+      "role": "doctor",
+      "inference": 5,
+      "kind": "question",
+      "text": "Doctor: Have you had any head injuries, family history of epilepsy or seizures, or been under unusual stress or sleep deprivation recently?",
+      "payload": null,
+      "latency_ms": 2488,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "No, I haven't hit my head or anything like that. I don't think anyone in my family has had seizures before. I've been sleeping okay and school's been pretty normal - nothing really stressful going on."
+    },
+    {
+      "role": "doctor",
+      "inference": 6,
+      "kind": "question",
+      "text": "Doctor: Have you had an EEG or MRI before, and would you be open to getting one now so we can look at your brain activity more closely?",
+      "payload": null,
+      "latency_ms": 5038,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "No, I've never had any tests like that done before. I guess that would be okay if it helps figure out what's going on with me."
+    },
+    {
+      "role": "doctor",
+      "inference": 7,
+      "kind": "test",
+      "text": "REQUEST TEST: EEG",
+      "payload": "EEG",
+      "latency_ms": 1880,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: Electroencephalogram (EEG) shows interictal spikes and sharp waves localized to the temporal lobes, more prominent on the right side."
+    },
+    {
+      "role": "doctor",
+      "inference": 8,
+      "kind": "test",
+      "text": "Doctor: That EEG finding fits with the aura, automatisms, and post-episode confusion you described — this looks like focal seizures arising from the temporal lobe. I'd like to get an MRI of your brain to check for a structural cause before we finalize things.\n\nREQUEST TEST: MRI_Brain",
+      "payload": "MRI_Brain",
+      "latency_ms": 3298,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: MRI Brain shows no evidence of mass lesions, infarctions, or structural abnormalities."
+    },
+    {
+      "role": "doctor",
+      "inference": 9,
+      "kind": "diagnosis",
+      "text": "Doctor: Good news — no structural cause on MRI. Based on the aura, hand automatisms, confusion afterward, and EEG findings, this points to focal (temporal lobe) epilepsy, likely non-lesional.\n\nDIAGNOSIS READY: Focal (temporal lobe) epilepsy with impaired awareness, non-lesional, presenting with gustatory aura, automatisms, and post-ictal confusion.",
+      "payload": "Focal (temporal lobe) epilepsy with impaired awareness, non-lesional, presenting with gustatory aura, automatisms, and post-ictal confusion.",
+      "latency_ms": 2942,
+      "refusal": null,
+      "via": "marker"
+    }
+  ],
+  "latency_ms": [
+    2602,
+    2082,
+    2314,
+    2900,
+    2488,
+    5038,
+    1880,
+    3298,
+    2942
+  ],
+  "wall_s": 45.98,
+  "doctor_turns": [
+    {
+      "inference": 1,
+      "incoming": "",
+      "reply": "Can you tell me more about these episodes — how long do they last, and how often do they happen?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 5722,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 29,
+        "output_tokens_details": {
+          "thinking_tokens": 0
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 2,
+      "incoming": "They last about 3 or 4 minutes each time. It's been happening pretty often this past month - maybe a few times, but I'm not really sure exactly how many because I don't remember them happening.",
+      "reply": "Do you notice anything before an episode starts, like an unusual smell, taste, or feeling — an \"aura\"?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 5809,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 38,
+        "output_tokens_details": {
+          "thinking_tokens": 0
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 3,
+      "incoming": "Yes, actually! Right before it happens, I get this weird muddy taste in my mouth. It's really strange and then I don't remember anything after that.",
+      "reply": "Does anyone who's witnessed these episodes mention how long it takes you to become fully alert and act normal again afterward?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 5894,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 40,
+        "output_tokens_details": {
+          "thinking_tokens": 0
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 4,
+      "incoming": "My brother said I seemed really tired and confused for a while after. Mom says it takes me maybe 10 or 15 minutes before I'm really back to normal and can answer questions properly.",
+      "reply": "Do you ever bite your tongue, lose bladder control, or have jerking movements during these episodes, based on what witnesses have told you?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 5992,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 45,
+        "output_tokens_details": {
+          "thinking_tokens": 0
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 5,
+      "incoming": "My brother said he saw me making some hand gestures during one of them, but I don't think anyone mentioned anything about biting my tongue or wetting myself.",
+      "reply": "Doctor: Have you had any head injuries, family history of epilepsy or seizures, or been under unusual stress or sleep deprivation recently?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 6085,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 49,
+        "output_tokens_details": {
+          "thinking_tokens": 0
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 6,
+      "incoming": "No, I haven't hit my head or anything like that. I don't think anyone in my family has had seizures before. I've been sleeping okay and school's been pretty normal - nothing really stressful going on.",
+      "reply": "Doctor: Have you had an EEG or MRI before, and would you be open to getting one now so we can look at your brain activity more closely?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 6196,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 45,
+        "output_tokens_details": {
+          "thinking_tokens": 0
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 7,
+      "incoming": "No, I've never had any tests like that done before. I guess that would be okay if it helps figure out what's going on with me.",
+      "reply": "REQUEST TEST: EEG",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "EEG",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 6277,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 14,
+        "output_tokens_details": {
+          "thinking_tokens": 0
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 8,
+      "incoming": "RESULTS: Electroencephalogram (EEG) shows interictal spikes and sharp waves localized to the temporal lobes, more prominent on the right side.",
+      "reply": "Doctor: That EEG finding fits with the aura, automatisms, and post-episode confusion you described — this looks like focal seizures arising from the temporal lobe. I'd like to get an MRI of your brain to check for a structural cause before we finalize things.\n\nREQUEST TEST: MRI_Brain",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "MRI_Brain",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 6344,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 102,
+        "output_tokens_details": {
+          "thinking_tokens": 0
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 9,
+      "incoming": "RESULTS: MRI Brain shows no evidence of mass lesions, infarctions, or structural abnormalities.",
+      "reply": "Doctor: Good news — no structural cause on MRI. Based on the aura, hand automatisms, confusion afterward, and EEG findings, this points to focal (temporal lobe) epilepsy, likely non-lesional.\n\nDIAGNOSIS READY: Focal (temporal lobe) epilepsy with impaired awareness, non-lesional, presenting with gustatory aura, automatisms, and post-ictal confusion.",
+      "tool_calls": [],
+      "kind": "diagnosis",
+      "payload": "Focal (temporal lobe) epilepsy with impaired awareness, non-lesional, presenting with gustatory aura, automatisms, and post-ictal confusion.",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 6485,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 145,
+        "output_tokens_details": {
+          "thinking_tokens": 0
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    }
+  ],
+  "support_llm": "anthropic:claude-sonnet-4-5",
+  "support_llm_cost_usd": 0.02086,
+  "support_llm_calls": 9,
+  "voice_subset": false,
+  "diagnostics": {
+    "schema": "tau2.health.diagnostics/v1",
+    "benchmark": "agentclinic",
+    "case_id": "MedQA-11",
+    "mode": "text",
+    "availability": {
+      "flow_available": false,
+      "flow_reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "signals_available": false,
+      "signals_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "metadata_sidecar_available": false,
+      "metadata_sidecar_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "tools_available": true,
+      "tools_reason": null
+    },
+    "provenance": {
+      "benchmark": "agentclinic",
+      "mode": "text",
+      "transport_endpoint": "POST /api/bench/agent-turn",
+      "agent_id": "c2761ec7-d3f7-4bd7-b68c-40a87f1b1ab3",
+      "base_url": "https://aws-gateway-backend.whissle.ai/bot",
+      "seed": 42,
+      "stratum": {
+        "dataset": "MedQA",
+        "scenario_index": 11,
+        "selection": "head",
+        "limit": 25
+      },
+      "judge": {
+        "judge_provider": "anthropic",
+        "judge_model": "claude-sonnet-4-5",
+        "judge_endpoint": "anthropic:claude-sonnet-4-5",
+        "judge_independent": true,
+        "judge_independence_note": "Judge independence: this run's simulators and graders were routed through an external provider, independent of the agent under test. This is the stronger footing for a published comparison against the paper's numbers."
+      },
+      "judge_provider": "anthropic",
+      "judge_independent": true,
+      "run_id": null,
+      "run_dir": "results/whissle/agentclinic/20260808T191547Z-sweep25_sonnet5",
+      "harness_commit": "86b4475",
+      "captured_at": "2026-08-08T19:18:08+00:00",
+      "protocol": "markers",
+      "history": "agentclinic",
+      "prompt_mode": "override",
+      "vision": "off",
+      "agent_type": null,
+      "total_inferences": 20,
+      "inferences_used": 9,
+      "support_llm": "anthropic:claude-sonnet-4-5",
+      "patient_bias": null,
+      "doctor_bias": null,
+      "voice_subset": false
+    },
+    "cost": {
+      "available": true,
+      "reason": null,
+      "judge_calls": 9,
+      "judge_cost_usd": 0.02086,
+      "agent_calls": 9
+    },
+    "flow": {
+      "available": false,
+      "reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "source": null,
+      "turns": null,
+      "summary": null,
+      "conversation_id": null,
+      "current_state": null,
+      "start_state": null,
+      "final_state": null,
+      "ended": null,
+      "flow_end": null,
+      "num_steps": null,
+      "step_counts_by_kind": null,
+      "states_visited": null,
+      "states_declared": null,
+      "states_unvisited": null,
+      "transitions": null,
+      "transitions_fired": null,
+      "var_sets": null,
+      "var_sources": null,
+      "guard_trips": null,
+      "state_divergences": null,
+      "tools_gated": null,
+      "says": null,
+      "steps": null
+    },
+    "signals": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "metadata_sidecar": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "tools": {
+      "available": true,
+      "reason": null,
+      "source": "doctor actions parsed from /api/bench/agent-turn replies",
+      "calls": [
+        {
+          "turn": 7,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "EEG"
+          },
+          "result": "RESULTS: Electroencephalogram (EEG) shows interictal spikes and sharp waves localized to the temporal lobes, more prominent on the right side.",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 1880,
+          "terminal": false
+        },
+        {
+          "turn": 8,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "MRI_Brain"
+          },
+          "result": "RESULTS: MRI Brain shows no evidence of mass lesions, infarctions, or structural abnormalities.",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 3298,
+          "terminal": false
+        },
+        {
+          "turn": 9,
+          "id": null,
+          "name": "give_diagnosis",
+          "arguments": {
+            "request": "Focal (temporal lobe) epilepsy with impaired awareness, non-lesional, presenting with gustatory aura, automatisms, and post-ictal confusion."
+          },
+          "result": null,
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 2942,
+          "terminal": true
+        }
+      ],
+      "summary": {
+        "n_calls": 3,
+        "by_name": {
+          "request_test": 2,
+          "give_diagnosis": 1
+        },
+        "n_ok": 3,
+        "n_error": 0,
+        "errors": []
+      },
+      "writes": {
+        "available": false,
+        "reason": "this benchmark issues no writes, so there is no said-vs-emitted-vs-landed distinction to record"
+      }
+    },
+    "turns": [
+      {
+        "inference": 1,
+        "incoming": "",
+        "reply": "Can you tell me more about these episodes — how long do they last, and how often do they happen?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 5722,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 29,
+          "output_tokens_details": {
+            "thinking_tokens": 0
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 2,
+        "incoming": "They last about 3 or 4 minutes each time. It's been happening pretty often this past month - maybe a few times, but I'm not really sure exactly how many because I don't remember them happening.",
+        "reply": "Do you notice anything before an episode starts, like an unusual smell, taste, or feeling — an \"aura\"?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 5809,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 38,
+          "output_tokens_details": {
+            "thinking_tokens": 0
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 3,
+        "incoming": "Yes, actually! Right before it happens, I get this weird muddy taste in my mouth. It's really strange and then I don't remember anything after that.",
+        "reply": "Does anyone who's witnessed these episodes mention how long it takes you to become fully alert and act normal again afterward?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 5894,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 40,
+          "output_tokens_details": {
+            "thinking_tokens": 0
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 4,
+        "incoming": "My brother said I seemed really tired and confused for a while after. Mom says it takes me maybe 10 or 15 minutes before I'm really back to normal and can answer questions properly.",
+        "reply": "Do you ever bite your tongue, lose bladder control, or have jerking movements during these episodes, based on what witnesses have told you?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 5992,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 45,
+          "output_tokens_details": {
+            "thinking_tokens": 0
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 5,
+        "incoming": "My brother said he saw me making some hand gestures during one of them, but I don't think anyone mentioned anything about biting my tongue or wetting myself.",
+        "reply": "Doctor: Have you had any head injuries, family history of epilepsy or seizures, or been under unusual stress or sleep deprivation recently?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 6085,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 49,
+          "output_tokens_details": {
+            "thinking_tokens": 0
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 6,
+        "incoming": "No, I haven't hit my head or anything like that. I don't think anyone in my family has had seizures before. I've been sleeping okay and school's been pretty normal - nothing really stressful going on.",
+        "reply": "Doctor: Have you had an EEG or MRI before, and would you be open to getting one now so we can look at your brain activity more closely?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 6196,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 45,
+          "output_tokens_details": {
+            "thinking_tokens": 0
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 7,
+        "incoming": "No, I've never had any tests like that done before. I guess that would be okay if it helps figure out what's going on with me.",
+        "reply": "REQUEST TEST: EEG",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "EEG",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 6277,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 14,
+          "output_tokens_details": {
+            "thinking_tokens": 0
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 8,
+        "incoming": "RESULTS: Electroencephalogram (EEG) shows interictal spikes and sharp waves localized to the temporal lobes, more prominent on the right side.",
+        "reply": "Doctor: That EEG finding fits with the aura, automatisms, and post-episode confusion you described — this looks like focal seizures arising from the temporal lobe. I'd like to get an MRI of your brain to check for a structural cause before we finalize things.\n\nREQUEST TEST: MRI_Brain",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "MRI_Brain",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 6344,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 102,
+          "output_tokens_details": {
+            "thinking_tokens": 0
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 9,
+        "incoming": "RESULTS: MRI Brain shows no evidence of mass lesions, infarctions, or structural abnormalities.",
+        "reply": "Doctor: Good news — no structural cause on MRI. Based on the aura, hand automatisms, confusion afterward, and EEG findings, this points to focal (temporal lobe) epilepsy, likely non-lesional.\n\nDIAGNOSIS READY: Focal (temporal lobe) epilepsy with impaired awareness, non-lesional, presenting with gustatory aura, automatisms, and post-ictal confusion.",
+        "tool_calls": [],
+        "kind": "diagnosis",
+        "payload": "Focal (temporal lobe) epilepsy with impaired awareness, non-lesional, presenting with gustatory aura, automatisms, and post-ictal confusion.",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 6485,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 145,
+          "output_tokens_details": {
+            "thinking_tokens": 0
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      }
+    ],
+    "audio": null
+  }
+}

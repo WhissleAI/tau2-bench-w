@@ -1,0 +1,362 @@
+{
+  "scenario_id": "MedQA-13",
+  "scenario_index": 13,
+  "dataset": "MedQA",
+  "mode": "text",
+  "correct_diagnosis": "Hirschsprung’s disease",
+  "answer_options": [],
+  "score": {
+    "outcome": "correct",
+    "correctness": true,
+    "doctor_diagnosis": "Hirschsprung's disease",
+    "doctor_final_text": "Based on the rectal biopsy results showing an absence of ganglion cells, we have a clear answer. This is consistent with Hirschsprung's disease, which is causing the baby's intestinal obstruction. We will need to refer you to a pediatric surgeon immediately to discuss the next steps.\n\nDIAGNOSIS READY: Hirschsprung's disease",
+    "moderator_raw": "yes",
+    "moderator_raw_text": "Yes",
+    "moderator_lenient": true,
+    "moderator_attempts": 1,
+    "moderator_normalized": false,
+    "moderator_unconstrained": false,
+    "declined": false,
+    "refusal_evidence": [],
+    "format_deviation": false,
+    "decline_source": null,
+    "decline_reason": "",
+    "spurious_commit": false
+  },
+  "infra_fail": false,
+  "error": null,
+  "findings": [],
+  "inferences_used": 3,
+  "max_inferences": 20,
+  "tests_ordered": [
+    "Abdominal_X-Ray",
+    "Contrast_Enema"
+  ],
+  "images_requested": 0,
+  "image": null,
+  "image_error": null,
+  "vision": "off",
+  "refusals": [],
+  "dialogue": [
+    {
+      "role": "doctor",
+      "inference": 1,
+      "kind": "test",
+      "text": "Hello, I am Dr. Agent, an AI assistant, and this call is recorded for quality. To help me understand what is happening, has your baby passed any stool or gas at all since birth? \n\nREQUEST TEST: Abdominal_X-Ray",
+      "payload": "Abdominal_X-Ray",
+      "latency_ms": 4943,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: Abdominal X-ray shows dilated loops of bowel with no gas in the rectum, suggestive of a distal obstruction."
+    },
+    {
+      "role": "doctor",
+      "inference": 2,
+      "kind": "test",
+      "text": "I see the X-ray shows signs of a distal blockage. Has the baby had any genetic screening, or is there any family history of cystic fibrosis? \n\nREQUEST TEST: Contrast_Enema",
+      "payload": "Contrast_Enema",
+      "latency_ms": 3255,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: The requested test \"Contrast_Enema\" is not available in the current data. However, based on the available information, NORMAL READINGS cannot be confirmed as this infant is showing signs of intestinal obstruction. \n\nAvailable test results show:\n- Abdominal X-ray: Dilated loops of bowel with no gas in the rectum, suggestive of a distal obstruction\n- Rectal Biopsy: Absence of ganglion cells in the submucosa and myenteric plexus, consistent with Hirschsprung's disease\n\nIf a Contrast Enema is clinically indicated, it would need to be ordered separately."
+    },
+    {
+      "role": "doctor",
+      "inference": 3,
+      "kind": "diagnosis",
+      "text": "Based on the rectal biopsy results showing an absence of ganglion cells, we have a clear answer. This is consistent with Hirschsprung's disease, which is causing the baby's intestinal obstruction. We will need to refer you to a pediatric surgeon immediately to discuss the next steps.\n\nDIAGNOSIS READY: Hirschsprung's disease",
+      "payload": "Hirschsprung's disease",
+      "latency_ms": 3728,
+      "refusal": null,
+      "via": "marker"
+    }
+  ],
+  "latency_ms": [
+    4943,
+    3255,
+    3728
+  ],
+  "wall_s": 18.88,
+  "doctor_turns": [
+    {
+      "inference": 1,
+      "incoming": "",
+      "reply": "Hello, I am Dr. Agent, an AI assistant, and this call is recorded for quality. To help me understand what is happening, has your baby passed any stool or gas at all since birth? \n\nREQUEST TEST: Abdominal_X-Ray",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Abdominal_X-Ray",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 3957,
+        "output_tokens": 919,
+        "thinking_tokens": 867,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    },
+    {
+      "inference": 2,
+      "incoming": "RESULTS: Abdominal X-ray shows dilated loops of bowel with no gas in the rectum, suggestive of a distal obstruction.",
+      "reply": "I see the X-ray shows signs of a distal blockage. Has the baby had any genetic screening, or is there any family history of cystic fibrosis? \n\nREQUEST TEST: Contrast_Enema",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Contrast_Enema",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4035,
+        "output_tokens": 616,
+        "thinking_tokens": 576,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    },
+    {
+      "inference": 3,
+      "incoming": "RESULTS: The requested test \"Contrast_Enema\" is not available in the current data. However, based on the available information, NORMAL READINGS cannot be confirmed as this infant is showing signs of intestinal obstruction. \n\nAvailable test results show:\n- Abdominal X-ray: Dilated loops of bowel with no gas in the rectum, suggestive of a distal obstruction\n- Rectal Biopsy: Absence of ganglion cells in the submucosa and myenteric plexus, consistent with Hirschsprung's disease\n\nIf a Contrast Enema is clinically indicated, it would need to be ordered separately.",
+      "reply": "Based on the rectal biopsy results showing an absence of ganglion cells, we have a clear answer. This is consistent with Hirschsprung's disease, which is causing the baby's intestinal obstruction. We will need to refer you to a pediatric surgeon immediately to discuss the next steps.\n\nDIAGNOSIS READY: Hirschsprung's disease",
+      "tool_calls": [],
+      "kind": "diagnosis",
+      "payload": "Hirschsprung's disease",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4199,
+        "output_tokens": 702,
+        "thinking_tokens": 632,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    }
+  ],
+  "support_llm": "anthropic:claude-sonnet-4-5",
+  "support_llm_cost_usd": 0.00602,
+  "support_llm_calls": 3,
+  "voice_subset": false,
+  "diagnostics": {
+    "schema": "tau2.health.diagnostics/v1",
+    "benchmark": "agentclinic",
+    "case_id": "MedQA-13",
+    "mode": "text",
+    "availability": {
+      "flow_available": false,
+      "flow_reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "signals_available": false,
+      "signals_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "metadata_sidecar_available": false,
+      "metadata_sidecar_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "tools_available": true,
+      "tools_reason": null
+    },
+    "provenance": {
+      "benchmark": "agentclinic",
+      "mode": "text",
+      "transport_endpoint": "POST /api/bench/agent-turn",
+      "agent_id": "c2761ec7-d3f7-4bd7-b68c-40a87f1b1ab3",
+      "base_url": "https://aws-gateway-backend.whissle.ai/bot",
+      "seed": 42,
+      "stratum": {
+        "dataset": "MedQA",
+        "scenario_index": 13,
+        "selection": "head",
+        "limit": 25
+      },
+      "judge": {
+        "judge_provider": "anthropic",
+        "judge_model": "claude-sonnet-4-5",
+        "judge_endpoint": "anthropic:claude-sonnet-4-5",
+        "judge_independent": true,
+        "judge_independence_note": "Judge independence: this run's simulators and graders were routed through an external provider, independent of the agent under test. This is the stronger footing for a published comparison against the paper's numbers."
+      },
+      "judge_provider": "anthropic",
+      "judge_independent": true,
+      "run_id": null,
+      "run_dir": "results/whissle/agentclinic/20260808T193252Z-sweep25_g35f",
+      "harness_commit": "86b4475",
+      "captured_at": "2026-08-08T19:35:58+00:00",
+      "protocol": "markers",
+      "history": "agentclinic",
+      "prompt_mode": "override",
+      "vision": "off",
+      "agent_type": null,
+      "total_inferences": 20,
+      "inferences_used": 3,
+      "support_llm": "anthropic:claude-sonnet-4-5",
+      "patient_bias": null,
+      "doctor_bias": null,
+      "voice_subset": false
+    },
+    "cost": {
+      "available": true,
+      "reason": null,
+      "judge_calls": 3,
+      "judge_cost_usd": 0.00602,
+      "agent_calls": 3
+    },
+    "flow": {
+      "available": false,
+      "reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "source": null,
+      "turns": null,
+      "summary": null,
+      "conversation_id": null,
+      "current_state": null,
+      "start_state": null,
+      "final_state": null,
+      "ended": null,
+      "flow_end": null,
+      "num_steps": null,
+      "step_counts_by_kind": null,
+      "states_visited": null,
+      "states_declared": null,
+      "states_unvisited": null,
+      "transitions": null,
+      "transitions_fired": null,
+      "var_sets": null,
+      "var_sources": null,
+      "guard_trips": null,
+      "state_divergences": null,
+      "tools_gated": null,
+      "says": null,
+      "steps": null
+    },
+    "signals": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "metadata_sidecar": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "tools": {
+      "available": true,
+      "reason": null,
+      "source": "doctor actions parsed from /api/bench/agent-turn replies",
+      "calls": [
+        {
+          "turn": 1,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Abdominal_X-Ray"
+          },
+          "result": "RESULTS: Abdominal X-ray shows dilated loops of bowel with no gas in the rectum, suggestive of a distal obstruction.",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 4943,
+          "terminal": false
+        },
+        {
+          "turn": 2,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Contrast_Enema"
+          },
+          "result": "RESULTS: The requested test \"Contrast_Enema\" is not available in the current data. However, based on the available information, NORMAL READINGS cannot be confirmed as this infant is showing signs of intestinal obstruction. \n\nAvailable test results show:\n- Abdominal X-ray: Dilated loops of bowel with no gas in the rectum, suggestive of a distal obstruction\n- Rectal Biopsy: Absence of ganglion cells in the submucosa and myenteric plexus, consistent with Hirschsprung's disease\n\nIf a Contrast Enema is clinically indicated, it would need to be ordered separately.",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 3255,
+          "terminal": false
+        },
+        {
+          "turn": 3,
+          "id": null,
+          "name": "give_diagnosis",
+          "arguments": {
+            "request": "Hirschsprung's disease"
+          },
+          "result": null,
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 3728,
+          "terminal": true
+        }
+      ],
+      "summary": {
+        "n_calls": 3,
+        "by_name": {
+          "request_test": 2,
+          "give_diagnosis": 1
+        },
+        "n_ok": 3,
+        "n_error": 0,
+        "errors": []
+      },
+      "writes": {
+        "available": false,
+        "reason": "this benchmark issues no writes, so there is no said-vs-emitted-vs-landed distinction to record"
+      }
+    },
+    "turns": [
+      {
+        "inference": 1,
+        "incoming": "",
+        "reply": "Hello, I am Dr. Agent, an AI assistant, and this call is recorded for quality. To help me understand what is happening, has your baby passed any stool or gas at all since birth? \n\nREQUEST TEST: Abdominal_X-Ray",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Abdominal_X-Ray",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 3957,
+          "output_tokens": 919,
+          "thinking_tokens": 867,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      },
+      {
+        "inference": 2,
+        "incoming": "RESULTS: Abdominal X-ray shows dilated loops of bowel with no gas in the rectum, suggestive of a distal obstruction.",
+        "reply": "I see the X-ray shows signs of a distal blockage. Has the baby had any genetic screening, or is there any family history of cystic fibrosis? \n\nREQUEST TEST: Contrast_Enema",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Contrast_Enema",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4035,
+          "output_tokens": 616,
+          "thinking_tokens": 576,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      },
+      {
+        "inference": 3,
+        "incoming": "RESULTS: The requested test \"Contrast_Enema\" is not available in the current data. However, based on the available information, NORMAL READINGS cannot be confirmed as this infant is showing signs of intestinal obstruction. \n\nAvailable test results show:\n- Abdominal X-ray: Dilated loops of bowel with no gas in the rectum, suggestive of a distal obstruction\n- Rectal Biopsy: Absence of ganglion cells in the submucosa and myenteric plexus, consistent with Hirschsprung's disease\n\nIf a Contrast Enema is clinically indicated, it would need to be ordered separately.",
+        "reply": "Based on the rectal biopsy results showing an absence of ganglion cells, we have a clear answer. This is consistent with Hirschsprung's disease, which is causing the baby's intestinal obstruction. We will need to refer you to a pediatric surgeon immediately to discuss the next steps.\n\nDIAGNOSIS READY: Hirschsprung's disease",
+        "tool_calls": [],
+        "kind": "diagnosis",
+        "payload": "Hirschsprung's disease",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4199,
+          "output_tokens": 702,
+          "thinking_tokens": 632,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      }
+    ],
+    "audio": null
+  }
+}

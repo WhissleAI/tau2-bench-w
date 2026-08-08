@@ -1,0 +1,468 @@
+{
+  "scenario_id": "MedQA-0",
+  "scenario_index": 0,
+  "dataset": "MedQA",
+  "mode": "text",
+  "correct_diagnosis": "Myasthenia gravis",
+  "answer_options": [],
+  "score": {
+    "outcome": "correct",
+    "correctness": true,
+    "doctor_diagnosis": "Generalized Myasthenia Gravis (acetylcholine receptor antibody-positive, without thymoma)**\n\nIf breathing or swallowing ever becomes difficult, hang up and call 911 immediately — that's a myasthenic crisis and it's an emergency. Otherwise, I'll arrange urgent neurology follow-up to start treatment. Take care.",
+    "doctor_final_text": "The antibody and EMG results confirm what I suspected — but first, any breathlessness, trouble breathing when lying flat, or a weak cough?\n\n**DIAGNOSIS READY: Generalized Myasthenia Gravis (acetylcholine receptor antibody-positive, without thymoma)**\n\nIf breathing or swallowing ever becomes difficult, hang up and call 911 immediately — that's a myasthenic crisis and it's an emergency. Otherwise, I'll arrange urgent neurology follow-up to start treatment. Take care.",
+    "moderator_raw": "yes",
+    "moderator_raw_text": "Yes",
+    "moderator_lenient": true,
+    "moderator_attempts": 1,
+    "moderator_normalized": false,
+    "moderator_unconstrained": false,
+    "declined": false,
+    "refusal_evidence": [],
+    "format_deviation": false,
+    "decline_source": null,
+    "decline_reason": "",
+    "spurious_commit": false
+  },
+  "infra_fail": false,
+  "error": null,
+  "findings": [],
+  "inferences_used": 4,
+  "max_inferences": 20,
+  "tests_ordered": [
+    "Acetylcholine_Receptor_Antibody_Panel (plus MuSK), Ice_Pack_Test, and Chest_CT_for_thymoma"
+  ],
+  "images_requested": 0,
+  "image": null,
+  "image_error": null,
+  "vision": "off",
+  "refusals": [],
+  "dialogue": [
+    {
+      "role": "doctor",
+      "inference": 1,
+      "kind": "question",
+      "text": "Hello, I'm Dr. Agent — just so you know, I'm an AI assistant and this consultation is recorded. Can you tell me when the double vision and weakness first started, and how they've changed since?",
+      "payload": null,
+      "latency_ms": 3473,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Hello, Doctor. It all started about a month ago. I first noticed the double vision when I was working on my computer, and around the same time I realized I was having trouble brushing my hair because my arms felt so weak. The strange thing is that these symptoms seem to get worse as the day goes on or after I've been active, but they get much better after I rest for a few hours."
+    },
+    {
+      "role": "doctor",
+      "inference": 2,
+      "kind": "question",
+      "text": "That fatigable pattern is very telling — do you also get drooping eyelids, slurred speech, or trouble chewing and swallowing, especially toward evening?",
+      "payload": null,
+      "latency_ms": 2898,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Now that you mention it, yes — I have noticed my eyelids feeling heavy, especially later in the day. Sometimes when I'm eating dinner, chewing feels more difficult than it should, like my jaw gets tired."
+    },
+    {
+      "role": "doctor",
+      "inference": 3,
+      "kind": "test",
+      "text": "Any shortness of breath, trouble catching your breath when lying flat, or a weak cough? Meanwhile, let's confirm this.\n\nREQUEST TEST: Acetylcholine_Receptor_Antibody_Panel (plus MuSK), Ice_Pack_Test, and Chest_CT_for_thymoma",
+      "payload": "Acetylcholine_Receptor_Antibody_Panel (plus MuSK), Ice_Pack_Test, and Chest_CT_for_thymoma",
+      "latency_ms": 3463,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: \n\n**Acetylcholine Receptor Antibody Panel:**\n- Acetylcholine Receptor Antibodies: **Positive (elevated)**\n- MuSK Antibodies: Not available in current data\n\n**Ice Pack Test:**\n- Not available in current data\n\n**Chest CT for Thymoma:**\n- **Normal findings**\n- No thymoma or other masses detected\n\n**Additional Available Test Results:**\n\n**Electromyography (EMG):**\n- Decreased muscle response with repetitive stimulation (consistent with neuromuscular junction disorder)\n\n**Note:** The positive acetylcholine receptor antibodies combined with the clinical presentation of fatigable weakness, ptosis, diplopia, and the decremental response on EMG are highly suggestive of Myasthenia Gravis. The absence of thymoma on chest CT is noted."
+    },
+    {
+      "role": "doctor",
+      "inference": 4,
+      "kind": "diagnosis",
+      "text": "The antibody and EMG results confirm what I suspected — but first, any breathlessness, trouble breathing when lying flat, or a weak cough?\n\n**DIAGNOSIS READY: Generalized Myasthenia Gravis (acetylcholine receptor antibody-positive, without thymoma)**\n\nIf breathing or swallowing ever becomes difficult, hang up and call 911 immediately — that's a myasthenic crisis and it's an emergency. Otherwise, I'll arrange urgent neurology follow-up to start treatment. Take care.",
+      "payload": "Generalized Myasthenia Gravis (acetylcholine receptor antibody-positive, without thymoma)**\n\nIf breathing or swallowing ever becomes difficult, hang up and call 911 immediately — that's a myasthenic crisis and it's an emergency. Otherwise, I'll arrange urgent neurology follow-up to start treatment. Take care.",
+      "latency_ms": 3298,
+      "refusal": null,
+      "via": "marker"
+    }
+  ],
+  "latency_ms": [
+    3473,
+    2898,
+    3463,
+    3298
+  ],
+  "wall_s": 25.07,
+  "doctor_turns": [
+    {
+      "inference": 1,
+      "incoming": "",
+      "reply": "Hello, I'm Dr. Agent — just so you know, I'm an AI assistant and this consultation is recorded. Can you tell me when the double vision and weakness first started, and how they've changed since?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 5720,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 176,
+        "output_tokens_details": {
+          "thinking_tokens": 109
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 2,
+      "incoming": "Hello, Doctor. It all started about a month ago. I first noticed the double vision when I was working on my computer, and around the same time I realized I was having trouble brushing my hair because my arms felt so weak. The strange thing is that these symptoms seem to get worse as the day goes on or after I've been active, but they get much better after I rest for a few hours.",
+      "reply": "That fatigable pattern is very telling — do you also get drooping eyelids, slurred speech, or trouble chewing and swallowing, especially toward evening?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 5898,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 95,
+        "output_tokens_details": {
+          "thinking_tokens": 42
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 3,
+      "incoming": "Now that you mention it, yes — I have noticed my eyelids feeling heavy, especially later in the day. Sometimes when I'm eating dinner, chewing feels more difficult than it should, like my jaw gets tired.",
+      "reply": "Any shortness of breath, trouble catching your breath when lying flat, or a weak cough? Meanwhile, let's confirm this.\n\nREQUEST TEST: Acetylcholine_Receptor_Antibody_Panel (plus MuSK), Ice_Pack_Test, and Chest_CT_for_thymoma",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Acetylcholine_Receptor_Antibody_Panel (plus MuSK), Ice_Pack_Test, and Chest_CT_for_thymoma",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 6024,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 161,
+        "output_tokens_details": {
+          "thinking_tokens": 51
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 4,
+      "incoming": "RESULTS: \n\n**Acetylcholine Receptor Antibody Panel:**\n- Acetylcholine Receptor Antibodies: **Positive (elevated)**\n- MuSK Antibodies: Not available in current data\n\n**Ice Pack Test:**\n- Not available in current data\n\n**Chest CT for Thymoma:**\n- **Normal findings**\n- No thymoma or other masses detected\n\n**Additional Available Test Results:**\n\n**Electromyography (EMG):**\n- Decreased muscle response with repetitive stimulation (consistent with neuromuscular junction disorder)\n\n**Note:** The positive acetylcholine receptor antibodies combined with the clinical presentation of fatigable weakness, ptosis, diplopia, and the decremental response on EMG are highly suggestive of Myasthenia Gravis. The absence of thymoma on chest CT is noted.",
+      "reply": "The antibody and EMG results confirm what I suspected — but first, any breathlessness, trouble breathing when lying flat, or a weak cough?\n\n**DIAGNOSIS READY: Generalized Myasthenia Gravis (acetylcholine receptor antibody-positive, without thymoma)**\n\nIf breathing or swallowing ever becomes difficult, hang up and call 911 immediately — that's a myasthenic crisis and it's an emergency. Otherwise, I'll arrange urgent neurology follow-up to start treatment. Take care.",
+      "tool_calls": [],
+      "kind": "diagnosis",
+      "payload": "Generalized Myasthenia Gravis (acetylcholine receptor antibody-positive, without thymoma)**\n\nIf breathing or swallowing ever becomes difficult, hang up and call 911 immediately — that's a myasthenic crisis and it's an emergency. Otherwise, I'll arrange urgent neurology follow-up to start treatment. Take care.",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 6426,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 211,
+        "output_tokens_details": {
+          "thinking_tokens": 28
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    }
+  ],
+  "support_llm": "anthropic:claude-sonnet-4-5",
+  "support_llm_cost_usd": 0.00985,
+  "support_llm_calls": 4,
+  "voice_subset": false,
+  "diagnostics": {
+    "schema": "tau2.health.diagnostics/v1",
+    "benchmark": "agentclinic",
+    "case_id": "MedQA-0",
+    "mode": "text",
+    "availability": {
+      "flow_available": false,
+      "flow_reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "signals_available": false,
+      "signals_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "metadata_sidecar_available": false,
+      "metadata_sidecar_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "tools_available": true,
+      "tools_reason": null
+    },
+    "provenance": {
+      "benchmark": "agentclinic",
+      "mode": "text",
+      "transport_endpoint": "POST /api/bench/agent-turn",
+      "agent_id": "c2761ec7-d3f7-4bd7-b68c-40a87f1b1ab3",
+      "base_url": "https://aws-gateway-backend.whissle.ai/bot",
+      "seed": 42,
+      "stratum": {
+        "dataset": "MedQA",
+        "scenario_index": 0,
+        "selection": "head",
+        "limit": 25
+      },
+      "judge": {
+        "judge_provider": "anthropic",
+        "judge_model": "claude-sonnet-4-5",
+        "judge_endpoint": "anthropic:claude-sonnet-4-5",
+        "judge_independent": true,
+        "judge_independence_note": "Judge independence: this run's simulators and graders were routed through an external provider, independent of the agent under test. This is the stronger footing for a published comparison against the paper's numbers."
+      },
+      "judge_provider": "anthropic",
+      "judge_independent": true,
+      "run_id": null,
+      "run_dir": "results/whissle/agentclinic/20260808T192035Z-sweep25_opus5",
+      "harness_commit": "86b4475",
+      "captured_at": "2026-08-08T19:21:00+00:00",
+      "protocol": "markers",
+      "history": "agentclinic",
+      "prompt_mode": "override",
+      "vision": "off",
+      "agent_type": null,
+      "total_inferences": 20,
+      "inferences_used": 4,
+      "support_llm": "anthropic:claude-sonnet-4-5",
+      "patient_bias": null,
+      "doctor_bias": null,
+      "voice_subset": false
+    },
+    "cost": {
+      "available": true,
+      "reason": null,
+      "judge_calls": 4,
+      "judge_cost_usd": 0.00985,
+      "agent_calls": 4
+    },
+    "flow": {
+      "available": false,
+      "reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "source": null,
+      "turns": null,
+      "summary": null,
+      "conversation_id": null,
+      "current_state": null,
+      "start_state": null,
+      "final_state": null,
+      "ended": null,
+      "flow_end": null,
+      "num_steps": null,
+      "step_counts_by_kind": null,
+      "states_visited": null,
+      "states_declared": null,
+      "states_unvisited": null,
+      "transitions": null,
+      "transitions_fired": null,
+      "var_sets": null,
+      "var_sources": null,
+      "guard_trips": null,
+      "state_divergences": null,
+      "tools_gated": null,
+      "says": null,
+      "steps": null
+    },
+    "signals": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "metadata_sidecar": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "tools": {
+      "available": true,
+      "reason": null,
+      "source": "doctor actions parsed from /api/bench/agent-turn replies",
+      "calls": [
+        {
+          "turn": 3,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Acetylcholine_Receptor_Antibody_Panel (plus MuSK), Ice_Pack_Test, and Chest_CT_for_thymoma"
+          },
+          "result": "RESULTS: \n\n**Acetylcholine Receptor Antibody Panel:**\n- Acetylcholine Receptor Antibodies: **Positive (elevated)**\n- MuSK Antibodies: Not available in current data\n\n**Ice Pack Test:**\n- Not available in current data\n\n**Chest CT for Thymoma:**\n- **Normal findings**\n- No thymoma or other masses detected\n\n**Additional Available Test Results:**\n\n**Electromyography (EMG):**\n- Decreased muscle response with repetitive stimulation (consistent with neuromuscular junction disorder)\n\n**Note:** The positive acetylcholine receptor antibodies combined with the clinical presentation of fatigable weakness, ptosis, diplopia, and the decremental response on EMG are highly suggestive of Myasthenia Gravis. The absence of thymoma on chest CT is noted.",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 3463,
+          "terminal": false
+        },
+        {
+          "turn": 4,
+          "id": null,
+          "name": "give_diagnosis",
+          "arguments": {
+            "request": "Generalized Myasthenia Gravis (acetylcholine receptor antibody-positive, without thymoma)**\n\nIf breathing or swallowing ever becomes difficult, hang up and call 911 immediately — that's a myasthenic crisis and it's an emergency. Otherwise, I'll arrange urgent neurology follow-up to start treatment. Take care."
+          },
+          "result": null,
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 3298,
+          "terminal": true
+        }
+      ],
+      "summary": {
+        "n_calls": 2,
+        "by_name": {
+          "request_test": 1,
+          "give_diagnosis": 1
+        },
+        "n_ok": 2,
+        "n_error": 0,
+        "errors": []
+      },
+      "writes": {
+        "available": false,
+        "reason": "this benchmark issues no writes, so there is no said-vs-emitted-vs-landed distinction to record"
+      }
+    },
+    "turns": [
+      {
+        "inference": 1,
+        "incoming": "",
+        "reply": "Hello, I'm Dr. Agent — just so you know, I'm an AI assistant and this consultation is recorded. Can you tell me when the double vision and weakness first started, and how they've changed since?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 5720,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 176,
+          "output_tokens_details": {
+            "thinking_tokens": 109
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 2,
+        "incoming": "Hello, Doctor. It all started about a month ago. I first noticed the double vision when I was working on my computer, and around the same time I realized I was having trouble brushing my hair because my arms felt so weak. The strange thing is that these symptoms seem to get worse as the day goes on or after I've been active, but they get much better after I rest for a few hours.",
+        "reply": "That fatigable pattern is very telling — do you also get drooping eyelids, slurred speech, or trouble chewing and swallowing, especially toward evening?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 5898,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 95,
+          "output_tokens_details": {
+            "thinking_tokens": 42
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 3,
+        "incoming": "Now that you mention it, yes — I have noticed my eyelids feeling heavy, especially later in the day. Sometimes when I'm eating dinner, chewing feels more difficult than it should, like my jaw gets tired.",
+        "reply": "Any shortness of breath, trouble catching your breath when lying flat, or a weak cough? Meanwhile, let's confirm this.\n\nREQUEST TEST: Acetylcholine_Receptor_Antibody_Panel (plus MuSK), Ice_Pack_Test, and Chest_CT_for_thymoma",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Acetylcholine_Receptor_Antibody_Panel (plus MuSK), Ice_Pack_Test, and Chest_CT_for_thymoma",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 6024,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 161,
+          "output_tokens_details": {
+            "thinking_tokens": 51
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 4,
+        "incoming": "RESULTS: \n\n**Acetylcholine Receptor Antibody Panel:**\n- Acetylcholine Receptor Antibodies: **Positive (elevated)**\n- MuSK Antibodies: Not available in current data\n\n**Ice Pack Test:**\n- Not available in current data\n\n**Chest CT for Thymoma:**\n- **Normal findings**\n- No thymoma or other masses detected\n\n**Additional Available Test Results:**\n\n**Electromyography (EMG):**\n- Decreased muscle response with repetitive stimulation (consistent with neuromuscular junction disorder)\n\n**Note:** The positive acetylcholine receptor antibodies combined with the clinical presentation of fatigable weakness, ptosis, diplopia, and the decremental response on EMG are highly suggestive of Myasthenia Gravis. The absence of thymoma on chest CT is noted.",
+        "reply": "The antibody and EMG results confirm what I suspected — but first, any breathlessness, trouble breathing when lying flat, or a weak cough?\n\n**DIAGNOSIS READY: Generalized Myasthenia Gravis (acetylcholine receptor antibody-positive, without thymoma)**\n\nIf breathing or swallowing ever becomes difficult, hang up and call 911 immediately — that's a myasthenic crisis and it's an emergency. Otherwise, I'll arrange urgent neurology follow-up to start treatment. Take care.",
+        "tool_calls": [],
+        "kind": "diagnosis",
+        "payload": "Generalized Myasthenia Gravis (acetylcholine receptor antibody-positive, without thymoma)**\n\nIf breathing or swallowing ever becomes difficult, hang up and call 911 immediately — that's a myasthenic crisis and it's an emergency. Otherwise, I'll arrange urgent neurology follow-up to start treatment. Take care.",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 6426,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 211,
+          "output_tokens_details": {
+            "thinking_tokens": 28
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      }
+    ],
+    "audio": null
+  }
+}

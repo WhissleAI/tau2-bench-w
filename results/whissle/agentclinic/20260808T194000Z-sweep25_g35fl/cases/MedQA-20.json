@@ -1,0 +1,622 @@
+{
+  "scenario_id": "MedQA-20",
+  "scenario_index": 20,
+  "dataset": "MedQA",
+  "mode": "text",
+  "correct_diagnosis": "Cytomegalovirus retinitis",
+  "answer_options": [],
+  "score": {
+    "outcome": "correct",
+    "correctness": true,
+    "doctor_diagnosis": "Cytomegalovirus retinitis",
+    "doctor_final_text": "DIAGNOSIS READY: Cytomegalovirus retinitis",
+    "moderator_raw": "yes",
+    "moderator_raw_text": "Yes",
+    "moderator_lenient": true,
+    "moderator_attempts": 1,
+    "moderator_normalized": false,
+    "moderator_unconstrained": false,
+    "declined": false,
+    "refusal_evidence": [],
+    "format_deviation": false,
+    "decline_source": null,
+    "decline_reason": "",
+    "spurious_commit": false
+  },
+  "infra_fail": false,
+  "error": null,
+  "findings": [],
+  "inferences_used": 8,
+  "max_inferences": 20,
+  "tests_ordered": [
+    "Dilated_Fundus_Examination",
+    "CD4_Count",
+    "Viral_Load"
+  ],
+  "images_requested": 0,
+  "image": null,
+  "image_error": null,
+  "vision": "off",
+  "refusals": [],
+  "dialogue": [
+    {
+      "role": "doctor",
+      "inference": 1,
+      "kind": "question",
+      "text": "Hello, I'm Dr. Agent. How long have you been experiencing this decreased vision and seeing black spots in your right eye?",
+      "payload": null,
+      "latency_ms": 951,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "It started about two days ago. I just suddenly noticed my vision getting worse in my right eye, and I keep seeing these dark spots floating around."
+    },
+    {
+      "role": "doctor",
+      "inference": 2,
+      "kind": "question",
+      "text": "Have you noticed any pain, redness, or flashes of light in that eye since it started?",
+      "payload": null,
+      "latency_ms": 637,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "No, there's no pain at all, and I haven't noticed any redness either. I don't think I've seen any flashes of light - just these black spots floating around."
+    },
+    {
+      "role": "doctor",
+      "inference": 3,
+      "kind": "question",
+      "text": "Have you noticed any floaters or vision changes in your left eye, or is this only affecting your right eye?",
+      "payload": null,
+      "latency_ms": 773,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "No, my left eye is completely fine - no problems with it at all. It's just the right eye that's been giving me trouble."
+    },
+    {
+      "role": "doctor",
+      "inference": 4,
+      "kind": "test",
+      "text": "REQUEST TEST: Dilated_Fundus_Examination",
+      "payload": "Dilated_Fundus_Examination",
+      "latency_ms": 601,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: Based on the fundoscopy examination findings available:\n\n**Fundoscopy (Dilated Fundus Examination):**\n- Granular yellow-white opacities around the retinal vessels\n- Multiple areas of dot-blot hemorrhages\n\nThese findings are consistent with retinal involvement and may explain your visual symptoms including the dark spots (floaters) you've been experiencing in your right eye."
+    },
+    {
+      "role": "doctor",
+      "inference": 5,
+      "kind": "test",
+      "text": "REQUEST TEST: CD4_Count",
+      "payload": "CD4_Count",
+      "latency_ms": 772,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: \n\n**CD4 Count:**\n- CD4 T-lymphocyte count: 36/mm³\n\nThis is a severely low CD4 count, indicating significant immunosuppression. Normal CD4 counts typically range from 500-1,500 cells/mm³. A count below 200 cells/mm³ indicates advanced immunodeficiency."
+    },
+    {
+      "role": "doctor",
+      "inference": 6,
+      "kind": "test",
+      "text": "REQUEST TEST: Viral_Load",
+      "payload": "Viral_Load",
+      "latency_ms": 737,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: The Viral Load test results are not available in the current data.\n\nNORMAL READINGS for HIV Viral Load reference:\n- Undetectable or <20-50 copies/mL is considered suppressed/controlled\n- >100,000 copies/mL is considered high viral load\n\nNote: Given your severely low CD4 count of 36/mm³ and the clinical presentation with retinal findings, a viral load test would be important to assess HIV disease activity if not already on antiretroviral therapy."
+    },
+    {
+      "role": "doctor",
+      "inference": 7,
+      "kind": "question",
+      "text": "Have you experienced any other systemic symptoms recently, such as fever, weight loss, or fatigue?",
+      "payload": null,
+      "latency_ms": 637,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "I haven't had any fever recently, but I have been feeling pretty tired lately. I just figured it was from everything I've been dealing with, you know, with my condition and all."
+    },
+    {
+      "role": "doctor",
+      "inference": 8,
+      "kind": "diagnosis",
+      "text": "DIAGNOSIS READY: Cytomegalovirus retinitis",
+      "payload": "Cytomegalovirus retinitis",
+      "latency_ms": 614,
+      "refusal": null,
+      "via": "marker"
+    }
+  ],
+  "latency_ms": [
+    951,
+    637,
+    773,
+    601,
+    772,
+    737,
+    637,
+    614
+  ],
+  "wall_s": 24.63,
+  "doctor_turns": [
+    {
+      "inference": 1,
+      "incoming": "",
+      "reply": "Hello, I'm Dr. Agent. How long have you been experiencing this decreased vision and seeing black spots in your right eye?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 3960,
+        "output_tokens": 27,
+        "thinking_tokens": 0,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    },
+    {
+      "inference": 2,
+      "incoming": "It started about two days ago. I just suddenly noticed my vision getting worse in my right eye, and I keep seeing these dark spots floating around.",
+      "reply": "Have you noticed any pain, redness, or flashes of light in that eye since it started?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4018,
+        "output_tokens": 19,
+        "thinking_tokens": 0,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    },
+    {
+      "inference": 3,
+      "incoming": "No, there's no pain at all, and I haven't noticed any redness either. I don't think I've seen any flashes of light - just these black spots floating around.",
+      "reply": "Have you noticed any floaters or vision changes in your left eye, or is this only affecting your right eye?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4080,
+        "output_tokens": 23,
+        "thinking_tokens": 0,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    },
+    {
+      "inference": 4,
+      "incoming": "No, my left eye is completely fine - no problems with it at all. It's just the right eye that's been giving me trouble.",
+      "reply": "REQUEST TEST: Dilated_Fundus_Examination",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Dilated_Fundus_Examination",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4136,
+        "output_tokens": 10,
+        "thinking_tokens": 0,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    },
+    {
+      "inference": 5,
+      "incoming": "RESULTS: Based on the fundoscopy examination findings available:\n\n**Fundoscopy (Dilated Fundus Examination):**\n- Granular yellow-white opacities around the retinal vessels\n- Multiple areas of dot-blot hemorrhages\n\nThese findings are consistent with retinal involvement and may explain your visual symptoms including the dark spots (floaters) you've been experiencing in your right eye.",
+      "reply": "REQUEST TEST: CD4_Count",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "CD4_Count",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4228,
+        "output_tokens": 7,
+        "thinking_tokens": 0,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    },
+    {
+      "inference": 6,
+      "incoming": "RESULTS: \n\n**CD4 Count:**\n- CD4 T-lymphocyte count: 36/mm³\n\nThis is a severely low CD4 count, indicating significant immunosuppression. Normal CD4 counts typically range from 500-1,500 cells/mm³. A count below 200 cells/mm³ indicates advanced immunodeficiency.",
+      "reply": "REQUEST TEST: Viral_Load",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Viral_Load",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4314,
+        "output_tokens": 6,
+        "thinking_tokens": 0,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    },
+    {
+      "inference": 7,
+      "incoming": "RESULTS: The Viral Load test results are not available in the current data.\n\nNORMAL READINGS for HIV Viral Load reference:\n- Undetectable or <20-50 copies/mL is considered suppressed/controlled\n- >100,000 copies/mL is considered high viral load\n\nNote: Given your severely low CD4 count of 36/mm³ and the clinical presentation with retinal findings, a viral load test would be important to assess HIV disease activity if not already on antiretroviral therapy.",
+      "reply": "Have you experienced any other systemic symptoms recently, such as fever, weight loss, or fatigue?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4431,
+        "output_tokens": 19,
+        "thinking_tokens": 0,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    },
+    {
+      "inference": 8,
+      "incoming": "I haven't had any fever recently, but I have been feeling pretty tired lately. I just figured it was from everything I've been dealing with, you know, with my condition and all.",
+      "reply": "DIAGNOSIS READY: Cytomegalovirus retinitis",
+      "tool_calls": [],
+      "kind": "diagnosis",
+      "payload": "Cytomegalovirus retinitis",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4493,
+        "output_tokens": 11,
+        "thinking_tokens": 0,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    }
+  ],
+  "support_llm": "anthropic:claude-sonnet-4-5",
+  "support_llm_cost_usd": 0.01847,
+  "support_llm_calls": 8,
+  "voice_subset": false,
+  "diagnostics": {
+    "schema": "tau2.health.diagnostics/v1",
+    "benchmark": "agentclinic",
+    "case_id": "MedQA-20",
+    "mode": "text",
+    "availability": {
+      "flow_available": false,
+      "flow_reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "signals_available": false,
+      "signals_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "metadata_sidecar_available": false,
+      "metadata_sidecar_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "tools_available": true,
+      "tools_reason": null
+    },
+    "provenance": {
+      "benchmark": "agentclinic",
+      "mode": "text",
+      "transport_endpoint": "POST /api/bench/agent-turn",
+      "agent_id": "c2761ec7-d3f7-4bd7-b68c-40a87f1b1ab3",
+      "base_url": "https://aws-gateway-backend.whissle.ai/bot",
+      "seed": 42,
+      "stratum": {
+        "dataset": "MedQA",
+        "scenario_index": 20,
+        "selection": "head",
+        "limit": 25
+      },
+      "judge": {
+        "judge_provider": "anthropic",
+        "judge_model": "claude-sonnet-4-5",
+        "judge_endpoint": "anthropic:claude-sonnet-4-5",
+        "judge_independent": true,
+        "judge_independence_note": "Judge independence: this run's simulators and graders were routed through an external provider, independent of the agent under test. This is the stronger footing for a published comparison against the paper's numbers."
+      },
+      "judge_provider": "anthropic",
+      "judge_independent": true,
+      "run_id": null,
+      "run_dir": "results/whissle/agentclinic/20260808T194000Z-sweep25_g35fl",
+      "harness_commit": "86b4475",
+      "captured_at": "2026-08-08T19:42:11+00:00",
+      "protocol": "markers",
+      "history": "agentclinic",
+      "prompt_mode": "override",
+      "vision": "off",
+      "agent_type": null,
+      "total_inferences": 20,
+      "inferences_used": 8,
+      "support_llm": "anthropic:claude-sonnet-4-5",
+      "patient_bias": null,
+      "doctor_bias": null,
+      "voice_subset": false
+    },
+    "cost": {
+      "available": true,
+      "reason": null,
+      "judge_calls": 8,
+      "judge_cost_usd": 0.01847,
+      "agent_calls": 8
+    },
+    "flow": {
+      "available": false,
+      "reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "source": null,
+      "turns": null,
+      "summary": null,
+      "conversation_id": null,
+      "current_state": null,
+      "start_state": null,
+      "final_state": null,
+      "ended": null,
+      "flow_end": null,
+      "num_steps": null,
+      "step_counts_by_kind": null,
+      "states_visited": null,
+      "states_declared": null,
+      "states_unvisited": null,
+      "transitions": null,
+      "transitions_fired": null,
+      "var_sets": null,
+      "var_sources": null,
+      "guard_trips": null,
+      "state_divergences": null,
+      "tools_gated": null,
+      "says": null,
+      "steps": null
+    },
+    "signals": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "metadata_sidecar": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "tools": {
+      "available": true,
+      "reason": null,
+      "source": "doctor actions parsed from /api/bench/agent-turn replies",
+      "calls": [
+        {
+          "turn": 4,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Dilated_Fundus_Examination"
+          },
+          "result": "RESULTS: Based on the fundoscopy examination findings available:\n\n**Fundoscopy (Dilated Fundus Examination):**\n- Granular yellow-white opacities around the retinal vessels\n- Multiple areas of dot-blot hemorrhages\n\nThese findings are consistent with retinal involvement and may explain your visual symptoms including the dark spots (floaters) you've been experiencing in your right eye.",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 601,
+          "terminal": false
+        },
+        {
+          "turn": 5,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "CD4_Count"
+          },
+          "result": "RESULTS: \n\n**CD4 Count:**\n- CD4 T-lymphocyte count: 36/mm³\n\nThis is a severely low CD4 count, indicating significant immunosuppression. Normal CD4 counts typically range from 500-1,500 cells/mm³. A count below 200 cells/mm³ indicates advanced immunodeficiency.",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 772,
+          "terminal": false
+        },
+        {
+          "turn": 6,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Viral_Load"
+          },
+          "result": "RESULTS: The Viral Load test results are not available in the current data.\n\nNORMAL READINGS for HIV Viral Load reference:\n- Undetectable or <20-50 copies/mL is considered suppressed/controlled\n- >100,000 copies/mL is considered high viral load\n\nNote: Given your severely low CD4 count of 36/mm³ and the clinical presentation with retinal findings, a viral load test would be important to assess HIV disease activity if not already on antiretroviral therapy.",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 737,
+          "terminal": false
+        },
+        {
+          "turn": 8,
+          "id": null,
+          "name": "give_diagnosis",
+          "arguments": {
+            "request": "Cytomegalovirus retinitis"
+          },
+          "result": null,
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 614,
+          "terminal": true
+        }
+      ],
+      "summary": {
+        "n_calls": 4,
+        "by_name": {
+          "request_test": 3,
+          "give_diagnosis": 1
+        },
+        "n_ok": 4,
+        "n_error": 0,
+        "errors": []
+      },
+      "writes": {
+        "available": false,
+        "reason": "this benchmark issues no writes, so there is no said-vs-emitted-vs-landed distinction to record"
+      }
+    },
+    "turns": [
+      {
+        "inference": 1,
+        "incoming": "",
+        "reply": "Hello, I'm Dr. Agent. How long have you been experiencing this decreased vision and seeing black spots in your right eye?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 3960,
+          "output_tokens": 27,
+          "thinking_tokens": 0,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      },
+      {
+        "inference": 2,
+        "incoming": "It started about two days ago. I just suddenly noticed my vision getting worse in my right eye, and I keep seeing these dark spots floating around.",
+        "reply": "Have you noticed any pain, redness, or flashes of light in that eye since it started?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4018,
+          "output_tokens": 19,
+          "thinking_tokens": 0,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      },
+      {
+        "inference": 3,
+        "incoming": "No, there's no pain at all, and I haven't noticed any redness either. I don't think I've seen any flashes of light - just these black spots floating around.",
+        "reply": "Have you noticed any floaters or vision changes in your left eye, or is this only affecting your right eye?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4080,
+          "output_tokens": 23,
+          "thinking_tokens": 0,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      },
+      {
+        "inference": 4,
+        "incoming": "No, my left eye is completely fine - no problems with it at all. It's just the right eye that's been giving me trouble.",
+        "reply": "REQUEST TEST: Dilated_Fundus_Examination",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Dilated_Fundus_Examination",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4136,
+          "output_tokens": 10,
+          "thinking_tokens": 0,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      },
+      {
+        "inference": 5,
+        "incoming": "RESULTS: Based on the fundoscopy examination findings available:\n\n**Fundoscopy (Dilated Fundus Examination):**\n- Granular yellow-white opacities around the retinal vessels\n- Multiple areas of dot-blot hemorrhages\n\nThese findings are consistent with retinal involvement and may explain your visual symptoms including the dark spots (floaters) you've been experiencing in your right eye.",
+        "reply": "REQUEST TEST: CD4_Count",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "CD4_Count",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4228,
+          "output_tokens": 7,
+          "thinking_tokens": 0,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      },
+      {
+        "inference": 6,
+        "incoming": "RESULTS: \n\n**CD4 Count:**\n- CD4 T-lymphocyte count: 36/mm³\n\nThis is a severely low CD4 count, indicating significant immunosuppression. Normal CD4 counts typically range from 500-1,500 cells/mm³. A count below 200 cells/mm³ indicates advanced immunodeficiency.",
+        "reply": "REQUEST TEST: Viral_Load",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Viral_Load",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4314,
+          "output_tokens": 6,
+          "thinking_tokens": 0,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      },
+      {
+        "inference": 7,
+        "incoming": "RESULTS: The Viral Load test results are not available in the current data.\n\nNORMAL READINGS for HIV Viral Load reference:\n- Undetectable or <20-50 copies/mL is considered suppressed/controlled\n- >100,000 copies/mL is considered high viral load\n\nNote: Given your severely low CD4 count of 36/mm³ and the clinical presentation with retinal findings, a viral load test would be important to assess HIV disease activity if not already on antiretroviral therapy.",
+        "reply": "Have you experienced any other systemic symptoms recently, such as fever, weight loss, or fatigue?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4431,
+          "output_tokens": 19,
+          "thinking_tokens": 0,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      },
+      {
+        "inference": 8,
+        "incoming": "I haven't had any fever recently, but I have been feeling pretty tired lately. I just figured it was from everything I've been dealing with, you know, with my condition and all.",
+        "reply": "DIAGNOSIS READY: Cytomegalovirus retinitis",
+        "tool_calls": [],
+        "kind": "diagnosis",
+        "payload": "Cytomegalovirus retinitis",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4493,
+          "output_tokens": 11,
+          "thinking_tokens": 0,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      }
+    ],
+    "audio": null
+  }
+}

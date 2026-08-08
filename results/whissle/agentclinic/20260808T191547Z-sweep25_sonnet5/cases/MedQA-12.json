@@ -1,0 +1,684 @@
+{
+  "scenario_id": "MedQA-12",
+  "scenario_index": 12,
+  "dataset": "MedQA",
+  "mode": "text",
+  "correct_diagnosis": "Posterior hip dislocation",
+  "answer_options": [],
+  "score": {
+    "outcome": "correct",
+    "correctness": true,
+    "doctor_diagnosis": "Right posterior hip dislocation (following motor vehicle collision, dashboard-type injury), with associated bilateral knee contusions and intact distal neurovascular function.",
+    "doctor_final_text": "Good, no fractures in the knees. Given the confirmed posterior hip dislocation with intact neurovascular status, this needs urgent closed reduction — I'll arrange immediate orthopedic consultation.\n\nDIAGNOSIS READY: Right posterior hip dislocation (following motor vehicle collision, dashboard-type injury), with associated bilateral knee contusions and intact distal neurovascular function.",
+    "moderator_raw": "yes",
+    "moderator_raw_text": "Yes",
+    "moderator_lenient": true,
+    "moderator_attempts": 1,
+    "moderator_normalized": false,
+    "moderator_unconstrained": false,
+    "declined": false,
+    "refusal_evidence": [],
+    "format_deviation": false,
+    "decline_source": null,
+    "decline_reason": "",
+    "spurious_commit": false
+  },
+  "infra_fail": false,
+  "error": null,
+  "findings": [],
+  "inferences_used": 7,
+  "max_inferences": 20,
+  "tests_ordered": [
+    "Pelvis_and_Hip_X-Ray",
+    "Knee_X-Ray_Bilateral"
+  ],
+  "images_requested": 0,
+  "image": null,
+  "image_error": null,
+  "vision": "off",
+  "refusals": [],
+  "dialogue": [
+    {
+      "role": "doctor",
+      "inference": 1,
+      "kind": "question",
+      "text": "Hi, I'm Dr. Agent. Can you tell me what happened and how your right hip and leg are feeling right now?",
+      "payload": null,
+      "latency_ms": 3001,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "I was in a car accident - someone hit me from behind while I was stopped. My right groin area is killing me, it's really severe pain, and both my knees hurt too. My right leg just feels... wrong, like I can't position it normally."
+    },
+    {
+      "role": "doctor",
+      "inference": 2,
+      "kind": "question",
+      "text": "Can you describe how your right leg looks right now — is it shortened, rotated inward or outward, and can you move it at all?",
+      "payload": null,
+      "latency_ms": 2974,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Yes, my right leg looks shorter than my left one, and it's kind of bent and turned inward. I can barely move it at all - any attempt to move it makes the groin pain so much worse."
+    },
+    {
+      "role": "doctor",
+      "inference": 3,
+      "kind": "question",
+      "text": "This sounds like a posterior hip dislocation. Given the mechanism—dashboard-type injury in a collision with knee trauma—I'd like to check your knees too: do you have pain, swelling, or deformity there, or any numbness/tingling down the leg?",
+      "payload": null,
+      "latency_ms": 2782,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Yes, both my knees are painful, especially when I try to bend them, but I don't think they're swollen or look deformed. I don't have any numbness or tingling down my leg though, just that terrible pain in my groin."
+    },
+    {
+      "role": "doctor",
+      "inference": 4,
+      "kind": "question",
+      "text": "Any numbness or weakness in your foot, or can you still move your toes and feel your foot normally?",
+      "payload": null,
+      "latency_ms": 2824,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "I can move my toes and feel my foot okay - no numbness or weakness there. It's really just the groin pain and not being able to move my hip that's the problem."
+    },
+    {
+      "role": "doctor",
+      "inference": 5,
+      "kind": "test",
+      "text": "I'd like to get imaging to confirm — REQUEST TEST: Pelvis_and_Hip_X-Ray",
+      "payload": "Pelvis_and_Hip_X-Ray",
+      "latency_ms": 3167,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: Pelvic X-ray shows no fractures identified in the pelvic ring or femoral neck, but alignment suggests posterior dislocation of the right hip."
+    },
+    {
+      "role": "doctor",
+      "inference": 6,
+      "kind": "test",
+      "text": "Given the dashboard mechanism, I also want to check your knees for any occult injury — REQUEST TEST: Knee_X-Ray_Bilateral",
+      "payload": "Knee_X-Ray_Bilateral",
+      "latency_ms": 3706,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: Knee X-rays are not available in the provided data.\n\nNORMAL READINGS - No fractures or dislocations identified in bilateral knee imaging. Patellofemoral joints appear intact with normal alignment."
+    },
+    {
+      "role": "doctor",
+      "inference": 7,
+      "kind": "diagnosis",
+      "text": "Good, no fractures in the knees. Given the confirmed posterior hip dislocation with intact neurovascular status, this needs urgent closed reduction — I'll arrange immediate orthopedic consultation.\n\nDIAGNOSIS READY: Right posterior hip dislocation (following motor vehicle collision, dashboard-type injury), with associated bilateral knee contusions and intact distal neurovascular function.",
+      "payload": "Right posterior hip dislocation (following motor vehicle collision, dashboard-type injury), with associated bilateral knee contusions and intact distal neurovascular function.",
+      "latency_ms": 4072,
+      "refusal": null,
+      "via": "marker"
+    }
+  ],
+  "latency_ms": [
+    3001,
+    2974,
+    2782,
+    2824,
+    3167,
+    3706,
+    4072
+  ],
+  "wall_s": 39.36,
+  "doctor_turns": [
+    {
+      "inference": 1,
+      "incoming": "",
+      "reply": "Hi, I'm Dr. Agent. Can you tell me what happened and how your right hip and leg are feeling right now?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 5735,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 42,
+        "output_tokens_details": {
+          "thinking_tokens": 0
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 2,
+      "incoming": "I was in a car accident - someone hit me from behind while I was stopped. My right groin area is killing me, it's really severe pain, and both my knees hurt too. My right leg just feels... wrong, like I can't position it normally.",
+      "reply": "Can you describe how your right leg looks right now — is it shortened, rotated inward or outward, and can you move it at all?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 5848,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 40,
+        "output_tokens_details": {
+          "thinking_tokens": 0
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 3,
+      "incoming": "Yes, my right leg looks shorter than my left one, and it's kind of bent and turned inward. I can barely move it at all - any attempt to move it makes the groin pain so much worse.",
+      "reply": "This sounds like a posterior hip dislocation. Given the mechanism—dashboard-type injury in a collision with knee trauma—I'd like to check your knees too: do you have pain, swelling, or deformity there, or any numbness/tingling down the leg?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 5948,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 86,
+        "output_tokens_details": {
+          "thinking_tokens": 0
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 4,
+      "incoming": "Yes, both my knees are painful, especially when I try to bend them, but I don't think they're swollen or look deformed. I don't have any numbness or tingling down my leg though, just that terrible pain in my groin.",
+      "reply": "Any numbness or weakness in your foot, or can you still move your toes and feel your foot normally?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 6102,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 33,
+        "output_tokens_details": {
+          "thinking_tokens": 0
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 5,
+      "incoming": "I can move my toes and feel my foot okay - no numbness or weakness there. It's really just the groin pain and not being able to move my hip that's the problem.",
+      "reply": "I'd like to get imaging to confirm — REQUEST TEST: Pelvis_and_Hip_X-Ray",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Pelvis_and_Hip_X-Ray",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 6184,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 42,
+        "output_tokens_details": {
+          "thinking_tokens": 0
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 6,
+      "incoming": "RESULTS: Pelvic X-ray shows no fractures identified in the pelvic ring or femoral neck, but alignment suggests posterior dislocation of the right hip.",
+      "reply": "Given the dashboard mechanism, I also want to check your knees for any occult injury — REQUEST TEST: Knee_X-Ray_Bilateral",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Knee_X-Ray_Bilateral",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 6284,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 53,
+        "output_tokens_details": {
+          "thinking_tokens": 0
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 7,
+      "incoming": "RESULTS: Knee X-rays are not available in the provided data.\n\nNORMAL READINGS - No fractures or dislocations identified in bilateral knee imaging. Patellofemoral joints appear intact with normal alignment.",
+      "reply": "Good, no fractures in the knees. Given the confirmed posterior hip dislocation with intact neurovascular status, this needs urgent closed reduction — I'll arrange immediate orthopedic consultation.\n\nDIAGNOSIS READY: Right posterior hip dislocation (following motor vehicle collision, dashboard-type injury), with associated bilateral knee contusions and intact distal neurovascular function.",
+      "tool_calls": [],
+      "kind": "diagnosis",
+      "payload": "Right posterior hip dislocation (following motor vehicle collision, dashboard-type injury), with associated bilateral knee contusions and intact distal neurovascular function.",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 6412,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 138,
+        "output_tokens_details": {
+          "thinking_tokens": 0
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    }
+  ],
+  "support_llm": "anthropic:claude-sonnet-4-5",
+  "support_llm_cost_usd": 0.01436,
+  "support_llm_calls": 7,
+  "voice_subset": false,
+  "diagnostics": {
+    "schema": "tau2.health.diagnostics/v1",
+    "benchmark": "agentclinic",
+    "case_id": "MedQA-12",
+    "mode": "text",
+    "availability": {
+      "flow_available": false,
+      "flow_reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "signals_available": false,
+      "signals_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "metadata_sidecar_available": false,
+      "metadata_sidecar_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "tools_available": true,
+      "tools_reason": null
+    },
+    "provenance": {
+      "benchmark": "agentclinic",
+      "mode": "text",
+      "transport_endpoint": "POST /api/bench/agent-turn",
+      "agent_id": "c2761ec7-d3f7-4bd7-b68c-40a87f1b1ab3",
+      "base_url": "https://aws-gateway-backend.whissle.ai/bot",
+      "seed": 42,
+      "stratum": {
+        "dataset": "MedQA",
+        "scenario_index": 12,
+        "selection": "head",
+        "limit": 25
+      },
+      "judge": {
+        "judge_provider": "anthropic",
+        "judge_model": "claude-sonnet-4-5",
+        "judge_endpoint": "anthropic:claude-sonnet-4-5",
+        "judge_independent": true,
+        "judge_independence_note": "Judge independence: this run's simulators and graders were routed through an external provider, independent of the agent under test. This is the stronger footing for a published comparison against the paper's numbers."
+      },
+      "judge_provider": "anthropic",
+      "judge_independent": true,
+      "run_id": null,
+      "run_dir": "results/whissle/agentclinic/20260808T191547Z-sweep25_sonnet5",
+      "harness_commit": "86b4475",
+      "captured_at": "2026-08-08T19:18:03+00:00",
+      "protocol": "markers",
+      "history": "agentclinic",
+      "prompt_mode": "override",
+      "vision": "off",
+      "agent_type": null,
+      "total_inferences": 20,
+      "inferences_used": 7,
+      "support_llm": "anthropic:claude-sonnet-4-5",
+      "patient_bias": null,
+      "doctor_bias": null,
+      "voice_subset": false
+    },
+    "cost": {
+      "available": true,
+      "reason": null,
+      "judge_calls": 7,
+      "judge_cost_usd": 0.01436,
+      "agent_calls": 7
+    },
+    "flow": {
+      "available": false,
+      "reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "source": null,
+      "turns": null,
+      "summary": null,
+      "conversation_id": null,
+      "current_state": null,
+      "start_state": null,
+      "final_state": null,
+      "ended": null,
+      "flow_end": null,
+      "num_steps": null,
+      "step_counts_by_kind": null,
+      "states_visited": null,
+      "states_declared": null,
+      "states_unvisited": null,
+      "transitions": null,
+      "transitions_fired": null,
+      "var_sets": null,
+      "var_sources": null,
+      "guard_trips": null,
+      "state_divergences": null,
+      "tools_gated": null,
+      "says": null,
+      "steps": null
+    },
+    "signals": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "metadata_sidecar": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "tools": {
+      "available": true,
+      "reason": null,
+      "source": "doctor actions parsed from /api/bench/agent-turn replies",
+      "calls": [
+        {
+          "turn": 5,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Pelvis_and_Hip_X-Ray"
+          },
+          "result": "RESULTS: Pelvic X-ray shows no fractures identified in the pelvic ring or femoral neck, but alignment suggests posterior dislocation of the right hip.",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 3167,
+          "terminal": false
+        },
+        {
+          "turn": 6,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Knee_X-Ray_Bilateral"
+          },
+          "result": "RESULTS: Knee X-rays are not available in the provided data.\n\nNORMAL READINGS - No fractures or dislocations identified in bilateral knee imaging. Patellofemoral joints appear intact with normal alignment.",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 3706,
+          "terminal": false
+        },
+        {
+          "turn": 7,
+          "id": null,
+          "name": "give_diagnosis",
+          "arguments": {
+            "request": "Right posterior hip dislocation (following motor vehicle collision, dashboard-type injury), with associated bilateral knee contusions and intact distal neurovascular function."
+          },
+          "result": null,
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 4072,
+          "terminal": true
+        }
+      ],
+      "summary": {
+        "n_calls": 3,
+        "by_name": {
+          "request_test": 2,
+          "give_diagnosis": 1
+        },
+        "n_ok": 3,
+        "n_error": 0,
+        "errors": []
+      },
+      "writes": {
+        "available": false,
+        "reason": "this benchmark issues no writes, so there is no said-vs-emitted-vs-landed distinction to record"
+      }
+    },
+    "turns": [
+      {
+        "inference": 1,
+        "incoming": "",
+        "reply": "Hi, I'm Dr. Agent. Can you tell me what happened and how your right hip and leg are feeling right now?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 5735,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 42,
+          "output_tokens_details": {
+            "thinking_tokens": 0
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 2,
+        "incoming": "I was in a car accident - someone hit me from behind while I was stopped. My right groin area is killing me, it's really severe pain, and both my knees hurt too. My right leg just feels... wrong, like I can't position it normally.",
+        "reply": "Can you describe how your right leg looks right now — is it shortened, rotated inward or outward, and can you move it at all?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 5848,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 40,
+          "output_tokens_details": {
+            "thinking_tokens": 0
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 3,
+        "incoming": "Yes, my right leg looks shorter than my left one, and it's kind of bent and turned inward. I can barely move it at all - any attempt to move it makes the groin pain so much worse.",
+        "reply": "This sounds like a posterior hip dislocation. Given the mechanism—dashboard-type injury in a collision with knee trauma—I'd like to check your knees too: do you have pain, swelling, or deformity there, or any numbness/tingling down the leg?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 5948,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 86,
+          "output_tokens_details": {
+            "thinking_tokens": 0
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 4,
+        "incoming": "Yes, both my knees are painful, especially when I try to bend them, but I don't think they're swollen or look deformed. I don't have any numbness or tingling down my leg though, just that terrible pain in my groin.",
+        "reply": "Any numbness or weakness in your foot, or can you still move your toes and feel your foot normally?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 6102,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 33,
+          "output_tokens_details": {
+            "thinking_tokens": 0
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 5,
+        "incoming": "I can move my toes and feel my foot okay - no numbness or weakness there. It's really just the groin pain and not being able to move my hip that's the problem.",
+        "reply": "I'd like to get imaging to confirm — REQUEST TEST: Pelvis_and_Hip_X-Ray",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Pelvis_and_Hip_X-Ray",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 6184,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 42,
+          "output_tokens_details": {
+            "thinking_tokens": 0
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 6,
+        "incoming": "RESULTS: Pelvic X-ray shows no fractures identified in the pelvic ring or femoral neck, but alignment suggests posterior dislocation of the right hip.",
+        "reply": "Given the dashboard mechanism, I also want to check your knees for any occult injury — REQUEST TEST: Knee_X-Ray_Bilateral",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Knee_X-Ray_Bilateral",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 6284,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 53,
+          "output_tokens_details": {
+            "thinking_tokens": 0
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 7,
+        "incoming": "RESULTS: Knee X-rays are not available in the provided data.\n\nNORMAL READINGS - No fractures or dislocations identified in bilateral knee imaging. Patellofemoral joints appear intact with normal alignment.",
+        "reply": "Good, no fractures in the knees. Given the confirmed posterior hip dislocation with intact neurovascular status, this needs urgent closed reduction — I'll arrange immediate orthopedic consultation.\n\nDIAGNOSIS READY: Right posterior hip dislocation (following motor vehicle collision, dashboard-type injury), with associated bilateral knee contusions and intact distal neurovascular function.",
+        "tool_calls": [],
+        "kind": "diagnosis",
+        "payload": "Right posterior hip dislocation (following motor vehicle collision, dashboard-type injury), with associated bilateral knee contusions and intact distal neurovascular function.",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 6412,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 138,
+          "output_tokens_details": {
+            "thinking_tokens": 0
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      }
+    ],
+    "audio": null
+  }
+}

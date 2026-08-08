@@ -1,0 +1,558 @@
+{
+  "scenario_id": "MedQA-2",
+  "scenario_index": 2,
+  "dataset": "MedQA",
+  "mode": "text",
+  "correct_diagnosis": "Hirschsprung disease",
+  "answer_options": [],
+  "score": {
+    "outcome": "correct",
+    "correctness": true,
+    "doctor_diagnosis": "Hirschsprung disease",
+    "doctor_final_text": "Yes, it is a condition called Hirschsprung disease where nerve cells are missing from the end of the bowel, causing the blockage and swelling. While serious, it is treatable with surgery to remove the affected segment of the colon.\n\nDIAGNOSIS READY: Hirschsprung disease",
+    "moderator_raw": "yes",
+    "moderator_raw_text": "Yes",
+    "moderator_lenient": true,
+    "moderator_attempts": 1,
+    "moderator_normalized": false,
+    "moderator_unconstrained": false,
+    "declined": false,
+    "refusal_evidence": [],
+    "format_deviation": false,
+    "decline_source": null,
+    "decline_reason": "",
+    "spurious_commit": false
+  },
+  "infra_fail": false,
+  "error": null,
+  "findings": [],
+  "inferences_used": 7,
+  "max_inferences": 20,
+  "tests_ordered": [
+    "Abdominal_Ultrasound",
+    "Rectal_Suction_Biopsy"
+  ],
+  "images_requested": 0,
+  "image": null,
+  "image_error": null,
+  "vision": "off",
+  "refusals": [],
+  "dialogue": [
+    {
+      "role": "doctor",
+      "inference": 1,
+      "kind": "question",
+      "text": "Hello, I'm Dr. Agent, an AI assistant, and this call is recorded for quality. To help me understand your son's condition, has he had any issues with bowel movements since birth, such as a delay in passing his first stool?",
+      "payload": null,
+      "latency_ms": 2979,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "\"Well, now that you mention it, I think he did take a little longer than usual to pass his first stool after birth - maybe a day or two? But after that, his bowel movements seemed pretty normal until recently.\""
+    },
+    {
+      "role": "doctor",
+      "inference": 2,
+      "kind": "question",
+      "text": "I see. Lately, have you noticed if his stools are very thin or ribbon-like, and has he been vomiting at all?",
+      "payload": null,
+      "latency_ms": 4182,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "\"No, he hasn't been vomiting at all. As for his stools, I haven't really noticed them being particularly thin or ribbon-like - they seem fairly normal to me when I change his diaper.\""
+    },
+    {
+      "role": "doctor",
+      "inference": 3,
+      "kind": "test",
+      "text": "Has your son been gaining weight steadily, or has his growth slowed down recently? I would also like to get a better look at what is happening inside his abdomen.\n\nREQUEST TEST: Abdominal_Ultrasound",
+      "payload": "Abdominal_Ultrasound",
+      "latency_ms": 5773,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: \n\nBased on the available diagnostic information, here are the relevant findings:\n\n**Abdominal X-ray:**\n- Dilated bowel segments with absence of gas in the rectum, suggesting a possible obstruction\n\n**Barium Enema:**\n- A transition zone in the distal colon, compatible with Hirschsprung disease\n\n**Note:** Abdominal_Ultrasound results are not available in the current test data. The above results from Abdominal X-ray and Barium Enema provide significant diagnostic information regarding the suspected bowel obstruction and are consistent with Hirschsprung disease."
+    },
+    {
+      "role": "doctor",
+      "inference": 4,
+      "kind": "question",
+      "text": "Has your son had any fevers or episodes of foul-smelling diarrhea lately, and how has his weight gain been since these issues started? These details will help me confirm the",
+      "payload": null,
+      "latency_ms": 5062,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "\"No, he hasn't had any fevers or diarrhea - actually, no diarrhea at all. And that's the strange thing - even though he's been eating less and seems so uncomfortable, he's actually been gaining weight, which seems odd to me.\""
+    },
+    {
+      "role": "doctor",
+      "inference": 5,
+      "kind": "test",
+      "text": "The weight gain you're seeing could unfortunately be caused by the buildup of stool and gas in his abdomen. To confirm the diagnosis suggested by the barium enema, I need to check for the presence of specific nerve cells in his colon.\n\nREQUEST TEST: Rectal_Suction_Biopsy",
+      "payload": "Rectal_Suction_Biopsy",
+      "latency_ms": 4306,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS:\n\nThe Rectal_Suction_Biopsy results are not available in the current test data.\n\nHowever, based on the clinical presentation and existing diagnostic findings (abdominal X-ray showing dilated bowel segments with absence of rectal gas, and barium enema demonstrating a transition zone in the distal colon), these findings are highly suggestive of Hirschsprung disease. \n\nA rectal suction biopsy would be the definitive diagnostic test to confirm the absence of ganglion cells in the affected bowel segment, which is pathognomonic for Hirschsprung disease.\n\n**Recommendation:** Given the strong clinical and radiological evidence, proceeding with rectal suction biopsy for histopathological confirmation would be the appropriate next step in management."
+    },
+    {
+      "role": "doctor",
+      "inference": 6,
+      "kind": "question",
+      "text": "It sounds like your son is dealing with a significant blockage in his lower intestine. Given the delayed first stool at birth and the specific findings on the barium enema, I have reached a conclusion.",
+      "payload": null,
+      "latency_ms": 5851,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "\"Oh my goodness, a blockage? Is that why his belly has been so swollen and he's been so fussy? What does this mean for him - is it something serious?\""
+    },
+    {
+      "role": "doctor",
+      "inference": 7,
+      "kind": "diagnosis",
+      "text": "Yes, it is a condition called Hirschsprung disease where nerve cells are missing from the end of the bowel, causing the blockage and swelling. While serious, it is treatable with surgery to remove the affected segment of the colon.\n\nDIAGNOSIS READY: Hirschsprung disease",
+      "payload": "Hirschsprung disease",
+      "latency_ms": 4080,
+      "refusal": null,
+      "via": "marker"
+    }
+  ],
+  "latency_ms": [
+    2979,
+    4182,
+    5773,
+    5062,
+    4306,
+    5851,
+    4080
+  ],
+  "wall_s": 50.55,
+  "doctor_turns": [
+    {
+      "inference": 1,
+      "incoming": "",
+      "reply": "Hello, I'm Dr. Agent, an AI assistant, and this call is recorded for quality. To help me understand your son's condition, has he had any issues with bowel movements since birth, such as a delay in passing his first stool?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 3955,
+        "output_tokens": 370,
+        "thinking_tokens": 318,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    },
+    {
+      "inference": 2,
+      "incoming": "\"Well, now that you mention it, I think he did take a little longer than usual to pass his first stool after birth - maybe a day or two? But after that, his bowel movements seemed pretty normal until recently.\"",
+      "reply": "I see. Lately, have you noticed if his stools are very thin or ribbon-like, and has he been vomiting at all?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4054,
+        "output_tokens": 730,
+        "thinking_tokens": 703,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    },
+    {
+      "inference": 3,
+      "incoming": "\"No, he hasn't been vomiting at all. As for his stools, I haven't really noticed them being particularly thin or ribbon-like - they seem fairly normal to me when I change his diaper.\"",
+      "reply": "Has your son been gaining weight steadily, or has his growth slowed down recently? I would also like to get a better look at what is happening inside his abdomen.\n\nREQUEST TEST: Abdominal_Ultrasound",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Abdominal_Ultrasound",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4127,
+        "output_tokens": 1005,
+        "thinking_tokens": 963,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    },
+    {
+      "inference": 4,
+      "incoming": "RESULTS: \n\nBased on the available diagnostic information, here are the relevant findings:\n\n**Abdominal X-ray:**\n- Dilated bowel segments with absence of gas in the rectum, suggesting a possible obstruction\n\n**Barium Enema:**\n- A transition zone in the distal colon, compatible with Hirschsprung disease\n\n**Note:** Abdominal_Ultrasound results are not available in the current test data. The above results from Abdominal X-ray and Barium Enema provide significant diagnostic information regarding the suspected bowel obstruction and are consistent with Hirschsprung disease.",
+      "reply": "Has your son had any fevers or episodes of foul-smelling diarrhea lately, and how has his weight gain been since these issues started? These details will help me confirm the",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4288,
+        "output_tokens": 1020,
+        "thinking_tokens": 984,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "MAX_TOKENS"
+    },
+    {
+      "inference": 5,
+      "incoming": "\"No, he hasn't had any fevers or diarrhea - actually, no diarrhea at all. And that's the strange thing - even though he's been eating less and seems so uncomfortable, he's actually been gaining weight, which seems odd to me.\"",
+      "reply": "The weight gain you're seeing could unfortunately be caused by the buildup of stool and gas in his abdomen. To confirm the diagnosis suggested by the barium enema, I need to check for the presence of specific nerve cells in his colon.\n\nREQUEST TEST: Rectal_Suction_Biopsy",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Rectal_Suction_Biopsy",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4382,
+        "output_tokens": 749,
+        "thinking_tokens": 689,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    },
+    {
+      "inference": 6,
+      "incoming": "RESULTS:\n\nThe Rectal_Suction_Biopsy results are not available in the current test data.\n\nHowever, based on the clinical presentation and existing diagnostic findings (abdominal X-ray showing dilated bowel segments with absence of rectal gas, and barium enema demonstrating a transition zone in the distal colon), these findings are highly suggestive of Hirschsprung disease. \n\nA rectal suction biopsy would be the definitive diagnostic test to confirm the absence of ganglion cells in the affected bowel segment, which is pathognomonic for Hirschsprung disease.\n\n**Recommendation:** Given the strong clinical and radiological evidence, proceeding with rectal suction biopsy for histopathological confirmation would be the appropriate next step in management.",
+      "reply": "It sounds like your son is dealing with a significant blockage in his lower intestine. Given the delayed first stool at birth and the specific findings on the barium enema, I have reached a conclusion.",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4584,
+        "output_tokens": 1020,
+        "thinking_tokens": 981,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "MAX_TOKENS"
+    },
+    {
+      "inference": 7,
+      "incoming": "\"Oh my goodness, a blockage? Is that why his belly has been so swollen and he's been so fussy? What does this mean for him - is it something serious?\"",
+      "reply": "Yes, it is a condition called Hirschsprung disease where nerve cells are missing from the end of the bowel, causing the blockage and swelling. While serious, it is treatable with surgery to remove the affected segment of the colon.\n\nDIAGNOSIS READY: Hirschsprung disease",
+      "tool_calls": [],
+      "kind": "diagnosis",
+      "payload": "Hirschsprung disease",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4662,
+        "output_tokens": 804,
+        "thinking_tokens": 747,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    }
+  ],
+  "support_llm": "anthropic:claude-sonnet-4-5",
+  "support_llm_cost_usd": 0.02005,
+  "support_llm_calls": 7,
+  "voice_subset": false,
+  "diagnostics": {
+    "schema": "tau2.health.diagnostics/v1",
+    "benchmark": "agentclinic",
+    "case_id": "MedQA-2",
+    "mode": "text",
+    "availability": {
+      "flow_available": false,
+      "flow_reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "signals_available": false,
+      "signals_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "metadata_sidecar_available": false,
+      "metadata_sidecar_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "tools_available": true,
+      "tools_reason": null
+    },
+    "provenance": {
+      "benchmark": "agentclinic",
+      "mode": "text",
+      "transport_endpoint": "POST /api/bench/agent-turn",
+      "agent_id": "c2761ec7-d3f7-4bd7-b68c-40a87f1b1ab3",
+      "base_url": "https://aws-gateway-backend.whissle.ai/bot",
+      "seed": 42,
+      "stratum": {
+        "dataset": "MedQA",
+        "scenario_index": 2,
+        "selection": "head",
+        "limit": 25
+      },
+      "judge": {
+        "judge_provider": "anthropic",
+        "judge_model": "claude-sonnet-4-5",
+        "judge_endpoint": "anthropic:claude-sonnet-4-5",
+        "judge_independent": true,
+        "judge_independence_note": "Judge independence: this run's simulators and graders were routed through an external provider, independent of the agent under test. This is the stronger footing for a published comparison against the paper's numbers."
+      },
+      "judge_provider": "anthropic",
+      "judge_independent": true,
+      "run_id": null,
+      "run_dir": "results/whissle/agentclinic/20260808T194241Z-sweep25_g3fp",
+      "harness_commit": "86b4475",
+      "captured_at": "2026-08-08T19:43:31+00:00",
+      "protocol": "markers",
+      "history": "agentclinic",
+      "prompt_mode": "override",
+      "vision": "off",
+      "agent_type": null,
+      "total_inferences": 20,
+      "inferences_used": 7,
+      "support_llm": "anthropic:claude-sonnet-4-5",
+      "patient_bias": null,
+      "doctor_bias": null,
+      "voice_subset": false
+    },
+    "cost": {
+      "available": true,
+      "reason": null,
+      "judge_calls": 7,
+      "judge_cost_usd": 0.02005,
+      "agent_calls": 7
+    },
+    "flow": {
+      "available": false,
+      "reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "source": null,
+      "turns": null,
+      "summary": null,
+      "conversation_id": null,
+      "current_state": null,
+      "start_state": null,
+      "final_state": null,
+      "ended": null,
+      "flow_end": null,
+      "num_steps": null,
+      "step_counts_by_kind": null,
+      "states_visited": null,
+      "states_declared": null,
+      "states_unvisited": null,
+      "transitions": null,
+      "transitions_fired": null,
+      "var_sets": null,
+      "var_sources": null,
+      "guard_trips": null,
+      "state_divergences": null,
+      "tools_gated": null,
+      "says": null,
+      "steps": null
+    },
+    "signals": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "metadata_sidecar": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "tools": {
+      "available": true,
+      "reason": null,
+      "source": "doctor actions parsed from /api/bench/agent-turn replies",
+      "calls": [
+        {
+          "turn": 3,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Abdominal_Ultrasound"
+          },
+          "result": "RESULTS: \n\nBased on the available diagnostic information, here are the relevant findings:\n\n**Abdominal X-ray:**\n- Dilated bowel segments with absence of gas in the rectum, suggesting a possible obstruction\n\n**Barium Enema:**\n- A transition zone in the distal colon, compatible with Hirschsprung disease\n\n**Note:** Abdominal_Ultrasound results are not available in the current test data. The above results from Abdominal X-ray and Barium Enema provide significant diagnostic information regarding the suspected bowel obstruction and are consistent with Hirschsprung disease.",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 5773,
+          "terminal": false
+        },
+        {
+          "turn": 5,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Rectal_Suction_Biopsy"
+          },
+          "result": "RESULTS:\n\nThe Rectal_Suction_Biopsy results are not available in the current test data.\n\nHowever, based on the clinical presentation and existing diagnostic findings (abdominal X-ray showing dilated bowel segments with absence of rectal gas, and barium enema demonstrating a transition zone in the distal colon), these findings are highly suggestive of Hirschsprung disease. \n\nA rectal suction biopsy would be the definitive diagnostic test to confirm the absence of ganglion cells in the affected bowel segment, which is pathognomonic for Hirschsprung disease.\n\n**Recommendation:** Given the strong clinical and radiological evidence, proceeding with rectal suction biopsy for histopathological confirmation would be the appropriate next step in management.",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 4306,
+          "terminal": false
+        },
+        {
+          "turn": 7,
+          "id": null,
+          "name": "give_diagnosis",
+          "arguments": {
+            "request": "Hirschsprung disease"
+          },
+          "result": null,
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 4080,
+          "terminal": true
+        }
+      ],
+      "summary": {
+        "n_calls": 3,
+        "by_name": {
+          "request_test": 2,
+          "give_diagnosis": 1
+        },
+        "n_ok": 3,
+        "n_error": 0,
+        "errors": []
+      },
+      "writes": {
+        "available": false,
+        "reason": "this benchmark issues no writes, so there is no said-vs-emitted-vs-landed distinction to record"
+      }
+    },
+    "turns": [
+      {
+        "inference": 1,
+        "incoming": "",
+        "reply": "Hello, I'm Dr. Agent, an AI assistant, and this call is recorded for quality. To help me understand your son's condition, has he had any issues with bowel movements since birth, such as a delay in passing his first stool?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 3955,
+          "output_tokens": 370,
+          "thinking_tokens": 318,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      },
+      {
+        "inference": 2,
+        "incoming": "\"Well, now that you mention it, I think he did take a little longer than usual to pass his first stool after birth - maybe a day or two? But after that, his bowel movements seemed pretty normal until recently.\"",
+        "reply": "I see. Lately, have you noticed if his stools are very thin or ribbon-like, and has he been vomiting at all?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4054,
+          "output_tokens": 730,
+          "thinking_tokens": 703,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      },
+      {
+        "inference": 3,
+        "incoming": "\"No, he hasn't been vomiting at all. As for his stools, I haven't really noticed them being particularly thin or ribbon-like - they seem fairly normal to me when I change his diaper.\"",
+        "reply": "Has your son been gaining weight steadily, or has his growth slowed down recently? I would also like to get a better look at what is happening inside his abdomen.\n\nREQUEST TEST: Abdominal_Ultrasound",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Abdominal_Ultrasound",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4127,
+          "output_tokens": 1005,
+          "thinking_tokens": 963,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      },
+      {
+        "inference": 4,
+        "incoming": "RESULTS: \n\nBased on the available diagnostic information, here are the relevant findings:\n\n**Abdominal X-ray:**\n- Dilated bowel segments with absence of gas in the rectum, suggesting a possible obstruction\n\n**Barium Enema:**\n- A transition zone in the distal colon, compatible with Hirschsprung disease\n\n**Note:** Abdominal_Ultrasound results are not available in the current test data. The above results from Abdominal X-ray and Barium Enema provide significant diagnostic information regarding the suspected bowel obstruction and are consistent with Hirschsprung disease.",
+        "reply": "Has your son had any fevers or episodes of foul-smelling diarrhea lately, and how has his weight gain been since these issues started? These details will help me confirm the",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4288,
+          "output_tokens": 1020,
+          "thinking_tokens": 984,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "MAX_TOKENS"
+      },
+      {
+        "inference": 5,
+        "incoming": "\"No, he hasn't had any fevers or diarrhea - actually, no diarrhea at all. And that's the strange thing - even though he's been eating less and seems so uncomfortable, he's actually been gaining weight, which seems odd to me.\"",
+        "reply": "The weight gain you're seeing could unfortunately be caused by the buildup of stool and gas in his abdomen. To confirm the diagnosis suggested by the barium enema, I need to check for the presence of specific nerve cells in his colon.\n\nREQUEST TEST: Rectal_Suction_Biopsy",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Rectal_Suction_Biopsy",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4382,
+          "output_tokens": 749,
+          "thinking_tokens": 689,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      },
+      {
+        "inference": 6,
+        "incoming": "RESULTS:\n\nThe Rectal_Suction_Biopsy results are not available in the current test data.\n\nHowever, based on the clinical presentation and existing diagnostic findings (abdominal X-ray showing dilated bowel segments with absence of rectal gas, and barium enema demonstrating a transition zone in the distal colon), these findings are highly suggestive of Hirschsprung disease. \n\nA rectal suction biopsy would be the definitive diagnostic test to confirm the absence of ganglion cells in the affected bowel segment, which is pathognomonic for Hirschsprung disease.\n\n**Recommendation:** Given the strong clinical and radiological evidence, proceeding with rectal suction biopsy for histopathological confirmation would be the appropriate next step in management.",
+        "reply": "It sounds like your son is dealing with a significant blockage in his lower intestine. Given the delayed first stool at birth and the specific findings on the barium enema, I have reached a conclusion.",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4584,
+          "output_tokens": 1020,
+          "thinking_tokens": 981,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "MAX_TOKENS"
+      },
+      {
+        "inference": 7,
+        "incoming": "\"Oh my goodness, a blockage? Is that why his belly has been so swollen and he's been so fussy? What does this mean for him - is it something serious?\"",
+        "reply": "Yes, it is a condition called Hirschsprung disease where nerve cells are missing from the end of the bowel, causing the blockage and swelling. While serious, it is treatable with surgery to remove the affected segment of the colon.\n\nDIAGNOSIS READY: Hirschsprung disease",
+        "tool_calls": [],
+        "kind": "diagnosis",
+        "payload": "Hirschsprung disease",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4662,
+          "output_tokens": 804,
+          "thinking_tokens": 747,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      }
+    ],
+    "audio": null
+  }
+}

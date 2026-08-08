@@ -1,0 +1,509 @@
+{
+  "scenario_id": "MedQA-1",
+  "scenario_index": 1,
+  "dataset": "MedQA",
+  "mode": "text",
+  "correct_diagnosis": "Progressive multifocal encephalopathy (PML)",
+  "answer_options": [],
+  "score": {
+    "outcome": "correct",
+    "correctness": true,
+    "doctor_diagnosis": "Progressive multifocal leukoencephalopathy",
+    "doctor_final_text": "Based on your clinical presentation, history of natalizumab therapy, and the MRI brain findings, your symptoms are highly consistent with progressive multifocal leukoencephalopathy. I am prepared to make the diagnosis. \n\nDIAGNOSIS READY: Progressive multifocal leukoencephalopathy",
+    "moderator_raw": "yes",
+    "moderator_raw_text": "Yes",
+    "moderator_lenient": true,
+    "moderator_attempts": 1,
+    "moderator_normalized": false,
+    "moderator_unconstrained": false,
+    "declined": false,
+    "refusal_evidence": [],
+    "format_deviation": false,
+    "decline_source": null,
+    "decline_reason": "",
+    "spurious_commit": false
+  },
+  "infra_fail": false,
+  "error": null,
+  "findings": [],
+  "inferences_used": 6,
+  "max_inferences": 20,
+  "tests_ordered": [
+    "MRI_Brain",
+    "CSF_JC_virus_PCR"
+  ],
+  "images_requested": 0,
+  "image": null,
+  "image_error": null,
+  "vision": "off",
+  "refusals": [],
+  "dialogue": [
+    {
+      "role": "doctor",
+      "inference": 1,
+      "kind": "question",
+      "text": "Hello, I'm Dr. Agent, an AI assistant, and this call is recorded for quality. I see you are presenting with gait and limb ataxia; how long have you been experiencing these coordination and balance issues?",
+      "payload": null,
+      "latency_ms": 2970,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Well, my friends started noticing about a week or two ago that I was walking funny, like I'd had too much to drink. I've also noticed my right arm feels weaker than usual and I'm having trouble with coordination when I try to reach for things."
+    },
+    {
+      "role": "doctor",
+      "inference": 2,
+      "kind": "question",
+      "text": "That sounds quite concerning. To help me get a clearer picture, could you tell me about your medical history, specifically any chronic conditions or past diagnoses?",
+      "payload": null,
+      "latency_ms": 1745,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "I was diagnosed with Crohn disease about two years ago, and it's been pretty severe - I haven't responded well to the usual treatments. For the past year, I've been on a medication called natalizumab to help manage it."
+    },
+    {
+      "role": "doctor",
+      "inference": 3,
+      "kind": "question",
+      "text": "Thank you for sharing that important history. Have you noticed any other new symptoms, such as changes in your vision, difficulty speaking, or confusion?",
+      "payload": null,
+      "latency_ms": 3333,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "No, I haven't had any problems with my vision or speaking, and I don't feel confused. It's really just the walking and the weakness in my right arm that's been bothering me."
+    },
+    {
+      "role": "doctor",
+      "inference": 4,
+      "kind": "test",
+      "text": "I see, thank you for clarifying that. Given your history with natalizumab, I would like to order a brain MRI to check for any changes in your brain tissue. \n\nREQUEST TEST: MRI_Brain",
+      "payload": "MRI_Brain",
+      "latency_ms": 2954,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: MRI Brain findings show lesions consistent with Progressive Multifocal Encephalopathy (PML). T1/T2 images demonstrate multifocal demyelinating lesions without gadolinium enhancement, indicative of PML."
+    },
+    {
+      "role": "doctor",
+      "inference": 5,
+      "kind": "test",
+      "text": "The MRI results show lesions that are highly suggestive of a condition called Progressive Multifocal Leukoencephalopathy (PML), which is a known risk with natalizumab use. To confirm this, I would like to order a lumbar puncture to test your cerebrospinal fluid for the JC virus. \n\nREQUEST TEST: CSF_JC_virus_PCR",
+      "payload": "CSF_JC_virus_PCR",
+      "latency_ms": 3507,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: The requested test CSF_JC_virus_PCR is not available in the current data.\n\nHowever, based on standard clinical practice for suspected PML cases, a lumbar puncture with CSF JC virus PCR testing would typically be performed. \n\nFor the purposes of this case, you may assume NORMAL READINGS or proceed with clinical correlation based on the MRI findings already obtained, which show lesions consistent with Progressive Multifocal Encephalopathy (PML)."
+    },
+    {
+      "role": "doctor",
+      "inference": 6,
+      "kind": "diagnosis",
+      "text": "Based on your clinical presentation, history of natalizumab therapy, and the MRI brain findings, your symptoms are highly consistent with progressive multifocal leukoencephalopathy. I am prepared to make the diagnosis. \n\nDIAGNOSIS READY: Progressive multifocal leukoencephalopathy",
+      "payload": "Progressive multifocal leukoencephalopathy",
+      "latency_ms": 4335,
+      "refusal": null,
+      "via": "marker"
+    }
+  ],
+  "latency_ms": [
+    2970,
+    1745,
+    3333,
+    2954,
+    3507,
+    4335
+  ],
+  "wall_s": 32.09,
+  "doctor_turns": [
+    {
+      "inference": 1,
+      "incoming": "",
+      "reply": "Hello, I'm Dr. Agent, an AI assistant, and this call is recorded for quality. I see you are presenting with gait and limb ataxia; how long have you been experiencing these coordination and balance issues?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 3945,
+        "output_tokens": 442,
+        "thinking_tokens": 398,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    },
+    {
+      "inference": 2,
+      "incoming": "Well, my friends started noticing about a week or two ago that I was walking funny, like I'd had too much to drink. I've also noticed my right arm feels weaker than usual and I'm having trouble with coordination when I try to reach for things.",
+      "reply": "That sounds quite concerning. To help me get a clearer picture, could you tell me about your medical history, specifically any chronic conditions or past diagnoses?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4046,
+        "output_tokens": 171,
+        "thinking_tokens": 141,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    },
+    {
+      "inference": 3,
+      "incoming": "I was diagnosed with Crohn disease about two years ago, and it's been pretty severe - I haven't responded well to the usual treatments. For the past year, I've been on a medication called natalizumab to help manage it.",
+      "reply": "Thank you for sharing that important history. Have you noticed any other new symptoms, such as changes in your vision, difficulty speaking, or confusion?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4128,
+        "output_tokens": 586,
+        "thinking_tokens": 557,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    },
+    {
+      "inference": 4,
+      "incoming": "No, I haven't had any problems with my vision or speaking, and I don't feel confused. It's really just the walking and the weakness in my right arm that's been bothering me.",
+      "reply": "I see, thank you for clarifying that. Given your history with natalizumab, I would like to order a brain MRI to check for any changes in your brain tissue. \n\nREQUEST TEST: MRI_Brain",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "MRI_Brain",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4203,
+        "output_tokens": 487,
+        "thinking_tokens": 445,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    },
+    {
+      "inference": 5,
+      "incoming": "RESULTS: MRI Brain findings show lesions consistent with Progressive Multifocal Encephalopathy (PML). T1/T2 images demonstrate multifocal demyelinating lesions without gadolinium enhancement, indicative of PML.",
+      "reply": "The MRI results show lesions that are highly suggestive of a condition called Progressive Multifocal Leukoencephalopathy (PML), which is a known risk with natalizumab use. To confirm this, I would like to order a lumbar puncture to test your cerebrospinal fluid for the JC virus. \n\nREQUEST TEST: CSF_JC_virus_PCR",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "CSF_JC_virus_PCR",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4289,
+        "output_tokens": 650,
+        "thinking_tokens": 582,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    },
+    {
+      "inference": 6,
+      "incoming": "RESULTS: The requested test CSF_JC_virus_PCR is not available in the current data.\n\nHowever, based on standard clinical practice for suspected PML cases, a lumbar puncture with CSF JC virus PCR testing would typically be performed. \n\nFor the purposes of this case, you may assume NORMAL READINGS or proceed with clinical correlation based on the MRI findings already obtained, which show lesions consistent with Progressive Multifocal Encephalopathy (PML).",
+      "reply": "Based on your clinical presentation, history of natalizumab therapy, and the MRI brain findings, your symptoms are highly consistent with progressive multifocal leukoencephalopathy. I am prepared to make the diagnosis. \n\nDIAGNOSIS READY: Progressive multifocal leukoencephalopathy",
+      "tool_calls": [],
+      "kind": "diagnosis",
+      "payload": "Progressive multifocal leukoencephalopathy",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4449,
+        "output_tokens": 947,
+        "thinking_tokens": 892,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    }
+  ],
+  "support_llm": "anthropic:claude-sonnet-4-5",
+  "support_llm_cost_usd": 0.01307,
+  "support_llm_calls": 6,
+  "voice_subset": false,
+  "diagnostics": {
+    "schema": "tau2.health.diagnostics/v1",
+    "benchmark": "agentclinic",
+    "case_id": "MedQA-1",
+    "mode": "text",
+    "availability": {
+      "flow_available": false,
+      "flow_reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "signals_available": false,
+      "signals_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "metadata_sidecar_available": false,
+      "metadata_sidecar_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "tools_available": true,
+      "tools_reason": null
+    },
+    "provenance": {
+      "benchmark": "agentclinic",
+      "mode": "text",
+      "transport_endpoint": "POST /api/bench/agent-turn",
+      "agent_id": "c2761ec7-d3f7-4bd7-b68c-40a87f1b1ab3",
+      "base_url": "https://aws-gateway-backend.whissle.ai/bot",
+      "seed": 42,
+      "stratum": {
+        "dataset": "MedQA",
+        "scenario_index": 1,
+        "selection": "head",
+        "limit": 25
+      },
+      "judge": {
+        "judge_provider": "anthropic",
+        "judge_model": "claude-sonnet-4-5",
+        "judge_endpoint": "anthropic:claude-sonnet-4-5",
+        "judge_independent": true,
+        "judge_independence_note": "Judge independence: this run's simulators and graders were routed through an external provider, independent of the agent under test. This is the stronger footing for a published comparison against the paper's numbers."
+      },
+      "judge_provider": "anthropic",
+      "judge_independent": true,
+      "run_id": null,
+      "run_dir": "results/whissle/agentclinic/20260808T193252Z-sweep25_g35f",
+      "harness_commit": "86b4475",
+      "captured_at": "2026-08-08T19:33:24+00:00",
+      "protocol": "markers",
+      "history": "agentclinic",
+      "prompt_mode": "override",
+      "vision": "off",
+      "agent_type": null,
+      "total_inferences": 20,
+      "inferences_used": 6,
+      "support_llm": "anthropic:claude-sonnet-4-5",
+      "patient_bias": null,
+      "doctor_bias": null,
+      "voice_subset": false
+    },
+    "cost": {
+      "available": true,
+      "reason": null,
+      "judge_calls": 6,
+      "judge_cost_usd": 0.01307,
+      "agent_calls": 6
+    },
+    "flow": {
+      "available": false,
+      "reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "source": null,
+      "turns": null,
+      "summary": null,
+      "conversation_id": null,
+      "current_state": null,
+      "start_state": null,
+      "final_state": null,
+      "ended": null,
+      "flow_end": null,
+      "num_steps": null,
+      "step_counts_by_kind": null,
+      "states_visited": null,
+      "states_declared": null,
+      "states_unvisited": null,
+      "transitions": null,
+      "transitions_fired": null,
+      "var_sets": null,
+      "var_sources": null,
+      "guard_trips": null,
+      "state_divergences": null,
+      "tools_gated": null,
+      "says": null,
+      "steps": null
+    },
+    "signals": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "metadata_sidecar": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "tools": {
+      "available": true,
+      "reason": null,
+      "source": "doctor actions parsed from /api/bench/agent-turn replies",
+      "calls": [
+        {
+          "turn": 4,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "MRI_Brain"
+          },
+          "result": "RESULTS: MRI Brain findings show lesions consistent with Progressive Multifocal Encephalopathy (PML). T1/T2 images demonstrate multifocal demyelinating lesions without gadolinium enhancement, indicative of PML.",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 2954,
+          "terminal": false
+        },
+        {
+          "turn": 5,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "CSF_JC_virus_PCR"
+          },
+          "result": "RESULTS: The requested test CSF_JC_virus_PCR is not available in the current data.\n\nHowever, based on standard clinical practice for suspected PML cases, a lumbar puncture with CSF JC virus PCR testing would typically be performed. \n\nFor the purposes of this case, you may assume NORMAL READINGS or proceed with clinical correlation based on the MRI findings already obtained, which show lesions consistent with Progressive Multifocal Encephalopathy (PML).",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 3507,
+          "terminal": false
+        },
+        {
+          "turn": 6,
+          "id": null,
+          "name": "give_diagnosis",
+          "arguments": {
+            "request": "Progressive multifocal leukoencephalopathy"
+          },
+          "result": null,
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 4335,
+          "terminal": true
+        }
+      ],
+      "summary": {
+        "n_calls": 3,
+        "by_name": {
+          "request_test": 2,
+          "give_diagnosis": 1
+        },
+        "n_ok": 3,
+        "n_error": 0,
+        "errors": []
+      },
+      "writes": {
+        "available": false,
+        "reason": "this benchmark issues no writes, so there is no said-vs-emitted-vs-landed distinction to record"
+      }
+    },
+    "turns": [
+      {
+        "inference": 1,
+        "incoming": "",
+        "reply": "Hello, I'm Dr. Agent, an AI assistant, and this call is recorded for quality. I see you are presenting with gait and limb ataxia; how long have you been experiencing these coordination and balance issues?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 3945,
+          "output_tokens": 442,
+          "thinking_tokens": 398,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      },
+      {
+        "inference": 2,
+        "incoming": "Well, my friends started noticing about a week or two ago that I was walking funny, like I'd had too much to drink. I've also noticed my right arm feels weaker than usual and I'm having trouble with coordination when I try to reach for things.",
+        "reply": "That sounds quite concerning. To help me get a clearer picture, could you tell me about your medical history, specifically any chronic conditions or past diagnoses?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4046,
+          "output_tokens": 171,
+          "thinking_tokens": 141,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      },
+      {
+        "inference": 3,
+        "incoming": "I was diagnosed with Crohn disease about two years ago, and it's been pretty severe - I haven't responded well to the usual treatments. For the past year, I've been on a medication called natalizumab to help manage it.",
+        "reply": "Thank you for sharing that important history. Have you noticed any other new symptoms, such as changes in your vision, difficulty speaking, or confusion?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4128,
+          "output_tokens": 586,
+          "thinking_tokens": 557,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      },
+      {
+        "inference": 4,
+        "incoming": "No, I haven't had any problems with my vision or speaking, and I don't feel confused. It's really just the walking and the weakness in my right arm that's been bothering me.",
+        "reply": "I see, thank you for clarifying that. Given your history with natalizumab, I would like to order a brain MRI to check for any changes in your brain tissue. \n\nREQUEST TEST: MRI_Brain",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "MRI_Brain",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4203,
+          "output_tokens": 487,
+          "thinking_tokens": 445,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      },
+      {
+        "inference": 5,
+        "incoming": "RESULTS: MRI Brain findings show lesions consistent with Progressive Multifocal Encephalopathy (PML). T1/T2 images demonstrate multifocal demyelinating lesions without gadolinium enhancement, indicative of PML.",
+        "reply": "The MRI results show lesions that are highly suggestive of a condition called Progressive Multifocal Leukoencephalopathy (PML), which is a known risk with natalizumab use. To confirm this, I would like to order a lumbar puncture to test your cerebrospinal fluid for the JC virus. \n\nREQUEST TEST: CSF_JC_virus_PCR",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "CSF_JC_virus_PCR",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4289,
+          "output_tokens": 650,
+          "thinking_tokens": 582,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      },
+      {
+        "inference": 6,
+        "incoming": "RESULTS: The requested test CSF_JC_virus_PCR is not available in the current data.\n\nHowever, based on standard clinical practice for suspected PML cases, a lumbar puncture with CSF JC virus PCR testing would typically be performed. \n\nFor the purposes of this case, you may assume NORMAL READINGS or proceed with clinical correlation based on the MRI findings already obtained, which show lesions consistent with Progressive Multifocal Encephalopathy (PML).",
+        "reply": "Based on your clinical presentation, history of natalizumab therapy, and the MRI brain findings, your symptoms are highly consistent with progressive multifocal leukoencephalopathy. I am prepared to make the diagnosis. \n\nDIAGNOSIS READY: Progressive multifocal leukoencephalopathy",
+        "tool_calls": [],
+        "kind": "diagnosis",
+        "payload": "Progressive multifocal leukoencephalopathy",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4449,
+          "output_tokens": 947,
+          "thinking_tokens": 892,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      }
+    ],
+    "audio": null
+  }
+}

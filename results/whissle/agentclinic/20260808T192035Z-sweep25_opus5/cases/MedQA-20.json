@@ -1,0 +1,535 @@
+{
+  "scenario_id": "MedQA-20",
+  "scenario_index": 20,
+  "dataset": "MedQA",
+  "mode": "text",
+  "correct_diagnosis": "Cytomegalovirus retinitis",
+  "answer_options": [],
+  "score": {
+    "outcome": "correct",
+    "correctness": true,
+    "doctor_diagnosis": "Cytomegalovirus (CMV) retinitis of the right eye in the setting of advanced AIDS (CD4 36/mm³)",
+    "doctor_final_text": "Your exam shows the classic \"brushfire\" pattern of granular yellow-white retinal lesions with hemorrhages, and with a CD4 of 36 this points to a specific opportunistic infection — you'll need urgent ophthalmology referral and antiviral therapy.\n\nDIAGNOSIS READY: Cytomegalovirus (CMV) retinitis of the right eye in the setting of advanced AIDS (CD4 36/mm³)",
+    "moderator_raw": "yes",
+    "moderator_raw_text": "Yes",
+    "moderator_lenient": true,
+    "moderator_attempts": 1,
+    "moderator_normalized": false,
+    "moderator_unconstrained": false,
+    "declined": false,
+    "refusal_evidence": [],
+    "format_deviation": false,
+    "decline_source": null,
+    "decline_reason": "",
+    "spurious_commit": false
+  },
+  "infra_fail": false,
+  "error": null,
+  "findings": [],
+  "inferences_used": 5,
+  "max_inferences": 20,
+  "tests_ordered": [
+    "Dilated_Fundoscopic_Examination_Both_Eyes"
+  ],
+  "images_requested": 0,
+  "image": null,
+  "image_error": null,
+  "vision": "off",
+  "refusals": [],
+  "dialogue": [
+    {
+      "role": "doctor",
+      "inference": 1,
+      "kind": "question",
+      "text": "Hello, I'm Dr. Agent — I'm sorry you're having trouble with your vision. How long have you noticed the decreased vision and black spots in your right eye?",
+      "payload": null,
+      "latency_ms": 3900,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "It started about two days ago. I just suddenly noticed my vision getting worse in my right eye, and I keep seeing these black spots floating around."
+    },
+    {
+      "role": "doctor",
+      "inference": 2,
+      "kind": "question",
+      "text": "Do you have any eye pain, redness, or sensitivity to light in that eye?",
+      "payload": null,
+      "latency_ms": 2352,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "No, there's no pain at all, and my eye doesn't look red or anything. I'm not having any trouble with light either, it's just the vision and those spots."
+    },
+    {
+      "role": "doctor",
+      "inference": 3,
+      "kind": "question",
+      "text": "Do you know your most recent CD4 count, and are you currently taking antiretroviral therapy?",
+      "payload": null,
+      "latency_ms": 3978,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "I'm not sure about the exact number for my CD4 count, but I know it's been pretty low. Yes, I'm taking my HIV medications - I think it's efavirenz and a couple others that my doctor prescribed."
+    },
+    {
+      "role": "doctor",
+      "inference": 4,
+      "kind": "test",
+      "text": "Thank you — that helps. Let me get a dilated retinal exam and some labs.\n\nREQUEST TEST: Dilated_Fundoscopic_Examination_Both_Eyes\nREQUEST TEST: CD4_Count_and_HIV_Viral_Load",
+      "payload": "Dilated_Fundoscopic_Examination_Both_Eyes",
+      "latency_ms": 4929,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS:\n\n**Dilated Fundoscopic Examination (Both Eyes):**\nGranular yellow-white opacities around the retinal vessels and multiple areas of dot-blot hemorrhages\n\n**CD4 Count:**\nCD4 T-lymphocyte: 36/mm³ (critically low; normal range: 500-1,500/mm³)\n\n**HIV Viral Load:**\nNORMAL READINGS"
+    },
+    {
+      "role": "doctor",
+      "inference": 5,
+      "kind": "diagnosis",
+      "text": "Your exam shows the classic \"brushfire\" pattern of granular yellow-white retinal lesions with hemorrhages, and with a CD4 of 36 this points to a specific opportunistic infection — you'll need urgent ophthalmology referral and antiviral therapy.\n\nDIAGNOSIS READY: Cytomegalovirus (CMV) retinitis of the right eye in the setting of advanced AIDS (CD4 36/mm³)",
+      "payload": "Cytomegalovirus (CMV) retinitis of the right eye in the setting of advanced AIDS (CD4 36/mm³)",
+      "latency_ms": 3648,
+      "refusal": null,
+      "via": "marker"
+    }
+  ],
+  "latency_ms": [
+    3900,
+    2352,
+    3978,
+    4929,
+    3648
+  ],
+  "wall_s": 30.5,
+  "doctor_turns": [
+    {
+      "inference": 1,
+      "incoming": "",
+      "reply": "Hello, I'm Dr. Agent — I'm sorry you're having trouble with your vision. How long have you noticed the decreased vision and black spots in your right eye?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 5734,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 133,
+        "output_tokens_details": {
+          "thinking_tokens": 76
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 2,
+      "incoming": "It started about two days ago. I just suddenly noticed my vision getting worse in my right eye, and I keep seeing these black spots floating around.",
+      "reply": "Do you have any eye pain, redness, or sensitivity to light in that eye?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 5835,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 46,
+        "output_tokens_details": {
+          "thinking_tokens": 18
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 3,
+      "incoming": "No, there's no pain at all, and my eye doesn't look red or anything. I'm not having any trouble with light either, it's just the vision and those spots.",
+      "reply": "Do you know your most recent CD4 count, and are you currently taking antiretroviral therapy?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 5911,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 74,
+        "output_tokens_details": {
+          "thinking_tokens": 41
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 4,
+      "incoming": "I'm not sure about the exact number for my CD4 count, but I know it's been pretty low. Yes, I'm taking my HIV medications - I think it's efavirenz and a couple others that my doctor prescribed.",
+      "reply": "Thank you — that helps. Let me get a dilated retinal exam and some labs.\n\nREQUEST TEST: Dilated_Fundoscopic_Examination_Both_Eyes\nREQUEST TEST: CD4_Count_and_HIV_Viral_Load",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Dilated_Fundoscopic_Examination_Both_Eyes",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 6014,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 155,
+        "output_tokens_details": {
+          "thinking_tokens": 63
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 5,
+      "incoming": "RESULTS:\n\n**Dilated Fundoscopic Examination (Both Eyes):**\nGranular yellow-white opacities around the retinal vessels and multiple areas of dot-blot hemorrhages\n\n**CD4 Count:**\nCD4 T-lymphocyte: 36/mm³ (critically low; normal range: 500-1,500/mm³)\n\n**HIV Viral Load:**\nNORMAL READINGS",
+      "reply": "Your exam shows the classic \"brushfire\" pattern of granular yellow-white retinal lesions with hemorrhages, and with a CD4 of 36 this points to a specific opportunistic infection — you'll need urgent ophthalmology referral and antiviral therapy.\n\nDIAGNOSIS READY: Cytomegalovirus (CMV) retinitis of the right eye in the setting of advanced AIDS (CD4 36/mm³)",
+      "tool_calls": [],
+      "kind": "diagnosis",
+      "payload": "Cytomegalovirus (CMV) retinitis of the right eye in the setting of advanced AIDS (CD4 36/mm³)",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 6248,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 172,
+        "output_tokens_details": {
+          "thinking_tokens": 22
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    }
+  ],
+  "support_llm": "anthropic:claude-sonnet-4-5",
+  "support_llm_cost_usd": 0.0097,
+  "support_llm_calls": 5,
+  "voice_subset": false,
+  "diagnostics": {
+    "schema": "tau2.health.diagnostics/v1",
+    "benchmark": "agentclinic",
+    "case_id": "MedQA-20",
+    "mode": "text",
+    "availability": {
+      "flow_available": false,
+      "flow_reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "signals_available": false,
+      "signals_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "metadata_sidecar_available": false,
+      "metadata_sidecar_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "tools_available": true,
+      "tools_reason": null
+    },
+    "provenance": {
+      "benchmark": "agentclinic",
+      "mode": "text",
+      "transport_endpoint": "POST /api/bench/agent-turn",
+      "agent_id": "c2761ec7-d3f7-4bd7-b68c-40a87f1b1ab3",
+      "base_url": "https://aws-gateway-backend.whissle.ai/bot",
+      "seed": 42,
+      "stratum": {
+        "dataset": "MedQA",
+        "scenario_index": 20,
+        "selection": "head",
+        "limit": 25
+      },
+      "judge": {
+        "judge_provider": "anthropic",
+        "judge_model": "claude-sonnet-4-5",
+        "judge_endpoint": "anthropic:claude-sonnet-4-5",
+        "judge_independent": true,
+        "judge_independence_note": "Judge independence: this run's simulators and graders were routed through an external provider, independent of the agent under test. This is the stronger footing for a published comparison against the paper's numbers."
+      },
+      "judge_provider": "anthropic",
+      "judge_independent": true,
+      "run_id": null,
+      "run_dir": "results/whissle/agentclinic/20260808T192035Z-sweep25_opus5",
+      "harness_commit": "86b4475",
+      "captured_at": "2026-08-08T19:24:41+00:00",
+      "protocol": "markers",
+      "history": "agentclinic",
+      "prompt_mode": "override",
+      "vision": "off",
+      "agent_type": null,
+      "total_inferences": 20,
+      "inferences_used": 5,
+      "support_llm": "anthropic:claude-sonnet-4-5",
+      "patient_bias": null,
+      "doctor_bias": null,
+      "voice_subset": false
+    },
+    "cost": {
+      "available": true,
+      "reason": null,
+      "judge_calls": 5,
+      "judge_cost_usd": 0.0097,
+      "agent_calls": 5
+    },
+    "flow": {
+      "available": false,
+      "reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "source": null,
+      "turns": null,
+      "summary": null,
+      "conversation_id": null,
+      "current_state": null,
+      "start_state": null,
+      "final_state": null,
+      "ended": null,
+      "flow_end": null,
+      "num_steps": null,
+      "step_counts_by_kind": null,
+      "states_visited": null,
+      "states_declared": null,
+      "states_unvisited": null,
+      "transitions": null,
+      "transitions_fired": null,
+      "var_sets": null,
+      "var_sources": null,
+      "guard_trips": null,
+      "state_divergences": null,
+      "tools_gated": null,
+      "says": null,
+      "steps": null
+    },
+    "signals": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "metadata_sidecar": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "tools": {
+      "available": true,
+      "reason": null,
+      "source": "doctor actions parsed from /api/bench/agent-turn replies",
+      "calls": [
+        {
+          "turn": 4,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Dilated_Fundoscopic_Examination_Both_Eyes"
+          },
+          "result": "RESULTS:\n\n**Dilated Fundoscopic Examination (Both Eyes):**\nGranular yellow-white opacities around the retinal vessels and multiple areas of dot-blot hemorrhages\n\n**CD4 Count:**\nCD4 T-lymphocyte: 36/mm³ (critically low; normal range: 500-1,500/mm³)\n\n**HIV Viral Load:**\nNORMAL READINGS",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 4929,
+          "terminal": false
+        },
+        {
+          "turn": 5,
+          "id": null,
+          "name": "give_diagnosis",
+          "arguments": {
+            "request": "Cytomegalovirus (CMV) retinitis of the right eye in the setting of advanced AIDS (CD4 36/mm³)"
+          },
+          "result": null,
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 3648,
+          "terminal": true
+        }
+      ],
+      "summary": {
+        "n_calls": 2,
+        "by_name": {
+          "request_test": 1,
+          "give_diagnosis": 1
+        },
+        "n_ok": 2,
+        "n_error": 0,
+        "errors": []
+      },
+      "writes": {
+        "available": false,
+        "reason": "this benchmark issues no writes, so there is no said-vs-emitted-vs-landed distinction to record"
+      }
+    },
+    "turns": [
+      {
+        "inference": 1,
+        "incoming": "",
+        "reply": "Hello, I'm Dr. Agent — I'm sorry you're having trouble with your vision. How long have you noticed the decreased vision and black spots in your right eye?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 5734,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 133,
+          "output_tokens_details": {
+            "thinking_tokens": 76
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 2,
+        "incoming": "It started about two days ago. I just suddenly noticed my vision getting worse in my right eye, and I keep seeing these black spots floating around.",
+        "reply": "Do you have any eye pain, redness, or sensitivity to light in that eye?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 5835,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 46,
+          "output_tokens_details": {
+            "thinking_tokens": 18
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 3,
+        "incoming": "No, there's no pain at all, and my eye doesn't look red or anything. I'm not having any trouble with light either, it's just the vision and those spots.",
+        "reply": "Do you know your most recent CD4 count, and are you currently taking antiretroviral therapy?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 5911,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 74,
+          "output_tokens_details": {
+            "thinking_tokens": 41
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 4,
+        "incoming": "I'm not sure about the exact number for my CD4 count, but I know it's been pretty low. Yes, I'm taking my HIV medications - I think it's efavirenz and a couple others that my doctor prescribed.",
+        "reply": "Thank you — that helps. Let me get a dilated retinal exam and some labs.\n\nREQUEST TEST: Dilated_Fundoscopic_Examination_Both_Eyes\nREQUEST TEST: CD4_Count_and_HIV_Viral_Load",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Dilated_Fundoscopic_Examination_Both_Eyes",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 6014,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 155,
+          "output_tokens_details": {
+            "thinking_tokens": 63
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 5,
+        "incoming": "RESULTS:\n\n**Dilated Fundoscopic Examination (Both Eyes):**\nGranular yellow-white opacities around the retinal vessels and multiple areas of dot-blot hemorrhages\n\n**CD4 Count:**\nCD4 T-lymphocyte: 36/mm³ (critically low; normal range: 500-1,500/mm³)\n\n**HIV Viral Load:**\nNORMAL READINGS",
+        "reply": "Your exam shows the classic \"brushfire\" pattern of granular yellow-white retinal lesions with hemorrhages, and with a CD4 of 36 this points to a specific opportunistic infection — you'll need urgent ophthalmology referral and antiviral therapy.\n\nDIAGNOSIS READY: Cytomegalovirus (CMV) retinitis of the right eye in the setting of advanced AIDS (CD4 36/mm³)",
+        "tool_calls": [],
+        "kind": "diagnosis",
+        "payload": "Cytomegalovirus (CMV) retinitis of the right eye in the setting of advanced AIDS (CD4 36/mm³)",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 6248,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 172,
+          "output_tokens_details": {
+            "thinking_tokens": 22
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      }
+    ],
+    "audio": null
+  }
+}

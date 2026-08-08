@@ -1,0 +1,460 @@
+{
+  "scenario_id": "MedQA-11",
+  "scenario_index": 11,
+  "dataset": "MedQA",
+  "mode": "text",
+  "correct_diagnosis": "Complex partial seizure",
+  "answer_options": [],
+  "score": {
+    "outcome": "incorrect",
+    "correctness": false,
+    "doctor_diagnosis": "Temporal",
+    "doctor_final_text": "Thank you for those details. Given the normal MRI and the specific activity on your EEG, we have a clear picture of what's happening.\n\nDIAGNOSIS READY: Temporal",
+    "moderator_raw": "no",
+    "moderator_raw_text": "No",
+    "moderator_lenient": false,
+    "moderator_attempts": 1,
+    "moderator_normalized": false,
+    "moderator_unconstrained": false,
+    "declined": false,
+    "refusal_evidence": [],
+    "format_deviation": false,
+    "decline_source": null,
+    "decline_reason": "",
+    "spurious_commit": false
+  },
+  "infra_fail": false,
+  "error": null,
+  "findings": [],
+  "inferences_used": 5,
+  "max_inferences": 20,
+  "tests_ordered": [
+    "EEG",
+    "MRI_Brain"
+  ],
+  "images_requested": 0,
+  "image": null,
+  "image_error": null,
+  "vision": "off",
+  "refusals": [],
+  "dialogue": [
+    {
+      "role": "doctor",
+      "inference": 1,
+      "kind": "question",
+      "text": "Hello, I am Dr. Agent. Just so you know, I'm an AI assistant and this call is recorded for quality. Can you tell me how long these episodes of unrespons",
+      "payload": null,
+      "latency_ms": 5464,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Hi Doctor. Well, each episode lasts about 3 to 4 minutes. They've been happening over the past month or so."
+    },
+    {
+      "role": "doctor",
+      "inference": 2,
+      "kind": "question",
+      "text": "I understand. Are you aware of your surroundings during these episodes, or do you feel confused once they conclude? Also, do you notice any strange feelings or warnings right before an episode starts?",
+      "payload": null,
+      "latency_ms": 5424,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "No, I'm not aware of anything during the episodes – I don't remember them at all. But right before they start, I get this weird muddy taste in my mouth, and then afterwards I feel really tired and confused."
+    },
+    {
+      "role": "doctor",
+      "inference": 3,
+      "kind": "test",
+      "text": "Thank you for those details. Have you noticed any tongue biting or loss of bladder control during these episodes? REQUEST TEST: EEG",
+      "payload": "EEG",
+      "latency_ms": 4456,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: Electroencephalogram (EEG) shows interictal spikes and sharp waves localized to the temporal lobes, more prominent on the right side."
+    },
+    {
+      "role": "doctor",
+      "inference": 4,
+      "kind": "test",
+      "text": "The EEG results suggest electrical activity in the temporal lobes, which matches the \"muddy taste\" you described. Have bystanders mentioned any repetitive actions like lip-smacking or hand-fidgeting during these times? REQUEST TEST: MRI_Brain",
+      "payload": "MRI_Brain",
+      "latency_ms": 4883,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: MRI Brain shows no evidence of mass lesions, infarctions, or structural abnormalities."
+    },
+    {
+      "role": "doctor",
+      "inference": 5,
+      "kind": "diagnosis",
+      "text": "Thank you for those details. Given the normal MRI and the specific activity on your EEG, we have a clear picture of what's happening.\n\nDIAGNOSIS READY: Temporal",
+      "payload": "Temporal",
+      "latency_ms": 5511,
+      "refusal": null,
+      "via": "marker"
+    }
+  ],
+  "latency_ms": [
+    5464,
+    5424,
+    4456,
+    4883,
+    5511
+  ],
+  "wall_s": 34.3,
+  "doctor_turns": [
+    {
+      "inference": 1,
+      "incoming": "",
+      "reply": "Hello, I am Dr. Agent. Just so you know, I'm an AI assistant and this call is recorded for quality. Can you tell me how long these episodes of unrespons",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 3945,
+        "output_tokens": 1020,
+        "thinking_tokens": 982,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "MAX_TOKENS"
+    },
+    {
+      "inference": 2,
+      "incoming": "Hi Doctor. Well, each episode lasts about 3 to 4 minutes. They've been happening over the past month or so.",
+      "reply": "I understand. Are you aware of your surroundings during these episodes, or do you feel confused once they conclude? Also, do you notice any strange feelings or warnings right before an episode starts?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4012,
+        "output_tokens": 1019,
+        "thinking_tokens": 981,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    },
+    {
+      "inference": 3,
+      "incoming": "No, I'm not aware of anything during the episodes – I don't remember them at all. But right before they start, I get this weird muddy taste in my mouth, and then afterwards I feel really tired and confused.",
+      "reply": "Thank you for those details. Have you noticed any tongue biting or loss of bladder control during these episodes? REQUEST TEST: EEG",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "EEG",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4100,
+        "output_tokens": 819,
+        "thinking_tokens": 794,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    },
+    {
+      "inference": 4,
+      "incoming": "RESULTS: Electroencephalogram (EEG) shows interictal spikes and sharp waves localized to the temporal lobes, more prominent on the right side.",
+      "reply": "The EEG results suggest electrical activity in the temporal lobes, which matches the \"muddy taste\" you described. Have bystanders mentioned any repetitive actions like lip-smacking or hand-fidgeting during these times? REQUEST TEST: MRI_Brain",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "MRI_Brain",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4155,
+        "output_tokens": 844,
+        "thinking_tokens": 795,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    },
+    {
+      "inference": 5,
+      "incoming": "RESULTS: MRI Brain shows no evidence of mass lesions, infarctions, or structural abnormalities.",
+      "reply": "Thank you for those details. Given the normal MRI and the specific activity on your EEG, we have a clear picture of what's happening.\n\nDIAGNOSIS READY: Temporal",
+      "tool_calls": [],
+      "kind": "diagnosis",
+      "payload": "Temporal",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4224,
+        "output_tokens": 1020,
+        "thinking_tokens": 983,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "MAX_TOKENS"
+    }
+  ],
+  "support_llm": "anthropic:claude-sonnet-4-5",
+  "support_llm_cost_usd": 0.00937,
+  "support_llm_calls": 5,
+  "voice_subset": false,
+  "diagnostics": {
+    "schema": "tau2.health.diagnostics/v1",
+    "benchmark": "agentclinic",
+    "case_id": "MedQA-11",
+    "mode": "text",
+    "availability": {
+      "flow_available": false,
+      "flow_reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "signals_available": false,
+      "signals_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "metadata_sidecar_available": false,
+      "metadata_sidecar_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "tools_available": true,
+      "tools_reason": null
+    },
+    "provenance": {
+      "benchmark": "agentclinic",
+      "mode": "text",
+      "transport_endpoint": "POST /api/bench/agent-turn",
+      "agent_id": "c2761ec7-d3f7-4bd7-b68c-40a87f1b1ab3",
+      "base_url": "https://aws-gateway-backend.whissle.ai/bot",
+      "seed": 42,
+      "stratum": {
+        "dataset": "MedQA",
+        "scenario_index": 11,
+        "selection": "head",
+        "limit": 25
+      },
+      "judge": {
+        "judge_provider": "anthropic",
+        "judge_model": "claude-sonnet-4-5",
+        "judge_endpoint": "anthropic:claude-sonnet-4-5",
+        "judge_independent": true,
+        "judge_independence_note": "Judge independence: this run's simulators and graders were routed through an external provider, independent of the agent under test. This is the stronger footing for a published comparison against the paper's numbers."
+      },
+      "judge_provider": "anthropic",
+      "judge_independent": true,
+      "run_id": null,
+      "run_dir": "results/whissle/agentclinic/20260808T194241Z-sweep25_g3fp",
+      "harness_commit": "86b4475",
+      "captured_at": "2026-08-08T19:45:51+00:00",
+      "protocol": "markers",
+      "history": "agentclinic",
+      "prompt_mode": "override",
+      "vision": "off",
+      "agent_type": null,
+      "total_inferences": 20,
+      "inferences_used": 5,
+      "support_llm": "anthropic:claude-sonnet-4-5",
+      "patient_bias": null,
+      "doctor_bias": null,
+      "voice_subset": false
+    },
+    "cost": {
+      "available": true,
+      "reason": null,
+      "judge_calls": 5,
+      "judge_cost_usd": 0.00937,
+      "agent_calls": 5
+    },
+    "flow": {
+      "available": false,
+      "reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "source": null,
+      "turns": null,
+      "summary": null,
+      "conversation_id": null,
+      "current_state": null,
+      "start_state": null,
+      "final_state": null,
+      "ended": null,
+      "flow_end": null,
+      "num_steps": null,
+      "step_counts_by_kind": null,
+      "states_visited": null,
+      "states_declared": null,
+      "states_unvisited": null,
+      "transitions": null,
+      "transitions_fired": null,
+      "var_sets": null,
+      "var_sources": null,
+      "guard_trips": null,
+      "state_divergences": null,
+      "tools_gated": null,
+      "says": null,
+      "steps": null
+    },
+    "signals": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "metadata_sidecar": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "tools": {
+      "available": true,
+      "reason": null,
+      "source": "doctor actions parsed from /api/bench/agent-turn replies",
+      "calls": [
+        {
+          "turn": 3,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "EEG"
+          },
+          "result": "RESULTS: Electroencephalogram (EEG) shows interictal spikes and sharp waves localized to the temporal lobes, more prominent on the right side.",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 4456,
+          "terminal": false
+        },
+        {
+          "turn": 4,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "MRI_Brain"
+          },
+          "result": "RESULTS: MRI Brain shows no evidence of mass lesions, infarctions, or structural abnormalities.",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 4883,
+          "terminal": false
+        },
+        {
+          "turn": 5,
+          "id": null,
+          "name": "give_diagnosis",
+          "arguments": {
+            "request": "Temporal"
+          },
+          "result": null,
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 5511,
+          "terminal": true
+        }
+      ],
+      "summary": {
+        "n_calls": 3,
+        "by_name": {
+          "request_test": 2,
+          "give_diagnosis": 1
+        },
+        "n_ok": 3,
+        "n_error": 0,
+        "errors": []
+      },
+      "writes": {
+        "available": false,
+        "reason": "this benchmark issues no writes, so there is no said-vs-emitted-vs-landed distinction to record"
+      }
+    },
+    "turns": [
+      {
+        "inference": 1,
+        "incoming": "",
+        "reply": "Hello, I am Dr. Agent. Just so you know, I'm an AI assistant and this call is recorded for quality. Can you tell me how long these episodes of unrespons",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 3945,
+          "output_tokens": 1020,
+          "thinking_tokens": 982,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "MAX_TOKENS"
+      },
+      {
+        "inference": 2,
+        "incoming": "Hi Doctor. Well, each episode lasts about 3 to 4 minutes. They've been happening over the past month or so.",
+        "reply": "I understand. Are you aware of your surroundings during these episodes, or do you feel confused once they conclude? Also, do you notice any strange feelings or warnings right before an episode starts?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4012,
+          "output_tokens": 1019,
+          "thinking_tokens": 981,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      },
+      {
+        "inference": 3,
+        "incoming": "No, I'm not aware of anything during the episodes – I don't remember them at all. But right before they start, I get this weird muddy taste in my mouth, and then afterwards I feel really tired and confused.",
+        "reply": "Thank you for those details. Have you noticed any tongue biting or loss of bladder control during these episodes? REQUEST TEST: EEG",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "EEG",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4100,
+          "output_tokens": 819,
+          "thinking_tokens": 794,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      },
+      {
+        "inference": 4,
+        "incoming": "RESULTS: Electroencephalogram (EEG) shows interictal spikes and sharp waves localized to the temporal lobes, more prominent on the right side.",
+        "reply": "The EEG results suggest electrical activity in the temporal lobes, which matches the \"muddy taste\" you described. Have bystanders mentioned any repetitive actions like lip-smacking or hand-fidgeting during these times? REQUEST TEST: MRI_Brain",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "MRI_Brain",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4155,
+          "output_tokens": 844,
+          "thinking_tokens": 795,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      },
+      {
+        "inference": 5,
+        "incoming": "RESULTS: MRI Brain shows no evidence of mass lesions, infarctions, or structural abnormalities.",
+        "reply": "Thank you for those details. Given the normal MRI and the specific activity on your EEG, we have a clear picture of what's happening.\n\nDIAGNOSIS READY: Temporal",
+        "tool_calls": [],
+        "kind": "diagnosis",
+        "payload": "Temporal",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4224,
+          "output_tokens": 1020,
+          "thinking_tokens": 983,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "MAX_TOKENS"
+      }
+    ],
+    "audio": null
+  }
+}

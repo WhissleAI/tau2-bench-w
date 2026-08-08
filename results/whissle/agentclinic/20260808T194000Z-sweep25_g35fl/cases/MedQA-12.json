@@ -1,0 +1,524 @@
+{
+  "scenario_id": "MedQA-12",
+  "scenario_index": 12,
+  "dataset": "MedQA",
+  "mode": "text",
+  "correct_diagnosis": "Posterior hip dislocation",
+  "answer_options": [],
+  "score": {
+    "outcome": "correct",
+    "correctness": true,
+    "doctor_diagnosis": "Traumatic posterior hip dislocation",
+    "doctor_final_text": "DIAGNOSIS READY: Traumatic posterior hip dislocation",
+    "moderator_raw": "yes",
+    "moderator_raw_text": "Yes",
+    "moderator_lenient": true,
+    "moderator_attempts": 1,
+    "moderator_normalized": false,
+    "moderator_unconstrained": false,
+    "declined": false,
+    "refusal_evidence": [],
+    "format_deviation": false,
+    "decline_source": null,
+    "decline_reason": "",
+    "spurious_commit": false
+  },
+  "infra_fail": false,
+  "error": null,
+  "findings": [],
+  "inferences_used": 6,
+  "max_inferences": 20,
+  "tests_ordered": [
+    "Pelvic_X-Ray",
+    "CT_scan_hip",
+    "Hip_X-Ray"
+  ],
+  "images_requested": 0,
+  "image": null,
+  "image_error": null,
+  "vision": "off",
+  "refusals": [],
+  "dialogue": [
+    {
+      "role": "doctor",
+      "inference": 1,
+      "kind": "question",
+      "text": "Hello, I'm Dr. Agent. Can you tell me more about how the accident happened and how your right leg is currently positioned?",
+      "payload": null,
+      "latency_ms": 1186,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "I was stopped at a light when another car hit me from behind. My right leg feels really weird - it's kind of bent and turned inward, and I can't straighten it out. The pain in my groin is unbearable whenever I try to move it."
+    },
+    {
+      "role": "doctor",
+      "inference": 2,
+      "kind": "test",
+      "text": "REQUEST TEST: Pelvic_X-Ray",
+      "payload": "Pelvic_X-Ray",
+      "latency_ms": 654,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: Pelvic X-ray shows no fractures identified in the pelvic ring or femoral neck, but alignment suggests posterior dislocation of the right hip."
+    },
+    {
+      "role": "doctor",
+      "inference": 3,
+      "kind": "test",
+      "text": "REQUEST TEST: CT_scan_hip",
+      "payload": "CT_scan_hip",
+      "latency_ms": 631,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: The requested CT scan of the hip is not available in the current data. However, based on the available Pelvic X-ray findings, there is evidence of posterior dislocation of the right hip without identified fractures in the pelvic ring or femoral neck.\n\nIf a CT scan is clinically indicated to further evaluate for occult fractures, cartilage damage, or bone fragments in the joint space, this would need to be ordered separately."
+    },
+    {
+      "role": "doctor",
+      "inference": 4,
+      "kind": "question",
+      "text": "Got it. Were your knees or dashboard impacted during the rear-end collision?",
+      "payload": null,
+      "latency_ms": 685,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Yes, my knees slammed into the dashboard when the car hit me from behind. Both of them are pretty sore, but honestly the right groin pain is so much worse that it's hard to focus on anything else."
+    },
+    {
+      "role": "doctor",
+      "inference": 5,
+      "kind": "test",
+      "text": "REQUEST TEST: Hip_X-Ray",
+      "payload": "Hip_X-Ray",
+      "latency_ms": 668,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: Hip X-ray findings are consistent with the Pelvic X-ray already performed, which shows posterior dislocation of the right hip with no fractures identified in the femoral neck. The abnormal positioning of the right femoral head relative to the acetabulum confirms the dislocation."
+    },
+    {
+      "role": "doctor",
+      "inference": 6,
+      "kind": "diagnosis",
+      "text": "DIAGNOSIS READY: Traumatic posterior hip dislocation",
+      "payload": "Traumatic posterior hip dislocation",
+      "latency_ms": 1342,
+      "refusal": null,
+      "via": "marker"
+    }
+  ],
+  "latency_ms": [
+    1186,
+    654,
+    631,
+    685,
+    668,
+    1342
+  ],
+  "wall_s": 20.66,
+  "doctor_turns": [
+    {
+      "inference": 1,
+      "incoming": "",
+      "reply": "Hello, I'm Dr. Agent. Can you tell me more about how the accident happened and how your right leg is currently positioned?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 3954,
+        "output_tokens": 28,
+        "thinking_tokens": 0,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    },
+    {
+      "inference": 2,
+      "incoming": "I was stopped at a light when another car hit me from behind. My right leg feels really weird - it's kind of bent and turned inward, and I can't straighten it out. The pain in my groin is unbearable whenever I try to move it.",
+      "reply": "REQUEST TEST: Pelvic_X-Ray",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Pelvic_X-Ray",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4037,
+        "output_tokens": 9,
+        "thinking_tokens": 0,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    },
+    {
+      "inference": 3,
+      "incoming": "RESULTS: Pelvic X-ray shows no fractures identified in the pelvic ring or femoral neck, but alignment suggests posterior dislocation of the right hip.",
+      "reply": "REQUEST TEST: CT_scan_hip",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "CT_scan_hip",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4077,
+        "output_tokens": 8,
+        "thinking_tokens": 0,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    },
+    {
+      "inference": 4,
+      "incoming": "RESULTS: The requested CT scan of the hip is not available in the current data. However, based on the available Pelvic X-ray findings, there is evidence of posterior dislocation of the right hip without identified fractures in the pelvic ring or femoral neck.\n\nIf a CT scan is clinically indicated to further evaluate for occult fractures, cartilage damage, or bone fragments in the joint space, this would need to be ordered separately.",
+      "reply": "Got it. Were your knees or dashboard impacted during the rear-end collision?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4172,
+        "output_tokens": 16,
+        "thinking_tokens": 0,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    },
+    {
+      "inference": 5,
+      "incoming": "Yes, my knees slammed into the dashboard when the car hit me from behind. Both of them are pretty sore, but honestly the right groin pain is so much worse that it's hard to focus on anything else.",
+      "reply": "REQUEST TEST: Hip_X-Ray",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Hip_X-Ray",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4234,
+        "output_tokens": 8,
+        "thinking_tokens": 0,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    },
+    {
+      "inference": 6,
+      "incoming": "RESULTS: Hip X-ray findings are consistent with the Pelvic X-ray already performed, which shows posterior dislocation of the right hip with no fractures identified in the femoral neck. The abnormal positioning of the right femoral head relative to the acetabulum confirms the dislocation.",
+      "reply": "DIAGNOSIS READY: Traumatic posterior hip dislocation",
+      "tool_calls": [],
+      "kind": "diagnosis",
+      "payload": "Traumatic posterior hip dislocation",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4298,
+        "output_tokens": 11,
+        "thinking_tokens": 0,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    }
+  ],
+  "support_llm": "anthropic:claude-sonnet-4-5",
+  "support_llm_cost_usd": 0.01218,
+  "support_llm_calls": 6,
+  "voice_subset": false,
+  "diagnostics": {
+    "schema": "tau2.health.diagnostics/v1",
+    "benchmark": "agentclinic",
+    "case_id": "MedQA-12",
+    "mode": "text",
+    "availability": {
+      "flow_available": false,
+      "flow_reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "signals_available": false,
+      "signals_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "metadata_sidecar_available": false,
+      "metadata_sidecar_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "tools_available": true,
+      "tools_reason": null
+    },
+    "provenance": {
+      "benchmark": "agentclinic",
+      "mode": "text",
+      "transport_endpoint": "POST /api/bench/agent-turn",
+      "agent_id": "c2761ec7-d3f7-4bd7-b68c-40a87f1b1ab3",
+      "base_url": "https://aws-gateway-backend.whissle.ai/bot",
+      "seed": 42,
+      "stratum": {
+        "dataset": "MedQA",
+        "scenario_index": 12,
+        "selection": "head",
+        "limit": 25
+      },
+      "judge": {
+        "judge_provider": "anthropic",
+        "judge_model": "claude-sonnet-4-5",
+        "judge_endpoint": "anthropic:claude-sonnet-4-5",
+        "judge_independent": true,
+        "judge_independence_note": "Judge independence: this run's simulators and graders were routed through an external provider, independent of the agent under test. This is the stronger footing for a published comparison against the paper's numbers."
+      },
+      "judge_provider": "anthropic",
+      "judge_independent": true,
+      "run_id": null,
+      "run_dir": "results/whissle/agentclinic/20260808T194000Z-sweep25_g35fl",
+      "harness_commit": "86b4475",
+      "captured_at": "2026-08-08T19:41:26+00:00",
+      "protocol": "markers",
+      "history": "agentclinic",
+      "prompt_mode": "override",
+      "vision": "off",
+      "agent_type": null,
+      "total_inferences": 20,
+      "inferences_used": 6,
+      "support_llm": "anthropic:claude-sonnet-4-5",
+      "patient_bias": null,
+      "doctor_bias": null,
+      "voice_subset": false
+    },
+    "cost": {
+      "available": true,
+      "reason": null,
+      "judge_calls": 6,
+      "judge_cost_usd": 0.01218,
+      "agent_calls": 6
+    },
+    "flow": {
+      "available": false,
+      "reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "source": null,
+      "turns": null,
+      "summary": null,
+      "conversation_id": null,
+      "current_state": null,
+      "start_state": null,
+      "final_state": null,
+      "ended": null,
+      "flow_end": null,
+      "num_steps": null,
+      "step_counts_by_kind": null,
+      "states_visited": null,
+      "states_declared": null,
+      "states_unvisited": null,
+      "transitions": null,
+      "transitions_fired": null,
+      "var_sets": null,
+      "var_sources": null,
+      "guard_trips": null,
+      "state_divergences": null,
+      "tools_gated": null,
+      "says": null,
+      "steps": null
+    },
+    "signals": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "metadata_sidecar": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "tools": {
+      "available": true,
+      "reason": null,
+      "source": "doctor actions parsed from /api/bench/agent-turn replies",
+      "calls": [
+        {
+          "turn": 2,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Pelvic_X-Ray"
+          },
+          "result": "RESULTS: Pelvic X-ray shows no fractures identified in the pelvic ring or femoral neck, but alignment suggests posterior dislocation of the right hip.",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 654,
+          "terminal": false
+        },
+        {
+          "turn": 3,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "CT_scan_hip"
+          },
+          "result": "RESULTS: The requested CT scan of the hip is not available in the current data. However, based on the available Pelvic X-ray findings, there is evidence of posterior dislocation of the right hip without identified fractures in the pelvic ring or femoral neck.\n\nIf a CT scan is clinically indicated to further evaluate for occult fractures, cartilage damage, or bone fragments in the joint space, this would need to be ordered separately.",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 631,
+          "terminal": false
+        },
+        {
+          "turn": 5,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Hip_X-Ray"
+          },
+          "result": "RESULTS: Hip X-ray findings are consistent with the Pelvic X-ray already performed, which shows posterior dislocation of the right hip with no fractures identified in the femoral neck. The abnormal positioning of the right femoral head relative to the acetabulum confirms the dislocation.",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 668,
+          "terminal": false
+        },
+        {
+          "turn": 6,
+          "id": null,
+          "name": "give_diagnosis",
+          "arguments": {
+            "request": "Traumatic posterior hip dislocation"
+          },
+          "result": null,
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 1342,
+          "terminal": true
+        }
+      ],
+      "summary": {
+        "n_calls": 4,
+        "by_name": {
+          "request_test": 3,
+          "give_diagnosis": 1
+        },
+        "n_ok": 4,
+        "n_error": 0,
+        "errors": []
+      },
+      "writes": {
+        "available": false,
+        "reason": "this benchmark issues no writes, so there is no said-vs-emitted-vs-landed distinction to record"
+      }
+    },
+    "turns": [
+      {
+        "inference": 1,
+        "incoming": "",
+        "reply": "Hello, I'm Dr. Agent. Can you tell me more about how the accident happened and how your right leg is currently positioned?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 3954,
+          "output_tokens": 28,
+          "thinking_tokens": 0,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      },
+      {
+        "inference": 2,
+        "incoming": "I was stopped at a light when another car hit me from behind. My right leg feels really weird - it's kind of bent and turned inward, and I can't straighten it out. The pain in my groin is unbearable whenever I try to move it.",
+        "reply": "REQUEST TEST: Pelvic_X-Ray",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Pelvic_X-Ray",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4037,
+          "output_tokens": 9,
+          "thinking_tokens": 0,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      },
+      {
+        "inference": 3,
+        "incoming": "RESULTS: Pelvic X-ray shows no fractures identified in the pelvic ring or femoral neck, but alignment suggests posterior dislocation of the right hip.",
+        "reply": "REQUEST TEST: CT_scan_hip",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "CT_scan_hip",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4077,
+          "output_tokens": 8,
+          "thinking_tokens": 0,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      },
+      {
+        "inference": 4,
+        "incoming": "RESULTS: The requested CT scan of the hip is not available in the current data. However, based on the available Pelvic X-ray findings, there is evidence of posterior dislocation of the right hip without identified fractures in the pelvic ring or femoral neck.\n\nIf a CT scan is clinically indicated to further evaluate for occult fractures, cartilage damage, or bone fragments in the joint space, this would need to be ordered separately.",
+        "reply": "Got it. Were your knees or dashboard impacted during the rear-end collision?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4172,
+          "output_tokens": 16,
+          "thinking_tokens": 0,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      },
+      {
+        "inference": 5,
+        "incoming": "Yes, my knees slammed into the dashboard when the car hit me from behind. Both of them are pretty sore, but honestly the right groin pain is so much worse that it's hard to focus on anything else.",
+        "reply": "REQUEST TEST: Hip_X-Ray",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Hip_X-Ray",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4234,
+          "output_tokens": 8,
+          "thinking_tokens": 0,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      },
+      {
+        "inference": 6,
+        "incoming": "RESULTS: Hip X-ray findings are consistent with the Pelvic X-ray already performed, which shows posterior dislocation of the right hip with no fractures identified in the femoral neck. The abnormal positioning of the right femoral head relative to the acetabulum confirms the dislocation.",
+        "reply": "DIAGNOSIS READY: Traumatic posterior hip dislocation",
+        "tool_calls": [],
+        "kind": "diagnosis",
+        "payload": "Traumatic posterior hip dislocation",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4298,
+          "output_tokens": 11,
+          "thinking_tokens": 0,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      }
+    ],
+    "audio": null
+  }
+}

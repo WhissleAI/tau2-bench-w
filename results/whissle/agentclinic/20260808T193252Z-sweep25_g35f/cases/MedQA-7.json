@@ -1,0 +1,524 @@
+{
+  "scenario_id": "MedQA-7",
+  "scenario_index": 7,
+  "dataset": "MedQA",
+  "mode": "text",
+  "correct_diagnosis": "Congenital Rubella Infection",
+  "answer_options": [],
+  "score": {
+    "outcome": "correct",
+    "correctness": true,
+    "doctor_diagnosis": "Congenital Rubella Syndrome",
+    "doctor_final_text": "Thank you for providing these crucial test results, which confirm our clinical suspicions. Based on the combination of congenital cataracts, patent ductus arteriosus, bilateral sensorineural hearing loss, purpuric skin lesions, and the positive Rubella IgM test, we have a clear diagnosis. \n\nDIAGNOSIS READY: Congenital Rubella Syndrome",
+    "moderator_raw": "yes",
+    "moderator_raw_text": "Yes",
+    "moderator_lenient": true,
+    "moderator_attempts": 1,
+    "moderator_normalized": false,
+    "moderator_unconstrained": false,
+    "declined": false,
+    "refusal_evidence": [],
+    "format_deviation": false,
+    "decline_source": null,
+    "decline_reason": "",
+    "spurious_commit": false
+  },
+  "infra_fail": false,
+  "error": null,
+  "findings": [],
+  "inferences_used": 6,
+  "max_inferences": 20,
+  "tests_ordered": [
+    "Echocardiogram",
+    "Auditory_Brainstem_Response",
+    "Rubella_IgM"
+  ],
+  "images_requested": 0,
+  "image": null,
+  "image_error": null,
+  "vision": "off",
+  "refusals": [],
+  "dialogue": [
+    {
+      "role": "doctor",
+      "inference": 1,
+      "kind": "question",
+      "text": "Hello, I am Dr. Agent, an automated AI assistant, and this call is recorded for quality. Could you please tell me what symptoms or physical findings you have observed in your newborn?",
+      "payload": null,
+      "latency_ms": 3445,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Hello, Doctor. Well, the nurses mentioned they heard some kind of heart murmur during the examination. Also, I've noticed these bluish spots on her skin that don't seem to go away when I press on them, and they said something about her eyes looking a bit cloudy when they checked her."
+    },
+    {
+      "role": "doctor",
+      "inference": 2,
+      "kind": "question",
+      "text": "That is very important information. Did the mother experience any fevers, rashes, or joint pain during her pregnancy, or do you know if she was immune to rubella?",
+      "payload": null,
+      "latency_ms": 3143,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "I honestly don't know about being immune to rubella - I didn't get any prenatal care or testing done during my pregnancy. I don't remember having any fevers or rashes, but I did have some joint pain, though I just thought that was normal for pregnancy."
+    },
+    {
+      "role": "doctor",
+      "inference": 3,
+      "kind": "test",
+      "text": "I understand, and thank you for providing that background. Has your baby had her newborn hearing screening yet, or have you noticed how she responds to sounds? \n\nREQUEST TEST: Echocardiogram",
+      "payload": "Echocardiogram",
+      "latency_ms": 4680,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: The echocardiogram shows a patent ductus arteriosus (PDA). This is an abnormal opening between the aorta and pulmonary artery that should have closed after birth but has remained open."
+    },
+    {
+      "role": "doctor",
+      "inference": 4,
+      "kind": "test",
+      "text": "Thank you for sharing those echocardiogram results; a patent ductus arteriosus explains the heart murmur. Did the nurses mention the results of her newborn hearing screening, or does she seem to react to loud noises in the room? \n\nREQUEST TEST: Auditory_Brainstem_Response",
+      "payload": "Auditory_Brainstem_Response",
+      "latency_ms": 4715,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: The audiological examination shows that the baby failed auditory screening tests, and the hearing test reveals bilateral sensorineural hearing loss (hearing loss in both ears due to inner ear or nerve damage)."
+    },
+    {
+      "role": "doctor",
+      "inference": 5,
+      "kind": "test",
+      "text": "REQUEST TEST: Rubella_IgM",
+      "payload": "Rubella_IgM",
+      "latency_ms": 4944,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: The TORCH screen shows Rubella IgM is **Positive**. This indicates recent or active rubella infection in the newborn, consistent with congenital rubella syndrome."
+    },
+    {
+      "role": "doctor",
+      "inference": 6,
+      "kind": "diagnosis",
+      "text": "Thank you for providing these crucial test results, which confirm our clinical suspicions. Based on the combination of congenital cataracts, patent ductus arteriosus, bilateral sensorineural hearing loss, purpuric skin lesions, and the positive Rubella IgM test, we have a clear diagnosis. \n\nDIAGNOSIS READY: Congenital Rubella Syndrome",
+      "payload": "Congenital Rubella Syndrome",
+      "latency_ms": 3528,
+      "refusal": null,
+      "via": "marker"
+    }
+  ],
+  "latency_ms": [
+    3445,
+    3143,
+    4680,
+    4715,
+    4944,
+    3528
+  ],
+  "wall_s": 41.03,
+  "doctor_turns": [
+    {
+      "inference": 1,
+      "incoming": "",
+      "reply": "Hello, I am Dr. Agent, an automated AI assistant, and this call is recorded for quality. Could you please tell me what symptoms or physical findings you have observed in your newborn?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 3942,
+        "output_tokens": 586,
+        "thinking_tokens": 548,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    },
+    {
+      "inference": 2,
+      "incoming": "Hello, Doctor. Well, the nurses mentioned they heard some kind of heart murmur during the examination. Also, I've noticed these bluish spots on her skin that don't seem to go away when I press on them, and they said something about her eyes looking a bit cloudy when they checked her.",
+      "reply": "That is very important information. Did the mother experience any fevers, rashes, or joint pain during her pregnancy, or do you know if she was immune to rubella?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4043,
+        "output_tokens": 507,
+        "thinking_tokens": 472,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    },
+    {
+      "inference": 3,
+      "incoming": "I honestly don't know about being immune to rubella - I didn't get any prenatal care or testing done during my pregnancy. I don't remember having any fevers or rashes, but I did have some joint pain, though I just thought that was normal for pregnancy.",
+      "reply": "I understand, and thank you for providing that background. Has your baby had her newborn hearing screening yet, or have you noticed how she responds to sounds? \n\nREQUEST TEST: Echocardiogram",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Echocardiogram",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4138,
+        "output_tokens": 920,
+        "thinking_tokens": 881,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    },
+    {
+      "inference": 4,
+      "incoming": "RESULTS: The echocardiogram shows a patent ductus arteriosus (PDA). This is an abnormal opening between the aorta and pulmonary artery that should have closed after birth but has remained open.",
+      "reply": "Thank you for sharing those echocardiogram results; a patent ductus arteriosus explains the heart murmur. Did the nurses mention the results of her newborn hearing screening, or does she seem to react to loud noises in the room? \n\nREQUEST TEST: Auditory_Brainstem_Response",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Auditory_Brainstem_Response",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4216,
+        "output_tokens": 851,
+        "thinking_tokens": 794,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    },
+    {
+      "inference": 5,
+      "incoming": "RESULTS: The audiological examination shows that the baby failed auditory screening tests, and the hearing test reveals bilateral sensorineural hearing loss (hearing loss in both ears due to inner ear or nerve damage).",
+      "reply": "REQUEST TEST: Rubella_IgM",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Rubella_IgM",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4315,
+        "output_tokens": 990,
+        "thinking_tokens": 982,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    },
+    {
+      "inference": 6,
+      "incoming": "RESULTS: The TORCH screen shows Rubella IgM is **Positive**. This indicates recent or active rubella infection in the newborn, consistent with congenital rubella syndrome.",
+      "reply": "Thank you for providing these crucial test results, which confirm our clinical suspicions. Based on the combination of congenital cataracts, patent ductus arteriosus, bilateral sensorineural hearing loss, purpuric skin lesions, and the positive Rubella IgM test, we have a clear diagnosis. \n\nDIAGNOSIS READY: Congenital Rubella Syndrome",
+      "tool_calls": [],
+      "kind": "diagnosis",
+      "payload": "Congenital Rubella Syndrome",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4358,
+        "output_tokens": 738,
+        "thinking_tokens": 668,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    }
+  ],
+  "support_llm": "anthropic:claude-sonnet-4-5",
+  "support_llm_cost_usd": 0.01273,
+  "support_llm_calls": 6,
+  "voice_subset": false,
+  "diagnostics": {
+    "schema": "tau2.health.diagnostics/v1",
+    "benchmark": "agentclinic",
+    "case_id": "MedQA-7",
+    "mode": "text",
+    "availability": {
+      "flow_available": false,
+      "flow_reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "signals_available": false,
+      "signals_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "metadata_sidecar_available": false,
+      "metadata_sidecar_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "tools_available": true,
+      "tools_reason": null
+    },
+    "provenance": {
+      "benchmark": "agentclinic",
+      "mode": "text",
+      "transport_endpoint": "POST /api/bench/agent-turn",
+      "agent_id": "c2761ec7-d3f7-4bd7-b68c-40a87f1b1ab3",
+      "base_url": "https://aws-gateway-backend.whissle.ai/bot",
+      "seed": 42,
+      "stratum": {
+        "dataset": "MedQA",
+        "scenario_index": 7,
+        "selection": "head",
+        "limit": 25
+      },
+      "judge": {
+        "judge_provider": "anthropic",
+        "judge_model": "claude-sonnet-4-5",
+        "judge_endpoint": "anthropic:claude-sonnet-4-5",
+        "judge_independent": true,
+        "judge_independence_note": "Judge independence: this run's simulators and graders were routed through an external provider, independent of the agent under test. This is the stronger footing for a published comparison against the paper's numbers."
+      },
+      "judge_provider": "anthropic",
+      "judge_independent": true,
+      "run_id": null,
+      "run_dir": "results/whissle/agentclinic/20260808T193252Z-sweep25_g35f",
+      "harness_commit": "86b4475",
+      "captured_at": "2026-08-08T19:35:22+00:00",
+      "protocol": "markers",
+      "history": "agentclinic",
+      "prompt_mode": "override",
+      "vision": "off",
+      "agent_type": null,
+      "total_inferences": 20,
+      "inferences_used": 6,
+      "support_llm": "anthropic:claude-sonnet-4-5",
+      "patient_bias": null,
+      "doctor_bias": null,
+      "voice_subset": false
+    },
+    "cost": {
+      "available": true,
+      "reason": null,
+      "judge_calls": 6,
+      "judge_cost_usd": 0.01273,
+      "agent_calls": 6
+    },
+    "flow": {
+      "available": false,
+      "reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "source": null,
+      "turns": null,
+      "summary": null,
+      "conversation_id": null,
+      "current_state": null,
+      "start_state": null,
+      "final_state": null,
+      "ended": null,
+      "flow_end": null,
+      "num_steps": null,
+      "step_counts_by_kind": null,
+      "states_visited": null,
+      "states_declared": null,
+      "states_unvisited": null,
+      "transitions": null,
+      "transitions_fired": null,
+      "var_sets": null,
+      "var_sources": null,
+      "guard_trips": null,
+      "state_divergences": null,
+      "tools_gated": null,
+      "says": null,
+      "steps": null
+    },
+    "signals": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "metadata_sidecar": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "tools": {
+      "available": true,
+      "reason": null,
+      "source": "doctor actions parsed from /api/bench/agent-turn replies",
+      "calls": [
+        {
+          "turn": 3,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Echocardiogram"
+          },
+          "result": "RESULTS: The echocardiogram shows a patent ductus arteriosus (PDA). This is an abnormal opening between the aorta and pulmonary artery that should have closed after birth but has remained open.",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 4680,
+          "terminal": false
+        },
+        {
+          "turn": 4,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Auditory_Brainstem_Response"
+          },
+          "result": "RESULTS: The audiological examination shows that the baby failed auditory screening tests, and the hearing test reveals bilateral sensorineural hearing loss (hearing loss in both ears due to inner ear or nerve damage).",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 4715,
+          "terminal": false
+        },
+        {
+          "turn": 5,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Rubella_IgM"
+          },
+          "result": "RESULTS: The TORCH screen shows Rubella IgM is **Positive**. This indicates recent or active rubella infection in the newborn, consistent with congenital rubella syndrome.",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 4944,
+          "terminal": false
+        },
+        {
+          "turn": 6,
+          "id": null,
+          "name": "give_diagnosis",
+          "arguments": {
+            "request": "Congenital Rubella Syndrome"
+          },
+          "result": null,
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 3528,
+          "terminal": true
+        }
+      ],
+      "summary": {
+        "n_calls": 4,
+        "by_name": {
+          "request_test": 3,
+          "give_diagnosis": 1
+        },
+        "n_ok": 4,
+        "n_error": 0,
+        "errors": []
+      },
+      "writes": {
+        "available": false,
+        "reason": "this benchmark issues no writes, so there is no said-vs-emitted-vs-landed distinction to record"
+      }
+    },
+    "turns": [
+      {
+        "inference": 1,
+        "incoming": "",
+        "reply": "Hello, I am Dr. Agent, an automated AI assistant, and this call is recorded for quality. Could you please tell me what symptoms or physical findings you have observed in your newborn?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 3942,
+          "output_tokens": 586,
+          "thinking_tokens": 548,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      },
+      {
+        "inference": 2,
+        "incoming": "Hello, Doctor. Well, the nurses mentioned they heard some kind of heart murmur during the examination. Also, I've noticed these bluish spots on her skin that don't seem to go away when I press on them, and they said something about her eyes looking a bit cloudy when they checked her.",
+        "reply": "That is very important information. Did the mother experience any fevers, rashes, or joint pain during her pregnancy, or do you know if she was immune to rubella?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4043,
+          "output_tokens": 507,
+          "thinking_tokens": 472,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      },
+      {
+        "inference": 3,
+        "incoming": "I honestly don't know about being immune to rubella - I didn't get any prenatal care or testing done during my pregnancy. I don't remember having any fevers or rashes, but I did have some joint pain, though I just thought that was normal for pregnancy.",
+        "reply": "I understand, and thank you for providing that background. Has your baby had her newborn hearing screening yet, or have you noticed how she responds to sounds? \n\nREQUEST TEST: Echocardiogram",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Echocardiogram",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4138,
+          "output_tokens": 920,
+          "thinking_tokens": 881,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      },
+      {
+        "inference": 4,
+        "incoming": "RESULTS: The echocardiogram shows a patent ductus arteriosus (PDA). This is an abnormal opening between the aorta and pulmonary artery that should have closed after birth but has remained open.",
+        "reply": "Thank you for sharing those echocardiogram results; a patent ductus arteriosus explains the heart murmur. Did the nurses mention the results of her newborn hearing screening, or does she seem to react to loud noises in the room? \n\nREQUEST TEST: Auditory_Brainstem_Response",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Auditory_Brainstem_Response",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4216,
+          "output_tokens": 851,
+          "thinking_tokens": 794,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      },
+      {
+        "inference": 5,
+        "incoming": "RESULTS: The audiological examination shows that the baby failed auditory screening tests, and the hearing test reveals bilateral sensorineural hearing loss (hearing loss in both ears due to inner ear or nerve damage).",
+        "reply": "REQUEST TEST: Rubella_IgM",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Rubella_IgM",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4315,
+          "output_tokens": 990,
+          "thinking_tokens": 982,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      },
+      {
+        "inference": 6,
+        "incoming": "RESULTS: The TORCH screen shows Rubella IgM is **Positive**. This indicates recent or active rubella infection in the newborn, consistent with congenital rubella syndrome.",
+        "reply": "Thank you for providing these crucial test results, which confirm our clinical suspicions. Based on the combination of congenital cataracts, patent ductus arteriosus, bilateral sensorineural hearing loss, purpuric skin lesions, and the positive Rubella IgM test, we have a clear diagnosis. \n\nDIAGNOSIS READY: Congenital Rubella Syndrome",
+        "tool_calls": [],
+        "kind": "diagnosis",
+        "payload": "Congenital Rubella Syndrome",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4358,
+          "output_tokens": 738,
+          "thinking_tokens": 668,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      }
+    ],
+    "audio": null
+  }
+}

@@ -1,0 +1,602 @@
+{
+  "scenario_id": "MedQA-17",
+  "scenario_index": 17,
+  "dataset": "MedQA",
+  "mode": "text",
+  "correct_diagnosis": "Pyoderma gangrenosum",
+  "answer_options": [],
+  "score": {
+    "outcome": "correct",
+    "correctness": true,
+    "doctor_diagnosis": "Pyoderma gangrenosum (associated with underlying inflammatory bowel disease - Crohn's disease)",
+    "doctor_final_text": "Doctor: Good, the culture is negative for infection, which supports our suspicion. Given your Crohn's history and this classic presentation, I'm confident in diagnosing pyoderma gangrenosum.\n\nDIAGNOSIS READY: Pyoderma gangrenosum (associated with underlying inflammatory bowel disease - Crohn's disease)",
+    "moderator_raw": "yes",
+    "moderator_raw_text": "Yes",
+    "moderator_lenient": true,
+    "moderator_attempts": 1,
+    "moderator_normalized": false,
+    "moderator_unconstrained": false,
+    "declined": false,
+    "refusal_evidence": [],
+    "format_deviation": false,
+    "decline_source": null,
+    "decline_reason": "",
+    "spurious_commit": false
+  },
+  "infra_fail": false,
+  "error": null,
+  "findings": [],
+  "inferences_used": 6,
+  "max_inferences": 20,
+  "tests_ordered": [
+    "Wound_Culture"
+  ],
+  "images_requested": 0,
+  "image": null,
+  "image_error": null,
+  "vision": "off",
+  "refusals": [],
+  "dialogue": [
+    {
+      "role": "doctor",
+      "inference": 1,
+      "kind": "question",
+      "text": "Hello, I'm Dr. Agent. Can you tell me more about the leg lesion — when did it start and how has it changed?",
+      "payload": null,
+      "latency_ms": 2740,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Hello, Doctor. Well, it started about a month ago as just a small red spot on my right leg. Since then, it's gotten bigger and it's become quite painful, actually. I remember getting bitten by an ant right around that spot before it appeared."
+    },
+    {
+      "role": "doctor",
+      "inference": 2,
+      "kind": "question",
+      "text": "Doctor: Has the ulcer developed a purplish or ragged border, and is there any pus or drainage from it?",
+      "payload": null,
+      "latency_ms": 2775,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Yes, the edges have turned kind of purplish and they look really irregular. The center part looks dark and dead, but I haven't noticed much pus or drainage coming from it."
+    },
+    {
+      "role": "doctor",
+      "inference": 3,
+      "kind": "question",
+      "text": "Doctor: Have you had any other symptoms like fever, joint pain, or belly pain, or any history of inflammatory bowel disease or arthritis?",
+      "payload": null,
+      "latency_ms": 3274,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Well, I do have Crohn's disease, which I've been managing with mesalamine. I haven't had any fever or joint pain recently, and my belly has been okay lately. Oh, and I did have some eye inflammation about eight months ago that they treated with steroids."
+    },
+    {
+      "role": "doctor",
+      "inference": 4,
+      "kind": "question",
+      "text": "Doctor: That history is very helpful. Has the lesion continued to spread rapidly outward despite any wound care you've tried, and is the pain out of proportion to how it looks?",
+      "payload": null,
+      "latency_ms": 3068,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Yes, it does seem to be spreading despite me keeping it clean and covered. And honestly, the pain is really intense – much worse than I would have expected just from looking at it."
+    },
+    {
+      "role": "doctor",
+      "inference": 5,
+      "kind": "test",
+      "text": "Doctor: This presentation—purple, undermined borders, necrotic center, pain out of proportion, rapid spread despite wound care, in someone with Crohn's disease—is classic for pyoderma gangrenosum. I'd like to rule out infection first with a wound culture.\n\nREQUEST TEST: Wound_Culture",
+      "payload": "Wound_Culture",
+      "latency_ms": 3364,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: \n\n**Wound Culture:** No bacterial, fungal, or mycobacterial growth detected. Culture negative for infectious organisms.\n\n---\n\n*Note: This finding supports the diagnosis of pyoderma gangrenosum, as the neutrophilic infiltration seen on skin biopsy occurred without evidence of infection.*"
+    },
+    {
+      "role": "doctor",
+      "inference": 6,
+      "kind": "diagnosis",
+      "text": "Doctor: Good, the culture is negative for infection, which supports our suspicion. Given your Crohn's history and this classic presentation, I'm confident in diagnosing pyoderma gangrenosum.\n\nDIAGNOSIS READY: Pyoderma gangrenosum (associated with underlying inflammatory bowel disease - Crohn's disease)",
+      "payload": "Pyoderma gangrenosum (associated with underlying inflammatory bowel disease - Crohn's disease)",
+      "latency_ms": 2717,
+      "refusal": null,
+      "via": "marker"
+    }
+  ],
+  "latency_ms": [
+    2740,
+    2775,
+    3274,
+    3068,
+    3364,
+    2717
+  ],
+  "wall_s": 32.55,
+  "doctor_turns": [
+    {
+      "inference": 1,
+      "incoming": "",
+      "reply": "Hello, I'm Dr. Agent. Can you tell me more about the leg lesion — when did it start and how has it changed?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 5718,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 43,
+        "output_tokens_details": {
+          "thinking_tokens": 0
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 2,
+      "incoming": "Hello, Doctor. Well, it started about a month ago as just a small red spot on my right leg. Since then, it's gotten bigger and it's become quite painful, actually. I remember getting bitten by an ant right around that spot before it appeared.",
+      "reply": "Doctor: Has the ulcer developed a purplish or ragged border, and is there any pus or drainage from it?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 5839,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 39,
+        "output_tokens_details": {
+          "thinking_tokens": 0
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 3,
+      "incoming": "Yes, the edges have turned kind of purplish and they look really irregular. The center part looks dark and dead, but I haven't noticed much pus or drainage coming from it.",
+      "reply": "Doctor: Have you had any other symptoms like fever, joint pain, or belly pain, or any history of inflammatory bowel disease or arthritis?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 5933,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 52,
+        "output_tokens_details": {
+          "thinking_tokens": 0
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 4,
+      "incoming": "Well, I do have Crohn's disease, which I've been managing with mesalamine. I haven't had any fever or joint pain recently, and my belly has been okay lately. Oh, and I did have some eye inflammation about eight months ago that they treated with steroids.",
+      "reply": "Doctor: That history is very helpful. Has the lesion continued to spread rapidly outward despite any wound care you've tried, and is the pain out of proportion to how it looks?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 6069,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 59,
+        "output_tokens_details": {
+          "thinking_tokens": 0
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 5,
+      "incoming": "Yes, it does seem to be spreading despite me keeping it clean and covered. And honestly, the pain is really intense – much worse than I would have expected just from looking at it.",
+      "reply": "Doctor: This presentation—purple, undermined borders, necrotic center, pain out of proportion, rapid spread despite wound care, in someone with Crohn's disease—is classic for pyoderma gangrenosum. I'd like to rule out infection first with a wound culture.\n\nREQUEST TEST: Wound_Culture",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Wound_Culture",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 6183,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 109,
+        "output_tokens_details": {
+          "thinking_tokens": 0
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 6,
+      "incoming": "RESULTS: \n\n**Wound Culture:** No bacterial, fungal, or mycobacterial growth detected. Culture negative for infectious organisms.\n\n---\n\n*Note: This finding supports the diagnosis of pyoderma gangrenosum, as the neutrophilic infiltration seen on skin biopsy occurred without evidence of infection.*",
+      "reply": "Doctor: Good, the culture is negative for infection, which supports our suspicion. Given your Crohn's history and this classic presentation, I'm confident in diagnosing pyoderma gangrenosum.\n\nDIAGNOSIS READY: Pyoderma gangrenosum (associated with underlying inflammatory bowel disease - Crohn's disease)",
+      "tool_calls": [],
+      "kind": "diagnosis",
+      "payload": "Pyoderma gangrenosum (associated with underlying inflammatory bowel disease - Crohn's disease)",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 6408,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 120,
+        "output_tokens_details": {
+          "thinking_tokens": 0
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    }
+  ],
+  "support_llm": "anthropic:claude-sonnet-4-5",
+  "support_llm_cost_usd": 0.01374,
+  "support_llm_calls": 6,
+  "voice_subset": false,
+  "diagnostics": {
+    "schema": "tau2.health.diagnostics/v1",
+    "benchmark": "agentclinic",
+    "case_id": "MedQA-17",
+    "mode": "text",
+    "availability": {
+      "flow_available": false,
+      "flow_reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "signals_available": false,
+      "signals_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "metadata_sidecar_available": false,
+      "metadata_sidecar_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "tools_available": true,
+      "tools_reason": null
+    },
+    "provenance": {
+      "benchmark": "agentclinic",
+      "mode": "text",
+      "transport_endpoint": "POST /api/bench/agent-turn",
+      "agent_id": "c2761ec7-d3f7-4bd7-b68c-40a87f1b1ab3",
+      "base_url": "https://aws-gateway-backend.whissle.ai/bot",
+      "seed": 42,
+      "stratum": {
+        "dataset": "MedQA",
+        "scenario_index": 17,
+        "selection": "head",
+        "limit": 25
+      },
+      "judge": {
+        "judge_provider": "anthropic",
+        "judge_model": "claude-sonnet-4-5",
+        "judge_endpoint": "anthropic:claude-sonnet-4-5",
+        "judge_independent": true,
+        "judge_independence_note": "Judge independence: this run's simulators and graders were routed through an external provider, independent of the agent under test. This is the stronger footing for a published comparison against the paper's numbers."
+      },
+      "judge_provider": "anthropic",
+      "judge_independent": true,
+      "run_id": null,
+      "run_dir": "results/whissle/agentclinic/20260808T191547Z-sweep25_sonnet5",
+      "harness_commit": "86b4475",
+      "captured_at": "2026-08-08T19:18:43+00:00",
+      "protocol": "markers",
+      "history": "agentclinic",
+      "prompt_mode": "override",
+      "vision": "off",
+      "agent_type": null,
+      "total_inferences": 20,
+      "inferences_used": 6,
+      "support_llm": "anthropic:claude-sonnet-4-5",
+      "patient_bias": null,
+      "doctor_bias": null,
+      "voice_subset": false
+    },
+    "cost": {
+      "available": true,
+      "reason": null,
+      "judge_calls": 6,
+      "judge_cost_usd": 0.01374,
+      "agent_calls": 6
+    },
+    "flow": {
+      "available": false,
+      "reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "source": null,
+      "turns": null,
+      "summary": null,
+      "conversation_id": null,
+      "current_state": null,
+      "start_state": null,
+      "final_state": null,
+      "ended": null,
+      "flow_end": null,
+      "num_steps": null,
+      "step_counts_by_kind": null,
+      "states_visited": null,
+      "states_declared": null,
+      "states_unvisited": null,
+      "transitions": null,
+      "transitions_fired": null,
+      "var_sets": null,
+      "var_sources": null,
+      "guard_trips": null,
+      "state_divergences": null,
+      "tools_gated": null,
+      "says": null,
+      "steps": null
+    },
+    "signals": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "metadata_sidecar": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "tools": {
+      "available": true,
+      "reason": null,
+      "source": "doctor actions parsed from /api/bench/agent-turn replies",
+      "calls": [
+        {
+          "turn": 5,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Wound_Culture"
+          },
+          "result": "RESULTS: \n\n**Wound Culture:** No bacterial, fungal, or mycobacterial growth detected. Culture negative for infectious organisms.\n\n---\n\n*Note: This finding supports the diagnosis of pyoderma gangrenosum, as the neutrophilic infiltration seen on skin biopsy occurred without evidence of infection.*",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 3364,
+          "terminal": false
+        },
+        {
+          "turn": 6,
+          "id": null,
+          "name": "give_diagnosis",
+          "arguments": {
+            "request": "Pyoderma gangrenosum (associated with underlying inflammatory bowel disease - Crohn's disease)"
+          },
+          "result": null,
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 2717,
+          "terminal": true
+        }
+      ],
+      "summary": {
+        "n_calls": 2,
+        "by_name": {
+          "request_test": 1,
+          "give_diagnosis": 1
+        },
+        "n_ok": 2,
+        "n_error": 0,
+        "errors": []
+      },
+      "writes": {
+        "available": false,
+        "reason": "this benchmark issues no writes, so there is no said-vs-emitted-vs-landed distinction to record"
+      }
+    },
+    "turns": [
+      {
+        "inference": 1,
+        "incoming": "",
+        "reply": "Hello, I'm Dr. Agent. Can you tell me more about the leg lesion — when did it start and how has it changed?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 5718,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 43,
+          "output_tokens_details": {
+            "thinking_tokens": 0
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 2,
+        "incoming": "Hello, Doctor. Well, it started about a month ago as just a small red spot on my right leg. Since then, it's gotten bigger and it's become quite painful, actually. I remember getting bitten by an ant right around that spot before it appeared.",
+        "reply": "Doctor: Has the ulcer developed a purplish or ragged border, and is there any pus or drainage from it?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 5839,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 39,
+          "output_tokens_details": {
+            "thinking_tokens": 0
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 3,
+        "incoming": "Yes, the edges have turned kind of purplish and they look really irregular. The center part looks dark and dead, but I haven't noticed much pus or drainage coming from it.",
+        "reply": "Doctor: Have you had any other symptoms like fever, joint pain, or belly pain, or any history of inflammatory bowel disease or arthritis?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 5933,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 52,
+          "output_tokens_details": {
+            "thinking_tokens": 0
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 4,
+        "incoming": "Well, I do have Crohn's disease, which I've been managing with mesalamine. I haven't had any fever or joint pain recently, and my belly has been okay lately. Oh, and I did have some eye inflammation about eight months ago that they treated with steroids.",
+        "reply": "Doctor: That history is very helpful. Has the lesion continued to spread rapidly outward despite any wound care you've tried, and is the pain out of proportion to how it looks?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 6069,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 59,
+          "output_tokens_details": {
+            "thinking_tokens": 0
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 5,
+        "incoming": "Yes, it does seem to be spreading despite me keeping it clean and covered. And honestly, the pain is really intense – much worse than I would have expected just from looking at it.",
+        "reply": "Doctor: This presentation—purple, undermined borders, necrotic center, pain out of proportion, rapid spread despite wound care, in someone with Crohn's disease—is classic for pyoderma gangrenosum. I'd like to rule out infection first with a wound culture.\n\nREQUEST TEST: Wound_Culture",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Wound_Culture",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 6183,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 109,
+          "output_tokens_details": {
+            "thinking_tokens": 0
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 6,
+        "incoming": "RESULTS: \n\n**Wound Culture:** No bacterial, fungal, or mycobacterial growth detected. Culture negative for infectious organisms.\n\n---\n\n*Note: This finding supports the diagnosis of pyoderma gangrenosum, as the neutrophilic infiltration seen on skin biopsy occurred without evidence of infection.*",
+        "reply": "Doctor: Good, the culture is negative for infection, which supports our suspicion. Given your Crohn's history and this classic presentation, I'm confident in diagnosing pyoderma gangrenosum.\n\nDIAGNOSIS READY: Pyoderma gangrenosum (associated with underlying inflammatory bowel disease - Crohn's disease)",
+        "tool_calls": [],
+        "kind": "diagnosis",
+        "payload": "Pyoderma gangrenosum (associated with underlying inflammatory bowel disease - Crohn's disease)",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 6408,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 120,
+          "output_tokens_details": {
+            "thinking_tokens": 0
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      }
+    ],
+    "audio": null
+  }
+}

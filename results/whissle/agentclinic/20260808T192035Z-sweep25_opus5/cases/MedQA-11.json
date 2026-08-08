@@ -1,0 +1,736 @@
+{
+  "scenario_id": "MedQA-11",
+  "scenario_index": 11,
+  "dataset": "MedQA",
+  "mode": "text",
+  "correct_diagnosis": "Complex partial seizure",
+  "answer_options": [],
+  "score": {
+    "outcome": "correct",
+    "correctness": true,
+    "doctor_diagnosis": "Temporal lobe epilepsy — focal (right temporal) seizures with impaired awareness, MRI-negative.",
+    "doctor_final_text": "Your MRI is normal, but the EEG shows spike activity coming from the right temporal lobe — which matches your aura, automatisms, and post-episode confusion exactly.\n\nDIAGNOSIS READY: Temporal lobe epilepsy — focal (right temporal) seizures with impaired awareness, MRI-negative.",
+    "moderator_raw": "yes",
+    "moderator_raw_text": "Yes",
+    "moderator_lenient": true,
+    "moderator_attempts": 1,
+    "moderator_normalized": false,
+    "moderator_unconstrained": false,
+    "declined": false,
+    "refusal_evidence": [],
+    "format_deviation": false,
+    "decline_source": null,
+    "decline_reason": "",
+    "spurious_commit": false
+  },
+  "infra_fail": false,
+  "error": null,
+  "findings": [],
+  "inferences_used": 8,
+  "max_inferences": 20,
+  "tests_ordered": [
+    "MRI_Brain"
+  ],
+  "images_requested": 0,
+  "image": null,
+  "image_error": null,
+  "vision": "off",
+  "refusals": [],
+  "dialogue": [
+    {
+      "role": "doctor",
+      "inference": 1,
+      "kind": "question",
+      "text": "Hello, I'm Dr. Agent — I'd like to understand these episodes better. Can you tell me how long each episode lasts and how often they happen?",
+      "payload": null,
+      "latency_ms": 2858,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Each episode lasts about 3 to 4 minutes, and they've been happening pretty often over the past month. I'm not really sure exactly how many times, but it feels like it's been several times."
+    },
+    {
+      "role": "doctor",
+      "inference": 2,
+      "kind": "question",
+      "text": "During an episode, do you have any warning beforehand — like a strange smell, taste, or a rising feeling in your stomach?",
+      "payload": null,
+      "latency_ms": 2370,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Yes, actually! Right before an episode starts, I get this weird muddy taste in my mouth. It's really strange and I don't like it."
+    },
+    {
+      "role": "doctor",
+      "inference": 3,
+      "kind": "question",
+      "text": "That taste is a helpful clue. After an episode ends, are you confused, sleepy, or unable to remember what happened for a while?",
+      "payload": null,
+      "latency_ms": 3676,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Yes, I feel really tired and confused afterwards. I don't remember anything that happened during the episode at all."
+    },
+    {
+      "role": "doctor",
+      "inference": 4,
+      "kind": "question",
+      "text": "Doctor: That pattern — an aura, loss of awareness, and confusion afterward — points to focal seizures. Has anyone witnessed you doing repetitive movements like lip-smacking, chewing, or picking at your clothes during these spells?",
+      "payload": null,
+      "latency_ms": 3116,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "My brother saw me making hand gestures during one of them, like moving my hands around. I don't remember doing it though."
+    },
+    {
+      "role": "doctor",
+      "inference": 5,
+      "kind": "question",
+      "text": "That fits automatisms — a hallmark of temporal lobe seizures. Have you ever had a head injury, meningitis, or prolonged febrile seizures as a child?",
+      "payload": null,
+      "latency_ms": 2361,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "No, I haven't had anything like that. I've been pretty healthy and never had any seizures before this started happening last month."
+    },
+    {
+      "role": "doctor",
+      "inference": 6,
+      "kind": "question",
+      "text": "Thank you — that's helpful. Have you noticed any fever, headache, or changes in your memory, mood, or behavior over the past month that your family has commented on?",
+      "payload": null,
+      "latency_ms": 3176,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "No, I haven't had any fever or headaches. My parents haven't said anything about my memory or mood being different either—I feel pretty normal except for when these episodes happen."
+    },
+    {
+      "role": "doctor",
+      "inference": 7,
+      "kind": "test",
+      "text": "Let's get some imaging and brain wave testing to localize where these seizures are coming from.\n\nREQUEST TEST: MRI_Brain\n\nREQUEST TEST: EEG",
+      "payload": "MRI_Brain",
+      "latency_ms": 2666,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: \n\n**MRI Brain:**\nNo evidence of mass lesions, infarctions, or structural abnormalities.\n\n**Electroencephalogram (EEG):**\nInterictal spikes and sharp waves localized to the temporal lobes, more prominent on the right side."
+    },
+    {
+      "role": "doctor",
+      "inference": 8,
+      "kind": "diagnosis",
+      "text": "Your MRI is normal, but the EEG shows spike activity coming from the right temporal lobe — which matches your aura, automatisms, and post-episode confusion exactly.\n\nDIAGNOSIS READY: Temporal lobe epilepsy — focal (right temporal) seizures with impaired awareness, MRI-negative.",
+      "payload": "Temporal lobe epilepsy — focal (right temporal) seizures with impaired awareness, MRI-negative.",
+      "latency_ms": 3114,
+      "refusal": null,
+      "via": "marker"
+    }
+  ],
+  "latency_ms": [
+    2858,
+    2370,
+    3676,
+    3116,
+    2361,
+    3176,
+    2666,
+    3114
+  ],
+  "wall_s": 38.18,
+  "doctor_turns": [
+    {
+      "inference": 1,
+      "incoming": "",
+      "reply": "Hello, I'm Dr. Agent — I'd like to understand these episodes better. Can you tell me how long each episode lasts and how often they happen?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 5721,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 106,
+        "output_tokens_details": {
+          "thinking_tokens": 55
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 2,
+      "incoming": "Each episode lasts about 3 to 4 minutes, and they've been happening pretty often over the past month. I'm not really sure exactly how many times, but it feels like it's been several times.",
+      "reply": "During an episode, do you have any warning beforehand — like a strange smell, taste, or a rising feeling in your stomach?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 5830,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 102,
+        "output_tokens_details": {
+          "thinking_tokens": 61
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 3,
+      "incoming": "Yes, actually! Right before an episode starts, I get this weird muddy taste in my mouth. It's really strange and I don't like it.",
+      "reply": "That taste is a helpful clue. After an episode ends, are you confused, sleepy, or unable to remember what happened for a while?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 5915,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 88,
+        "output_tokens_details": {
+          "thinking_tokens": 45
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 4,
+      "incoming": "Yes, I feel really tired and confused afterwards. I don't remember anything that happened during the episode at all.",
+      "reply": "Doctor: That pattern — an aura, loss of awareness, and confusion afterward — points to focal seizures. Has anyone witnessed you doing repetitive movements like lip-smacking, chewing, or picking at your clothes during these spells?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 5993,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 154,
+        "output_tokens_details": {
+          "thinking_tokens": 72
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 5,
+      "incoming": "My brother saw me making hand gestures during one of them, like moving my hands around. I don't remember doing it though.",
+      "reply": "That fits automatisms — a hallmark of temporal lobe seizures. Have you ever had a head injury, meningitis, or prolonged febrile seizures as a child?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 6110,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 104,
+        "output_tokens_details": {
+          "thinking_tokens": 47
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 6,
+      "incoming": "No, I haven't had anything like that. I've been pretty healthy and never had any seizures before this started happening last month.",
+      "reply": "Thank you — that's helpful. Have you noticed any fever, headache, or changes in your memory, mood, or behavior over the past month that your family has commented on?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 6203,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 139,
+        "output_tokens_details": {
+          "thinking_tokens": 86
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 7,
+      "incoming": "No, I haven't had any fever or headaches. My parents haven't said anything about my memory or mood being different either—I feel pretty normal except for when these episodes happen.",
+      "reply": "Let's get some imaging and brain wave testing to localize where these seizures are coming from.\n\nREQUEST TEST: MRI_Brain\n\nREQUEST TEST: EEG",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "MRI_Brain",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 6309,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 115,
+        "output_tokens_details": {
+          "thinking_tokens": 55
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 8,
+      "incoming": "RESULTS: \n\n**MRI Brain:**\nNo evidence of mass lesions, infarctions, or structural abnormalities.\n\n**Electroencephalogram (EEG):**\nInterictal spikes and sharp waves localized to the temporal lobes, more prominent on the right side.",
+      "reply": "Your MRI is normal, but the EEG shows spike activity coming from the right temporal lobe — which matches your aura, automatisms, and post-episode confusion exactly.\n\nDIAGNOSIS READY: Temporal lobe epilepsy — focal (right temporal) seizures with impaired awareness, MRI-negative.",
+      "tool_calls": [],
+      "kind": "diagnosis",
+      "payload": "Temporal lobe epilepsy — focal (right temporal) seizures with impaired awareness, MRI-negative.",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 6462,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 196,
+        "output_tokens_details": {
+          "thinking_tokens": 86
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    }
+  ],
+  "support_llm": "anthropic:claude-sonnet-4-5",
+  "support_llm_cost_usd": 0.01796,
+  "support_llm_calls": 8,
+  "voice_subset": false,
+  "diagnostics": {
+    "schema": "tau2.health.diagnostics/v1",
+    "benchmark": "agentclinic",
+    "case_id": "MedQA-11",
+    "mode": "text",
+    "availability": {
+      "flow_available": false,
+      "flow_reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "signals_available": false,
+      "signals_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "metadata_sidecar_available": false,
+      "metadata_sidecar_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "tools_available": true,
+      "tools_reason": null
+    },
+    "provenance": {
+      "benchmark": "agentclinic",
+      "mode": "text",
+      "transport_endpoint": "POST /api/bench/agent-turn",
+      "agent_id": "c2761ec7-d3f7-4bd7-b68c-40a87f1b1ab3",
+      "base_url": "https://aws-gateway-backend.whissle.ai/bot",
+      "seed": 42,
+      "stratum": {
+        "dataset": "MedQA",
+        "scenario_index": 11,
+        "selection": "head",
+        "limit": 25
+      },
+      "judge": {
+        "judge_provider": "anthropic",
+        "judge_model": "claude-sonnet-4-5",
+        "judge_endpoint": "anthropic:claude-sonnet-4-5",
+        "judge_independent": true,
+        "judge_independence_note": "Judge independence: this run's simulators and graders were routed through an external provider, independent of the agent under test. This is the stronger footing for a published comparison against the paper's numbers."
+      },
+      "judge_provider": "anthropic",
+      "judge_independent": true,
+      "run_id": null,
+      "run_dir": "results/whissle/agentclinic/20260808T192035Z-sweep25_opus5",
+      "harness_commit": "86b4475",
+      "captured_at": "2026-08-08T19:23:00+00:00",
+      "protocol": "markers",
+      "history": "agentclinic",
+      "prompt_mode": "override",
+      "vision": "off",
+      "agent_type": null,
+      "total_inferences": 20,
+      "inferences_used": 8,
+      "support_llm": "anthropic:claude-sonnet-4-5",
+      "patient_bias": null,
+      "doctor_bias": null,
+      "voice_subset": false
+    },
+    "cost": {
+      "available": true,
+      "reason": null,
+      "judge_calls": 8,
+      "judge_cost_usd": 0.01796,
+      "agent_calls": 8
+    },
+    "flow": {
+      "available": false,
+      "reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "source": null,
+      "turns": null,
+      "summary": null,
+      "conversation_id": null,
+      "current_state": null,
+      "start_state": null,
+      "final_state": null,
+      "ended": null,
+      "flow_end": null,
+      "num_steps": null,
+      "step_counts_by_kind": null,
+      "states_visited": null,
+      "states_declared": null,
+      "states_unvisited": null,
+      "transitions": null,
+      "transitions_fired": null,
+      "var_sets": null,
+      "var_sources": null,
+      "guard_trips": null,
+      "state_divergences": null,
+      "tools_gated": null,
+      "says": null,
+      "steps": null
+    },
+    "signals": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "metadata_sidecar": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "tools": {
+      "available": true,
+      "reason": null,
+      "source": "doctor actions parsed from /api/bench/agent-turn replies",
+      "calls": [
+        {
+          "turn": 7,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "MRI_Brain"
+          },
+          "result": "RESULTS: \n\n**MRI Brain:**\nNo evidence of mass lesions, infarctions, or structural abnormalities.\n\n**Electroencephalogram (EEG):**\nInterictal spikes and sharp waves localized to the temporal lobes, more prominent on the right side.",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 2666,
+          "terminal": false
+        },
+        {
+          "turn": 8,
+          "id": null,
+          "name": "give_diagnosis",
+          "arguments": {
+            "request": "Temporal lobe epilepsy — focal (right temporal) seizures with impaired awareness, MRI-negative."
+          },
+          "result": null,
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 3114,
+          "terminal": true
+        }
+      ],
+      "summary": {
+        "n_calls": 2,
+        "by_name": {
+          "request_test": 1,
+          "give_diagnosis": 1
+        },
+        "n_ok": 2,
+        "n_error": 0,
+        "errors": []
+      },
+      "writes": {
+        "available": false,
+        "reason": "this benchmark issues no writes, so there is no said-vs-emitted-vs-landed distinction to record"
+      }
+    },
+    "turns": [
+      {
+        "inference": 1,
+        "incoming": "",
+        "reply": "Hello, I'm Dr. Agent — I'd like to understand these episodes better. Can you tell me how long each episode lasts and how often they happen?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 5721,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 106,
+          "output_tokens_details": {
+            "thinking_tokens": 55
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 2,
+        "incoming": "Each episode lasts about 3 to 4 minutes, and they've been happening pretty often over the past month. I'm not really sure exactly how many times, but it feels like it's been several times.",
+        "reply": "During an episode, do you have any warning beforehand — like a strange smell, taste, or a rising feeling in your stomach?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 5830,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 102,
+          "output_tokens_details": {
+            "thinking_tokens": 61
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 3,
+        "incoming": "Yes, actually! Right before an episode starts, I get this weird muddy taste in my mouth. It's really strange and I don't like it.",
+        "reply": "That taste is a helpful clue. After an episode ends, are you confused, sleepy, or unable to remember what happened for a while?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 5915,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 88,
+          "output_tokens_details": {
+            "thinking_tokens": 45
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 4,
+        "incoming": "Yes, I feel really tired and confused afterwards. I don't remember anything that happened during the episode at all.",
+        "reply": "Doctor: That pattern — an aura, loss of awareness, and confusion afterward — points to focal seizures. Has anyone witnessed you doing repetitive movements like lip-smacking, chewing, or picking at your clothes during these spells?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 5993,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 154,
+          "output_tokens_details": {
+            "thinking_tokens": 72
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 5,
+        "incoming": "My brother saw me making hand gestures during one of them, like moving my hands around. I don't remember doing it though.",
+        "reply": "That fits automatisms — a hallmark of temporal lobe seizures. Have you ever had a head injury, meningitis, or prolonged febrile seizures as a child?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 6110,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 104,
+          "output_tokens_details": {
+            "thinking_tokens": 47
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 6,
+        "incoming": "No, I haven't had anything like that. I've been pretty healthy and never had any seizures before this started happening last month.",
+        "reply": "Thank you — that's helpful. Have you noticed any fever, headache, or changes in your memory, mood, or behavior over the past month that your family has commented on?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 6203,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 139,
+          "output_tokens_details": {
+            "thinking_tokens": 86
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 7,
+        "incoming": "No, I haven't had any fever or headaches. My parents haven't said anything about my memory or mood being different either—I feel pretty normal except for when these episodes happen.",
+        "reply": "Let's get some imaging and brain wave testing to localize where these seizures are coming from.\n\nREQUEST TEST: MRI_Brain\n\nREQUEST TEST: EEG",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "MRI_Brain",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 6309,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 115,
+          "output_tokens_details": {
+            "thinking_tokens": 55
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 8,
+        "incoming": "RESULTS: \n\n**MRI Brain:**\nNo evidence of mass lesions, infarctions, or structural abnormalities.\n\n**Electroencephalogram (EEG):**\nInterictal spikes and sharp waves localized to the temporal lobes, more prominent on the right side.",
+        "reply": "Your MRI is normal, but the EEG shows spike activity coming from the right temporal lobe — which matches your aura, automatisms, and post-episode confusion exactly.\n\nDIAGNOSIS READY: Temporal lobe epilepsy — focal (right temporal) seizures with impaired awareness, MRI-negative.",
+        "tool_calls": [],
+        "kind": "diagnosis",
+        "payload": "Temporal lobe epilepsy — focal (right temporal) seizures with impaired awareness, MRI-negative.",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 6462,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 196,
+          "output_tokens_details": {
+            "thinking_tokens": 86
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      }
+    ],
+    "audio": null
+  }
+}

@@ -1,0 +1,473 @@
+{
+  "scenario_id": "MedQA-9",
+  "scenario_index": 9,
+  "dataset": "MedQA",
+  "mode": "text",
+  "correct_diagnosis": "Endometritis",
+  "answer_options": [],
+  "score": {
+    "outcome": "correct",
+    "correctness": true,
+    "doctor_diagnosis": "Postpartum Endometritis",
+    "doctor_final_text": "Good—keeping fluids down is important. Given your fever, chills, foul-smelling discharge, constant uterine tenderness, and elevated white blood cells, I'm confident in my diagnosis.\n\nDIAGNOSIS READY: Postpartum Endometritis",
+    "moderator_raw": "yes",
+    "moderator_raw_text": "Yes",
+    "moderator_lenient": true,
+    "moderator_attempts": 1,
+    "moderator_normalized": false,
+    "moderator_unconstrained": false,
+    "declined": false,
+    "refusal_evidence": [],
+    "format_deviation": false,
+    "decline_source": null,
+    "decline_reason": "",
+    "spurious_commit": false
+  },
+  "infra_fail": false,
+  "error": null,
+  "findings": [],
+  "inferences_used": 7,
+  "max_inferences": 20,
+  "tests_ordered": [
+    "Complete_Blood_Count"
+  ],
+  "images_requested": 0,
+  "image": null,
+  "image_error": null,
+  "vision": "off",
+  "refusals": [],
+  "dialogue": [
+    {
+      "role": "doctor",
+      "inference": 1,
+      "kind": "question",
+      "text": "Good morning, I'm Dr. Agent, and I'm here to help evaluate what's going on with you. Just so you know, I'm an AI assistant and this call is recorded for quality. Can you tell me when your fever started after delivery?",
+      "payload": null,
+      "latency_ms": 1544,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Good morning, Doctor. The fever started about two days after I delivered my baby. It's been pretty uncomfortable, and I've been feeling quite warm and a bit weak."
+    },
+    {
+      "role": "doctor",
+      "inference": 2,
+      "kind": "question",
+      "text": "Thank you for that detail. Two days postpartum with fever and weakness — that's important information. Besides the fever, are you experiencing any vaginal bleeding or discharge that seems heavier or different than normal?",
+      "payload": null,
+      "latency_ms": 1166,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "The bleeding seems pretty normal for after delivery, I think. But I have noticed my belly feels really tender and sore, especially around my uterus area, and it's been bothering me quite a bit."
+    },
+    {
+      "role": "doctor",
+      "inference": 3,
+      "kind": "question",
+      "text": "That tenderness around the uterus is significant, especially with the fever — I want to ask about the character of that pain: is it constant, or does it come and go in waves?",
+      "payload": null,
+      "latency_ms": 1569,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "The pain is pretty constant, Doctor. It's just this steady ache and tenderness that doesn't really go away, and it gets worse when I press on my belly or move around too much."
+    },
+    {
+      "role": "doctor",
+      "inference": 4,
+      "kind": "test",
+      "text": "Constant tenderness that worsens with pressure and movement is very concerning for postpartum infection. Let me request some tests to help clarify what we're dealing with.\n\nREQUEST TEST: Complete_Blood_Count\nREQUEST TEST: Blood_Culture\nREQUEST TEST: Pelvic_Ultrasound\n\nHave you noticed any foul-smelling discharge, chills, or nausea along with the fever?",
+      "payload": "Complete_Blood_Count",
+      "latency_ms": 1662,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: \n\n**Complete Blood Count:**\n- WBC: 18,500/μL (elevated, indicating infection)\n- Hemoglobin: 10.2 g/dL (mild anemia, consistent with postpartum state)\n- Platelets: 245,000/μL (normal)\n\n**Blood Culture:**\n- NORMAL READINGS (preliminary - final results pending 48-72 hours)\n\n**Pelvic Ultrasound:**\n- NORMAL READINGS (no retained products of conception visualized, no abscess formation noted, uterus appears appropriately involuted for postpartum day 3)"
+    },
+    {
+      "role": "doctor",
+      "inference": 5,
+      "kind": "question",
+      "text": "The elevated white blood cell count confirms active infection, and the ultrasound rules out retained products or abscess — this points strongly toward endometritis. Have you had any chills or noticed any foul-smelling vaginal discharge?",
+      "payload": null,
+      "latency_ms": 1101,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Yes, I've had some chills, especially when the fever spikes. And now that you mention it, the discharge does have a bit of an unpleasant odor that I didn't really have right after delivery."
+    },
+    {
+      "role": "doctor",
+      "inference": 6,
+      "kind": "question",
+      "text": "Chills with fever spikes and foul-smelling discharge—those are classic signs of endometritis, confirmed by your elevated white blood cells and the clinical picture. Have you been able to keep food and fluids down, or are you experiencing nausea or vomiting?",
+      "payload": null,
+      "latency_ms": 1217,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "I've been able to eat and drink okay, thankfully. I haven't had any vomiting, though I do feel a bit nauseous at times, especially when the fever is high."
+    },
+    {
+      "role": "doctor",
+      "inference": 7,
+      "kind": "diagnosis",
+      "text": "Good—keeping fluids down is important. Given your fever, chills, foul-smelling discharge, constant uterine tenderness, and elevated white blood cells, I'm confident in my diagnosis.\n\nDIAGNOSIS READY: Postpartum Endometritis",
+      "payload": "Postpartum Endometritis",
+      "latency_ms": 1511,
+      "refusal": null,
+      "via": "marker"
+    }
+  ],
+  "latency_ms": [
+    1544,
+    1166,
+    1569,
+    1662,
+    1101,
+    1217,
+    1511
+  ],
+  "wall_s": 29.33,
+  "doctor_turns": [
+    {
+      "inference": 1,
+      "incoming": "",
+      "reply": "Good morning, I'm Dr. Agent, and I'm here to help evaluate what's going on with you. Just so you know, I'm an AI assistant and this call is recorded for quality. Can you tell me when your fever started after delivery?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 2,
+      "incoming": "Good morning, Doctor. The fever started about two days after I delivered my baby. It's been pretty uncomfortable, and I've been feeling quite warm and a bit weak.",
+      "reply": "Thank you for that detail. Two days postpartum with fever and weakness — that's important information. Besides the fever, are you experiencing any vaginal bleeding or discharge that seems heavier or different than normal?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 3,
+      "incoming": "The bleeding seems pretty normal for after delivery, I think. But I have noticed my belly feels really tender and sore, especially around my uterus area, and it's been bothering me quite a bit.",
+      "reply": "That tenderness around the uterus is significant, especially with the fever — I want to ask about the character of that pain: is it constant, or does it come and go in waves?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 4,
+      "incoming": "The pain is pretty constant, Doctor. It's just this steady ache and tenderness that doesn't really go away, and it gets worse when I press on my belly or move around too much.",
+      "reply": "Constant tenderness that worsens with pressure and movement is very concerning for postpartum infection. Let me request some tests to help clarify what we're dealing with.\n\nREQUEST TEST: Complete_Blood_Count\nREQUEST TEST: Blood_Culture\nREQUEST TEST: Pelvic_Ultrasound\n\nHave you noticed any foul-smelling discharge, chills, or nausea along with the fever?",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Complete_Blood_Count",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 5,
+      "incoming": "RESULTS: \n\n**Complete Blood Count:**\n- WBC: 18,500/μL (elevated, indicating infection)\n- Hemoglobin: 10.2 g/dL (mild anemia, consistent with postpartum state)\n- Platelets: 245,000/μL (normal)\n\n**Blood Culture:**\n- NORMAL READINGS (preliminary - final results pending 48-72 hours)\n\n**Pelvic Ultrasound:**\n- NORMAL READINGS (no retained products of conception visualized, no abscess formation noted, uterus appears appropriately involuted for postpartum day 3)",
+      "reply": "The elevated white blood cell count confirms active infection, and the ultrasound rules out retained products or abscess — this points strongly toward endometritis. Have you had any chills or noticed any foul-smelling vaginal discharge?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 6,
+      "incoming": "Yes, I've had some chills, especially when the fever spikes. And now that you mention it, the discharge does have a bit of an unpleasant odor that I didn't really have right after delivery.",
+      "reply": "Chills with fever spikes and foul-smelling discharge—those are classic signs of endometritis, confirmed by your elevated white blood cells and the clinical picture. Have you been able to keep food and fluids down, or are you experiencing nausea or vomiting?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 7,
+      "incoming": "I've been able to eat and drink okay, thankfully. I haven't had any vomiting, though I do feel a bit nauseous at times, especially when the fever is high.",
+      "reply": "Good—keeping fluids down is important. Given your fever, chills, foul-smelling discharge, constant uterine tenderness, and elevated white blood cells, I'm confident in my diagnosis.\n\nDIAGNOSIS READY: Postpartum Endometritis",
+      "tool_calls": [],
+      "kind": "diagnosis",
+      "payload": "Postpartum Endometritis",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": "end_turn"
+    }
+  ],
+  "support_llm": "anthropic:claude-sonnet-4-5",
+  "support_llm_cost_usd": 0.01763,
+  "support_llm_calls": 7,
+  "voice_subset": false,
+  "diagnostics": {
+    "schema": "tau2.health.diagnostics/v1",
+    "benchmark": "agentclinic",
+    "case_id": "MedQA-9",
+    "mode": "text",
+    "availability": {
+      "flow_available": false,
+      "flow_reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "signals_available": false,
+      "signals_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "metadata_sidecar_available": false,
+      "metadata_sidecar_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "tools_available": true,
+      "tools_reason": null
+    },
+    "provenance": {
+      "benchmark": "agentclinic",
+      "mode": "text",
+      "transport_endpoint": "POST /api/bench/agent-turn",
+      "agent_id": "c2761ec7-d3f7-4bd7-b68c-40a87f1b1ab3",
+      "base_url": "https://aws-gateway-backend.whissle.ai/bot",
+      "seed": 42,
+      "stratum": {
+        "dataset": "MedQA",
+        "scenario_index": 9,
+        "selection": "head",
+        "limit": 25
+      },
+      "judge": {
+        "judge_provider": "anthropic",
+        "judge_model": "claude-sonnet-4-5",
+        "judge_endpoint": "anthropic:claude-sonnet-4-5",
+        "judge_independent": true,
+        "judge_independence_note": "Judge independence: this run's simulators and graders were routed through an external provider, independent of the agent under test. This is the stronger footing for a published comparison against the paper's numbers."
+      },
+      "judge_provider": "anthropic",
+      "judge_independent": true,
+      "run_id": null,
+      "run_dir": "results/whissle/agentclinic/20260808T185622Z-sweep25_haiku",
+      "harness_commit": "86b4475",
+      "captured_at": "2026-08-08T18:58:22+00:00",
+      "protocol": "markers",
+      "history": "agentclinic",
+      "prompt_mode": "override",
+      "vision": "off",
+      "agent_type": null,
+      "total_inferences": 20,
+      "inferences_used": 7,
+      "support_llm": "anthropic:claude-sonnet-4-5",
+      "patient_bias": null,
+      "doctor_bias": null,
+      "voice_subset": false
+    },
+    "cost": {
+      "available": true,
+      "reason": null,
+      "judge_calls": 7,
+      "judge_cost_usd": 0.01763,
+      "agent_calls": 7
+    },
+    "flow": {
+      "available": false,
+      "reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "source": null,
+      "turns": null,
+      "summary": null,
+      "conversation_id": null,
+      "current_state": null,
+      "start_state": null,
+      "final_state": null,
+      "ended": null,
+      "flow_end": null,
+      "num_steps": null,
+      "step_counts_by_kind": null,
+      "states_visited": null,
+      "states_declared": null,
+      "states_unvisited": null,
+      "transitions": null,
+      "transitions_fired": null,
+      "var_sets": null,
+      "var_sources": null,
+      "guard_trips": null,
+      "state_divergences": null,
+      "tools_gated": null,
+      "says": null,
+      "steps": null
+    },
+    "signals": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "metadata_sidecar": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "tools": {
+      "available": true,
+      "reason": null,
+      "source": "doctor actions parsed from /api/bench/agent-turn replies",
+      "calls": [
+        {
+          "turn": 4,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Complete_Blood_Count"
+          },
+          "result": "RESULTS: \n\n**Complete Blood Count:**\n- WBC: 18,500/μL (elevated, indicating infection)\n- Hemoglobin: 10.2 g/dL (mild anemia, consistent with postpartum state)\n- Platelets: 245,000/μL (normal)\n\n**Blood Culture:**\n- NORMAL READINGS (preliminary - final results pending 48-72 hours)\n\n**Pelvic Ultrasound:**\n- NORMAL READINGS (no retained products of conception visualized, no abscess formation noted, uterus appears appropriately involuted for postpartum day 3)",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 1662,
+          "terminal": false
+        },
+        {
+          "turn": 7,
+          "id": null,
+          "name": "give_diagnosis",
+          "arguments": {
+            "request": "Postpartum Endometritis"
+          },
+          "result": null,
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 1511,
+          "terminal": true
+        }
+      ],
+      "summary": {
+        "n_calls": 2,
+        "by_name": {
+          "request_test": 1,
+          "give_diagnosis": 1
+        },
+        "n_ok": 2,
+        "n_error": 0,
+        "errors": []
+      },
+      "writes": {
+        "available": false,
+        "reason": "this benchmark issues no writes, so there is no said-vs-emitted-vs-landed distinction to record"
+      }
+    },
+    "turns": [
+      {
+        "inference": 1,
+        "incoming": "",
+        "reply": "Good morning, I'm Dr. Agent, and I'm here to help evaluate what's going on with you. Just so you know, I'm an AI assistant and this call is recorded for quality. Can you tell me when your fever started after delivery?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 2,
+        "incoming": "Good morning, Doctor. The fever started about two days after I delivered my baby. It's been pretty uncomfortable, and I've been feeling quite warm and a bit weak.",
+        "reply": "Thank you for that detail. Two days postpartum with fever and weakness — that's important information. Besides the fever, are you experiencing any vaginal bleeding or discharge that seems heavier or different than normal?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 3,
+        "incoming": "The bleeding seems pretty normal for after delivery, I think. But I have noticed my belly feels really tender and sore, especially around my uterus area, and it's been bothering me quite a bit.",
+        "reply": "That tenderness around the uterus is significant, especially with the fever — I want to ask about the character of that pain: is it constant, or does it come and go in waves?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 4,
+        "incoming": "The pain is pretty constant, Doctor. It's just this steady ache and tenderness that doesn't really go away, and it gets worse when I press on my belly or move around too much.",
+        "reply": "Constant tenderness that worsens with pressure and movement is very concerning for postpartum infection. Let me request some tests to help clarify what we're dealing with.\n\nREQUEST TEST: Complete_Blood_Count\nREQUEST TEST: Blood_Culture\nREQUEST TEST: Pelvic_Ultrasound\n\nHave you noticed any foul-smelling discharge, chills, or nausea along with the fever?",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Complete_Blood_Count",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 5,
+        "incoming": "RESULTS: \n\n**Complete Blood Count:**\n- WBC: 18,500/μL (elevated, indicating infection)\n- Hemoglobin: 10.2 g/dL (mild anemia, consistent with postpartum state)\n- Platelets: 245,000/μL (normal)\n\n**Blood Culture:**\n- NORMAL READINGS (preliminary - final results pending 48-72 hours)\n\n**Pelvic Ultrasound:**\n- NORMAL READINGS (no retained products of conception visualized, no abscess formation noted, uterus appears appropriately involuted for postpartum day 3)",
+        "reply": "The elevated white blood cell count confirms active infection, and the ultrasound rules out retained products or abscess — this points strongly toward endometritis. Have you had any chills or noticed any foul-smelling vaginal discharge?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 6,
+        "incoming": "Yes, I've had some chills, especially when the fever spikes. And now that you mention it, the discharge does have a bit of an unpleasant odor that I didn't really have right after delivery.",
+        "reply": "Chills with fever spikes and foul-smelling discharge—those are classic signs of endometritis, confirmed by your elevated white blood cells and the clinical picture. Have you been able to keep food and fluids down, or are you experiencing nausea or vomiting?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 7,
+        "incoming": "I've been able to eat and drink okay, thankfully. I haven't had any vomiting, though I do feel a bit nauseous at times, especially when the fever is high.",
+        "reply": "Good—keeping fluids down is important. Given your fever, chills, foul-smelling discharge, constant uterine tenderness, and elevated white blood cells, I'm confident in my diagnosis.\n\nDIAGNOSIS READY: Postpartum Endometritis",
+        "tool_calls": [],
+        "kind": "diagnosis",
+        "payload": "Postpartum Endometritis",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": "end_turn"
+      }
+    ],
+    "audio": null
+  }
+}
