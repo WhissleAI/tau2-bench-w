@@ -308,10 +308,14 @@ def load_case_image(scenario: Scenario, vision: str
 
 def make_text_doctor(scenario: Scenario, cfg: DoctorConfig,
                      image: Optional[CaseImage],
-                     doctor_bias: Optional[str] = None) -> WhissleDoctor:
+                     doctor_bias: Optional[str] = None,
+                     ledger: Optional[Any] = None) -> WhissleDoctor:
     cfg = DoctorConfig(**{**cfg.__dict__})
     cfg.bias_prompt = bias_text(doctor_bias, DOCTOR_BIASES)
-    return WhissleDoctor(cfg, scenario.examiner_information(), image=image)
+    # ``ledger`` is the archive's serving ledger. Passing the scenario id with it is
+    # what makes per-case token counts and cost attributable afterwards.
+    return WhissleDoctor(cfg, scenario.examiner_information(), image=image,
+                         ledger=ledger, case_id=getattr(scenario, "id", None))
 
 
 # ── artifacts ───────────────────────────────────────────────────────────────────

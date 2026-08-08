@@ -65,6 +65,8 @@ from tau2.flow.scenarios import Assertion
 app = Typer(add_completion=False)
 console = Console()
 
+from tau2.archive.suites import archive_flow_defaults_run, now as _archive_now
+
 RESULTS_DIR = Path("results/whissle/flow_defaults")
 FIXTURE = Path("data/flow/defaults.json")
 
@@ -471,6 +473,7 @@ def run(
         console.print(f"[red]no such type: {agent_type}[/red]")
         raise SystemExit(2)
 
+    _run_started = _archive_now()
     results = []
     for spec in specs:
         console.print(f"\n[bold cyan]▶ {spec.agent_type}[/bold cyan]")
@@ -494,6 +497,12 @@ def run(
 
     _write_summary(results)
     _print_summary_table(results)
+
+    archive_flow_defaults_run(
+        out_dir=RESULTS_DIR, summary=_last_summary.get("value") or {},
+        results=results, base_url=getattr(client, "base", ""),
+        started_at=_run_started,
+    )
 
     if not keep_agent:
         _report_lingering(client)
@@ -523,6 +532,11 @@ def _print_summary_table(results: list[dict]) -> None:
         console.print(f"[red]default flow did NOT attach for: {missing}[/red]")
 
 
+#: The most recent summary _write_summary produced, so the archive records the
+#: suite's own rollup rather than computing a near-identical second one.
+_last_summary: dict = {}
+
+
 def _write_summary(results: list[dict]) -> None:
     """Combined SUMMARY.json + SUMMARY.md (committed, matching results/whissle/*)."""
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
@@ -548,6 +562,7 @@ def _write_summary(results: list[dict]) -> None:
     }
     (RESULTS_DIR / "SUMMARY.json").write_text(
         json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8")
+    _last_summary["value"] = summary
 
     t = summary["totals"]
     lines = [

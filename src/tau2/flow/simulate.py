@@ -60,6 +60,8 @@ from tau2.flow.voice_transport import VoiceInfraError, VoiceTransport
 app = Typer(add_completion=False)
 console = Console()
 
+from tau2.archive.suites import archive_flow_sim_run, now as _archive_now
+
 RESULTS_ROOT = Path("results/whissle/flow_sim")
 TASKS_FIXTURE = Path("data/flow/sim_tasks.json")
 AGENT_PREFIX = "flowsim-"
@@ -899,6 +901,7 @@ def run(
     if mode not in ("text", "voice"):
         console.print(f"[red]--mode must be 'text' or 'voice', got {mode!r}[/red]")
         raise SystemExit(2)
+    _run_started = _archive_now()
     client = FlowClient()
     model = WhissleModel()
     who = client.whoami()
@@ -947,6 +950,16 @@ def run(
     summary = aggregate_agent_type(agent_type, flow_spec, results)
     _print_agent_summary(summary)
     _write_overall_markdown([summary])
+
+    # Archive the run. flow-sim is the one suite that really drives audio, so its
+    # modality is load-bearing rather than a formality — a voice run leaves .wav
+    # files beside every session, and that audio is the evidence.
+    archive_flow_sim_run(
+        out_dir=RESULTS_ROOT / agent_type, summary=summary, results=results,
+        mode=mode, agent_type=agent_type, sessions=sessions,
+        base_url=getattr(client, "base", ""), user_sim=model,
+        started_at=_run_started,
+    )
 
     if not keep_agent:
         _report_lingering(client)

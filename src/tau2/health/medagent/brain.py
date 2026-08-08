@@ -16,9 +16,12 @@ from __future__ import annotations
 import json
 import os
 import time
-from typing import Any, Optional
+from typing import TYPE_CHECKING, Any, Optional
 
 import requests
+
+if TYPE_CHECKING:  # import-cycle-free type reference for the archive's ledger
+    from tau2.archive.serving import ServingLedger
 
 DEFAULT_BASE = "https://aws-gateway-backend.whissle.ai/bot"
 
@@ -56,7 +59,12 @@ class WhissleBrain:
         max_tokens: int = 1024,
         timeout: float = 120.0,
         retries: int = 3,
+        ledger: Optional["ServingLedger"] = None,
     ):
+        # The archive's serving ledger. Optional so existing callers are unaffected;
+        # when supplied, every turn records what ACTUALLY answered plus its token
+        # usage — the response fields this class otherwise discards in _extract_text.
+        self.ledger = ledger
         self.base = (base or os.getenv("WHISSLE_BASE") or DEFAULT_BASE).rstrip("/")
         self.agent_id = agent_id or os.getenv("WHISSLE_AGENT_ID")
         self.api_key = api_key or os.getenv("WHISSLE_API_KEY")
@@ -88,11 +96,15 @@ class WhissleBrain:
             return task_prompt
         return None  # agent-default: the platform agent's own prompt applies
 
-    def turn(self, messages: list[dict], system: Optional[str]) -> str:
+    def turn(self, messages: list[dict], system: Optional[str],
+             case_id: Optional[str] = None) -> str:
         """Return the agent's next reply as plain text.
 
         Raises `BrainInfraError` on transport failure, persistent 5xx, or a
         response with no usable text.
+
+        ``case_id`` is threaded through only so the serving ledger can attribute
+        tokens and cost to a task; it does not affect the request.
         """
         body: dict[str, Any] = {
             "agent_id": self.agent_id,
@@ -128,7 +140,11 @@ class WhissleBrain:
                         f"bench agent-turn rejected the request: "
                         f"{r.status_code} {r.text[:300]}"
                     )
-                return _extract_text(r.json())
+                payload = r.json()
+                if self.ledger is not None:
+                    self.ledger.record_response(
+                        payload, case_id=case_id, requested_model=self.model)
+                return _extract_text(payload)
             except BrainInfraError:
                 raise
             except requests.exceptions.RequestException as e:

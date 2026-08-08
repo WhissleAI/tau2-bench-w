@@ -103,10 +103,27 @@ class TurnResponse:
 class WhissleBenchClient:
     """Thin, retrying client for ``/api/bench/agent-turn``."""
 
-    def __init__(self, config: Optional[WhissleConfig] = None, session: Optional[Any] = None) -> None:
+    def __init__(self, config: Optional[WhissleConfig] = None, session: Optional[Any] = None,
+                 ledger: Optional[Any] = None) -> None:
         self.config = (config or WhissleConfig()).require()
         # Injectable for tests; a real Session also gives us connection reuse.
         self._session = session if session is not None else requests.Session()
+        # The archive's serving ledger. This client is built lazily inside a pydantic
+        # model inside a LangGraph agent, several layers below anything the runner
+        # holds, so it falls back to the process-wide ledger rather than requiring
+        # every intermediate layer to carry an argument it does not use. Each turn
+        # then records the model that actually answered plus its token usage — the
+        # fields ``_decode`` otherwise keeps only inside ``TurnResponse.raw``.
+        if ledger is None:
+            try:
+                from tau2.archive.serving import default_ledger
+
+                ledger = default_ledger()
+            except Exception:  # noqa: BLE001 — telemetry never blocks a benchmark
+                ledger = None
+        self.ledger = ledger
+        #: Set by the runner per case so ledger entries can be attributed.
+        self.case_id: Optional[str] = None
 
     @property
     def url(self) -> str:
@@ -134,6 +151,9 @@ class WhissleBenchClient:
             body["model"] = chosen_model
 
         payload = self._post_with_retries(body)
+        if self.ledger is not None:
+            self.ledger.record_response(
+                payload, case_id=self.case_id, requested_model=chosen_model)
         return self._decode(payload)
 
     # -- transport ---------------------------------------------------------------

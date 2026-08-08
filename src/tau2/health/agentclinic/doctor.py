@@ -29,11 +29,14 @@ import os
 import time
 import uuid
 from dataclasses import dataclass, field
-from typing import Any, Optional
+from typing import TYPE_CHECKING, Any, Optional
 
 import requests
 
 from tau2.health.agentclinic.errors import DoctorInfraError
+
+if TYPE_CHECKING:  # import-cycle-free type reference for the archive's ledger
+    from tau2.archive.serving import ServingLedger
 from tau2.health.agentclinic.protocol import (
     DoctorAction,
     doctor_system_prompt,
@@ -138,11 +141,18 @@ class WhissleDoctor:
     """One doctor, for one case. Stateful across the case's turns."""
 
     def __init__(self, cfg: DoctorConfig, presentation: Any,
-                 image: Optional[CaseImage] = None) -> None:
+                 image: Optional[CaseImage] = None,
+                 ledger: Optional["ServingLedger"] = None,
+                 case_id: Optional[str] = None) -> None:
         cfg.require()
         self.cfg = cfg
         self.presentation = presentation
         self.image = image
+        # The archive's serving ledger. Optional so every existing caller keeps
+        # working; when supplied, each turn records the model that ACTUALLY answered
+        # rather than the one `cfg.model` asked for.
+        self.ledger = ledger
+        self.case_id = case_id
         self.infs = 0                     # doctor inferences consumed (upstream's)
         self.messages: list[dict] = []    # native history
         self.agent_hist = ""              # upstream's rolling string
@@ -202,6 +212,9 @@ class WhissleDoctor:
                 msgs = list(self.messages)
 
         resp = self._agent_turn(msgs)
+        if self.ledger is not None:
+            self.ledger.record_response(
+                resp, case_id=self.case_id, requested_model=self.cfg.model)
         reply = (resp.get("reply") or "").strip()
         blocks = resp.get("content") or []
         calls = list(resp.get("tool_calls") or [])
@@ -225,6 +238,11 @@ class WhissleDoctor:
             "image_attached": bool(send_image),
             "usage": resp.get("usage"),
             "stop_reason": resp.get("stop_reason"),
+            # The model that ACTUALLY served this turn. Provider failover means it
+            # can differ from cfg.model, and until backend #664 this key did not
+            # exist at all — so it is recorded per turn rather than once per run.
+            "served_model": resp.get("model"),
+            "stop_details": resp.get("stop_details"),
         })
         return action
 

@@ -21,6 +21,8 @@ from typing import Any, Optional
 
 from dotenv import load_dotenv
 
+from tau2.archive.serving import ServingLedger
+from tau2.archive.suites import archive_agentclinic_run, now as _archive_now
 from tau2.health import diagnostics
 from tau2.health.agentclinic import diagnostics as case_diag
 from tau2.health.agentclinic.dataset import (
@@ -175,7 +177,8 @@ def _run_one(scenario: Scenario, args: argparse.Namespace, cfg: DoctorConfig,
             finally:
                 doctor.stop()
         else:
-            doctor = make_text_doctor(scenario, cfg, image, args.doctor_bias)
+            doctor = make_text_doctor(scenario, cfg, image, args.doctor_bias,
+                                      ledger=ledger)
             case = run_case(
                 scenario, doctor, support,
                 total_inferences=args.total_inferences,
@@ -329,6 +332,10 @@ def main(argv: Optional[list[str]] = None) -> int:
     )
     cfg.require()
 
+    run_started = _archive_now()
+    # The archive's serving ledger: each doctor turn records the model that
+    # actually answered — AgentClinic never recorded the agent's model at all.
+    ledger = ServingLedger()
     out = run_dir(Path(args.out) if args.out else None, tag=args.tag or args.dataset)
     meta = {
         "dataset": args.dataset,
@@ -420,6 +427,22 @@ def main(argv: Optional[list[str]] = None) -> int:
             summary_markdown(vsummary), encoding="utf-8")
         print(f"\nvoice subset ({len(voice_cases)} case(s), scored separately):\n")
         print(summary_markdown(vsummary))
+
+    # Archive the run: a self-describing copy under $TAU2_ARCHIVE_DIR carrying raw/,
+    # per-case files, the environment, the served model and the cost — plus the
+    # modality, which for this suite is whatever --mode just drove.
+    archive_agentclinic_run(
+        run_dir=out, meta=meta, summary=summary, cases=cases, ledger=ledger,
+        mode=args.mode, started_at=run_started, arm=args.tag or None,
+    )
+    if voice_cases:
+        # The voice slice is a DIFFERENT transport over the same cases, so it is
+        # archived as its own run rather than averaged into the text one.
+        archive_agentclinic_run(
+            run_dir=out, meta={**meta, "mode": "voice"}, summary=vsummary,
+            cases=voice_cases, ledger=None, mode="voice", started_at=run_started,
+            arm=f"{args.tag or 'run'}-voice-slice",
+        )
 
     print(f"artifacts: {out}", file=sys.stderr)
     return 0

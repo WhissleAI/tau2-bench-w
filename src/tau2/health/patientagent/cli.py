@@ -25,6 +25,10 @@ from tau2.health.patientagent.collect import (
     collect_outcomes,
     find_experiment_dirs,
 )
+from pathlib import Path
+
+from tau2.archive.serving import default_ledger, reset_default
+from tau2.archive.suites import archive_patientagent_run, now as _archive_now
 from tau2.health.patientagent.report import write_report
 from tau2.health.patientagent.sampling import (
     DEFAULT_STRATA_KEYS,
@@ -177,6 +181,15 @@ def cmd_report(args: argparse.Namespace) -> int:
         judge=judge,
         provenance=provenance,
     )
+    # Archive the run. PAB's turn-taker records into the process-wide ledger (its
+    # client is built too deep in LangGraph to hand one down), so the ledger is read
+    # back here rather than passed in.
+    archive_patientagent_run(
+        run_dir=Path(out_dir), summary=summary, outcomes=outcomes,
+        ledger=default_ledger(), mode=args.mode, judge=judge,
+        started_at=getattr(args, "_archive_started_at", None),
+    )
+
     print(json.dumps({"summary": summary, "paths": paths}, indent=2, default=str))
     return 0
 
@@ -227,6 +240,11 @@ def resolve_judge(args: argparse.Namespace) -> dict[str, Any]:
 def cmd_run(args: argparse.Namespace) -> int:
     """Sample, register the Whissle agents, run their harness, then report."""
     from tau2.health.patientagent.register import register
+
+    # A fresh process-wide serving ledger per run: two runs in one process must not
+    # share one, or the second inherits the first's turns and doubles its cost.
+    reset_default()
+    args._archive_started_at = _archive_now()
 
     judge = resolve_judge(args)
     print(f"[whissle] judge provider: {judge['judge_endpoint']} "
@@ -319,6 +337,7 @@ def cmd_run(args: argparse.Namespace) -> int:
         print(f"[whissle] no run directory produced under {work_dir}", file=sys.stderr)
         return 1
     report_args = argparse.Namespace(
+        _archive_started_at=getattr(args, "_archive_started_at", None),
         run_dir=run_dir,
         out=os.path.join(DEFAULT_RESULTS_ROOT, run_name),
         mode=args.mode,

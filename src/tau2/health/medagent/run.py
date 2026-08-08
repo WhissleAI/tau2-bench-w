@@ -21,6 +21,8 @@ from rich.console import Console
 from typer import Option, Typer
 
 from tau2.health.medagent.agent_tools_mode import preflight as mode_b_preflight
+from tau2.archive.serving import ServingLedger
+from tau2.archive.suites import archive_medagent_run, now as _archive_now
 from tau2.health.medagent.brain import WhissleBrain
 from tau2.health.medagent.data import (
     ALL_CATEGORIES,
@@ -159,7 +161,12 @@ def run(
         raise SystemExit("no tasks matched the filter")
     funcs = load_funcs()
 
-    brain = WhissleBrain(agent_id=agent_id, model=model, system_mode=system_mode)
+    run_started = _archive_now()
+    # The archive's serving ledger: every bench turn records the model that
+    # actually answered, its tokens and its cost, attributed to a task id.
+    ledger = ServingLedger()
+    brain = WhissleBrain(agent_id=agent_id, model=model, system_mode=system_mode,
+                         ledger=ledger)
     writer = FhirWriter(api_base, mode=write_check)
     grade_fn = load_refsol(refsol) if refsol else builtin_grade
 
@@ -239,6 +246,14 @@ def run(
     )
     root = Path(save_to) if save_to else RESULTS_ROOT
     run_dir = write_artifacts(results, summary, root=root, run_name=run_name)
+
+    # Archive the run: a self-describing copy under $TAU2_ARCHIVE_DIR that carries
+    # raw/, per-case files, the environment, the served model and the cost — plus the
+    # caveats a reader needs (this suite is TEXT, and the metadata head is off).
+    archive_medagent_run(
+        run_dir=run_dir, summary=summary, results=results, ledger=ledger,
+        brain=brain, run_name=run_name, started_at=run_started,
+    )
 
     console.print()
     console.print(

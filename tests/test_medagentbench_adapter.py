@@ -156,7 +156,10 @@ class ScriptedBrain:
     def system_for(self, prompt):
         return "sys"
 
-    def turn(self, messages, system):
+    # ``case_id`` mirrors WhissleBrain.turn: the runner threads the task id through
+    # so the archive's serving ledger can attribute tokens and cost per case. It does
+    # not affect the request, and the fake ignores it.
+    def turn(self, messages, system, case_id=None):
         self.seen_messages.append(list(messages))
         if not self.replies:
             raise AssertionError("brain called more times than scripted")

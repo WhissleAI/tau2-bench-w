@@ -115,7 +115,7 @@ def run_episode(
     try:
         for rnd in range(max_round):
             t0 = time.time()
-            reply = brain.turn(messages, system)
+            reply = brain.turn(messages, system, case_id=case.id)
             latency_ms = int((time.time() - t0) * 1000)
 
             traj.add("agent", reply)

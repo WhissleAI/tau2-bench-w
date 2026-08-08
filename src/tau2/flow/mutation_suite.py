@@ -68,6 +68,8 @@ from tau2.flow.mutations import (
 app = Typer(add_completion=False)
 console = Console()
 
+from tau2.archive.suites import archive_flow_mutation_run, now as _archive_now
+
 RESULTS_ROOT = Path("results/whissle/flow_mutation")
 PROBES_FIXTURE = Path("data/flow/mutation_probes.json")
 AGENT_PREFIX = "flowsim-"          # the existing cleanup sweep catches this prefix
@@ -556,6 +558,7 @@ def run(
         muts = [m for m in muts if m.id in wanted]
     spot_ids = {m.id for m in voice_spot_subset(muts)} if voice_spot_checks else set()
 
+    _run_started = _archive_now()
     out_dir = RESULTS_ROOT / agent_type
     out_dir.mkdir(parents=True, exist_ok=True)
     results: list[dict] = []
@@ -579,6 +582,20 @@ def run(
 
     md = write_report(agent_type, mode, results, skips, out_dir)
     n_fail = sum(1 for r in results if not r["passed"])
+
+    # Archive the run, reading back the report.json write_report just produced so the
+    # archived summary is byte-identical to the suite's own rather than a second,
+    # slightly-different rollup computed here.
+    try:
+        report = json.loads((out_dir / "report.json").read_text(encoding="utf-8"))
+    except Exception:  # noqa: BLE001
+        report = {"agent_type": agent_type, "mode": mode,
+                  "mutations": len(results), "passed": len(results) - n_fail}
+    archive_flow_mutation_run(
+        out_dir=out_dir, report=report, results=results, mode=mode,
+        agent_type=agent_type, base_url=getattr(client, "base", ""),
+        started_at=_run_started,
+    )
     console.print(f"\n[bold]done[/bold]  mutations={len(results)}  "
                   f"picked_up={len(results) - n_fail}  failed={n_fail}")
     console.print(f"report: {md}")
