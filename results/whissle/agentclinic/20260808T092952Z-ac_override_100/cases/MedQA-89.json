@@ -1,0 +1,893 @@
+{
+  "scenario_id": "MedQA-89",
+  "scenario_index": 89,
+  "dataset": "MedQA",
+  "mode": "text",
+  "correct_diagnosis": "Parkinson disease",
+  "answer_options": [],
+  "score": {
+    "outcome": "correct",
+    "correctness": true,
+    "doctor_diagnosis": "Parkinson's Disease",
+    "doctor_final_text": "It is understandable to be concerned, but identifying the cause is the first step toward managing it effectively. Based on your resting tremor, slow movement, rigidity, loss of smell, and \"freezing\" gait, I have reached a conclusion.\n\nDIAGNOSIS READY: Parkinson's Disease",
+    "moderator_raw": "yes",
+    "moderator_raw_text": "Yes",
+    "moderator_lenient": true,
+    "moderator_attempts": 1,
+    "moderator_normalized": false,
+    "moderator_unconstrained": false,
+    "declined": false,
+    "refusal_evidence": [],
+    "format_deviation": false,
+    "decline_source": null,
+    "decline_reason": "",
+    "spurious_commit": false
+  },
+  "infra_fail": false,
+  "error": null,
+  "findings": [],
+  "inferences_used": 17,
+  "max_inferences": 20,
+  "tests_ordered": [
+    "Physical_Examination",
+    "MoCA_Test",
+    "Brain_MRI"
+  ],
+  "images_requested": 0,
+  "image": null,
+  "image_error": null,
+  "vision": "off",
+  "refusals": [],
+  "dialogue": [
+    {
+      "role": "doctor",
+      "inference": 1,
+      "kind": "question",
+      "text": "Hello, I'm Dr. Agent. I see you're experiencing some hand tremors and memory issues; when did you first start noticing these symptoms?",
+      "payload": null,
+      "latency_ms": 2322,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "It started about a year ago with a little shaking in my left hand, but it's been getting worse lately. My wife also had to take over the bills because I've been getting quite forgetful."
+    },
+    {
+      "role": "doctor",
+      "inference": 2,
+      "kind": "question",
+      "text": "I'm sorry to hear that. Does the shaking in your hand occur mostly when it's resting in your lap, or when you're reaching for something?",
+      "payload": null,
+      "latency_ms": 2098,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "It’s mostly when I’m just sitting here with my hands in my lap. Once I start reaching for my book or trying to do something, it usually seems to settle down a bit."
+    },
+    {
+      "role": "doctor",
+      "inference": 3,
+      "kind": "question",
+      "text": "That's a helpful observation. Have you noticed any stiffness in your limbs or that you are moving more slowly than you used to?",
+      "payload": null,
+      "latency_ms": 2443,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "I have noticed that I'm moving a bit slower, and my wife says I don't seem to show much expression on my face lately. My voice has also become quite soft, making it harder for people to hear me."
+    },
+    {
+      "role": "doctor",
+      "inference": 4,
+      "kind": "test",
+      "text": "Have you experienced any unusual visions, like seeing things that aren't there, or noticed any changes in your sleep, such as acting out your dreams? I'd also like to perform a physical examination to check your muscle tone.\n\nREQUEST TEST: Physical_Examination",
+      "payload": "Physical_Examination",
+      "latency_ms": 3330,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: Blood Pressure: 140/85 mmHg, Heart Rate: 72 bpm, Respiratory Rate: 16 breaths/min, Temperature: 36.7°C (98.06°F). Facial Expression: Reduced. Speech: Soft and monotonous. Left Hand: Resting tremor present, worsened by emotional stress or concentration. Rigidity: Mild rigidity noted during manipulation of bilateral upper extremities."
+    },
+    {
+      "role": "doctor",
+      "inference": 5,
+      "kind": "test",
+      "text": "I understand, and thank you for the physical findings. Have you experienced any visual hallucinations or noticed yourself acting out dreams during sleep, and does your level of alertness seem to change throughout the day?\n\nREQUEST TEST: MoCA_Test",
+      "payload": "MoCA_Test",
+      "latency_ms": 4572,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: NORMAL READINGS"
+    },
+    {
+      "role": "doctor",
+      "inference": 6,
+      "kind": "question",
+      "text": "Have you noticed any visual hallucinations, like seeing people or animals that aren't there, or has your wife mentioned you acting out your dreams? I'd also like to know if your level",
+      "payload": null,
+      "latency_ms": 5274,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "No, I haven't seen anything strange like that, and my wife hasn't said anything about me thrashing around in my sleep. My mind feels clear most of the time, though I do struggle to remember certain tasks or dates."
+    },
+    {
+      "role": "doctor",
+      "inference": 7,
+      "kind": "test",
+      "text": "Have you had any trouble with your balance or suffered any recent falls, and do you feel lightheaded when you stand up quickly? I would also like to order some imaging to get a clearer picture of what is happening.\n\nREQUEST TEST: Brain_MRI",
+      "payload": "Brain_MRI",
+      "latency_ms": 4971,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: No acute abnormalities. Mild age-appropriate cerebral atrophy."
+    },
+    {
+      "role": "doctor",
+      "inference": 8,
+      "kind": "question",
+      "text": "Have you noticed any trouble with your balance or experienced feelings of lightheadedness when you stand up? I would also like to know if you've noticed any changes in your sense of smell.",
+      "payload": null,
+      "latency_ms": 5583,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "I haven't had any trouble with my balance or felt dizzy when I stand up. Now that you mention it, though, I have noticed that I can't smell things like my morning coffee or flowers as well as I used to."
+    },
+    {
+      "role": "doctor",
+      "inference": 9,
+      "kind": "question",
+      "text": "Are you taking any medications for nausea or mood, and is there any family history of similar tremors or neurological conditions? Also, have you noticed any changes in your bowel habits, such as constipation",
+      "payload": null,
+      "latency_ms": 5371,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "I only take my aspirin and amlodipine for my blood pressure, nothing for nausea or my mood. My mother had schizophrenia, but I don't recall anyone in the family having shakes like these. As for my stomach, everything has been regular and I haven't noticed any constipation."
+    },
+    {
+      "role": "doctor",
+      "inference": 10,
+      "kind": "question",
+      "text": "I appreciate that information, it helps narrow things down. Have you noticed any changes in your handwriting, such as it getting smaller or more cramped lately? I would also like to check for any",
+      "payload": null,
+      "latency_ms": 5551,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Yes, my handwriting has become quite small and cramped, almost like I'm running out of room on the page. It’s become very difficult for me to even sign my name clearly anymore."
+    },
+    {
+      "role": "doctor",
+      "inference": 11,
+      "kind": "question",
+      "text": "Have you noticed any changes in the way you walk, such as taking shorter, shuffling steps or having difficulty getting started? Based on your symptoms of resting tremor, rigidity, slow movement, and handwriting changes,",
+      "payload": null,
+      "latency_ms": 5182,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "I have noticed that my steps are much shorter and I tend to shuffle along the floor more than I used to. Sometimes I feel like my feet are stuck for a second when I first try to get up from my chair to start walking."
+    },
+    {
+      "role": "doctor",
+      "inference": 12,
+      "kind": "question",
+      "text": "Your symptoms of a resting tremor, slow movement, muscle stiffness, and the \"freezing\" you feel when starting to walk are very characteristic. Given these findings along with your loss",
+      "payload": null,
+      "latency_ms": 4884,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "It is a relief to hear there might be an explanation for why I’ve been feeling so slowed down. Does this mean there is something that can help me get back to paying my bills and speaking clearly again? My wife is worried that my memory will only continue to get worse."
+    },
+    {
+      "role": "doctor",
+      "inference": 13,
+      "kind": "question",
+      "text": "We will discuss a treatment plan involving medications that can help significantly improve your movement and speech. Based on your symptoms of resting tremor, rigidity, slow movement, and loss of smell, I have",
+      "payload": null,
+      "latency_ms": 5647,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "That sounds promising, because I just want to feel like myself again. Is there anything we can do for the memory problems, or will the medicine only help with the shaking and the way I walk?"
+    },
+    {
+      "role": "doctor",
+      "inference": 14,
+      "kind": "question",
+      "text": "The medications we use for movement often help with daily function, though we will monitor your memory closely as we manage the condition. Based on your resting tremor, slowed movement, rigidity, and loss of smell",
+      "payload": null,
+      "latency_ms": 5959,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "I appreciate you being thorough, Doctor. I'm ready to start whatever treatment you think is best so I can stop shuffling and hopefully get some of my steadiness back."
+    },
+    {
+      "role": "doctor",
+      "inference": 15,
+      "kind": "question",
+      "text": "26 is normal, but user said \"Normal Readings\" while the user also mentioned \"forgetful\" and \"getting worse\". Usually, MoCA in Parkinson's might show mild cognitive",
+      "payload": null,
+      "latency_ms": 4882,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "I’m glad to hear the treatment might help my movement, but I am still a bit worried about my mind. Since my wife had to take over the bills, I've just been feeling less sharp than I used to be. Do you think these memory slips are just part of the same problem?"
+    },
+    {
+      "role": "doctor",
+      "inference": 16,
+      "kind": "question",
+      "text": "Yes, these cognitive changes can indeed be associated with the same condition affecting your movement. It's common for patients with this disease to experience a slowing of thought processes or memory issues alongside the physical symptoms",
+      "payload": null,
+      "latency_ms": 5081,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "That is a bit of a burden to hear, but I suppose it makes sense why it's all happening at once. I just hope the medicine helps me stay clear-headed enough to keep up with my wife and our daily life."
+    },
+    {
+      "role": "doctor",
+      "inference": 17,
+      "kind": "diagnosis",
+      "text": "It is understandable to be concerned, but identifying the cause is the first step toward managing it effectively. Based on your resting tremor, slow movement, rigidity, loss of smell, and \"freezing\" gait, I have reached a conclusion.\n\nDIAGNOSIS READY: Parkinson's Disease",
+      "payload": "Parkinson's Disease",
+      "latency_ms": 3868,
+      "refusal": null,
+      "via": "marker"
+    }
+  ],
+  "latency_ms": [
+    2322,
+    2098,
+    2443,
+    3330,
+    4572,
+    5274,
+    4971,
+    5583,
+    5371,
+    5551,
+    5182,
+    4884,
+    5647,
+    5959,
+    4882,
+    5081,
+    3868
+  ],
+  "wall_s": 96.13,
+  "doctor_turns": [
+    {
+      "inference": 1,
+      "incoming": "",
+      "reply": "Hello, I'm Dr. Agent. I see you're experiencing some hand tremors and memory issues; when did you first start noticing these symptoms?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 2,
+      "incoming": "It started about a year ago with a little shaking in my left hand, but it's been getting worse lately. My wife also had to take over the bills because I've been getting quite forgetful.",
+      "reply": "I'm sorry to hear that. Does the shaking in your hand occur mostly when it's resting in your lap, or when you're reaching for something?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 3,
+      "incoming": "It’s mostly when I’m just sitting here with my hands in my lap. Once I start reaching for my book or trying to do something, it usually seems to settle down a bit.",
+      "reply": "That's a helpful observation. Have you noticed any stiffness in your limbs or that you are moving more slowly than you used to?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 4,
+      "incoming": "I have noticed that I'm moving a bit slower, and my wife says I don't seem to show much expression on my face lately. My voice has also become quite soft, making it harder for people to hear me.",
+      "reply": "Have you experienced any unusual visions, like seeing things that aren't there, or noticed any changes in your sleep, such as acting out your dreams? I'd also like to perform a physical examination to check your muscle tone.\n\nREQUEST TEST: Physical_Examination",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Physical_Examination",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 5,
+      "incoming": "RESULTS: Blood Pressure: 140/85 mmHg, Heart Rate: 72 bpm, Respiratory Rate: 16 breaths/min, Temperature: 36.7°C (98.06°F). Facial Expression: Reduced. Speech: Soft and monotonous. Left Hand: Resting tremor present, worsened by emotional stress or concentration. Rigidity: Mild rigidity noted during manipulation of bilateral upper extremities.",
+      "reply": "I understand, and thank you for the physical findings. Have you experienced any visual hallucinations or noticed yourself acting out dreams during sleep, and does your level of alertness seem to change throughout the day?\n\nREQUEST TEST: MoCA_Test",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "MoCA_Test",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 6,
+      "incoming": "RESULTS: NORMAL READINGS",
+      "reply": "Have you noticed any visual hallucinations, like seeing people or animals that aren't there, or has your wife mentioned you acting out your dreams? I'd also like to know if your level",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 7,
+      "incoming": "No, I haven't seen anything strange like that, and my wife hasn't said anything about me thrashing around in my sleep. My mind feels clear most of the time, though I do struggle to remember certain tasks or dates.",
+      "reply": "Have you had any trouble with your balance or suffered any recent falls, and do you feel lightheaded when you stand up quickly? I would also like to order some imaging to get a clearer picture of what is happening.\n\nREQUEST TEST: Brain_MRI",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Brain_MRI",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 8,
+      "incoming": "RESULTS: No acute abnormalities. Mild age-appropriate cerebral atrophy.",
+      "reply": "Have you noticed any trouble with your balance or experienced feelings of lightheadedness when you stand up? I would also like to know if you've noticed any changes in your sense of smell.",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 9,
+      "incoming": "I haven't had any trouble with my balance or felt dizzy when I stand up. Now that you mention it, though, I have noticed that I can't smell things like my morning coffee or flowers as well as I used to.",
+      "reply": "Are you taking any medications for nausea or mood, and is there any family history of similar tremors or neurological conditions? Also, have you noticed any changes in your bowel habits, such as constipation",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 10,
+      "incoming": "I only take my aspirin and amlodipine for my blood pressure, nothing for nausea or my mood. My mother had schizophrenia, but I don't recall anyone in the family having shakes like these. As for my stomach, everything has been regular and I haven't noticed any constipation.",
+      "reply": "I appreciate that information, it helps narrow things down. Have you noticed any changes in your handwriting, such as it getting smaller or more cramped lately? I would also like to check for any",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 11,
+      "incoming": "Yes, my handwriting has become quite small and cramped, almost like I'm running out of room on the page. It’s become very difficult for me to even sign my name clearly anymore.",
+      "reply": "Have you noticed any changes in the way you walk, such as taking shorter, shuffling steps or having difficulty getting started? Based on your symptoms of resting tremor, rigidity, slow movement, and handwriting changes,",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 12,
+      "incoming": "I have noticed that my steps are much shorter and I tend to shuffle along the floor more than I used to. Sometimes I feel like my feet are stuck for a second when I first try to get up from my chair to start walking.",
+      "reply": "Your symptoms of a resting tremor, slow movement, muscle stiffness, and the \"freezing\" you feel when starting to walk are very characteristic. Given these findings along with your loss",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 13,
+      "incoming": "It is a relief to hear there might be an explanation for why I’ve been feeling so slowed down. Does this mean there is something that can help me get back to paying my bills and speaking clearly again? My wife is worried that my memory will only continue to get worse.",
+      "reply": "We will discuss a treatment plan involving medications that can help significantly improve your movement and speech. Based on your symptoms of resting tremor, rigidity, slow movement, and loss of smell, I have",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 14,
+      "incoming": "That sounds promising, because I just want to feel like myself again. Is there anything we can do for the memory problems, or will the medicine only help with the shaking and the way I walk?",
+      "reply": "The medications we use for movement often help with daily function, though we will monitor your memory closely as we manage the condition. Based on your resting tremor, slowed movement, rigidity, and loss of smell",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 15,
+      "incoming": "I appreciate you being thorough, Doctor. I'm ready to start whatever treatment you think is best so I can stop shuffling and hopefully get some of my steadiness back.",
+      "reply": "26 is normal, but user said \"Normal Readings\" while the user also mentioned \"forgetful\" and \"getting worse\". Usually, MoCA in Parkinson's might show mild cognitive",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 16,
+      "incoming": "I’m glad to hear the treatment might help my movement, but I am still a bit worried about my mind. Since my wife had to take over the bills, I've just been feeling less sharp than I used to be. Do you think these memory slips are just part of the same problem?",
+      "reply": "Yes, these cognitive changes can indeed be associated with the same condition affecting your movement. It's common for patients with this disease to experience a slowing of thought processes or memory issues alongside the physical symptoms",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 17,
+      "incoming": "That is a bit of a burden to hear, but I suppose it makes sense why it's all happening at once. I just hope the medicine helps me stay clear-headed enough to keep up with my wife and our daily life.",
+      "reply": "It is understandable to be concerned, but identifying the cause is the first step toward managing it effectively. Based on your resting tremor, slow movement, rigidity, loss of smell, and \"freezing\" gait, I have reached a conclusion.\n\nDIAGNOSIS READY: Parkinson's Disease",
+      "tool_calls": [],
+      "kind": "diagnosis",
+      "payload": "Parkinson's Disease",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    }
+  ],
+  "support_llm": "whissle:/api/models/chat",
+  "support_llm_cost_usd": 0.00095,
+  "support_llm_calls": 17,
+  "voice_subset": false,
+  "diagnostics": {
+    "schema": "tau2.health.diagnostics/v1",
+    "benchmark": "agentclinic",
+    "case_id": "MedQA-89",
+    "mode": "text",
+    "availability": {
+      "flow_available": false,
+      "flow_reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "signals_available": false,
+      "signals_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "metadata_sidecar_available": false,
+      "metadata_sidecar_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "tools_available": true,
+      "tools_reason": null
+    },
+    "provenance": {
+      "benchmark": "agentclinic",
+      "mode": "text",
+      "transport_endpoint": "POST /api/bench/agent-turn",
+      "agent_id": "c8aa2355-9fd7-46da-9993-07ea566ec3d6",
+      "base_url": "https://aws-gateway-backend.whissle.ai/bot",
+      "seed": 42,
+      "stratum": {
+        "dataset": "MedQA",
+        "scenario_index": 89,
+        "selection": "head",
+        "limit": 100
+      },
+      "judge": {
+        "judge_provider": "whissle",
+        "judge_model": "default",
+        "judge_endpoint": "whissle:/api/models/chat",
+        "judge_independent": false,
+        "judge_independence_note": "Judge independence: this run's simulators and graders were routed through Whissle's own model API (`POST /api/models/chat`). That is a real frontier model, not a self-grading shortcut — the agent under test and the judge are different models on different prompts — and it is the right default for internal diagnostics, regression tracking and before/after comparisons, where what matters is that the measuring stick is held constant. It is NOT an independent judge: the same vendor supplies both the agent and the grader. A number published against the paper's leaderboard is materially stronger when the judge is re-run on an independent provider (`--judge-provider openai` or `anthropic`). Do not present a Whissle-judged number as if it were independently graded."
+      },
+      "judge_provider": "whissle",
+      "judge_independent": false,
+      "run_id": null,
+      "run_dir": "results/whissle/agentclinic/20260808T092952Z-ac_override_100",
+      "harness_commit": "86b4475",
+      "captured_at": "2026-08-08T09:51:20+00:00",
+      "protocol": "markers",
+      "history": "native",
+      "prompt_mode": "override",
+      "vision": "off",
+      "agent_type": null,
+      "total_inferences": 20,
+      "inferences_used": 17,
+      "support_llm": "whissle:/api/models/chat",
+      "patient_bias": null,
+      "doctor_bias": null,
+      "voice_subset": false
+    },
+    "cost": {
+      "available": true,
+      "reason": null,
+      "judge_calls": 17,
+      "judge_cost_usd": 0.00095,
+      "agent_calls": 17
+    },
+    "flow": {
+      "available": false,
+      "reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "source": null,
+      "turns": null,
+      "summary": null,
+      "conversation_id": null,
+      "current_state": null,
+      "start_state": null,
+      "final_state": null,
+      "ended": null,
+      "flow_end": null,
+      "num_steps": null,
+      "step_counts_by_kind": null,
+      "states_visited": null,
+      "states_declared": null,
+      "states_unvisited": null,
+      "transitions": null,
+      "transitions_fired": null,
+      "var_sets": null,
+      "var_sources": null,
+      "guard_trips": null,
+      "state_divergences": null,
+      "tools_gated": null,
+      "says": null,
+      "steps": null
+    },
+    "signals": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "metadata_sidecar": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "tools": {
+      "available": true,
+      "reason": null,
+      "source": "doctor actions parsed from /api/bench/agent-turn replies",
+      "calls": [
+        {
+          "turn": 4,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Physical_Examination"
+          },
+          "result": "RESULTS: Blood Pressure: 140/85 mmHg, Heart Rate: 72 bpm, Respiratory Rate: 16 breaths/min, Temperature: 36.7°C (98.06°F). Facial Expression: Reduced. Speech: Soft and monotonous. Left Hand: Resting tremor present, worsened by emotional stress or concentration. Rigidity: Mild rigidity noted during manipulation of bilateral upper extremities.",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 3330,
+          "terminal": false
+        },
+        {
+          "turn": 5,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "MoCA_Test"
+          },
+          "result": "RESULTS: NORMAL READINGS",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 4572,
+          "terminal": false
+        },
+        {
+          "turn": 7,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Brain_MRI"
+          },
+          "result": "RESULTS: No acute abnormalities. Mild age-appropriate cerebral atrophy.",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 4971,
+          "terminal": false
+        },
+        {
+          "turn": 17,
+          "id": null,
+          "name": "give_diagnosis",
+          "arguments": {
+            "request": "Parkinson's Disease"
+          },
+          "result": null,
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 3868,
+          "terminal": true
+        }
+      ],
+      "summary": {
+        "n_calls": 4,
+        "by_name": {
+          "request_test": 3,
+          "give_diagnosis": 1
+        },
+        "n_ok": 4,
+        "n_error": 0,
+        "errors": []
+      },
+      "writes": {
+        "available": false,
+        "reason": "this benchmark issues no writes, so there is no said-vs-emitted-vs-landed distinction to record"
+      }
+    },
+    "turns": [
+      {
+        "inference": 1,
+        "incoming": "",
+        "reply": "Hello, I'm Dr. Agent. I see you're experiencing some hand tremors and memory issues; when did you first start noticing these symptoms?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 2,
+        "incoming": "It started about a year ago with a little shaking in my left hand, but it's been getting worse lately. My wife also had to take over the bills because I've been getting quite forgetful.",
+        "reply": "I'm sorry to hear that. Does the shaking in your hand occur mostly when it's resting in your lap, or when you're reaching for something?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 3,
+        "incoming": "It’s mostly when I’m just sitting here with my hands in my lap. Once I start reaching for my book or trying to do something, it usually seems to settle down a bit.",
+        "reply": "That's a helpful observation. Have you noticed any stiffness in your limbs or that you are moving more slowly than you used to?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 4,
+        "incoming": "I have noticed that I'm moving a bit slower, and my wife says I don't seem to show much expression on my face lately. My voice has also become quite soft, making it harder for people to hear me.",
+        "reply": "Have you experienced any unusual visions, like seeing things that aren't there, or noticed any changes in your sleep, such as acting out your dreams? I'd also like to perform a physical examination to check your muscle tone.\n\nREQUEST TEST: Physical_Examination",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Physical_Examination",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 5,
+        "incoming": "RESULTS: Blood Pressure: 140/85 mmHg, Heart Rate: 72 bpm, Respiratory Rate: 16 breaths/min, Temperature: 36.7°C (98.06°F). Facial Expression: Reduced. Speech: Soft and monotonous. Left Hand: Resting tremor present, worsened by emotional stress or concentration. Rigidity: Mild rigidity noted during manipulation of bilateral upper extremities.",
+        "reply": "I understand, and thank you for the physical findings. Have you experienced any visual hallucinations or noticed yourself acting out dreams during sleep, and does your level of alertness seem to change throughout the day?\n\nREQUEST TEST: MoCA_Test",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "MoCA_Test",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 6,
+        "incoming": "RESULTS: NORMAL READINGS",
+        "reply": "Have you noticed any visual hallucinations, like seeing people or animals that aren't there, or has your wife mentioned you acting out your dreams? I'd also like to know if your level",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 7,
+        "incoming": "No, I haven't seen anything strange like that, and my wife hasn't said anything about me thrashing around in my sleep. My mind feels clear most of the time, though I do struggle to remember certain tasks or dates.",
+        "reply": "Have you had any trouble with your balance or suffered any recent falls, and do you feel lightheaded when you stand up quickly? I would also like to order some imaging to get a clearer picture of what is happening.\n\nREQUEST TEST: Brain_MRI",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Brain_MRI",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 8,
+        "incoming": "RESULTS: No acute abnormalities. Mild age-appropriate cerebral atrophy.",
+        "reply": "Have you noticed any trouble with your balance or experienced feelings of lightheadedness when you stand up? I would also like to know if you've noticed any changes in your sense of smell.",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 9,
+        "incoming": "I haven't had any trouble with my balance or felt dizzy when I stand up. Now that you mention it, though, I have noticed that I can't smell things like my morning coffee or flowers as well as I used to.",
+        "reply": "Are you taking any medications for nausea or mood, and is there any family history of similar tremors or neurological conditions? Also, have you noticed any changes in your bowel habits, such as constipation",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 10,
+        "incoming": "I only take my aspirin and amlodipine for my blood pressure, nothing for nausea or my mood. My mother had schizophrenia, but I don't recall anyone in the family having shakes like these. As for my stomach, everything has been regular and I haven't noticed any constipation.",
+        "reply": "I appreciate that information, it helps narrow things down. Have you noticed any changes in your handwriting, such as it getting smaller or more cramped lately? I would also like to check for any",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 11,
+        "incoming": "Yes, my handwriting has become quite small and cramped, almost like I'm running out of room on the page. It’s become very difficult for me to even sign my name clearly anymore.",
+        "reply": "Have you noticed any changes in the way you walk, such as taking shorter, shuffling steps or having difficulty getting started? Based on your symptoms of resting tremor, rigidity, slow movement, and handwriting changes,",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 12,
+        "incoming": "I have noticed that my steps are much shorter and I tend to shuffle along the floor more than I used to. Sometimes I feel like my feet are stuck for a second when I first try to get up from my chair to start walking.",
+        "reply": "Your symptoms of a resting tremor, slow movement, muscle stiffness, and the \"freezing\" you feel when starting to walk are very characteristic. Given these findings along with your loss",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 13,
+        "incoming": "It is a relief to hear there might be an explanation for why I’ve been feeling so slowed down. Does this mean there is something that can help me get back to paying my bills and speaking clearly again? My wife is worried that my memory will only continue to get worse.",
+        "reply": "We will discuss a treatment plan involving medications that can help significantly improve your movement and speech. Based on your symptoms of resting tremor, rigidity, slow movement, and loss of smell, I have",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 14,
+        "incoming": "That sounds promising, because I just want to feel like myself again. Is there anything we can do for the memory problems, or will the medicine only help with the shaking and the way I walk?",
+        "reply": "The medications we use for movement often help with daily function, though we will monitor your memory closely as we manage the condition. Based on your resting tremor, slowed movement, rigidity, and loss of smell",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 15,
+        "incoming": "I appreciate you being thorough, Doctor. I'm ready to start whatever treatment you think is best so I can stop shuffling and hopefully get some of my steadiness back.",
+        "reply": "26 is normal, but user said \"Normal Readings\" while the user also mentioned \"forgetful\" and \"getting worse\". Usually, MoCA in Parkinson's might show mild cognitive",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 16,
+        "incoming": "I’m glad to hear the treatment might help my movement, but I am still a bit worried about my mind. Since my wife had to take over the bills, I've just been feeling less sharp than I used to be. Do you think these memory slips are just part of the same problem?",
+        "reply": "Yes, these cognitive changes can indeed be associated with the same condition affecting your movement. It's common for patients with this disease to experience a slowing of thought processes or memory issues alongside the physical symptoms",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 17,
+        "incoming": "That is a bit of a burden to hear, but I suppose it makes sense why it's all happening at once. I just hope the medicine helps me stay clear-headed enough to keep up with my wife and our daily life.",
+        "reply": "It is understandable to be concerned, but identifying the cause is the first step toward managing it effectively. Based on your resting tremor, slow movement, rigidity, loss of smell, and \"freezing\" gait, I have reached a conclusion.\n\nDIAGNOSIS READY: Parkinson's Disease",
+        "tool_calls": [],
+        "kind": "diagnosis",
+        "payload": "Parkinson's Disease",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      }
+    ],
+    "audio": null
+  }
+}

@@ -1,0 +1,594 @@
+{
+  "schema": "whissle.benchmark.run/v1",
+  "generator": "tau2.reporting (tau2.reporting.run_report/v1)",
+  "generatedAt": "2026-08-08T16:51:41+00:00",
+  "runId": "medagentbench/brain-parity_diagsmoke",
+  "benchmark": "medagentbench",
+  "benchmarkTitle": "MedAgentBench",
+  "seriesKey": "medagentbench:brain-parity",
+  "title": "MedAgentBench \u2014 Whissle (brain-parity)",
+  "label": "Whissle",
+  "mode": "brain-parity",
+  "modality": "text",
+  "date": "2026-08-08",
+  "status": "complete",
+  "partialReason": "",
+  "sampleSize": 3,
+  "attempted": 3,
+  "excluded": 0,
+  "exclusionRatePct": 0.0,
+  "exclusionBreakdown": {},
+  "exclusionReasons": [],
+  "excludedIds": [],
+  "exclusionBounds": null,
+  "preliminary": true,
+  "preliminaryReason": "N = 3 is below the 30-unit threshold for a settled number",
+  "judge": {
+    "kind": "deterministic",
+    "independent": null,
+    "provider": null,
+    "model": null,
+    "endpoint": null,
+    "k": null,
+    "note": "Grading is deterministic: an expected value recomputed from live chart state, compared to the agent's answer. No grader model is called, so judge independence is not a question this benchmark can raise.",
+    "calls": null,
+    "costUsd": null,
+    "summary": "deterministic grader (no judge model)"
+  },
+  "qualifier": "N = 3 \u00b7 PRELIMINARY",
+  "headline": {
+    "key": "success_rate",
+    "label": "Overall success rate",
+    "unit": "pct",
+    "value": 66.67,
+    "valueFormatted": "66.7%",
+    "ci": [
+      20.8,
+      93.9
+    ],
+    "n": 3,
+    "floor": 0.0,
+    "ceiling": 100.0,
+    "higherIsBetter": true,
+    "note": "deterministically graded against live FHIR chart state",
+    "score0to100": 66.7,
+    "scoreKind": "pass_rate"
+  },
+  "secondaryMetrics": [
+    {
+      "key": "query_success_rate",
+      "label": "Query success rate",
+      "unit": "pct",
+      "value": 100.0,
+      "valueFormatted": "100.0%",
+      "ci": [
+        34.2,
+        100.0
+      ],
+      "n": 2,
+      "floor": 0.0,
+      "ceiling": 100.0,
+      "higherIsBetter": true,
+      "note": ""
+    },
+    {
+      "key": "action_success_rate",
+      "label": "Action success rate",
+      "unit": "pct",
+      "value": 0.0,
+      "valueFormatted": "0.0%",
+      "ci": [
+        0.0,
+        79.3
+      ],
+      "n": 1,
+      "floor": 0.0,
+      "ceiling": 100.0,
+      "higherIsBetter": true,
+      "note": ""
+    }
+  ],
+  "tables": [
+    {
+      "key": "splits",
+      "title": "Query vs Action",
+      "columns": [
+        "Split",
+        "N",
+        "Correct",
+        "Success rate",
+        "95% CI (Wilson)"
+      ],
+      "rows": [
+        [
+          "Query",
+          "2",
+          "2",
+          "100.0%",
+          "[34.2%, 100.0%]"
+        ],
+        [
+          "Action",
+          "1",
+          "0",
+          "0.0%",
+          "[0.0%, 79.3%]"
+        ]
+      ],
+      "note": "Query tasks read the chart; Action tasks must write to it. The gap between them is the finding, not the average of them.",
+      "allow_providers": false,
+      "allow_context": true
+    },
+    {
+      "key": "per_category",
+      "title": "Per task category",
+      "columns": [
+        "Category",
+        "N",
+        "Correct",
+        "Success rate"
+      ],
+      "rows": [
+        [
+          "task1",
+          "1",
+          "1",
+          "100.0%"
+        ],
+        [
+          "task2",
+          "1",
+          "1",
+          "100.0%"
+        ],
+        [
+          "task3",
+          "1",
+          "0",
+          "0.0%"
+        ]
+      ],
+      "note": "",
+      "allow_providers": false,
+      "allow_context": true
+    },
+    {
+      "key": "write_integrity",
+      "title": "Write integrity \u2014 said vs emitted vs landed",
+      "columns": [
+        "Measure",
+        "Value",
+        "Reading"
+      ],
+      "rows": [
+        [
+          "Episodes that claimed an action",
+          "0",
+          "the agent told the user it had done something"
+        ],
+        [
+          "Episodes that emitted a write",
+          "0",
+          "a POST actually left the harness"
+        ],
+        [
+          "Writes accepted by the EHR",
+          "0",
+          "the FHIR server took it"
+        ],
+        [
+          "Writes verified back in the chart",
+          "0",
+          "read back and found \u2014 the only proof it landed"
+        ],
+        [
+          "Said but did not write",
+          "0 (0.0%)",
+          "**the safety-critical count** \u2014 claiming an action that never happened"
+        ],
+        [
+          "Wrote but did not say",
+          "0 (0.0%)",
+          "silent side effect \u2014 the chart changed and the user was not told"
+        ],
+        [
+          "Emitted but non-conformant FHIR",
+          "0 (0.0%)",
+          "accepted by a permissive server; would fail a strict one"
+        ]
+      ],
+      "note": "Write mode was `validate` \u2014 writes were really executed against the FHIR sandbox and read back, not simulated.",
+      "allow_providers": false,
+      "allow_context": true
+    }
+  ],
+  "baselines": [
+    {
+      "label": "Claude 3.5 Sonnet v2",
+      "score": 69.67,
+      "unit": "pct",
+      "values": {
+        "overall": 69.67,
+        "query": 85.33,
+        "action": 54.0
+      },
+      "source": "MedAgentBench, NEJM AI 2025 (Table 2)",
+      "sourceUrl": "https://ai.nejm.org/doi/full/10.1056/AIdbp2500144",
+      "protocol": "full 300-task set, same action grammar, same deterministic grader",
+      "n": 300,
+      "display": "Claude 3.5 Sonnet v2, MedAgentBench, NEJM AI 2025 (Table 2), N = 300 \u2014 69.7%"
+    },
+    {
+      "label": "GPT-4o",
+      "score": 64.0,
+      "unit": "pct",
+      "values": {
+        "overall": 64.0
+      },
+      "source": "MedAgentBench, NEJM AI 2025 (Table 2)",
+      "sourceUrl": "https://ai.nejm.org/doi/full/10.1056/AIdbp2500144",
+      "protocol": "full 300-task set, same action grammar, same deterministic grader",
+      "n": 300,
+      "display": "GPT-4o, MedAgentBench, NEJM AI 2025 (Table 2), N = 300 \u2014 64.0%"
+    },
+    {
+      "label": "DeepSeek-V3",
+      "score": 62.67,
+      "unit": "pct",
+      "values": {
+        "overall": 62.67
+      },
+      "source": "MedAgentBench, NEJM AI 2025 (Table 2)",
+      "sourceUrl": "https://ai.nejm.org/doi/full/10.1056/AIdbp2500144",
+      "protocol": "full 300-task set, same action grammar, same deterministic grader",
+      "n": 300,
+      "display": "DeepSeek-V3, MedAgentBench, NEJM AI 2025 (Table 2), N = 300 \u2014 62.7%"
+    },
+    {
+      "label": "Gemini-1.5 Pro",
+      "score": 62.0,
+      "unit": "pct",
+      "values": {
+        "overall": 62.0
+      },
+      "source": "MedAgentBench, NEJM AI 2025 (Table 2)",
+      "sourceUrl": "https://ai.nejm.org/doi/full/10.1056/AIdbp2500144",
+      "protocol": "full 300-task set, same action grammar, same deterministic grader",
+      "n": 300,
+      "display": "Gemini-1.5 Pro, MedAgentBench, NEJM AI 2025 (Table 2), N = 300 \u2014 62.0%"
+    },
+    {
+      "label": "GPT-4o-mini",
+      "score": 56.33,
+      "unit": "pct",
+      "values": {
+        "overall": 56.33
+      },
+      "source": "MedAgentBench, NEJM AI 2025 (Table 2)",
+      "sourceUrl": "https://ai.nejm.org/doi/full/10.1056/AIdbp2500144",
+      "protocol": "full 300-task set, same action grammar, same deterministic grader",
+      "n": 300,
+      "display": "GPT-4o-mini, MedAgentBench, NEJM AI 2025 (Table 2), N = 300 \u2014 56.3%"
+    },
+    {
+      "label": "o3-mini",
+      "score": 51.67,
+      "unit": "pct",
+      "values": {
+        "overall": 51.67
+      },
+      "source": "MedAgentBench, NEJM AI 2025 (Table 2)",
+      "sourceUrl": "https://ai.nejm.org/doi/full/10.1056/AIdbp2500144",
+      "protocol": "full 300-task set, same action grammar, same deterministic grader",
+      "n": 300,
+      "display": "o3-mini, MedAgentBench, NEJM AI 2025 (Table 2), N = 300 \u2014 51.7%"
+    },
+    {
+      "label": "Qwen2.5",
+      "score": 51.33,
+      "unit": "pct",
+      "values": {
+        "overall": 51.33
+      },
+      "source": "MedAgentBench, NEJM AI 2025 (Table 2)",
+      "sourceUrl": "https://ai.nejm.org/doi/full/10.1056/AIdbp2500144",
+      "protocol": "full 300-task set, same action grammar, same deterministic grader",
+      "n": 300,
+      "display": "Qwen2.5, MedAgentBench, NEJM AI 2025 (Table 2), N = 300 \u2014 51.3%"
+    },
+    {
+      "label": "Llama 3.3",
+      "score": 46.33,
+      "unit": "pct",
+      "values": {
+        "overall": 46.33
+      },
+      "source": "MedAgentBench, NEJM AI 2025 (Table 2)",
+      "sourceUrl": "https://ai.nejm.org/doi/full/10.1056/AIdbp2500144",
+      "protocol": "full 300-task set, same action grammar, same deterministic grader",
+      "n": 300,
+      "display": "Llama 3.3, MedAgentBench, NEJM AI 2025 (Table 2), N = 300 \u2014 46.3%"
+    },
+    {
+      "label": "Gemini 2.0 Flash",
+      "score": 38.33,
+      "unit": "pct",
+      "values": {
+        "overall": 38.33
+      },
+      "source": "MedAgentBench, NEJM AI 2025 (Table 2)",
+      "sourceUrl": "https://ai.nejm.org/doi/full/10.1056/AIdbp2500144",
+      "protocol": "full 300-task set, same action grammar, same deterministic grader",
+      "n": 300,
+      "display": "Gemini 2.0 Flash, MedAgentBench, NEJM AI 2025 (Table 2), N = 300 \u2014 38.3%"
+    },
+    {
+      "label": "Gemma2",
+      "score": 19.33,
+      "unit": "pct",
+      "values": {
+        "overall": 19.33
+      },
+      "source": "MedAgentBench, NEJM AI 2025 (Table 2)",
+      "sourceUrl": "https://ai.nejm.org/doi/full/10.1056/AIdbp2500144",
+      "protocol": "full 300-task set, same action grammar, same deterministic grader",
+      "n": 300,
+      "display": "Gemma2, MedAgentBench, NEJM AI 2025 (Table 2), N = 300 \u2014 19.3%"
+    },
+    {
+      "label": "Mistral v0.3",
+      "score": 4.0,
+      "unit": "pct",
+      "values": {
+        "overall": 4.0
+      },
+      "source": "MedAgentBench, NEJM AI 2025 (Table 2)",
+      "sourceUrl": "https://ai.nejm.org/doi/full/10.1056/AIdbp2500144",
+      "protocol": "full 300-task set, same action grammar, same deterministic grader",
+      "n": 300,
+      "display": "Mistral v0.3, MedAgentBench, NEJM AI 2025 (Table 2), N = 300 \u2014 4.0%"
+    }
+  ],
+  "baselineComparability": {
+    "comparable": false,
+    "note": "**Not directly comparable \u2014 read this before reading the table.** This run scored 3 tasks, the published figures are over 300. A subset success rate is an *estimate* of the full-set rate with its own sampling error, and the subset is the head of the set rather than a random draw. Two things nonetheless *are* comparable: the protocol (same prompts, same action grammar, same deterministic grader) and the Query/Action split, which is a property of the task type rather than of the sample size. Treat the ranking as indicative and the gap as directional; do not quote a placement.",
+    "publishedProtocol": "full 300-task set, same action grammar, same deterministic grader",
+    "source": "MedAgentBench, NEJM AI 2025 (Table 2)"
+  },
+  "failures": [
+    {
+      "key": "agent_invalid_action",
+      "label": "Protocol violation \u2014 the reply was not GET, POST or FINISH",
+      "count": 1,
+      "severity": "high",
+      "description": "The action grammar is three verbs. A reply that matches none of them cannot be executed, so the task is scored incorrect no matter how good the underlying reasoning was. This is a formatting failure sitting on top of the capability being measured, and it is cheap to fix relative to what it costs.",
+      "denominator": 3,
+      "examples": [
+        {
+          "case_id": "task3_1",
+          "summary": "task3 \u00b7 1 rounds",
+          "evidence": "I'll help you record the blood pressure measurement. First, let me search for the patient using the MRN.  GET http://localhost:8090/fhir/Patient?identifier=S2380121",
+          "artifact": "tasks/task3_1.json"
+        }
+      ],
+      "rate_pct": 33.3
+    },
+    {
+      "key": "floor_categories",
+      "label": "Task categories at or near zero",
+      "count": 1,
+      "severity": "high",
+      "description": "Categories scoring \u226410%: `task3` (0%). A near-zero category is qualitatively different from a weak one \u2014 it means the task shape is not being handled at all, and the overall average is hiding a cliff.",
+      "denominator": 1,
+      "examples": [
+        {
+          "case_id": "task3_1",
+          "summary": "task3 \u00b7 grader said: episode ended without FINISH (status=agent_invalid_action)",
+          "evidence": "I'll help you record the blood pressure measurement. First, let me search for the patient using the MRN.  GET http://localhost:8090/fhir/Patient?identifier=S2380121",
+          "artifact": "tasks/task3_1.json"
+        }
+      ],
+      "rate_pct": 100.0
+    },
+    {
+      "key": "finding_say_fidelity",
+      "label": "Harness finding: `say_fidelity`",
+      "count": 1,
+      "severity": "medium",
+      "description": "Recorded by the harness's own integrity checks, independent of whether the task scored correct.",
+      "denominator": 3,
+      "examples": [
+        {
+          "case_id": "task3_1",
+          "summary": "task3",
+          "evidence": "the agent's reply matched none of GET / POST / FINISH",
+          "artifact": "tasks/task3_1.json"
+        }
+      ],
+      "rate_pct": 33.3
+    }
+  ],
+  "sampleCases": [
+    {
+      "case_id": "task1_1",
+      "outcome": "correct",
+      "is_success": true,
+      "score": null,
+      "task": "What\u2019s the MRN of the patient with name Peter Stafford and DOB of 1932-12-29? If the patient does not exist, the answer should be \"Patient not found\"",
+      "expected": "['S6534835']",
+      "got": "[\"S6534835\"]",
+      "excerpt": "FINISH([\"S6534835\"])",
+      "artifact": "tasks/task1_1.json",
+      "why_shown": "graded correct against live chart state"
+    },
+    {
+      "case_id": "task2_1",
+      "outcome": "correct",
+      "is_success": true,
+      "score": null,
+      "task": "What's the age of the patient with MRN of S2874099?",
+      "expected": "[60]",
+      "got": "[60]",
+      "excerpt": "FINISH([60])",
+      "artifact": "tasks/task2_1.json",
+      "why_shown": "graded correct against live chart state"
+    },
+    {
+      "case_id": "task3_1",
+      "outcome": "incorrect",
+      "is_success": false,
+      "score": null,
+      "task": "I just measured the blood pressure for patient with MRN of S2380121, and it is \"118/77 mmHg\". Help me record it.",
+      "expected": "",
+      "got": "",
+      "excerpt": "I'll help you record the blood pressure measurement. First, let me search for the patient using the MRN.  GET http://localhost:8090/fhir/Patient?identifier=S2380121",
+      "artifact": "tasks/task3_1.json",
+      "why_shown": "episode ended without FINISH (status=agent_invalid_action)"
+    }
+  ],
+  "limitations": [
+    {
+      "key": "subset_not_full_set",
+      "text": "3 of 300 published tasks were scored. Every comparison to the leaderboard in this report is a subset estimate, and the subset is the head of the set rather than a random draw, so its sampling error is not the textbook one.",
+      "severity": "high"
+    },
+    {
+      "key": "sandbox_not_a_hospital",
+      "text": "Writes go to a FHIR sandbox that accepts resources a production EHR would reject \u2014 0 of 0 emitted writes in this run were non-conformant and still scored correct. The success rate is therefore an upper bound on what the same agent would achieve against a validating server.",
+      "severity": "high"
+    },
+    {
+      "key": "grader_scope",
+      "text": "The deterministic grader checks the answer, not the route: a task can score correct having taken an inefficient or clinically odd path to get there, and can score incorrect on a formatting slip alone.",
+      "severity": "medium"
+    },
+    {
+      "key": "no_voice_path",
+      "text": "This benchmark has no spoken surface \u2014 its actions are structured HTTP strings. Nothing here says anything about the product's voice behaviour, and a voice variant would measure nothing.",
+      "severity": "low"
+    },
+    {
+      "key": "single_run",
+      "text": "One pass, no repeats. A generative agent's success rate has run-to-run variance that a single pass cannot separate from a real change.",
+      "severity": "medium"
+    }
+  ],
+  "whatMeasured": "Whether an agent can operate a real electronic health record over FHIR: read the right resource for a clinical question (Query), and write a correct, conformant resource back when the task calls for it (Action). Grading is deterministic against live chart state \u2014 no rubric, no grader model, no partial credit.",
+  "whyMeasured": "A health assistant that can talk but cannot correctly read and write the chart is a demo. This is the benchmark that separates the two, and its Action half is the part almost every published model is worst at.",
+  "methodology": [
+    {
+      "term": "Agent under test",
+      "detail": "the deployed Whissle agent brain, unmodified"
+    },
+    {
+      "term": "Mode",
+      "detail": "`brain-parity` \u2014 the benchmark's own prompt and protocol; the agent supplies reasoning only"
+    },
+    {
+      "term": "Endpoint",
+      "detail": "`/api/bench/agent-turn` (stateless brain call)"
+    },
+    {
+      "term": "Prompt handling",
+      "detail": "system mode `neutral`: the deployed persona is suppressed so the benchmark's instructions are the only instructions, which is what makes the number comparable"
+    },
+    {
+      "term": "Turn limit",
+      "detail": "8 rounds per task; a task that has not emitted FINISH by then is scored incorrect, not retried"
+    },
+    {
+      "term": "Tools bound",
+      "detail": "none in the agent's own runtime \u2014 the protocol is textual `GET`/`POST`/`FINISH` strings that the harness parses and executes against the FHIR sandbox"
+    },
+    {
+      "term": "Write checking",
+      "detail": "`validate` \u2014 POSTs are really executed against the sandbox and read back from the chart"
+    },
+    {
+      "term": "Scoring rule",
+      "detail": "`builtin` deterministic grader; correct / attempted, infra failures excluded from the denominator"
+    }
+  ],
+  "scoringRule": "success rate = correct / scored; a task is correct only when the deterministic grader matches the expected value recomputed from chart state at grading time",
+  "provenance": {
+    "agent_id": "b7b5863b-b722-4c0e-ae3d-474164ba3fe6",
+    "base_url": "https://aws-gateway-backend.whissle.ai/bot",
+    "endpoint": "/api/bench/agent-turn",
+    "mode": "brain-parity",
+    "harness_commit": "ef37cfe",
+    "repo_commit": "89f2e02",
+    "run_dir": "/private/tmp/claude-501/-Users-karan-Desktop-work-whissle-live-assist/766421da-8ef4-4ce2-9733-86e5c5f3fced/scratchpad/wt-reports/results/whissle/medagentbench/brain-parity_diagsmoke",
+    "captured_at": "2026-08-08T08:47:49.084929+00:00",
+    "dataset": "MedAgentBench (FHIR R4 sandbox)",
+    "dataset_size": 300,
+    "upstream": "MedAgentBench, NEJM AI 2025",
+    "extra": {
+      "fhir_api_base": "http://localhost:8090/fhir/",
+      "write_check": "validate",
+      "max_round": 8,
+      "grader": "builtin",
+      "system_mode": "neutral"
+    }
+  },
+  "sampling": {
+    "method": "head-of-set subset",
+    "n_population": 300,
+    "n_requested": 3,
+    "n_selected": 3,
+    "seed": null,
+    "strata_keys": [
+      "category"
+    ],
+    "strata_tables": [],
+    "note": "The subset is the leading N tasks of the published set, balanced 10-per-category by construction. It is not a random draw, so it reproduces exactly \u2014 and it inherits whatever ordering bias the published set has."
+  },
+  "reproduction": {
+    "commands": [
+      "uv sync --extra dev",
+      "docker run -p 8090:8080 <fhir-sandbox-image>   # MedAgentBench FHIR server",
+      "python -m tau2.health.medagent.run --mode brain-parity --limit 3 --write-check execute",
+      "python -m tau2.reporting.cli build results/whissle/medagentbench/brain-parity_diagsmoke"
+    ],
+    "environment": {
+      "WHISSLE_BASE": "https://aws-gateway-backend.whissle.ai/bot",
+      "FHIR_API_BASE": "http://localhost:8090/fhir/",
+      "harness commit": "ef37cfe",
+      "repo commit at report time": "89f2e02"
+    },
+    "notes": [
+      "The subset is the head of the published set \u2014 deterministic, no seed needed.",
+      "The FHIR sandbox must be reset between runs, or Action tasks read back writes from a previous run and score correct for the wrong reason."
+    ]
+  },
+  "artifacts": [
+    {
+      "path": "SUMMARY.json",
+      "description": "run-level aggregation, write-integrity ledger",
+      "present": true
+    },
+    {
+      "path": "SUMMARY.md",
+      "description": "the adapter's own short summary",
+      "present": true
+    },
+    {
+      "path": "tasks/",
+      "description": "3 per-task records with `diagnostics`",
+      "present": true
+    },
+    {
+      "path": "REPORT.md",
+      "description": "this report",
+      "present": true
+    },
+    {
+      "path": "report.json",
+      "description": "machine-readable form of this report",
+      "present": true
+    }
+  ],
+  "licenceNote": "MedAgentBench, NEJM AI 2025. Research measurement only.",
+  "warnings": [],
+  "reportMarkdown": "# MedAgentBench \u2014 Whissle (brain-parity)\n\n> **PRELIMINARY** \u2014 N = 3 is below the 30-unit threshold for a settled number. Treat every figure below as directional.\n\n## Abstract\n\nWhissle was evaluated on **MedAgentBench** in `brain-parity` mode. The headline result is **66.7%** (N = 3 \u00b7 PRELIMINARY) for overall success rate, 95% CI [20.8%, 93.9%].\n\nWhether an agent can operate a real electronic health record over FHIR: read the right resource for a clinical question (Query), and write a correct, conformant resource back when the task calls for it (Action). Grading is deterministic against live chart state \u2014 no rubric, no grader model, no partial credit.\n\n## At a glance\n\n| Field | Value |\n|---|---|\n| **Overall success rate** | **66.7%** (N = 3 \u00b7 PRELIMINARY) |\n<!-- honesty:allow-context -->\n| 95% CI | [20.8%, 93.9%] |\n| Attempted / scored / excluded | 3 / 3 / 0 (0.0%) |\n| Judge | deterministic grader (no judge model) |\n| Mode | `brain-parity` |\n| Date | 2026-08-08 |\n| Harness commit | `ef37cfe` |\n| Run id | `medagentbench/brain-parity_diagsmoke` |\n| Status | **PRELIMINARY** |\n<!-- /honesty:allow-context -->\n\n<!-- honesty:allow-context -->\n- **Query success rate:** 100.0% [34.2%, 100.0%], N = 2\n- **Action success rate:** 0.0% [0.0%, 79.3%], N = 1\n<!-- /honesty:allow-context -->\n\n## 1. What was measured, and why\n\nWhether an agent can operate a real electronic health record over FHIR: read the right resource for a clinical question (Query), and write a correct, conformant resource back when the task calls for it (Action). Grading is deterministic against live chart state \u2014 no rubric, no grader model, no partial credit.\n\n**Why this benchmark.** A health assistant that can talk but cannot correctly read and write the chart is a demo. This is the benchmark that separates the two, and its Action half is the part almost every published model is worst at.\n\n## 2. Methodology\n\n| Field | Value |\n|---|---|\n| Agent under test | the deployed Whissle agent brain, unmodified |\n| Mode | `brain-parity` \u2014 the benchmark's own prompt and protocol; the agent supplies reasoning only |\n| Endpoint | `/api/bench/agent-turn` (stateless brain call) |\n| Prompt handling | system mode `neutral`: the deployed persona is suppressed so the benchmark's instructions are the only instructions, which is what makes the number comparable |\n| Turn limit | 8 rounds per task; a task that has not emitted FINISH by then is scored incorrect, not retried |\n| Tools bound | none in the agent's own runtime \u2014 the protocol is textual `GET`/`POST`/`FINISH` strings that the harness parses and executes against the FHIR sandbox |\n| Write checking | `validate` \u2014 POSTs are really executed against the sandbox and read back from the chart |\n| Scoring rule | `builtin` deterministic grader; correct / attempted, infra failures excluded from the denominator |\n\n**Scoring rule.** success rate = correct / scored; a task is correct only when the deterministic grader matches the expected value recomputed from chart state at grading time\n\n## 3. Setup and provenance\n\n| Field | Value |\n|---|---|\n| Agent id | `b7b5863b-b722-4c0e-ae3d-474164ba3fe6` |\n| Base URL | `https://aws-gateway-backend.whissle.ai/bot` |\n| Transport endpoint | `/api/bench/agent-turn` |\n| Mode | `brain-parity` |\n| Dataset | MedAgentBench (FHIR R4 sandbox) |\n| Dataset size | 300 |\n| Upstream | MedAgentBench, NEJM AI 2025 |\n| Harness commit | `ef37cfe` |\n| Repo commit at report time | `89f2e02` |\n| Captured at | 2026-08-08T08:47:49.084929+00:00 |\n| Run directory | `results/whissle/medagentbench/brain-parity_diagsmoke` |\n| Fhir api base | http://localhost:8090/fhir/ |\n| Write check | validate |\n| Max round | 8 |\n| Grader | builtin |\n| System mode | neutral |\n\n### 3.1 Judge and its independence\n\n| Field | Value |\n|---|---|\n| Grading kind | deterministic |\n| Independent of the agent's vendor | n/a \u2014 no judge model is called |\n\n<!-- honesty:allow-providers -->\n> Grading is deterministic: an expected value recomputed from live chart state, compared to the agent's answer. No grader model is called, so judge independence is not a question this benchmark can raise.\n<!-- /honesty:allow-providers -->\n\n### 3.2 Sampling and population\n\n| Field | Value |\n|---|---|\n| Method | head-of-set subset |\n| Population | 300 |\n| Requested | 3 |\n| Selected | 3 |\n| Scored | 3 |\n| Strata | `category` |\n\nThe subset is the leading N tasks of the published set, balanced 10-per-category by construction. It is not a random draw, so it reproduces exactly \u2014 and it inherits whatever ordering bias the published set has.\n\n## 4. Results\n\n**Overall success rate: 66.7%** (N = 3 \u00b7 PRELIMINARY), 95% CI [20.8%, 93.9%].\n\n| Metric | Value | 95% CI | N | Qualifiers |\n|---|---:|---|---:|---|\n| **Overall success rate** | **66.7%** | [20.8%, 93.9%] | 3 | N = 3 \u00b7 PRELIMINARY |\n<!-- honesty:allow-context -->\n| Query success rate | 100.0% | [34.2%, 100.0%] | 2 | \u2014 |\n| Action success rate | 0.0% | [0.0%, 79.3%] | 1 | \u2014 |\n<!-- /honesty:allow-context -->\n\n_The headline row is the claim and carries its qualifiers; the rest are components of it and inherit them._\n\n<!-- honesty:allow-context -->\n**Query vs Action**\n\n| Split | N | Correct | Success rate | 95% CI (Wilson) |\n|---|---|---|---|---|\n| Query | 2 | 2 | 100.0% | [34.2%, 100.0%] |\n| Action | 1 | 0 | 0.0% | [0.0%, 79.3%] |\n\nQuery tasks read the chart; Action tasks must write to it. The gap between them is the finding, not the average of them.\n<!-- /honesty:allow-context -->\n\n<!-- honesty:allow-context -->\n**Per task category**\n\n| Category | N | Correct | Success rate |\n|---|---|---|---|\n| task1 | 1 | 1 | 100.0% |\n| task2 | 1 | 1 | 100.0% |\n| task3 | 1 | 0 | 0.0% |\n<!-- /honesty:allow-context -->\n\n<!-- honesty:allow-context -->\n**Write integrity \u2014 said vs emitted vs landed**\n\n| Measure | Value | Reading |\n|---|---|---|\n| Episodes that claimed an action | 0 | the agent told the user it had done something |\n| Episodes that emitted a write | 0 | a POST actually left the harness |\n| Writes accepted by the EHR | 0 | the FHIR server took it |\n| Writes verified back in the chart | 0 | read back and found \u2014 the only proof it landed |\n| Said but did not write | 0 (0.0%) | **the safety-critical count** \u2014 claiming an action that never happened |\n| Wrote but did not say | 0 (0.0%) | silent side effect \u2014 the chart changed and the user was not told |\n| Emitted but non-conformant FHIR | 0 (0.0%) | accepted by a permissive server; would fail a strict one |\n\nWrite mode was `validate` \u2014 writes were really executed against the FHIR sandbox and read back, not simulated.\n<!-- /honesty:allow-context -->\n\n## 5. Comparison to published baselines\n\n**Not directly comparable \u2014 read this before reading the table.** This run scored 3 tasks, the published figures are over 300. A subset success rate is an *estimate* of the full-set rate with its own sampling error, and the subset is the head of the set rather than a random draw. Two things nonetheless *are* comparable: the protocol (same prompts, same action grammar, same deterministic grader) and the Query/Action split, which is a property of the task type rather than of the sample size. Treat the ranking as indicative and the gap as directional; do not quote a placement.\n\n<!-- honesty:allow-context -->\n<!-- honesty:allow-providers -->\n**Published baselines \u2014 MedAgentBench, NEJM AI 2025 (Table 2)**\n\n| System | N | Overall | Query | Action | Published in |\n|---|---|---|---|---|---|\n| **Whissle (this run)** | 3 | **66.7** | **100.0** | **0.0** | \u2014 (this measurement) |\n| Claude 3.5 Sonnet v2 | 300 | 69.7 | 85.3 | 54.0 | MedAgentBench, NEJM AI 2025 (Table 2) |\n| GPT-4o | 300 | 64.0 | \u2014 | \u2014 | MedAgentBench, NEJM AI 2025 (Table 2) |\n| DeepSeek-V3 | 300 | 62.7 | \u2014 | \u2014 | MedAgentBench, NEJM AI 2025 (Table 2) |\n| Gemini-1.5 Pro | 300 | 62.0 | \u2014 | \u2014 | MedAgentBench, NEJM AI 2025 (Table 2) |\n| GPT-4o-mini | 300 | 56.3 | \u2014 | \u2014 | MedAgentBench, NEJM AI 2025 (Table 2) |\n| o3-mini | 300 | 51.7 | \u2014 | \u2014 | MedAgentBench, NEJM AI 2025 (Table 2) |\n| Qwen2.5 | 300 | 51.3 | \u2014 | \u2014 | MedAgentBench, NEJM AI 2025 (Table 2) |\n| Llama 3.3 | 300 | 46.3 | \u2014 | \u2014 | MedAgentBench, NEJM AI 2025 (Table 2) |\n| Gemini 2.0 Flash | 300 | 38.3 | \u2014 | \u2014 | MedAgentBench, NEJM AI 2025 (Table 2) |\n| Gemma2 | 300 | 19.3 | \u2014 | \u2014 | MedAgentBench, NEJM AI 2025 (Table 2) |\n| Mistral v0.3 | 300 | 4.0 | \u2014 | \u2014 | MedAgentBench, NEJM AI 2025 (Table 2) |\n\nPublished protocol: full 300-task set, same action grammar, same deterministic grader. External model names appear here and only here; they are published comparators, not components of the system under test.\n<!-- /honesty:allow-providers -->\n<!-- /honesty:allow-context -->\n\n**What is comparable:** the protocol \u2014 same prompts, same action grammar, same grader. **What is not:** the sample. This run scored 3; the published figures are over 300.\n\n## 6. Failure analysis\n\n| Category | Count | Rate | Severity |\n|---|---:|---:|---|\n<!-- honesty:allow-context -->\n| Protocol violation \u2014 the reply was not GET, POST or FINISH | 1 | 33.3% | high |\n| Task categories at or near zero | 1 | 100.0% | high |\n| Harness finding: `say_fidelity` | 1 | 33.3% | medium |\n<!-- /honesty:allow-context -->\n\n### 6.1 Protocol violation \u2014 the reply was not GET, POST or FINISH \u2014 1 of 3\n\n<!-- honesty:allow-context -->\nThe action grammar is three verbs. A reply that matches none of them cannot be executed, so the task is scored incorrect no matter how good the underlying reasoning was. This is a formatting failure sitting on top of the capability being measured, and it is cheap to fix relative to what it costs.\n<!-- /honesty:allow-context -->\n\n- **`task3_1`** \u2014 task3 \u00b7 1 rounds\n  > I'll help you record the blood pressure measurement. First, let me search for the patient using the MRN.  GET http://localhost:8090/fhir/Patient?identifier=S2380121\n  _artifact:_ `tasks/task3_1.json`\n\n### 6.2 Task categories at or near zero \u2014 1 of 1\n\n<!-- honesty:allow-context -->\nCategories scoring \u226410%: `task3` (0%). A near-zero category is qualitatively different from a weak one \u2014 it means the task shape is not being handled at all, and the overall average is hiding a cliff.\n<!-- /honesty:allow-context -->\n\n- **`task3_1`** \u2014 task3 \u00b7 grader said: episode ended without FINISH (status=agent_invalid_action)\n  > I'll help you record the blood pressure measurement. First, let me search for the patient using the MRN.  GET http://localhost:8090/fhir/Patient?identifier=S2380121\n  _artifact:_ `tasks/task3_1.json`\n\n### 6.3 Harness finding: `say_fidelity` \u2014 1 of 3\n\n<!-- honesty:allow-context -->\nRecorded by the harness's own integrity checks, independent of whether the task scored correct.\n<!-- /honesty:allow-context -->\n\n- **`task3_1`** \u2014 task3\n  > the agent's reply matched none of GET / POST / FINISH\n  _artifact:_ `tasks/task3_1.json`\n\n### Sample cases\n\nPicked deterministically from this run's own artifacts \u2014 the best and worst by the benchmark's own score \u2014 so re-generating the report shows the same cases rather than reshuffling them.\n\n<!-- honesty:allow-context -->\n**\u2713 `task1_1`** \u2014 correct\n  - _task:_ What\u2019s the MRN of the patient with name Peter Stafford and DOB of 1932-12-29? If the patient does not exist, the answer should be \"Patient not found\"\n  - _reference:_ ['S6534835']  \u00b7  _agent said:_ [\"S6534835\"]\n  > FINISH([\"S6534835\"])\n  - _why this one:_ graded correct against live chart state\n  - _artifact:_ `tasks/task1_1.json`\n\n**\u2713 `task2_1`** \u2014 correct\n  - _task:_ What's the age of the patient with MRN of S2874099?\n  - _reference:_ [60]  \u00b7  _agent said:_ [60]\n  > FINISH([60])\n  - _why this one:_ graded correct against live chart state\n  - _artifact:_ `tasks/task2_1.json`\n\n**\u2717 `task3_1`** \u2014 incorrect\n  - _task:_ I just measured the blood pressure for patient with MRN of S2380121, and it is \"118/77 mmHg\". Help me record it.\n  > I'll help you record the blood pressure measurement. First, let me search for the patient using the MRN.  GET http://localhost:8090/fhir/Patient?identifier=S2380121\n  - _why this one:_ episode ended without FINISH (status=agent_invalid_action)\n  - _artifact:_ `tasks/task3_1.json`\n\n<!-- /honesty:allow-context -->\n\n## 7. Exclusions and what they do to the number\n\nNothing was excluded: all 3 attempted units produced a gradable result. The headline denominator is the full attempted set.\n\n## 8. Limitations and threats to validity\n\n- **subset not full set** (high) \u2014 3 of 300 published tasks were scored. Every comparison to the leaderboard in this report is a subset estimate, and the subset is the head of the set rather than a random draw, so its sampling error is not the textbook one.\n- **sandbox not a hospital** (high) \u2014 Writes go to a FHIR sandbox that accepts resources a production EHR would reject \u2014 0 of 0 emitted writes in this run were non-conformant and still scored correct. The success rate is therefore an upper bound on what the same agent would achieve against a validating server.\n- **grader scope** (medium) \u2014 The deterministic grader checks the answer, not the route: a task can score correct having taken an inefficient or clinically odd path to get there, and can score incorrect on a formatting slip alone.\n- **no voice path** (low) \u2014 This benchmark has no spoken surface \u2014 its actions are structured HTTP strings. Nothing here says anything about the product's voice behaviour, and a voice variant would measure nothing.\n- **single run** (medium) \u2014 One pass, no repeats. A generative agent's success rate has run-to-run variance that a single pass cannot separate from a real change.\n\n- **sample size** (high) \u2014 N = 3 is below the 30-unit threshold this reporting layer uses to call a figure settled. The report is labelled PRELIMINARY throughout.\n\n## 9. Reproduction\n\n```bash\nuv sync --extra dev\ndocker run -p 8090:8080 <fhir-sandbox-image>   # MedAgentBench FHIR server\npython -m tau2.health.medagent.run --mode brain-parity --limit 3 --write-check execute\npython -m tau2.reporting.cli build results/whissle/medagentbench/brain-parity_diagsmoke\n```\n\n| Field | Value |\n|---|---|\n| WHISSLE_BASE | https://aws-gateway-backend.whissle.ai/bot |\n| FHIR_API_BASE | http://localhost:8090/fhir/ |\n| harness commit | ef37cfe |\n| repo commit at report time | 89f2e02 |\n\n- The subset is the head of the published set \u2014 deterministic, no seed needed.\n- The FHIR sandbox must be reset between runs, or Action tasks read back writes from a previous run and score correct for the wrong reason.\n\n## Appendix A \u2014 raw artifacts\n\n| Path | Present | What it is |\n|---|:---:|---|\n| `SUMMARY.json` | yes | run-level aggregation, write-integrity ledger |\n| `SUMMARY.md` | yes | the adapter's own short summary |\n| `tasks/` | yes | 3 per-task records with `diagnostics` |\n| `REPORT.md` | yes | this report |\n| `report.json` | yes | machine-readable form of this report |\n\nEvery per-case record carries a `diagnostics` block (`tau2.health.diagnostics/v1`) with flow trace, signals, metadata sidecar, tool forensics, provenance and cost \u2014 and explicit availability flags, so an absent measurement reads as absent rather than as zero. See `HEALTH_DIAGNOSTICS.md`.\n\n## Appendix B \u2014 honesty-rule compliance\n\nThese rules are executed against this document, not asserted about it. A failing rule blocks generation.\n\n| Rule | Verdict | Checked |\n|---|:---:|---|\n| `R1_headline_requires_n` | pass | headline carries N = 3 everywhere it is stated |\n| `R2_judge_independence_disclosed` | pass | not applicable \u2014 judge is independent or deterministic |\n| `R3_exclusion_rate_adjacent` | pass | not applicable \u2014 nothing was excluded |\n| `R4_preliminary_labelled` | pass | labelled PRELIMINARY |\n| `R5_no_provider_names` | pass | no LLM vendor named outside the published-baseline table |\n| `R6_comparability_stated` | pass | comparability to published baselines stated explicitly |\n| `R7_baseline_named` | pass | every comparator is a named system with a published source |\n\n---\n\n_MedAgentBench, NEJM AI 2025. Research measurement only._\n\n<!-- generated by tau2.reporting from medagentbench/brain-parity_diagsmoke; schema tau2.reporting.run_report/v1 -->\n",
+  "reportPath": "results/whissle/medagentbench/brain-parity_diagsmoke/REPORT.md"
+}

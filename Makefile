@@ -12,6 +12,22 @@ clean:
 	rm -rf dist
 	rm -rf build
 
+## Rebuild every benchmark report, the cross-run index and the website export
+.PHONY: reports
+reports:
+	uv run python -m tau2.reporting all
+
+## Audit every report against the honesty rules without writing (CI)
+.PHONY: reports-check
+reports-check:
+	uv run python -m tau2.reporting check
+
+## Rebuild everything and POST it to the benchmark results store
+## (needs WHISSLE_BASE + WHISSLE_API_KEY; idempotent on run id)
+.PHONY: reports-publish
+reports-publish:
+	uv run python -m tau2.reporting all --publish
+
 ## Run core tests (requires: uv sync --extra dev)
 .PHONY: test
 test:

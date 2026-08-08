@@ -1,0 +1,395 @@
+{
+  "scenario_id": "MedQA-78",
+  "scenario_index": 78,
+  "dataset": "MedQA",
+  "mode": "text",
+  "correct_diagnosis": "Benign paroxysmal positional vertigo",
+  "answer_options": [],
+  "score": {
+    "outcome": "incorrect",
+    "correctness": false,
+    "doctor_diagnosis": null,
+    "doctor_final_text": "I appreciate you sharing that information with me. Based on your description of the spinning and the positive result from the Dix-Hallpike maneuver, I have reached a conclusion.\n\nDIAGNOSIS READY",
+    "moderator_raw": "no",
+    "moderator_raw_text": "No",
+    "moderator_lenient": false,
+    "moderator_attempts": 1,
+    "moderator_normalized": false,
+    "moderator_unconstrained": false,
+    "declined": false,
+    "refusal_evidence": [],
+    "format_deviation": false,
+    "decline_source": null,
+    "decline_reason": "",
+    "spurious_commit": false
+  },
+  "infra_fail": false,
+  "error": null,
+  "findings": [],
+  "inferences_used": 5,
+  "max_inferences": 20,
+  "tests_ordered": [
+    "Dix-Hallpike_Maneuver"
+  ],
+  "images_requested": 0,
+  "image": null,
+  "image_error": null,
+  "vision": "off",
+  "refusals": [],
+  "dialogue": [
+    {
+      "role": "doctor",
+      "inference": 1,
+      "kind": "question",
+      "text": "Hello, I am Dr. Agent. I understand you are experiencing sudden vertigo; could you describe the sensation and tell me exactly when it began? (Question 1/20)",
+      "payload": null,
+      "latency_ms": 2383,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "It felt like the entire room was suddenly spinning around me while I was trying to get into bed last night. It was very intense and made me quite sick to my stomach, but the whole thing only lasted about three minutes."
+    },
+    {
+      "role": "doctor",
+      "inference": 2,
+      "kind": "question",
+      "text": "That sounds very distressing. Have you noticed any changes in your hearing, such as ringing in your ears or a feeling of fullness? (Question 2/20)",
+      "payload": null,
+      "latency_ms": 2415,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "No, my hearing seems completely normal and I haven't noticed any ringing or fullness in my ears. I also haven't had any headaches or trouble moving my arms or legs."
+    },
+    {
+      "role": "doctor",
+      "inference": 3,
+      "kind": "test",
+      "text": "Does this spinning sensation happen specifically when you roll over in bed or tilt your head back to look up at something? Also, I'd like to perform a physical exam to check for specific eye movements. (Question 3/20)\n\nREQUEST TEST: Dix-Hallpike_Maneuver",
+      "payload": "Dix-Hallpike_Maneuver",
+      "latency_ms": 3435,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: Positive, inducing nystagmus and reproducing patient’s symptoms of vertigo when head is turned to the left and laid back."
+    },
+    {
+      "role": "doctor",
+      "inference": 4,
+      "kind": "question",
+      "text": "Thank you for participating in that test. Have you ever experienced these dizzy spells before, or was last night the first time? (Question 4/20)",
+      "payload": null,
+      "latency_ms": 4719,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "No, doctor, I've never felt anything like this in my life before. I'm generally a healthy person, aside from some eczema, so this whole experience has been quite a shock."
+    },
+    {
+      "role": "doctor",
+      "inference": 5,
+      "kind": "diagnosis",
+      "text": "I appreciate you sharing that information with me. Based on your description of the spinning and the positive result from the Dix-Hallpike maneuver, I have reached a conclusion.\n\nDIAGNOSIS READY",
+      "payload": null,
+      "latency_ms": 5979,
+      "refusal": null,
+      "via": "marker"
+    }
+  ],
+  "latency_ms": [
+    2383,
+    2415,
+    3435,
+    4719,
+    5979
+  ],
+  "wall_s": 24.07,
+  "doctor_turns": [
+    {
+      "inference": 1,
+      "incoming": "",
+      "reply": "Hello, I am Dr. Agent. I understand you are experiencing sudden vertigo; could you describe the sensation and tell me exactly when it began? (Question 1/20)",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 2,
+      "incoming": "It felt like the entire room was suddenly spinning around me while I was trying to get into bed last night. It was very intense and made me quite sick to my stomach, but the whole thing only lasted about three minutes.",
+      "reply": "That sounds very distressing. Have you noticed any changes in your hearing, such as ringing in your ears or a feeling of fullness? (Question 2/20)",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 3,
+      "incoming": "No, my hearing seems completely normal and I haven't noticed any ringing or fullness in my ears. I also haven't had any headaches or trouble moving my arms or legs.",
+      "reply": "Does this spinning sensation happen specifically when you roll over in bed or tilt your head back to look up at something? Also, I'd like to perform a physical exam to check for specific eye movements. (Question 3/20)\n\nREQUEST TEST: Dix-Hallpike_Maneuver",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Dix-Hallpike_Maneuver",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 4,
+      "incoming": "RESULTS: Positive, inducing nystagmus and reproducing patient’s symptoms of vertigo when head is turned to the left and laid back.",
+      "reply": "Thank you for participating in that test. Have you ever experienced these dizzy spells before, or was last night the first time? (Question 4/20)",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 5,
+      "incoming": "No, doctor, I've never felt anything like this in my life before. I'm generally a healthy person, aside from some eczema, so this whole experience has been quite a shock.",
+      "reply": "I appreciate you sharing that information with me. Based on your description of the spinning and the positive result from the Dix-Hallpike maneuver, I have reached a conclusion.\n\nDIAGNOSIS READY",
+      "tool_calls": [],
+      "kind": "diagnosis",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    }
+  ],
+  "support_llm": "whissle:/api/models/chat",
+  "support_llm_cost_usd": 0.00013,
+  "support_llm_calls": 5,
+  "voice_subset": false,
+  "diagnostics": {
+    "schema": "tau2.health.diagnostics/v1",
+    "benchmark": "agentclinic",
+    "case_id": "MedQA-78",
+    "mode": "text",
+    "availability": {
+      "flow_available": false,
+      "flow_reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "signals_available": false,
+      "signals_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "metadata_sidecar_available": false,
+      "metadata_sidecar_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "tools_available": true,
+      "tools_reason": null
+    },
+    "provenance": {
+      "benchmark": "agentclinic",
+      "mode": "text",
+      "transport_endpoint": "POST /api/bench/agent-turn",
+      "agent_id": "c8aa2355-9fd7-46da-9993-07ea566ec3d6",
+      "base_url": "https://aws-gateway-backend.whissle.ai/bot",
+      "seed": 42,
+      "stratum": {
+        "dataset": "MedQA",
+        "scenario_index": 78,
+        "selection": "head",
+        "limit": 100
+      },
+      "judge": {
+        "judge_provider": "whissle",
+        "judge_model": "default",
+        "judge_endpoint": "whissle:/api/models/chat",
+        "judge_independent": false,
+        "judge_independence_note": "Judge independence: this run's simulators and graders were routed through Whissle's own model API (`POST /api/models/chat`). That is a real frontier model, not a self-grading shortcut — the agent under test and the judge are different models on different prompts — and it is the right default for internal diagnostics, regression tracking and before/after comparisons, where what matters is that the measuring stick is held constant. It is NOT an independent judge: the same vendor supplies both the agent and the grader. A number published against the paper's leaderboard is materially stronger when the judge is re-run on an independent provider (`--judge-provider openai` or `anthropic`). Do not present a Whissle-judged number as if it were independently graded."
+      },
+      "judge_provider": "whissle",
+      "judge_independent": false,
+      "run_id": null,
+      "run_dir": "results/whissle/agentclinic/20260808T092952Z-ac_override_100",
+      "harness_commit": "86b4475",
+      "captured_at": "2026-08-08T09:47:37+00:00",
+      "protocol": "markers",
+      "history": "native",
+      "prompt_mode": "override",
+      "vision": "off",
+      "agent_type": null,
+      "total_inferences": 20,
+      "inferences_used": 5,
+      "support_llm": "whissle:/api/models/chat",
+      "patient_bias": null,
+      "doctor_bias": null,
+      "voice_subset": false
+    },
+    "cost": {
+      "available": true,
+      "reason": null,
+      "judge_calls": 5,
+      "judge_cost_usd": 0.00013,
+      "agent_calls": 5
+    },
+    "flow": {
+      "available": false,
+      "reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "source": null,
+      "turns": null,
+      "summary": null,
+      "conversation_id": null,
+      "current_state": null,
+      "start_state": null,
+      "final_state": null,
+      "ended": null,
+      "flow_end": null,
+      "num_steps": null,
+      "step_counts_by_kind": null,
+      "states_visited": null,
+      "states_declared": null,
+      "states_unvisited": null,
+      "transitions": null,
+      "transitions_fired": null,
+      "var_sets": null,
+      "var_sources": null,
+      "guard_trips": null,
+      "state_divergences": null,
+      "tools_gated": null,
+      "says": null,
+      "steps": null
+    },
+    "signals": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "metadata_sidecar": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "tools": {
+      "available": true,
+      "reason": null,
+      "source": "doctor actions parsed from /api/bench/agent-turn replies",
+      "calls": [
+        {
+          "turn": 3,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Dix-Hallpike_Maneuver"
+          },
+          "result": "RESULTS: Positive, inducing nystagmus and reproducing patient’s symptoms of vertigo when head is turned to the left and laid back.",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 3435,
+          "terminal": false
+        },
+        {
+          "turn": 5,
+          "id": null,
+          "name": "give_diagnosis",
+          "arguments": {
+            "request": "I appreciate you sharing that information with me. Based on your description of the spinning and the positive result from the Dix-Hallpike maneuver, I have reached a conclusion.\n\nDIAGNOSIS READY"
+          },
+          "result": null,
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 5979,
+          "terminal": true
+        }
+      ],
+      "summary": {
+        "n_calls": 2,
+        "by_name": {
+          "request_test": 1,
+          "give_diagnosis": 1
+        },
+        "n_ok": 2,
+        "n_error": 0,
+        "errors": []
+      },
+      "writes": {
+        "available": false,
+        "reason": "this benchmark issues no writes, so there is no said-vs-emitted-vs-landed distinction to record"
+      }
+    },
+    "turns": [
+      {
+        "inference": 1,
+        "incoming": "",
+        "reply": "Hello, I am Dr. Agent. I understand you are experiencing sudden vertigo; could you describe the sensation and tell me exactly when it began? (Question 1/20)",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 2,
+        "incoming": "It felt like the entire room was suddenly spinning around me while I was trying to get into bed last night. It was very intense and made me quite sick to my stomach, but the whole thing only lasted about three minutes.",
+        "reply": "That sounds very distressing. Have you noticed any changes in your hearing, such as ringing in your ears or a feeling of fullness? (Question 2/20)",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 3,
+        "incoming": "No, my hearing seems completely normal and I haven't noticed any ringing or fullness in my ears. I also haven't had any headaches or trouble moving my arms or legs.",
+        "reply": "Does this spinning sensation happen specifically when you roll over in bed or tilt your head back to look up at something? Also, I'd like to perform a physical exam to check for specific eye movements. (Question 3/20)\n\nREQUEST TEST: Dix-Hallpike_Maneuver",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Dix-Hallpike_Maneuver",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 4,
+        "incoming": "RESULTS: Positive, inducing nystagmus and reproducing patient’s symptoms of vertigo when head is turned to the left and laid back.",
+        "reply": "Thank you for participating in that test. Have you ever experienced these dizzy spells before, or was last night the first time? (Question 4/20)",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 5,
+        "incoming": "No, doctor, I've never felt anything like this in my life before. I'm generally a healthy person, aside from some eczema, so this whole experience has been quite a shock.",
+        "reply": "I appreciate you sharing that information with me. Based on your description of the spinning and the positive result from the Dix-Hallpike maneuver, I have reached a conclusion.\n\nDIAGNOSIS READY",
+        "tool_calls": [],
+        "kind": "diagnosis",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      }
+    ],
+    "audio": null
+  }
+}

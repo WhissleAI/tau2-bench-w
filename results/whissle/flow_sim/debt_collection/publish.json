@@ -1,0 +1,615 @@
+{
+  "schema": "whissle.benchmark.run/v1",
+  "generator": "tau2.reporting (tau2.reporting.run_report/v1)",
+  "generatedAt": "2026-08-08T16:51:41+00:00",
+  "runId": "flow_sim/debt_collection",
+  "benchmark": "flow_sim",
+  "benchmarkTitle": "Whissle conversation-flow suite",
+  "seriesKey": "flow_sim:debt_collection",
+  "title": "Conversation-flow suite \u2014 `debt_collection` (real-audio voice)",
+  "label": "Whissle",
+  "mode": "voice",
+  "modality": "voice",
+  "date": "2026-08-07",
+  "status": "complete",
+  "partialReason": "",
+  "sampleSize": 11,
+  "attempted": 11,
+  "excluded": 0,
+  "exclusionRatePct": 0.0,
+  "exclusionBreakdown": {},
+  "exclusionReasons": [],
+  "excludedIds": [],
+  "exclusionBounds": null,
+  "preliminary": true,
+  "preliminaryReason": "N = 11 is below the 30-unit threshold for a settled number",
+  "judge": {
+    "kind": "rule_analyzer",
+    "independent": null,
+    "provider": null,
+    "model": null,
+    "endpoint": null,
+    "k": null,
+    "note": "Two graders, deliberately different in kind: a rule analyzer reads the engine's own flow trace (deterministic \u2014 it cannot be talked into a verdict), and an LLM grader judges goal satisfaction from the transcript. Where they disagree, the trace wins on questions of what happened and the grader wins on questions of whether the caller was served.",
+    "calls": null,
+    "costUsd": null,
+    "summary": "rule analyzer + LLM grader"
+  },
+  "qualifier": "N = 11 \u00b7 PRELIMINARY",
+  "headline": {
+    "key": "task_success",
+    "label": "Task success",
+    "unit": "pct",
+    "value": 9.1,
+    "valueFormatted": "9.1%",
+    "ci": [
+      1.6,
+      37.7
+    ],
+    "n": 11,
+    "floor": 0.0,
+    "ceiling": 100.0,
+    "higherIsBetter": true,
+    "note": "an LLM grader judges whether the caller's goal was met",
+    "score0to100": 9.1,
+    "scoreKind": "pass_rate"
+  },
+  "secondaryMetrics": [
+    {
+      "key": "clean_close",
+      "label": "Reached a clean close",
+      "unit": "pct",
+      "value": 27.3,
+      "valueFormatted": "27.3%",
+      "ci": [
+        9.7,
+        56.6
+      ],
+      "n": 11,
+      "floor": 0.0,
+      "ceiling": 100.0,
+      "higherIsBetter": true,
+      "note": "taken from the authoritative `flow_end` trace event"
+    },
+    {
+      "key": "state_coverage",
+      "label": "Flow states visited",
+      "unit": "count",
+      "value": 0,
+      "valueFormatted": "0",
+      "ci": null,
+      "n": 10,
+      "floor": null,
+      "ceiling": null,
+      "higherIsBetter": true,
+      "note": "of 10 declared"
+    },
+    {
+      "key": "transition_coverage",
+      "label": "Flow transitions fired",
+      "unit": "count",
+      "value": 0,
+      "valueFormatted": "0",
+      "ci": null,
+      "n": 14,
+      "floor": null,
+      "ceiling": null,
+      "higherIsBetter": true,
+      "note": "of 14 declared"
+    }
+  ],
+  "tables": [
+    {
+      "key": "scenarios",
+      "title": "Per-scenario outcomes",
+      "columns": [
+        "Scenario",
+        "Turns",
+        "Closed",
+        "Goal met",
+        "Final state",
+        "Findings",
+        "Session"
+      ],
+      "rows": [
+        [
+          "`debt_callback_request` (refuse)",
+          "0",
+          "**no**",
+          "**no**",
+          "`\u2014`",
+          "1",
+          "`20260806T153727Z`"
+        ],
+        [
+          "`debt_dispute` (dispute)",
+          "11",
+          "yes",
+          "**no**",
+          "`\u2014`",
+          "4",
+          "`20260807T013533Z`"
+        ],
+        [
+          "`debt_hardship` (dispute)",
+          "0",
+          "**no**",
+          "**no**",
+          "`\u2014`",
+          "1",
+          "`20260806T153707Z`"
+        ],
+        [
+          "`debt_partial_payment` (promise-to-pay)",
+          "0",
+          "**no**",
+          "**no**",
+          "`\u2014`",
+          "1",
+          "`20260806T153625Z`"
+        ],
+        [
+          "`debt_probe_before_verify` (dispute)",
+          "0",
+          "**no**",
+          "**no**",
+          "`\u2014`",
+          "1",
+          "`20260806T153604Z`"
+        ],
+        [
+          "`debt_promise_to_pay` (promise-to-pay)",
+          "6",
+          "**no**",
+          "**no**",
+          "`\u2014`",
+          "3",
+          "`20260807T013012Z`"
+        ],
+        [
+          "`debt_refuse_verify` (refuse)",
+          "0",
+          "**no**",
+          "**no**",
+          "`\u2014`",
+          "1",
+          "`20260806T153544Z`"
+        ],
+        [
+          "`debt_rightparty_pays` (right-party pays)",
+          "13",
+          "yes",
+          "**no**",
+          "`\u2014`",
+          "4",
+          "`20260807T011838Z`"
+        ],
+        [
+          "`debt_verify_then_hang` (right-party pays)",
+          "0",
+          "**no**",
+          "**no**",
+          "`\u2014`",
+          "1",
+          "`20260806T153748Z`"
+        ],
+        [
+          "`debt_wrong_party` (wrong-party)",
+          "3",
+          "yes",
+          "yes",
+          "`\u2014`",
+          "0",
+          "`20260807T014650Z`"
+        ],
+        [
+          "`debt_wrong_person_name` (wrong-party)",
+          "0",
+          "**no**",
+          "**no**",
+          "`\u2014`",
+          "1",
+          "`20260806T153646Z`"
+        ]
+      ],
+      "note": "Each row is one scripted caller persona driven over real audio, taken from the most recent session recorded for that scenario. 'Closed' and 'goal met' are independent: an agent can satisfy the caller and never hang up, or hang up having satisfied nobody.",
+      "allow_providers": false,
+      "allow_context": true
+    },
+    {
+      "key": "sessions",
+      "title": "Per-scenario outcomes, as the harness summarised them",
+      "columns": [
+        "Scenario",
+        "Turns",
+        "Closed",
+        "Goal met",
+        "Final state",
+        "High-severity findings"
+      ],
+      "rows": [
+        [
+          "`debt_rightparty_pays` (right-party pays)",
+          "0",
+          "**no**",
+          "**no**",
+          "`None`",
+          "1"
+        ],
+        [
+          "`debt_promise_to_pay` (promise-to-pay)",
+          "0",
+          "**no**",
+          "**no**",
+          "`None`",
+          "1"
+        ],
+        [
+          "`debt_dispute` (dispute)",
+          "0",
+          "**no**",
+          "**no**",
+          "`None`",
+          "1"
+        ],
+        [
+          "`debt_wrong_party` (wrong-party)",
+          "0",
+          "**no**",
+          "**no**",
+          "`None`",
+          "1"
+        ],
+        [
+          "`debt_refuse_verify` (refuse)",
+          "0",
+          "**no**",
+          "**no**",
+          "`None`",
+          "1"
+        ],
+        [
+          "`debt_probe_before_verify` (dispute)",
+          "0",
+          "**no**",
+          "**no**",
+          "`None`",
+          "1"
+        ],
+        [
+          "`debt_partial_payment` (promise-to-pay)",
+          "0",
+          "**no**",
+          "**no**",
+          "`None`",
+          "1"
+        ],
+        [
+          "`debt_wrong_person_name` (wrong-party)",
+          "0",
+          "**no**",
+          "**no**",
+          "`None`",
+          "1"
+        ],
+        [
+          "`debt_hardship` (dispute)",
+          "0",
+          "**no**",
+          "**no**",
+          "`None`",
+          "1"
+        ],
+        [
+          "`debt_callback_request` (refuse)",
+          "0",
+          "**no**",
+          "**no**",
+          "`None`",
+          "1"
+        ],
+        [
+          "`debt_verify_then_hang` (right-party pays)",
+          "0",
+          "**no**",
+          "**no**",
+          "`None`",
+          "1"
+        ]
+      ],
+      "note": "Each row is one scripted caller persona driven over real audio. 'Closed' and 'goal met' are independent: an agent can satisfy the caller and never hang up, or hang up having satisfied nobody.",
+      "allow_providers": false,
+      "allow_context": true
+    },
+    {
+      "key": "coverage",
+      "title": "Flow coverage",
+      "columns": [
+        "Measure",
+        "Covered",
+        "Declared",
+        "Uncovered"
+      ],
+      "rows": [
+        [
+          "States",
+          "0",
+          "10",
+          "`confirm_party`, `verify_identity`, `do_verify`, `disclose_balance`, `pay_now`, `promise_to_pay`, `dispute_transfer`, `wrong_party`, `wrap_up`, `end`"
+        ],
+        [
+          "Transitions",
+          "0",
+          "14",
+          "`t_confirm_to_verify`, `t_confirm_to_wrongparty`, `t_verify_to_doverify`, `t_doverify_to_disclose`, `t_doverify_to_retry`, `t_disclose_to_paynow`, `t_disclose_to_ptp`, `t_disclose_to_transfer`, `t_disclose_to_wrapup`, `t_paynow_to_wrapup`, `t_ptp_to_wrapup`, `t_wrongparty_to_wrapup`, `t_transfer_to_end`, `t_wrapup_to_end`"
+        ]
+      ],
+      "note": "An unfired transition is an untested branch. It is not a failure \u2014 it is the part of the flow this scenario set never reached, and therefore the part no result here speaks to.",
+      "allow_providers": false,
+      "allow_context": true
+    }
+  ],
+  "baselines": [],
+  "baselineComparability": {
+    "comparable": false,
+    "note": "There is no external comparator and there cannot be one: this suite tests our own flow definitions on our own agents. Its value is longitudinal \u2014 the same scenario set re-run after a change \u2014 and the regression view in the cross-run index is where that comparison lives, not a leaderboard.",
+    "publishedProtocol": "",
+    "source": ""
+  },
+  "failures": [
+    {
+      "key": "finding_stuck_termination",
+      "label": "`stuck_termination`",
+      "count": 11,
+      "severity": "medium",
+      "description": "the session stalled without a classified cause",
+      "denominator": 11,
+      "examples": [
+        {
+          "case_id": "debt_callback_request",
+          "summary": "state `\u2014`",
+          "evidence": "session failed to run: ModelError: models/chat -> HTTP 402: {\"detail\":\"Insufficient credit. Top up your workspace wallet to use the model API.\"}",
+          "artifact": "debt_callback_request_20260806T153727Z.session.json"
+        },
+        {
+          "case_id": "debt_hardship",
+          "summary": "state `\u2014`",
+          "evidence": "session failed to run: ModelError: models/chat -> HTTP 402: {\"detail\":\"Insufficient credit. Top up your workspace wallet to use the model API.\"}",
+          "artifact": "debt_hardship_20260806T153707Z.session.json"
+        }
+      ],
+      "rate_pct": 100.0
+    },
+    {
+      "key": "finding_coverage",
+      "label": "`coverage`",
+      "count": 2,
+      "severity": "info",
+      "description": "branches the scenario set never exercised",
+      "denominator": 11,
+      "examples": [
+        {
+          "case_id": "run-level",
+          "summary": "state `\u2014`",
+          "evidence": "10/10 states never entered across the session set: ['confirm_party', 'verify_identity', 'do_verify', 'disclose_balance', 'pay_now', 'promise_to_pay', 'dispute_transfer', 'wrong_party', 'wrap_up', 'end'].",
+          "artifact": "SUMMARY.json"
+        },
+        {
+          "case_id": "run-level",
+          "summary": "state `\u2014`",
+          "evidence": "14/14 transitions never fired across the session set: ['t_confirm_to_verify', 't_confirm_to_wrongparty', 't_verify_to_doverify', 't_doverify_to_disclose', 't_doverify_to_retry', 't_disclose_to_paynow', 't_disclose_to_ptp', 't_disclose_to_transfer', 't_disclose_to_wrapup', 't_paynow_to_wrapup', 't_ptp_to_wrapup', 't_wro",
+          "artifact": "SUMMARY.json"
+        }
+      ],
+      "rate_pct": 18.2
+    },
+    {
+      "key": "goal_not_met",
+      "label": "Caller's goal not met",
+      "count": 10,
+      "severity": "high",
+      "description": "The grader judged the caller left without what they came for. This is the headline's complement, and the reason quoted below is the grader's own words.",
+      "denominator": 11,
+      "examples": [
+        {
+          "case_id": "debt_callback_request",
+          "summary": "refuse \u00b7 0 turns \u00b7 final state `\u2014`",
+          "evidence": "not run",
+          "artifact": "debt_callback_request_20260806T153727Z.session.json"
+        },
+        {
+          "case_id": "debt_dispute",
+          "summary": "dispute \u00b7 11 turns \u00b7 final state `\u2014`",
+          "evidence": "The customer's identity was partially verified but the agent failed to mark the debt as disputed or send a validation letter before the call ended, instead only scheduling a callback for the next day.",
+          "artifact": "debt_dispute_20260807T013533Z.session.json"
+        },
+        {
+          "case_id": "debt_hardship",
+          "summary": "dispute \u00b7 0 turns \u00b7 final state `\u2014`",
+          "evidence": "not run",
+          "artifact": "debt_hardship_20260806T153707Z.session.json"
+        }
+      ],
+      "rate_pct": 90.9
+    }
+  ],
+  "sampleCases": [
+    {
+      "case_id": "debt_wrong_party",
+      "outcome": "goal met",
+      "is_success": true,
+      "score": null,
+      "task": "persona `wrong-party` \u00b7 3 caller turns \u00b7 final state `\u2014`",
+      "expected": "",
+      "got": "",
+      "excerpt": "AGENT: Hello! How can I help you today?\nUSER: Hello? Yeah, who is this and what's this call about?\nAGENT: Hi there! This is an automated call from Whissle. Just so you know, I'm an AI assistant and this call is recorded for quality. Before we go further, I need to confirm I'm speaking with the right person \u2014 may I ask your name? Can you hear me?\nUSER: Yeah, I can hear you fine. Look, I think you've got the wrong number \u2014 I'm not who you're looking for, so you can just take me off your list or wh",
+      "artifact": "debt_wrong_party_20260807T014650Z.mix.wav",
+      "why_shown": "The agent successfully refused to confirm any identity details, told the caller they had the wrong number, and ended the call without allowing any debt details to be disclosed."
+    },
+    {
+      "case_id": "debt_callback_request",
+      "outcome": "goal not met",
+      "is_success": false,
+      "score": null,
+      "task": "persona `refuse` \u00b7 0 caller turns \u00b7 final state `\u2014`",
+      "expected": "",
+      "got": "",
+      "excerpt": "AGENT: Hello! How can I help you today?",
+      "artifact": "debt_callback_request_20260806T153727Z.mix.wav",
+      "why_shown": "not run"
+    },
+    {
+      "case_id": "debt_dispute",
+      "outcome": "goal not met",
+      "is_success": false,
+      "score": null,
+      "task": "persona `dispute` \u00b7 11 caller turns \u00b7 final state `\u2014`",
+      "expected": "",
+      "got": "",
+      "excerpt": "AGENT: Hello! How can I help you today?\nUSER: Hi, yeah, I'm calling about a debt collection notice I got in the mail \u2014 I think there's been some kind of mistake with my account.\nAGENT: Thank you for calling. Just so you know, I'm an AI assistant and this call is recorded for quality . Before we talk about your notice, I need to confirm who I'm speaking with \u2014 may I have your name please? I understand. Let me verify your identity first so I can help you look into it. What's your full name? Can yo",
+      "artifact": "debt_dispute_20260807T013533Z.mix.wav",
+      "why_shown": "The customer's identity was partially verified but the agent failed to mark the debt as disputed or send a validation letter before the call ended, instead only scheduling a callback for the next day."
+    }
+  ],
+  "limitations": [
+    {
+      "key": "tiny_n",
+      "text": "N = 11. At this size a single scenario flipping moves the headline by ten points. Every figure here is directional and is labelled PRELIMINARY for that reason.",
+      "severity": "high"
+    },
+    {
+      "key": "not_comparable",
+      "text": "The scenario set is ours, the flows are ours, and the grader is ours. Nothing here can be compared to any published number, and it should never be presented alongside one as if it could.",
+      "severity": "high"
+    },
+    {
+      "key": "simulated_caller",
+      "text": "The caller is a language model speaking through text-to-speech. It has cleaner prosody, no background noise and more patience than a person on a mobile in a car \u2014 so recognition error here is a floor, not an estimate.",
+      "severity": "high"
+    },
+    {
+      "key": "coverage",
+      "text": "14 declared transitions never fired across the whole set. Those branches are untested, and a green result says nothing about them.",
+      "severity": "medium"
+    },
+    {
+      "key": "run_to_run",
+      "text": "Speech recognition, generation and turn-taking are all stochastic. Two runs of the same scenario set differ; a one-scenario change between runs is noise until it repeats.",
+      "severity": "medium"
+    }
+  ],
+  "whatMeasured": "Whether a deployed voice agent actually completes its job on a phone call: does it collect what the flow says it must collect, does it handle a caller who answers out of order or refuses to engage, and does it end the call cleanly rather than trailing off. Real audio, real speech recognition, real turn-taking \u2014 not a text transcript stand-in.",
+  "whyMeasured": "Every text benchmark in this repository removes the two things that break voice products: recognition error and turn-taking. This suite exists to measure what those two things cost, on the flows we actually ship.",
+  "methodology": [
+    {
+      "term": "Agent under test",
+      "detail": "the deployed `debt_collection` agent, with its real flow definition, prompts and tools"
+    },
+    {
+      "term": "Mode",
+      "detail": "real-audio voice over a LiveKit room"
+    },
+    {
+      "term": "Endpoint",
+      "detail": "`POST /api/bench/voice/start` \u2192 LiveKit room"
+    },
+    {
+      "term": "Prompt handling",
+      "detail": "none \u2014 this is the shipped configuration, unmodified; that is the point of the suite and the reason its numbers are not comparable to a paper's"
+    },
+    {
+      "term": "Caller",
+      "detail": "an LLM user-simulator driving a persona and a goal, speaking through text-to-speech into the room"
+    },
+    {
+      "term": "Turn limit",
+      "detail": "a per-scenario turn budget plus a post-goal allowance; hitting the cap is recorded as `turn_cap_exceeded`, not silently truncated"
+    },
+    {
+      "term": "Tools bound",
+      "detail": "the agent's own production tools, gated by its own flow state machine"
+    },
+    {
+      "term": "Scoring rule",
+      "detail": "task success is judged per scenario against the caller's goal; clean close is read from the engine's `flow_end` trace event, not inferred from the transcript"
+    }
+  ],
+  "scoringRule": "task success = graded goal-met / executed sessions; clean close = sessions emitting `flow_end` / executed sessions",
+  "provenance": {
+    "agent_id": "97b65751-c0c7-4c15-b7f0-8d8293d99f7c",
+    "base_url": null,
+    "endpoint": "LiveKit voice room (POST /api/bench/voice/start)",
+    "mode": "voice",
+    "harness_commit": null,
+    "repo_commit": "89f2e02",
+    "run_dir": "/private/tmp/claude-501/-Users-karan-Desktop-work-whissle-live-assist/766421da-8ef4-4ce2-9733-86e5c5f3fced/scratchpad/wt-reports/results/whissle/flow_sim/debt_collection",
+    "captured_at": "2026-08-07",
+    "dataset": "scripted caller personas for `debt_collection`",
+    "dataset_size": 11,
+    "upstream": "internal \u2014 no published equivalent",
+    "extra": {
+      "agent_type": "debt_collection"
+    }
+  },
+  "sampling": {
+    "method": "hand-authored scenario set, exhaustive (not sampled)",
+    "n_population": 11,
+    "n_requested": 11,
+    "n_selected": 11,
+    "seed": null,
+    "strata_keys": [],
+    "strata_tables": [],
+    "note": "Every scenario in the set was run. There is no sampling error here \u2014 but there is selection: the set is what we thought to write down, and the transition-coverage table is the honest measure of what it misses."
+  },
+  "reproduction": {
+    "commands": [
+      "uv sync --extra dev --extra voice",
+      "./run_flow_sim.sh debt_collection",
+      "python -m tau2.reporting.cli build results/whissle/flow_sim/debt_collection"
+    ],
+    "environment": {
+      "repo commit at report time": "89f2e02",
+      "extras required": "voice (LiveKit, audio codecs)"
+    },
+    "notes": [
+      "Audio is captured per session (`*.caller.wav`, `*.bot.wav`, `*.mix.wav`) \u2014 a disputed grader verdict can be settled by listening.",
+      "The directory accumulates every historical run of the same scenario; this report covers the latest session per task id."
+    ]
+  },
+  "artifacts": [
+    {
+      "path": "SUMMARY.json",
+      "description": "run-level aggregation and coverage",
+      "present": true
+    },
+    {
+      "path": "SUMMARY.md",
+      "description": "the harness's own short summary",
+      "present": true
+    },
+    {
+      "path": "*.session.json",
+      "description": "per-session sidecar: turns, flow trace, findings",
+      "present": false
+    },
+    {
+      "path": "*.mix.wav",
+      "description": "the recorded call",
+      "present": false
+    },
+    {
+      "path": "REPORT.md",
+      "description": "this report",
+      "present": true
+    },
+    {
+      "path": "report.json",
+      "description": "machine-readable form of this report",
+      "present": true
+    }
+  ],
+  "licenceNote": "",
+  "warnings": [],
+  "reportMarkdown": "# Conversation-flow suite \u2014 `debt_collection` (real-audio voice)\n\n> **PRELIMINARY** \u2014 N = 11 is below the 30-unit threshold for a settled number. Treat every figure below as directional.\n\n## Abstract\n\nWhissle was evaluated on **Whissle conversation-flow suite** in `voice` mode. The headline result is **9.1%** (N = 11 \u00b7 PRELIMINARY) for task success, 95% CI [1.6%, 37.7%].\n\nWhether a deployed voice agent actually completes its job on a phone call: does it collect what the flow says it must collect, does it handle a caller who answers out of order or refuses to engage, and does it end the call cleanly rather than trailing off. Real audio, real speech recognition, real turn-taking \u2014 not a text transcript stand-in.\n\n## At a glance\n\n| Field | Value |\n|---|---|\n| **Task success** | **9.1%** (N = 11 \u00b7 PRELIMINARY) |\n<!-- honesty:allow-context -->\n| 95% CI | [1.6%, 37.7%] |\n| Attempted / scored / excluded | 11 / 11 / 0 (0.0%) |\n| Judge | rule analyzer + LLM grader |\n| Mode | `voice` |\n| Date | 2026-08-07 |\n| Run id | `flow_sim/debt_collection` |\n| Status | **PRELIMINARY** |\n<!-- /honesty:allow-context -->\n\n<!-- honesty:allow-context -->\n- **Reached a clean close:** 27.3% [9.7%, 56.6%], N = 11 \u2014 taken from the authoritative `flow_end` trace event\n- **Flow states visited:** 0, N = 10 \u2014 of 10 declared\n- **Flow transitions fired:** 0, N = 14 \u2014 of 14 declared\n<!-- /honesty:allow-context -->\n\n## 1. What was measured, and why\n\nWhether a deployed voice agent actually completes its job on a phone call: does it collect what the flow says it must collect, does it handle a caller who answers out of order or refuses to engage, and does it end the call cleanly rather than trailing off. Real audio, real speech recognition, real turn-taking \u2014 not a text transcript stand-in.\n\n**Why this benchmark.** Every text benchmark in this repository removes the two things that break voice products: recognition error and turn-taking. This suite exists to measure what those two things cost, on the flows we actually ship.\n\n## 2. Methodology\n\n| Field | Value |\n|---|---|\n| Agent under test | the deployed `debt_collection` agent, with its real flow definition, prompts and tools |\n| Mode | real-audio voice over a LiveKit room |\n| Endpoint | `POST /api/bench/voice/start` \u2192 LiveKit room |\n| Prompt handling | none \u2014 this is the shipped configuration, unmodified; that is the point of the suite and the reason its numbers are not comparable to a paper's |\n| Caller | an LLM user-simulator driving a persona and a goal, speaking through text-to-speech into the room |\n| Turn limit | a per-scenario turn budget plus a post-goal allowance; hitting the cap is recorded as `turn_cap_exceeded`, not silently truncated |\n| Tools bound | the agent's own production tools, gated by its own flow state machine |\n| Scoring rule | task success is judged per scenario against the caller's goal; clean close is read from the engine's `flow_end` trace event, not inferred from the transcript |\n\n**Scoring rule.** task success = graded goal-met / executed sessions; clean close = sessions emitting `flow_end` / executed sessions\n\n## 3. Setup and provenance\n\n| Field | Value |\n|---|---|\n| Agent id | `97b65751-c0c7-4c15-b7f0-8d8293d99f7c` |\n| Transport endpoint | `LiveKit voice room (POST /api/bench/voice/start)` |\n| Mode | `voice` |\n| Dataset | scripted caller personas for `debt_collection` |\n| Dataset size | 11 |\n| Upstream | internal \u2014 no published equivalent |\n| Repo commit at report time | `89f2e02` |\n| Captured at | 2026-08-07 |\n| Run directory | `results/whissle/flow_sim/debt_collection` |\n| Agent type | debt_collection |\n\n### 3.1 Judge and its independence\n\n| Field | Value |\n|---|---|\n| Grading kind | rule analyzer |\n| Independent of the agent's vendor | n/a \u2014 no judge model is called |\n\n<!-- honesty:allow-providers -->\n> Two graders, deliberately different in kind: a rule analyzer reads the engine's own flow trace (deterministic \u2014 it cannot be talked into a verdict), and an LLM grader judges goal satisfaction from the transcript. Where they disagree, the trace wins on questions of what happened and the grader wins on questions of whether the caller was served.\n<!-- /honesty:allow-providers -->\n\n### 3.2 Sampling and population\n\n| Field | Value |\n|---|---|\n| Method | hand-authored scenario set, exhaustive (not sampled) |\n| Population | 11 |\n| Requested | 11 |\n| Selected | 11 |\n| Scored | 11 |\n\nEvery scenario in the set was run. There is no sampling error here \u2014 but there is selection: the set is what we thought to write down, and the transition-coverage table is the honest measure of what it misses.\n\n## 4. Results\n\n**Task success: 9.1%** (N = 11 \u00b7 PRELIMINARY), 95% CI [1.6%, 37.7%].\n\n| Metric | Value | 95% CI | N | Qualifiers |\n|---|---:|---|---:|---|\n| **Task success** | **9.1%** | [1.6%, 37.7%] | 11 | N = 11 \u00b7 PRELIMINARY |\n<!-- honesty:allow-context -->\n| Reached a clean close | 27.3% | [9.7%, 56.6%] | 11 | taken from the authoritative `flow_end` trace event |\n| Flow states visited | 0 | \u2014 | 10 | of 10 declared |\n| Flow transitions fired | 0 | \u2014 | 14 | of 14 declared |\n<!-- /honesty:allow-context -->\n\n_The headline row is the claim and carries its qualifiers; the rest are components of it and inherit them._\n\n<!-- honesty:allow-context -->\n**Per-scenario outcomes**\n\n| Scenario | Turns | Closed | Goal met | Final state | Findings | Session |\n|---|---|---|---|---|---|---|\n| `debt_callback_request` (refuse) | 0 | **no** | **no** | `\u2014` | 1 | `20260806T153727Z` |\n| `debt_dispute` (dispute) | 11 | yes | **no** | `\u2014` | 4 | `20260807T013533Z` |\n| `debt_hardship` (dispute) | 0 | **no** | **no** | `\u2014` | 1 | `20260806T153707Z` |\n| `debt_partial_payment` (promise-to-pay) | 0 | **no** | **no** | `\u2014` | 1 | `20260806T153625Z` |\n| `debt_probe_before_verify` (dispute) | 0 | **no** | **no** | `\u2014` | 1 | `20260806T153604Z` |\n| `debt_promise_to_pay` (promise-to-pay) | 6 | **no** | **no** | `\u2014` | 3 | `20260807T013012Z` |\n| `debt_refuse_verify` (refuse) | 0 | **no** | **no** | `\u2014` | 1 | `20260806T153544Z` |\n| `debt_rightparty_pays` (right-party pays) | 13 | yes | **no** | `\u2014` | 4 | `20260807T011838Z` |\n| `debt_verify_then_hang` (right-party pays) | 0 | **no** | **no** | `\u2014` | 1 | `20260806T153748Z` |\n| `debt_wrong_party` (wrong-party) | 3 | yes | yes | `\u2014` | 0 | `20260807T014650Z` |\n| `debt_wrong_person_name` (wrong-party) | 0 | **no** | **no** | `\u2014` | 1 | `20260806T153646Z` |\n\nEach row is one scripted caller persona driven over real audio, taken from the most recent session recorded for that scenario. 'Closed' and 'goal met' are independent: an agent can satisfy the caller and never hang up, or hang up having satisfied nobody.\n<!-- /honesty:allow-context -->\n\n<!-- honesty:allow-context -->\n**Per-scenario outcomes, as the harness summarised them**\n\n| Scenario | Turns | Closed | Goal met | Final state | High-severity findings |\n|---|---|---|---|---|---|\n| `debt_rightparty_pays` (right-party pays) | 0 | **no** | **no** | `None` | 1 |\n| `debt_promise_to_pay` (promise-to-pay) | 0 | **no** | **no** | `None` | 1 |\n| `debt_dispute` (dispute) | 0 | **no** | **no** | `None` | 1 |\n| `debt_wrong_party` (wrong-party) | 0 | **no** | **no** | `None` | 1 |\n| `debt_refuse_verify` (refuse) | 0 | **no** | **no** | `None` | 1 |\n| `debt_probe_before_verify` (dispute) | 0 | **no** | **no** | `None` | 1 |\n| `debt_partial_payment` (promise-to-pay) | 0 | **no** | **no** | `None` | 1 |\n| `debt_wrong_person_name` (wrong-party) | 0 | **no** | **no** | `None` | 1 |\n| `debt_hardship` (dispute) | 0 | **no** | **no** | `None` | 1 |\n| `debt_callback_request` (refuse) | 0 | **no** | **no** | `None` | 1 |\n| `debt_verify_then_hang` (right-party pays) | 0 | **no** | **no** | `None` | 1 |\n\nEach row is one scripted caller persona driven over real audio. 'Closed' and 'goal met' are independent: an agent can satisfy the caller and never hang up, or hang up having satisfied nobody.\n<!-- /honesty:allow-context -->\n\n<!-- honesty:allow-context -->\n**Flow coverage**\n\n| Measure | Covered | Declared | Uncovered |\n|---|---|---|---|\n| States | 0 | 10 | `confirm_party`, `verify_identity`, `do_verify`, `disclose_balance`, `pay_now`, `promise_to_pay`, `dispute_transfer`, `wrong_party`, `wrap_up`, `end` |\n| Transitions | 0 | 14 | `t_confirm_to_verify`, `t_confirm_to_wrongparty`, `t_verify_to_doverify`, `t_doverify_to_disclose`, `t_doverify_to_retry`, `t_disclose_to_paynow`, `t_disclose_to_ptp`, `t_disclose_to_transfer`, `t_disclose_to_wrapup`, `t_paynow_to_wrapup`, `t_ptp_to_wrapup`, `t_wrongparty_to_wrapup`, `t_transfer_to_end`, `t_wrapup_to_end` |\n\nAn unfired transition is an untested branch. It is not a failure \u2014 it is the part of the flow this scenario set never reached, and therefore the part no result here speaks to.\n<!-- /honesty:allow-context -->\n\n## 5. Comparison to published baselines\n\nThere is no external comparator and there cannot be one: this suite tests our own flow definitions on our own agents. Its value is longitudinal \u2014 the same scenario set re-run after a change \u2014 and the regression view in the cross-run index is where that comparison lives, not a leaderboard.\n\n_An empty comparison section is a result. Printing a number next to a differently-measured one would not be._\n\n## 6. Failure analysis\n\n| Category | Count | Rate | Severity |\n|---|---:|---:|---|\n<!-- honesty:allow-context -->\n| `stuck_termination` | 11 | 100.0% | medium |\n| `coverage` | 2 | 18.2% | info |\n| Caller's goal not met | 10 | 90.9% | high |\n<!-- /honesty:allow-context -->\n\n### 6.1 `stuck_termination` \u2014 11 of 11\n\n<!-- honesty:allow-context -->\nthe session stalled without a classified cause\n<!-- /honesty:allow-context -->\n\n- **`debt_callback_request`** \u2014 state `\u2014`\n  > session failed to run: ModelError: models/chat -> HTTP 402: {\"detail\":\"Insufficient credit. Top up your workspace wallet to use the model API.\"}\n  _artifact:_ `debt_callback_request_20260806T153727Z.session.json`\n- **`debt_hardship`** \u2014 state `\u2014`\n  > session failed to run: ModelError: models/chat -> HTTP 402: {\"detail\":\"Insufficient credit. Top up your workspace wallet to use the model API.\"}\n  _artifact:_ `debt_hardship_20260806T153707Z.session.json`\n\n### 6.2 `coverage` \u2014 2 of 11\n\n<!-- honesty:allow-context -->\nbranches the scenario set never exercised\n<!-- /honesty:allow-context -->\n\n- **`run-level`** \u2014 state `\u2014`\n  > 10/10 states never entered across the session set: ['confirm_party', 'verify_identity', 'do_verify', 'disclose_balance', 'pay_now', 'promise_to_pay', 'dispute_transfer', 'wrong_party', 'wrap_up', 'end'].\n  _artifact:_ `SUMMARY.json`\n- **`run-level`** \u2014 state `\u2014`\n  > 14/14 transitions never fired across the session set: ['t_confirm_to_verify', 't_confirm_to_wrongparty', 't_verify_to_doverify', 't_doverify_to_disclose', 't_doverify_to_retry', 't_disclose_to_paynow', 't_disclose_to_ptp', 't_disclose_to_transfer', 't_disclose_to_wrapup', 't_paynow_to_wrapup', 't_ptp_to_wrapup', 't_wro\n  _artifact:_ `SUMMARY.json`\n\n### 6.3 Caller's goal not met \u2014 10 of 11\n\n<!-- honesty:allow-context -->\nThe grader judged the caller left without what they came for. This is the headline's complement, and the reason quoted below is the grader's own words.\n<!-- /honesty:allow-context -->\n\n- **`debt_callback_request`** \u2014 refuse \u00b7 0 turns \u00b7 final state `\u2014`\n  > not run\n  _artifact:_ `debt_callback_request_20260806T153727Z.session.json`\n- **`debt_dispute`** \u2014 dispute \u00b7 11 turns \u00b7 final state `\u2014`\n  > The customer's identity was partially verified but the agent failed to mark the debt as disputed or send a validation letter before the call ended, instead only scheduling a callback for the next day.\n  _artifact:_ `debt_dispute_20260807T013533Z.session.json`\n- **`debt_hardship`** \u2014 dispute \u00b7 0 turns \u00b7 final state `\u2014`\n  > not run\n  _artifact:_ `debt_hardship_20260806T153707Z.session.json`\n\n### Sample cases\n\nPicked deterministically from this run's own artifacts \u2014 the best and worst by the benchmark's own score \u2014 so re-generating the report shows the same cases rather than reshuffling them.\n\n<!-- honesty:allow-context -->\n**\u2713 `debt_wrong_party`** \u2014 goal met\n  - _task:_ persona `wrong-party` \u00b7 3 caller turns \u00b7 final state `\u2014`\n  > AGENT: Hello! How can I help you today? USER: Hello? Yeah, who is this and what's this call about? AGENT: Hi there! This is an automated call from Whissle. Just so you know, I'm an AI assistant and this call is recorded for quality. Before we go further, I need to confirm I'm speaking with the right person \u2014 may I ask your name? Can you hear me? USER: Yeah, I can hear you fine. Look, I think you've got the wrong number \u2014 I'm not who you're looking for, so you can just take me off your list or wh\n  - _why this one:_ The agent successfully refused to confirm any identity details, told the caller they had the wrong number, and ended the call without allowing any debt details to be disclosed.\n  - _artifact:_ `debt_wrong_party_20260807T014650Z.mix.wav`\n\n**\u2717 `debt_callback_request`** \u2014 goal not met\n  - _task:_ persona `refuse` \u00b7 0 caller turns \u00b7 final state `\u2014`\n  > AGENT: Hello! How can I help you today?\n  - _why this one:_ not run\n  - _artifact:_ `debt_callback_request_20260806T153727Z.mix.wav`\n\n**\u2717 `debt_dispute`** \u2014 goal not met\n  - _task:_ persona `dispute` \u00b7 11 caller turns \u00b7 final state `\u2014`\n  > AGENT: Hello! How can I help you today? USER: Hi, yeah, I'm calling about a debt collection notice I got in the mail \u2014 I think there's been some kind of mistake with my account. AGENT: Thank you for calling. Just so you know, I'm an AI assistant and this call is recorded for quality . Before we talk about your notice, I need to confirm who I'm speaking with \u2014 may I have your name please? I understand. Let me verify your identity first so I can help you look into it. What's your full name? Can yo\n  - _why this one:_ The customer's identity was partially verified but the agent failed to mark the debt as disputed or send a validation letter before the call ended, instead only scheduling a callback for the next day.\n  - _artifact:_ `debt_dispute_20260807T013533Z.mix.wav`\n\n<!-- /honesty:allow-context -->\n\n## 7. Exclusions and what they do to the number\n\nNothing was excluded: all 11 attempted units produced a gradable result. The headline denominator is the full attempted set.\n\n## 8. Limitations and threats to validity\n\n- **tiny n** (high) \u2014 N = 11. At this size a single scenario flipping moves the headline by ten points. Every figure here is directional and is labelled PRELIMINARY for that reason.\n- **not comparable** (high) \u2014 The scenario set is ours, the flows are ours, and the grader is ours. Nothing here can be compared to any published number, and it should never be presented alongside one as if it could.\n- **simulated caller** (high) \u2014 The caller is a language model speaking through text-to-speech. It has cleaner prosody, no background noise and more patience than a person on a mobile in a car \u2014 so recognition error here is a floor, not an estimate.\n- **coverage** (medium) \u2014 14 declared transitions never fired across the whole set. Those branches are untested, and a green result says nothing about them.\n- **run to run** (medium) \u2014 Speech recognition, generation and turn-taking are all stochastic. Two runs of the same scenario set differ; a one-scenario change between runs is noise until it repeats.\n\n- **sample size** (high) \u2014 N = 11 is below the 30-unit threshold this reporting layer uses to call a figure settled. The report is labelled PRELIMINARY throughout.\n\n## 9. Reproduction\n\n```bash\nuv sync --extra dev --extra voice\n./run_flow_sim.sh debt_collection\npython -m tau2.reporting.cli build results/whissle/flow_sim/debt_collection\n```\n\n| Field | Value |\n|---|---|\n| repo commit at report time | 89f2e02 |\n| extras required | voice (LiveKit, audio codecs) |\n\n- Audio is captured per session (`*.caller.wav`, `*.bot.wav`, `*.mix.wav`) \u2014 a disputed grader verdict can be settled by listening.\n- The directory accumulates every historical run of the same scenario; this report covers the latest session per task id.\n\n## Appendix A \u2014 raw artifacts\n\n| Path | Present | What it is |\n|---|:---:|---|\n| `SUMMARY.json` | yes | run-level aggregation and coverage |\n| `SUMMARY.md` | yes | the harness's own short summary |\n| `*.session.json` | **missing** | per-session sidecar: turns, flow trace, findings |\n| `*.mix.wav` | **missing** | the recorded call |\n| `REPORT.md` | yes | this report |\n| `report.json` | yes | machine-readable form of this report |\n\nEvery per-case record carries a `diagnostics` block (`tau2.health.diagnostics/v1`) with flow trace, signals, metadata sidecar, tool forensics, provenance and cost \u2014 and explicit availability flags, so an absent measurement reads as absent rather than as zero. See `HEALTH_DIAGNOSTICS.md`.\n\n## Appendix B \u2014 honesty-rule compliance\n\nThese rules are executed against this document, not asserted about it. A failing rule blocks generation.\n\n| Rule | Verdict | Checked |\n|---|:---:|---|\n| `R1_headline_requires_n` | pass | headline carries N = 11 everywhere it is stated |\n| `R2_judge_independence_disclosed` | pass | not applicable \u2014 judge is independent or deterministic |\n| `R3_exclusion_rate_adjacent` | pass | not applicable \u2014 nothing was excluded |\n| `R4_preliminary_labelled` | pass | labelled PRELIMINARY |\n| `R5_no_provider_names` | pass | no LLM vendor named outside the published-baseline table |\n| `R6_comparability_stated` | pass | not applicable \u2014 no published baseline is registered |\n| `R7_baseline_named` | pass | not applicable \u2014 no published baseline is registered |\n\n<!-- generated by tau2.reporting from flow_sim/debt_collection; schema tau2.reporting.run_report/v1 -->\n",
+  "reportPath": "results/whissle/flow_sim/debt_collection/REPORT.md"
+}

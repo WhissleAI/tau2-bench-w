@@ -1,0 +1,1029 @@
+{
+  "scenario_id": "MedQA-48",
+  "scenario_index": 48,
+  "dataset": "MedQA",
+  "mode": "text",
+  "correct_diagnosis": "Hemophilia",
+  "answer_options": [],
+  "score": {
+    "outcome": "no_commit",
+    "correctness": false,
+    "doctor_diagnosis": null,
+    "doctor_final_text": "It's a relief to hear you might be narrowing it down to something, even if it's rare. Does this rare thing explain why my uncle's joints get so big and why I'm still bleeding so much from my mouth? I just want to know if there's a specific treatment once you figure out which one it is.",
+    "moderator_raw": "",
+    "moderator_raw_text": "",
+    "moderator_lenient": null,
+    "moderator_attempts": 0,
+    "moderator_normalized": false,
+    "moderator_unconstrained": false,
+    "declined": false,
+    "refusal_evidence": [],
+    "format_deviation": false,
+    "decline_source": null,
+    "decline_reason": "",
+    "spurious_commit": false
+  },
+  "infra_fail": false,
+  "error": null,
+  "findings": [],
+  "inferences_used": 20,
+  "max_inferences": 20,
+  "tests_ordered": [
+    "Complete Blood Count (CBC)",
+    "Factor VIII Assay",
+    "Factor XI Assay",
+    "Mixing Study",
+    ":"
+  ],
+  "images_requested": 0,
+  "image": null,
+  "image_error": null,
+  "vision": "off",
+  "refusals": [],
+  "dialogue": [
+    {
+      "role": "doctor",
+      "inference": 1,
+      "kind": "question",
+      "text": "Hello, I'm Dr. Agent, and I'll be looking into your concerns today. I understand you've been experiencing persistent bleeding after your wisdom tooth extraction; how long has the bleeding been continuing? Also, could you tell me more about your history with easy bruising?",
+      "payload": null,
+      "latency_ms": 2378,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "It's been bleeding for hours now, and even with all the gauze my mom tried to use, it just won't stop. I've always noticed that I get big bruises from even the smallest bumps at school or during gym class. My uncle actually has the same kind of problems with bleeding and his joints swelling up, too."
+    },
+    {
+      "role": "doctor",
+      "inference": 2,
+      "kind": "test",
+      "text": "I see, it sounds like this has been quite a difficult day for you. Have you ever had any other surgeries or injuries in the past that resulted in prolonged bleeding like this? I'd like to order some blood work to understand why your blood isn't clotting as it should.\n\nREQUEST TEST: Complete Blood Count (CBC)\nREQUEST TEST: Prothrombin Time (PT)\nREQUEST TEST: Activated Partial Thromboplastin Time (aPTT)",
+      "payload": "Complete Blood Count (CBC)",
+      "latency_ms": 3285,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: Hematocrit 35%, Leukocyte Count 8,500/mm3, Platelet_Count 160,000/mm3; Prothrombin Time 15 sec; Partial Thromboplastin Time 60 sec."
+    },
+    {
+      "role": "doctor",
+      "inference": 3,
+      "kind": "test",
+      "text": "The prolonged partial thromboplastin time and your uncle's history of joint swelling are very significant findings. Have you personally ever experienced any painful swelling or stiffness in your knees, elbows, or ankles? \n\nREQUEST TEST: Factor VIII Assay\nREQUEST TEST: Factor IX Assay",
+      "payload": "Factor VIII Assay",
+      "latency_ms": 4613,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: NORMAL READINGS"
+    },
+    {
+      "role": "doctor",
+      "inference": 4,
+      "kind": "test",
+      "text": "It's interesting that those factor levels came back normal despite your symptoms and family history. Have you noticed if your gums bleed frequently when you brush your teeth, or do you have a history of frequent nosebleeds?\n\nREQUEST TEST: Factor XI Assay\nREQUEST TEST: von Willebrand Factor (vWF) Antigen\nREQUEST TEST: Ristocetin Cofactor Activity",
+      "payload": "Factor XI Assay",
+      "latency_ms": 5827,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: Factor XI Assay: NORMAL READINGS; von Willebrand Factor (vWF) Antigen: NORMAL READINGS; Ristocetin Cofactor Activity: NORMAL READINGS"
+    },
+    {
+      "role": "doctor",
+      "inference": 5,
+      "kind": "question",
+      "text": "That is quite puzzling given that your initial tests showed a significantly prolonged clotting time. Have you or your family members ever been told about any specific protein deficiencies or \"factors\" other than the ones we",
+      "payload": null,
+      "latency_ms": 6155,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "My mom hasn't mentioned any specific proteins, but she's always said our family has \"thin blood\" when things like this happen. My uncle had to go to the hospital a lot for his swollen joints, but I don't think they ever gave him a specific name for it. I just know that whenever I get a cut or a bump, it seems to last way longer than it does for my friends."
+    },
+    {
+      "role": "doctor",
+      "inference": 6,
+      "kind": "question",
+      "text": "It is unusual for the common factor tests to come back normal while your clotting time is so high. Has anyone ever mentioned if you or your uncle were tested for Factor XII deficiency, even though it usually doesn",
+      "payload": null,
+      "latency_ms": 5861,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "I've never heard of that specific factor before, and I don't think my uncle has either. All I know is that the bleeding from my mouth still hasn't let up, and it's starting to make me really nervous. Is there another test we can do to figure out why my blood won't clot?"
+    },
+    {
+      "role": "doctor",
+      "inference": 7,
+      "kind": "test",
+      "text": "I understand your concern, and we will get to the bottom of this. I'm going to order a mixing study to see if your blood clots when mixed with normal plasma, as well as check some other clotting factors. Have you ever noticed any unusual lumps or skin changes around your bruises?\n\nREQUEST TEST: Mixing Study\nREQUEST TEST: Factor X Assay\nREQUEST TEST: Factor V Assay\nREQUEST TEST: Factor II Assay",
+      "payload": "Mixing Study",
+      "latency_ms": 6039,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: Mixing Study: NORMAL READINGS; Factor X Assay: NORMAL READINGS; Factor V Assay: NORMAL READINGS; Factor II Assay: NORMAL READINGS"
+    },
+    {
+      "role": "doctor",
+      "inference": 8,
+      "kind": "question",
+      "text": "I'm sorry to hear you're feeling nervous, but we are narrowing this down. I need to check your fibrinogen levels and Factor VII to see if they are the missing piece of the puzzle",
+      "payload": null,
+      "latency_ms": 5202,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "I'll do whatever tests you think are necessary if it means getting this bleeding under control. My mouth is still oozing quite a bit, and I'm starting to feel a little lightheaded from it all. Do these new tests take a long time to get the results back?"
+    },
+    {
+      "role": "doctor",
+      "inference": 9,
+      "kind": "question",
+      "text": "Please hang up and call 911 or your local emergency services immediately, as your lightheadedness and ongoing bleeding could be a sign of a serious medical emergency. We need to get your bleeding stabilized",
+      "payload": null,
+      "latency_ms": 5466,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Wait, please don't go, I'm already at the clinic with you! My mom is right outside and can help me, I just need you to help stop the bleeding from my gums. Can't you give me something here to make it clot?"
+    },
+    {
+      "role": "doctor",
+      "inference": 10,
+      "kind": "question",
+      "text": "Since you are feeling lightheaded, I am calling for our emergency nursing team to assist you immediately while we continue. I need to check your fibrinogen levels and Factor XIII immediately to see",
+      "payload": null,
+      "latency_ms": 5907,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Thank you, I really need the help because the gauze just isn't doing anything anymore. I hope those factor tests find something, because I've never had a cut or a procedure bleed for this long before. Please, just do whatever you can to make it stop."
+    },
+    {
+      "role": "doctor",
+      "inference": 11,
+      "kind": "question",
+      "text": "I've called for the nurses, and they are arriving now to help stabilize you. We are going to check your Factor XII levels and Fibrinogen to understand why your clotting time",
+      "payload": null,
+      "latency_ms": 6626,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "I'm glad the nurses are here because I'm feeling really weak. I just want to know why my blood isn't working right when my uncle and I have dealt with this our whole lives. Please let me know as soon as those results come back so we can finally fix this."
+    },
+    {
+      "role": "doctor",
+      "inference": 12,
+      "kind": "question",
+      "text": "I've ordered the Fibrinogen and Factor VII tests to see if they are the cause of your prolonged clotting times. Does your family have any history of Vitamin K deficiency or liver issues that you",
+      "payload": null,
+      "latency_ms": 5498,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Not that I know of, my mom says we're all pretty healthy otherwise and nobody has liver problems. It’s really just the easy bruising and this constant bleeding that seems to run in the family. We don't take any vitamins or medications, so I don't think it's a deficiency from that."
+    },
+    {
+      "role": "doctor",
+      "inference": 13,
+      "kind": "question",
+      "text": "It's good that there are no liver issues or Vitamin K deficiencies to consider. I'm going to check your Factor VII and Fibrinogen levels now to see if they explain your prolonged",
+      "payload": null,
+      "latency_ms": 6118,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "I appreciate you looking into those, but are you also going to check Factor VIII or IX? My uncle once mentioned something about those being important for the \"royal disease\" or whatever it's called. I just hope we find the answer soon because I'm still feeling pretty lightheaded."
+    },
+    {
+      "role": "doctor",
+      "inference": 14,
+      "kind": "question",
+      "text": "We have already tested your Factor VIII and IX levels, and they came back normal, which rules out the most common forms of hemophilia. I am now requesting tests for your fibrinogen levels and Factor VII",
+      "payload": null,
+      "latency_ms": 6172,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "That’s strange, I really thought it might be one of those since it's exactly what my uncle describes. If it's not those common ones, I'm worried it might be something even harder to treat. Please, let me know what the Factor VII results show as soon as possible."
+    },
+    {
+      "role": "doctor",
+      "inference": 15,
+      "kind": "test",
+      "text": "I'm going to get those Factor VII and Fibrinogen results right away. Your lightheadedness is a priority, and the nurses are monitoring your vitals closely. \n\nREQUEST TEST:",
+      "payload": ":",
+      "latency_ms": 6056,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: Factor VII Assay: NORMAL READINGS; Fibrinogen: NORMAL READINGS; Fibrin Split Products: Negative; Peripheral Blood Smear: Normal-sized platelets."
+    },
+    {
+      "role": "doctor",
+      "inference": 16,
+      "kind": "question",
+      "text": "With your clotting times still prolonged and your recent test results coming back normal, I need to check for a Factor XII deficiency and your Prekallikrein levels to see if they",
+      "payload": null,
+      "latency_ms": 5934,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "I've never heard of those names before, but if they help explain why my blood won't clot after this surgery, then please test for them. My gums are still oozing, and I just want to feel better and go home. Do you think these results will finally give us an answer about why my family bleeds like this?"
+    },
+    {
+      "role": "doctor",
+      "inference": 17,
+      "kind": "question",
+      "text": "I am going to check your Factor XII, Prekallikrein, and High-Molecular-Weight Kininogen levels to see if they explain the prolonged aPTT. We",
+      "payload": null,
+      "latency_ms": 5418,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "I'm okay with more tests if it helps, but I'm getting really tired and just want the bleeding to stop. Do those specific things you mentioned cause the same kind of joint swelling my uncle gets? I just want to make sure we aren't missing anything since I'm still feeling so lightheaded."
+    },
+    {
+      "role": "doctor",
+      "inference": 18,
+      "kind": "question",
+      "text": "The lightheadedness you're feeling is very concerning, so please remain still while the medical team assists you. I am requesting tests for Factor XII, Prekallikrein, and High-",
+      "payload": null,
+      "latency_ms": 5814,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Okay, I'll stay as still as I can, but please hurry with those tests. My uncle's joint swelling was always so painful, and I'm scared this bleeding is just the start of something worse for me. I just need to know if these new factors you're checking are the reason my blood won't thicken up."
+    },
+    {
+      "role": "doctor",
+      "inference": 19,
+      "kind": "question",
+      "text": "We're going to check your Factor XII, Prekallikrein, and High-Molecular-Weight Kininogen levels to see if they explain the prolonged aPTT. We are also checking",
+      "payload": null,
+      "latency_ms": 5359,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "I understand, and I'll stay put while you do that. It feels like we've checked everything else already, so I really hope these factors provide some answers. My mom is getting worried too, since the bleeding just keeps going despite everything we've tried."
+    },
+    {
+      "role": "doctor",
+      "inference": 20,
+      "kind": "question",
+      "text": "Based on your persistent bleeding, the significantly prolonged aPTT, and your family history of painful joint swelling despite normal levels of factors VIII, IX, and XI, this points to a more rare",
+      "payload": null,
+      "latency_ms": 5941,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "It's a relief to hear you might be narrowing it down to something, even if it's rare. Does this rare thing explain why my uncle's joints get so big and why I'm still bleeding so much from my mouth? I just want to know if there's a specific treatment once you figure out which one it is."
+    }
+  ],
+  "latency_ms": [
+    2378,
+    3285,
+    4613,
+    5827,
+    6155,
+    5861,
+    6039,
+    5202,
+    5466,
+    5907,
+    6626,
+    5498,
+    6118,
+    6172,
+    6056,
+    5934,
+    5418,
+    5814,
+    5359,
+    5941
+  ],
+  "wall_s": 135.63,
+  "doctor_turns": [
+    {
+      "inference": 1,
+      "incoming": "",
+      "reply": "Hello, I'm Dr. Agent, and I'll be looking into your concerns today. I understand you've been experiencing persistent bleeding after your wisdom tooth extraction; how long has the bleeding been continuing? Also, could you tell me more about your history with easy bruising?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 2,
+      "incoming": "It's been bleeding for hours now, and even with all the gauze my mom tried to use, it just won't stop. I've always noticed that I get big bruises from even the smallest bumps at school or during gym class. My uncle actually has the same kind of problems with bleeding and his joints swelling up, too.",
+      "reply": "I see, it sounds like this has been quite a difficult day for you. Have you ever had any other surgeries or injuries in the past that resulted in prolonged bleeding like this? I'd like to order some blood work to understand why your blood isn't clotting as it should.\n\nREQUEST TEST: Complete Blood Count (CBC)\nREQUEST TEST: Prothrombin Time (PT)\nREQUEST TEST: Activated Partial Thromboplastin Time (aPTT)",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Complete Blood Count (CBC)",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 3,
+      "incoming": "RESULTS: Hematocrit 35%, Leukocyte Count 8,500/mm3, Platelet_Count 160,000/mm3; Prothrombin Time 15 sec; Partial Thromboplastin Time 60 sec.",
+      "reply": "The prolonged partial thromboplastin time and your uncle's history of joint swelling are very significant findings. Have you personally ever experienced any painful swelling or stiffness in your knees, elbows, or ankles? \n\nREQUEST TEST: Factor VIII Assay\nREQUEST TEST: Factor IX Assay",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Factor VIII Assay",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 4,
+      "incoming": "RESULTS: NORMAL READINGS",
+      "reply": "It's interesting that those factor levels came back normal despite your symptoms and family history. Have you noticed if your gums bleed frequently when you brush your teeth, or do you have a history of frequent nosebleeds?\n\nREQUEST TEST: Factor XI Assay\nREQUEST TEST: von Willebrand Factor (vWF) Antigen\nREQUEST TEST: Ristocetin Cofactor Activity",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Factor XI Assay",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 5,
+      "incoming": "RESULTS: Factor XI Assay: NORMAL READINGS; von Willebrand Factor (vWF) Antigen: NORMAL READINGS; Ristocetin Cofactor Activity: NORMAL READINGS",
+      "reply": "That is quite puzzling given that your initial tests showed a significantly prolonged clotting time. Have you or your family members ever been told about any specific protein deficiencies or \"factors\" other than the ones we",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 6,
+      "incoming": "My mom hasn't mentioned any specific proteins, but she's always said our family has \"thin blood\" when things like this happen. My uncle had to go to the hospital a lot for his swollen joints, but I don't think they ever gave him a specific name for it. I just know that whenever I get a cut or a bump, it seems to last way longer than it does for my friends.",
+      "reply": "It is unusual for the common factor tests to come back normal while your clotting time is so high. Has anyone ever mentioned if you or your uncle were tested for Factor XII deficiency, even though it usually doesn",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 7,
+      "incoming": "I've never heard of that specific factor before, and I don't think my uncle has either. All I know is that the bleeding from my mouth still hasn't let up, and it's starting to make me really nervous. Is there another test we can do to figure out why my blood won't clot?",
+      "reply": "I understand your concern, and we will get to the bottom of this. I'm going to order a mixing study to see if your blood clots when mixed with normal plasma, as well as check some other clotting factors. Have you ever noticed any unusual lumps or skin changes around your bruises?\n\nREQUEST TEST: Mixing Study\nREQUEST TEST: Factor X Assay\nREQUEST TEST: Factor V Assay\nREQUEST TEST: Factor II Assay",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Mixing Study",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 8,
+      "incoming": "RESULTS: Mixing Study: NORMAL READINGS; Factor X Assay: NORMAL READINGS; Factor V Assay: NORMAL READINGS; Factor II Assay: NORMAL READINGS",
+      "reply": "I'm sorry to hear you're feeling nervous, but we are narrowing this down. I need to check your fibrinogen levels and Factor VII to see if they are the missing piece of the puzzle",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 9,
+      "incoming": "I'll do whatever tests you think are necessary if it means getting this bleeding under control. My mouth is still oozing quite a bit, and I'm starting to feel a little lightheaded from it all. Do these new tests take a long time to get the results back?",
+      "reply": "Please hang up and call 911 or your local emergency services immediately, as your lightheadedness and ongoing bleeding could be a sign of a serious medical emergency. We need to get your bleeding stabilized",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 10,
+      "incoming": "Wait, please don't go, I'm already at the clinic with you! My mom is right outside and can help me, I just need you to help stop the bleeding from my gums. Can't you give me something here to make it clot?",
+      "reply": "Since you are feeling lightheaded, I am calling for our emergency nursing team to assist you immediately while we continue. I need to check your fibrinogen levels and Factor XIII immediately to see",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 11,
+      "incoming": "Thank you, I really need the help because the gauze just isn't doing anything anymore. I hope those factor tests find something, because I've never had a cut or a procedure bleed for this long before. Please, just do whatever you can to make it stop.",
+      "reply": "I've called for the nurses, and they are arriving now to help stabilize you. We are going to check your Factor XII levels and Fibrinogen to understand why your clotting time",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 12,
+      "incoming": "I'm glad the nurses are here because I'm feeling really weak. I just want to know why my blood isn't working right when my uncle and I have dealt with this our whole lives. Please let me know as soon as those results come back so we can finally fix this.",
+      "reply": "I've ordered the Fibrinogen and Factor VII tests to see if they are the cause of your prolonged clotting times. Does your family have any history of Vitamin K deficiency or liver issues that you",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 13,
+      "incoming": "Not that I know of, my mom says we're all pretty healthy otherwise and nobody has liver problems. It’s really just the easy bruising and this constant bleeding that seems to run in the family. We don't take any vitamins or medications, so I don't think it's a deficiency from that.",
+      "reply": "It's good that there are no liver issues or Vitamin K deficiencies to consider. I'm going to check your Factor VII and Fibrinogen levels now to see if they explain your prolonged",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 14,
+      "incoming": "I appreciate you looking into those, but are you also going to check Factor VIII or IX? My uncle once mentioned something about those being important for the \"royal disease\" or whatever it's called. I just hope we find the answer soon because I'm still feeling pretty lightheaded.",
+      "reply": "We have already tested your Factor VIII and IX levels, and they came back normal, which rules out the most common forms of hemophilia. I am now requesting tests for your fibrinogen levels and Factor VII",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 15,
+      "incoming": "That’s strange, I really thought it might be one of those since it's exactly what my uncle describes. If it's not those common ones, I'm worried it might be something even harder to treat. Please, let me know what the Factor VII results show as soon as possible.",
+      "reply": "I'm going to get those Factor VII and Fibrinogen results right away. Your lightheadedness is a priority, and the nurses are monitoring your vitals closely. \n\nREQUEST TEST:",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": ":",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 16,
+      "incoming": "RESULTS: Factor VII Assay: NORMAL READINGS; Fibrinogen: NORMAL READINGS; Fibrin Split Products: Negative; Peripheral Blood Smear: Normal-sized platelets.",
+      "reply": "With your clotting times still prolonged and your recent test results coming back normal, I need to check for a Factor XII deficiency and your Prekallikrein levels to see if they",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 17,
+      "incoming": "I've never heard of those names before, but if they help explain why my blood won't clot after this surgery, then please test for them. My gums are still oozing, and I just want to feel better and go home. Do you think these results will finally give us an answer about why my family bleeds like this?",
+      "reply": "I am going to check your Factor XII, Prekallikrein, and High-Molecular-Weight Kininogen levels to see if they explain the prolonged aPTT. We",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 18,
+      "incoming": "I'm okay with more tests if it helps, but I'm getting really tired and just want the bleeding to stop. Do those specific things you mentioned cause the same kind of joint swelling my uncle gets? I just want to make sure we aren't missing anything since I'm still feeling so lightheaded.",
+      "reply": "The lightheadedness you're feeling is very concerning, so please remain still while the medical team assists you. I am requesting tests for Factor XII, Prekallikrein, and High-",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 19,
+      "incoming": "Okay, I'll stay as still as I can, but please hurry with those tests. My uncle's joint swelling was always so painful, and I'm scared this bleeding is just the start of something worse for me. I just need to know if these new factors you're checking are the reason my blood won't thicken up.",
+      "reply": "We're going to check your Factor XII, Prekallikrein, and High-Molecular-Weight Kininogen levels to see if they explain the prolonged aPTT. We are also checking",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 20,
+      "incoming": "I understand, and I'll stay put while you do that. It feels like we've checked everything else already, so I really hope these factors provide some answers. My mom is getting worried too, since the bleeding just keeps going despite everything we've tried.This is the final question. Please provide a diagnosis.\n",
+      "reply": "Based on your persistent bleeding, the significantly prolonged aPTT, and your family history of painful joint swelling despite normal levels of factors VIII, IX, and XI, this points to a more rare",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    }
+  ],
+  "support_llm": "whissle:/api/models/chat",
+  "support_llm_cost_usd": 0.00154,
+  "support_llm_calls": 21,
+  "voice_subset": false,
+  "diagnostics": {
+    "schema": "tau2.health.diagnostics/v1",
+    "benchmark": "agentclinic",
+    "case_id": "MedQA-48",
+    "mode": "text",
+    "availability": {
+      "flow_available": false,
+      "flow_reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "signals_available": false,
+      "signals_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "metadata_sidecar_available": false,
+      "metadata_sidecar_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "tools_available": true,
+      "tools_reason": null
+    },
+    "provenance": {
+      "benchmark": "agentclinic",
+      "mode": "text",
+      "transport_endpoint": "POST /api/bench/agent-turn",
+      "agent_id": "c8aa2355-9fd7-46da-9993-07ea566ec3d6",
+      "base_url": "https://aws-gateway-backend.whissle.ai/bot",
+      "seed": 42,
+      "stratum": {
+        "dataset": "MedQA",
+        "scenario_index": 48,
+        "selection": "head",
+        "limit": 100
+      },
+      "judge": {
+        "judge_provider": "whissle",
+        "judge_model": "default",
+        "judge_endpoint": "whissle:/api/models/chat",
+        "judge_independent": false,
+        "judge_independence_note": "Judge independence: this run's simulators and graders were routed through Whissle's own model API (`POST /api/models/chat`). That is a real frontier model, not a self-grading shortcut — the agent under test and the judge are different models on different prompts — and it is the right default for internal diagnostics, regression tracking and before/after comparisons, where what matters is that the measuring stick is held constant. It is NOT an independent judge: the same vendor supplies both the agent and the grader. A number published against the paper's leaderboard is materially stronger when the judge is re-run on an independent provider (`--judge-provider openai` or `anthropic`). Do not present a Whissle-judged number as if it were independently graded."
+      },
+      "judge_provider": "whissle",
+      "judge_independent": false,
+      "run_id": null,
+      "run_dir": "results/whissle/agentclinic/20260808T092952Z-ac_override_100",
+      "harness_commit": "86b4475",
+      "captured_at": "2026-08-08T09:39:20+00:00",
+      "protocol": "markers",
+      "history": "native",
+      "prompt_mode": "override",
+      "vision": "off",
+      "agent_type": null,
+      "total_inferences": 20,
+      "inferences_used": 20,
+      "support_llm": "whissle:/api/models/chat",
+      "patient_bias": null,
+      "doctor_bias": null,
+      "voice_subset": false
+    },
+    "cost": {
+      "available": true,
+      "reason": null,
+      "judge_calls": 21,
+      "judge_cost_usd": 0.00154,
+      "agent_calls": 20
+    },
+    "flow": {
+      "available": false,
+      "reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "source": null,
+      "turns": null,
+      "summary": null,
+      "conversation_id": null,
+      "current_state": null,
+      "start_state": null,
+      "final_state": null,
+      "ended": null,
+      "flow_end": null,
+      "num_steps": null,
+      "step_counts_by_kind": null,
+      "states_visited": null,
+      "states_declared": null,
+      "states_unvisited": null,
+      "transitions": null,
+      "transitions_fired": null,
+      "var_sets": null,
+      "var_sources": null,
+      "guard_trips": null,
+      "state_divergences": null,
+      "tools_gated": null,
+      "says": null,
+      "steps": null
+    },
+    "signals": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "metadata_sidecar": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "tools": {
+      "available": true,
+      "reason": null,
+      "source": "doctor actions parsed from /api/bench/agent-turn replies",
+      "calls": [
+        {
+          "turn": 2,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Complete Blood Count (CBC)"
+          },
+          "result": "RESULTS: Hematocrit 35%, Leukocyte Count 8,500/mm3, Platelet_Count 160,000/mm3; Prothrombin Time 15 sec; Partial Thromboplastin Time 60 sec.",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 3285,
+          "terminal": false
+        },
+        {
+          "turn": 3,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Factor VIII Assay"
+          },
+          "result": "RESULTS: NORMAL READINGS",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 4613,
+          "terminal": false
+        },
+        {
+          "turn": 4,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Factor XI Assay"
+          },
+          "result": "RESULTS: Factor XI Assay: NORMAL READINGS; von Willebrand Factor (vWF) Antigen: NORMAL READINGS; Ristocetin Cofactor Activity: NORMAL READINGS",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 5827,
+          "terminal": false
+        },
+        {
+          "turn": 7,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Mixing Study"
+          },
+          "result": "RESULTS: Mixing Study: NORMAL READINGS; Factor X Assay: NORMAL READINGS; Factor V Assay: NORMAL READINGS; Factor II Assay: NORMAL READINGS",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 6039,
+          "terminal": false
+        },
+        {
+          "turn": 15,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": ":"
+          },
+          "result": "RESULTS: Factor VII Assay: NORMAL READINGS; Fibrinogen: NORMAL READINGS; Fibrin Split Products: Negative; Peripheral Blood Smear: Normal-sized platelets.",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 6056,
+          "terminal": false
+        }
+      ],
+      "summary": {
+        "n_calls": 5,
+        "by_name": {
+          "request_test": 5
+        },
+        "n_ok": 5,
+        "n_error": 0,
+        "errors": []
+      },
+      "writes": {
+        "available": false,
+        "reason": "this benchmark issues no writes, so there is no said-vs-emitted-vs-landed distinction to record"
+      }
+    },
+    "turns": [
+      {
+        "inference": 1,
+        "incoming": "",
+        "reply": "Hello, I'm Dr. Agent, and I'll be looking into your concerns today. I understand you've been experiencing persistent bleeding after your wisdom tooth extraction; how long has the bleeding been continuing? Also, could you tell me more about your history with easy bruising?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 2,
+        "incoming": "It's been bleeding for hours now, and even with all the gauze my mom tried to use, it just won't stop. I've always noticed that I get big bruises from even the smallest bumps at school or during gym class. My uncle actually has the same kind of problems with bleeding and his joints swelling up, too.",
+        "reply": "I see, it sounds like this has been quite a difficult day for you. Have you ever had any other surgeries or injuries in the past that resulted in prolonged bleeding like this? I'd like to order some blood work to understand why your blood isn't clotting as it should.\n\nREQUEST TEST: Complete Blood Count (CBC)\nREQUEST TEST: Prothrombin Time (PT)\nREQUEST TEST: Activated Partial Thromboplastin Time (aPTT)",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Complete Blood Count (CBC)",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 3,
+        "incoming": "RESULTS: Hematocrit 35%, Leukocyte Count 8,500/mm3, Platelet_Count 160,000/mm3; Prothrombin Time 15 sec; Partial Thromboplastin Time 60 sec.",
+        "reply": "The prolonged partial thromboplastin time and your uncle's history of joint swelling are very significant findings. Have you personally ever experienced any painful swelling or stiffness in your knees, elbows, or ankles? \n\nREQUEST TEST: Factor VIII Assay\nREQUEST TEST: Factor IX Assay",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Factor VIII Assay",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 4,
+        "incoming": "RESULTS: NORMAL READINGS",
+        "reply": "It's interesting that those factor levels came back normal despite your symptoms and family history. Have you noticed if your gums bleed frequently when you brush your teeth, or do you have a history of frequent nosebleeds?\n\nREQUEST TEST: Factor XI Assay\nREQUEST TEST: von Willebrand Factor (vWF) Antigen\nREQUEST TEST: Ristocetin Cofactor Activity",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Factor XI Assay",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 5,
+        "incoming": "RESULTS: Factor XI Assay: NORMAL READINGS; von Willebrand Factor (vWF) Antigen: NORMAL READINGS; Ristocetin Cofactor Activity: NORMAL READINGS",
+        "reply": "That is quite puzzling given that your initial tests showed a significantly prolonged clotting time. Have you or your family members ever been told about any specific protein deficiencies or \"factors\" other than the ones we",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 6,
+        "incoming": "My mom hasn't mentioned any specific proteins, but she's always said our family has \"thin blood\" when things like this happen. My uncle had to go to the hospital a lot for his swollen joints, but I don't think they ever gave him a specific name for it. I just know that whenever I get a cut or a bump, it seems to last way longer than it does for my friends.",
+        "reply": "It is unusual for the common factor tests to come back normal while your clotting time is so high. Has anyone ever mentioned if you or your uncle were tested for Factor XII deficiency, even though it usually doesn",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 7,
+        "incoming": "I've never heard of that specific factor before, and I don't think my uncle has either. All I know is that the bleeding from my mouth still hasn't let up, and it's starting to make me really nervous. Is there another test we can do to figure out why my blood won't clot?",
+        "reply": "I understand your concern, and we will get to the bottom of this. I'm going to order a mixing study to see if your blood clots when mixed with normal plasma, as well as check some other clotting factors. Have you ever noticed any unusual lumps or skin changes around your bruises?\n\nREQUEST TEST: Mixing Study\nREQUEST TEST: Factor X Assay\nREQUEST TEST: Factor V Assay\nREQUEST TEST: Factor II Assay",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Mixing Study",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 8,
+        "incoming": "RESULTS: Mixing Study: NORMAL READINGS; Factor X Assay: NORMAL READINGS; Factor V Assay: NORMAL READINGS; Factor II Assay: NORMAL READINGS",
+        "reply": "I'm sorry to hear you're feeling nervous, but we are narrowing this down. I need to check your fibrinogen levels and Factor VII to see if they are the missing piece of the puzzle",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 9,
+        "incoming": "I'll do whatever tests you think are necessary if it means getting this bleeding under control. My mouth is still oozing quite a bit, and I'm starting to feel a little lightheaded from it all. Do these new tests take a long time to get the results back?",
+        "reply": "Please hang up and call 911 or your local emergency services immediately, as your lightheadedness and ongoing bleeding could be a sign of a serious medical emergency. We need to get your bleeding stabilized",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 10,
+        "incoming": "Wait, please don't go, I'm already at the clinic with you! My mom is right outside and can help me, I just need you to help stop the bleeding from my gums. Can't you give me something here to make it clot?",
+        "reply": "Since you are feeling lightheaded, I am calling for our emergency nursing team to assist you immediately while we continue. I need to check your fibrinogen levels and Factor XIII immediately to see",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 11,
+        "incoming": "Thank you, I really need the help because the gauze just isn't doing anything anymore. I hope those factor tests find something, because I've never had a cut or a procedure bleed for this long before. Please, just do whatever you can to make it stop.",
+        "reply": "I've called for the nurses, and they are arriving now to help stabilize you. We are going to check your Factor XII levels and Fibrinogen to understand why your clotting time",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 12,
+        "incoming": "I'm glad the nurses are here because I'm feeling really weak. I just want to know why my blood isn't working right when my uncle and I have dealt with this our whole lives. Please let me know as soon as those results come back so we can finally fix this.",
+        "reply": "I've ordered the Fibrinogen and Factor VII tests to see if they are the cause of your prolonged clotting times. Does your family have any history of Vitamin K deficiency or liver issues that you",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 13,
+        "incoming": "Not that I know of, my mom says we're all pretty healthy otherwise and nobody has liver problems. It’s really just the easy bruising and this constant bleeding that seems to run in the family. We don't take any vitamins or medications, so I don't think it's a deficiency from that.",
+        "reply": "It's good that there are no liver issues or Vitamin K deficiencies to consider. I'm going to check your Factor VII and Fibrinogen levels now to see if they explain your prolonged",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 14,
+        "incoming": "I appreciate you looking into those, but are you also going to check Factor VIII or IX? My uncle once mentioned something about those being important for the \"royal disease\" or whatever it's called. I just hope we find the answer soon because I'm still feeling pretty lightheaded.",
+        "reply": "We have already tested your Factor VIII and IX levels, and they came back normal, which rules out the most common forms of hemophilia. I am now requesting tests for your fibrinogen levels and Factor VII",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 15,
+        "incoming": "That’s strange, I really thought it might be one of those since it's exactly what my uncle describes. If it's not those common ones, I'm worried it might be something even harder to treat. Please, let me know what the Factor VII results show as soon as possible.",
+        "reply": "I'm going to get those Factor VII and Fibrinogen results right away. Your lightheadedness is a priority, and the nurses are monitoring your vitals closely. \n\nREQUEST TEST:",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": ":",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 16,
+        "incoming": "RESULTS: Factor VII Assay: NORMAL READINGS; Fibrinogen: NORMAL READINGS; Fibrin Split Products: Negative; Peripheral Blood Smear: Normal-sized platelets.",
+        "reply": "With your clotting times still prolonged and your recent test results coming back normal, I need to check for a Factor XII deficiency and your Prekallikrein levels to see if they",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 17,
+        "incoming": "I've never heard of those names before, but if they help explain why my blood won't clot after this surgery, then please test for them. My gums are still oozing, and I just want to feel better and go home. Do you think these results will finally give us an answer about why my family bleeds like this?",
+        "reply": "I am going to check your Factor XII, Prekallikrein, and High-Molecular-Weight Kininogen levels to see if they explain the prolonged aPTT. We",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 18,
+        "incoming": "I'm okay with more tests if it helps, but I'm getting really tired and just want the bleeding to stop. Do those specific things you mentioned cause the same kind of joint swelling my uncle gets? I just want to make sure we aren't missing anything since I'm still feeling so lightheaded.",
+        "reply": "The lightheadedness you're feeling is very concerning, so please remain still while the medical team assists you. I am requesting tests for Factor XII, Prekallikrein, and High-",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 19,
+        "incoming": "Okay, I'll stay as still as I can, but please hurry with those tests. My uncle's joint swelling was always so painful, and I'm scared this bleeding is just the start of something worse for me. I just need to know if these new factors you're checking are the reason my blood won't thicken up.",
+        "reply": "We're going to check your Factor XII, Prekallikrein, and High-Molecular-Weight Kininogen levels to see if they explain the prolonged aPTT. We are also checking",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 20,
+        "incoming": "I understand, and I'll stay put while you do that. It feels like we've checked everything else already, so I really hope these factors provide some answers. My mom is getting worried too, since the bleeding just keeps going despite everything we've tried.This is the final question. Please provide a diagnosis.\n",
+        "reply": "Based on your persistent bleeding, the significantly prolonged aPTT, and your family history of painful joint swelling despite normal levels of factors VIII, IX, and XI, this points to a more rare",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      }
+    ],
+    "audio": null
+  }
+}

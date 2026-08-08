@@ -143,6 +143,8 @@ Results are saved to `data/simulations/`. Use `tau2 view` to browse them.
 | [Domains](src/tau2/domains/README.md) | Domain structure, data format, and available domains |
 | [Orchestrator & Communication Modes](src/tau2/orchestrator/README.md) | Half-duplex and full-duplex orchestration |
 | [Task Schema & Evaluation](docs/evaluation.md) | What `evaluation_criteria.actions` means, how `reward_basis` gates the reward, and how to inspect action correctness |
+| [Benchmark reporting](REPORTING.md) | One research-grade report per run, the accumulating cross-run index, and the honesty rules the generator enforces (`make reports`) |
+| [Health diagnostics](HEALTH_DIAGNOSTICS.md) | The per-case `diagnostics` block all three healthcare adapters emit |
 
 ### Knowledge Retrieval
 

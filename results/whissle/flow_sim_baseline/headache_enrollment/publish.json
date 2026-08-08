@@ -1,0 +1,621 @@
+{
+  "schema": "whissle.benchmark.run/v1",
+  "generator": "tau2.reporting (tau2.reporting.run_report/v1)",
+  "generatedAt": "2026-08-08T16:51:41+00:00",
+  "runId": "flow_sim_baseline/headache_enrollment",
+  "benchmark": "flow_sim",
+  "benchmarkTitle": "Whissle conversation-flow suite",
+  "seriesKey": "flow_sim:headache_enrollment",
+  "title": "Conversation-flow suite \u2014 `headache_enrollment` (real-audio voice)",
+  "label": "Whissle",
+  "mode": "voice",
+  "modality": "voice",
+  "date": "2026-08-05",
+  "status": "complete",
+  "partialReason": "",
+  "sampleSize": 10,
+  "attempted": 10,
+  "excluded": 0,
+  "exclusionRatePct": 0.0,
+  "exclusionBreakdown": {},
+  "exclusionReasons": [],
+  "excludedIds": [],
+  "exclusionBounds": null,
+  "preliminary": true,
+  "preliminaryReason": "N = 10 is below the 30-unit threshold for a settled number",
+  "judge": {
+    "kind": "rule_analyzer",
+    "independent": null,
+    "provider": null,
+    "model": null,
+    "endpoint": null,
+    "k": null,
+    "note": "Two graders, deliberately different in kind: a rule analyzer reads the engine's own flow trace (deterministic \u2014 it cannot be talked into a verdict), and an LLM grader judges goal satisfaction from the transcript. Where they disagree, the trace wins on questions of what happened and the grader wins on questions of whether the caller was served.",
+    "calls": null,
+    "costUsd": null,
+    "summary": "rule analyzer + LLM grader"
+  },
+  "qualifier": "N = 10 \u00b7 PRELIMINARY",
+  "headline": {
+    "key": "task_success",
+    "label": "Task success",
+    "unit": "pct",
+    "value": 50.0,
+    "valueFormatted": "50.0%",
+    "ci": [
+      23.7,
+      76.3
+    ],
+    "n": 10,
+    "floor": 0.0,
+    "ceiling": 100.0,
+    "higherIsBetter": true,
+    "note": "an LLM grader judges whether the caller's goal was met",
+    "score0to100": 50.0,
+    "scoreKind": "pass_rate"
+  },
+  "secondaryMetrics": [
+    {
+      "key": "clean_close",
+      "label": "Reached a clean close",
+      "unit": "pct",
+      "value": 30.0,
+      "valueFormatted": "30.0%",
+      "ci": [
+        10.8,
+        60.3
+      ],
+      "n": 10,
+      "floor": 0.0,
+      "ceiling": 100.0,
+      "higherIsBetter": true,
+      "note": "taken from the authoritative `flow_end` trace event"
+    },
+    {
+      "key": "state_coverage",
+      "label": "Flow states visited",
+      "unit": "count",
+      "value": 10,
+      "valueFormatted": "10",
+      "ci": null,
+      "n": 10,
+      "floor": null,
+      "ceiling": null,
+      "higherIsBetter": true,
+      "note": "of 10 declared"
+    },
+    {
+      "key": "transition_coverage",
+      "label": "Flow transitions fired",
+      "unit": "count",
+      "value": 10,
+      "valueFormatted": "10",
+      "ci": null,
+      "n": 14,
+      "floor": null,
+      "ceiling": null,
+      "higherIsBetter": true,
+      "note": "of 14 declared"
+    }
+  ],
+  "tables": [
+    {
+      "key": "scenarios",
+      "title": "Per-scenario outcomes",
+      "columns": [
+        "Scenario",
+        "Turns",
+        "Closed",
+        "Goal met",
+        "Final state",
+        "Findings",
+        "Session"
+      ],
+      "rows": [
+        [
+          "`hx_cluster_signs` (autonomic)",
+          "9",
+          "**no**",
+          "yes",
+          "`\u2014`",
+          "1",
+          "`20260805T153944Z`"
+        ],
+        [
+          "`hx_happy_full` (full_intake)",
+          "2",
+          "**no**",
+          "**no**",
+          "`\u2014`",
+          "1",
+          "`20260805T150123Z`"
+        ],
+        [
+          "`hx_hormonal` (hormonal)",
+          "9",
+          "**no**",
+          "yes",
+          "`\u2014`",
+          "1",
+          "`20260805T155655Z`"
+        ],
+        [
+          "`hx_keep_it_quick` (time_pressured)",
+          "5",
+          "**no**",
+          "**no**",
+          "`\u2014`",
+          "1",
+          "`20260805T155105Z`"
+        ],
+        [
+          "`hx_med_overuse` (medication)",
+          "8",
+          "**no**",
+          "**no**",
+          "`\u2014`",
+          "1",
+          "`20260805T160803Z`"
+        ],
+        [
+          "`hx_migraine_classic` (migraine)",
+          "13",
+          "yes",
+          "**no**",
+          "`\u2014`",
+          "1",
+          "`20260805T152556Z`"
+        ],
+        [
+          "`hx_out_of_order` (out_of_order)",
+          "5",
+          "**no**",
+          "yes",
+          "`\u2014`",
+          "1",
+          "`20260805T151940Z`"
+        ],
+        [
+          "`hx_red_flag_urgent` (urgent_escalation)",
+          "2",
+          "yes",
+          "yes",
+          "`\u2014`",
+          "0",
+          "`20260805T150407Z`"
+        ],
+        [
+          "`hx_skips_topics` (skips)",
+          "7",
+          "yes",
+          "yes",
+          "`\u2014`",
+          "0",
+          "`20260805T150552Z`"
+        ],
+        [
+          "`hx_unsure` (unsure)",
+          "5",
+          "**no**",
+          "**no**",
+          "`\u2014`",
+          "1",
+          "`20260805T151350Z`"
+        ]
+      ],
+      "note": "Each row is one scripted caller persona driven over real audio, taken from the most recent session recorded for that scenario. 'Closed' and 'goal met' are independent: an agent can satisfy the caller and never hang up, or hang up having satisfied nobody.",
+      "allow_providers": false,
+      "allow_context": true
+    },
+    {
+      "key": "sessions",
+      "title": "Per-scenario outcomes, as the harness summarised them",
+      "columns": [
+        "Scenario",
+        "Turns",
+        "Closed",
+        "Goal met",
+        "Final state",
+        "High-severity findings"
+      ],
+      "rows": [
+        [
+          "`hx_happy_full` (full_intake)",
+          "2",
+          "**no**",
+          "**no**",
+          "`None`",
+          "1"
+        ],
+        [
+          "`hx_red_flag_urgent` (urgent_escalation)",
+          "2",
+          "yes",
+          "yes",
+          "`None`",
+          "0"
+        ],
+        [
+          "`hx_skips_topics` (skips)",
+          "7",
+          "yes",
+          "yes",
+          "`None`",
+          "0"
+        ],
+        [
+          "`hx_unsure` (unsure)",
+          "5",
+          "**no**",
+          "**no**",
+          "`None`",
+          "0"
+        ],
+        [
+          "`hx_out_of_order` (out_of_order)",
+          "5",
+          "**no**",
+          "yes",
+          "`None`",
+          "0"
+        ],
+        [
+          "`hx_migraine_classic` (migraine)",
+          "13",
+          "yes",
+          "**no**",
+          "`None`",
+          "0"
+        ],
+        [
+          "`hx_cluster_signs` (autonomic)",
+          "9",
+          "**no**",
+          "yes",
+          "`None`",
+          "0"
+        ],
+        [
+          "`hx_keep_it_quick` (time_pressured)",
+          "5",
+          "**no**",
+          "**no**",
+          "`None`",
+          "0"
+        ],
+        [
+          "`hx_hormonal` (hormonal)",
+          "9",
+          "**no**",
+          "yes",
+          "`None`",
+          "0"
+        ],
+        [
+          "`hx_med_overuse` (medication)",
+          "8",
+          "**no**",
+          "**no**",
+          "`None`",
+          "1"
+        ]
+      ],
+      "note": "Each row is one scripted caller persona driven over real audio. 'Closed' and 'goal met' are independent: an agent can satisfy the caller and never hang up, or hang up having satisfied nobody.",
+      "allow_providers": false,
+      "allow_context": true
+    },
+    {
+      "key": "coverage",
+      "title": "Flow coverage",
+      "columns": [
+        "Measure",
+        "Covered",
+        "Declared",
+        "Uncovered"
+      ],
+      "rows": [
+        [
+          "States",
+          "10",
+          "10",
+          "none"
+        ],
+        [
+          "Transitions",
+          "10",
+          "14",
+          "`t2`, `t4`, `t8`, `t10`"
+        ]
+      ],
+      "note": "An unfired transition is an untested branch. It is not a failure \u2014 it is the part of the flow this scenario set never reached, and therefore the part no result here speaks to.",
+      "allow_providers": false,
+      "allow_context": true
+    }
+  ],
+  "baselines": [],
+  "baselineComparability": {
+    "comparable": false,
+    "note": "There is no external comparator and there cannot be one: this suite tests our own flow definitions on our own agents. Its value is longitudinal \u2014 the same scenario set re-run after a change \u2014 and the regression view in the cross-run index is where that comparison lives, not a leaderboard.",
+    "publishedProtocol": "",
+    "source": ""
+  },
+  "failures": [
+    {
+      "key": "finding_stuck_termination",
+      "label": "`stuck_termination`",
+      "count": 7,
+      "severity": "medium",
+      "description": "the session stalled without a classified cause",
+      "denominator": 10,
+      "examples": [
+        {
+          "case_id": "hx_cluster_signs",
+          "summary": "state `medications` \u00b7 9 turns",
+          "evidence": "session never reached an end state (cap/stuck); final state 'medications' with 1 outgoing edge(s) un-fired.",
+          "artifact": "hx_cluster_signs_20260805T153944Z.session.json"
+        },
+        {
+          "case_id": "hx_happy_full",
+          "summary": "state `\u2014` \u00b7 2 turns",
+          "evidence": "session failed to run: ModelError: models/chat failed after 6 attempts: HTTP 502: {\"detail\":\"LLM call failed: all LLM providers failed; last error: gemini returned an empty completion\"}",
+          "artifact": "hx_happy_full_20260805T150123Z.session.json"
+        }
+      ],
+      "rate_pct": 70.0
+    },
+    {
+      "key": "finding_premature_termination",
+      "label": "`premature_termination`",
+      "count": 1,
+      "severity": "medium",
+      "description": "the flow closed the call before the intake it declares was complete \u2014 the caller was served politely and the record is short",
+      "denominator": 10,
+      "examples": [
+        {
+          "case_id": "hx_migraine_classic",
+          "summary": "state `done` \u00b7 13 turns",
+          "evidence": "flow reached an end state but the simulated user's goal was NOT met (per the task-success judge).",
+          "artifact": "hx_migraine_classic_20260805T152556Z.session.json"
+        }
+      ],
+      "rate_pct": 10.0
+    },
+    {
+      "key": "finding_coverage",
+      "label": "`coverage`",
+      "count": 1,
+      "severity": "info",
+      "description": "branches the scenario set never exercised",
+      "denominator": 10,
+      "examples": [
+        {
+          "case_id": "run-level",
+          "summary": "state `\u2014`",
+          "evidence": "4/14 transitions never fired across the session set: ['t2', 't4', 't8', 't10'].",
+          "artifact": "SUMMARY.json"
+        }
+      ],
+      "rate_pct": 10.0
+    },
+    {
+      "key": "goal_not_met",
+      "label": "Caller's goal not met",
+      "count": 5,
+      "severity": "high",
+      "description": "The grader judged the caller left without what they came for. This is the headline's complement, and the reason quoted below is the grader's own words.",
+      "denominator": 10,
+      "examples": [
+        {
+          "case_id": "hx_happy_full",
+          "summary": "full_intake \u00b7 2 turns \u00b7 final state `\u2014`",
+          "evidence": "not run",
+          "artifact": "hx_happy_full_20260805T150123Z.session.json"
+        },
+        {
+          "case_id": "hx_keep_it_quick",
+          "summary": "time_pressured \u00b7 5 turns \u00b7 final state `\u2014`",
+          "evidence": "Ember acknowledged the customer's request to keep it quick but failed to deliver concise answers, instead asking repetitive and rambling questions that frustrated the customer, and did not reach a clean close within the turn budget.",
+          "artifact": "hx_keep_it_quick_20260805T155105Z.session.json"
+        },
+        {
+          "case_id": "hx_med_overuse",
+          "summary": "medication \u00b7 8 turns \u00b7 final state `\u2014`",
+          "evidence": "not run",
+          "artifact": "hx_med_overuse_20260805T160803Z.session.json"
+        }
+      ],
+      "rate_pct": 50.0
+    }
+  ],
+  "sampleCases": [
+    {
+      "case_id": "hx_cluster_signs",
+      "outcome": "goal met",
+      "is_success": true,
+      "score": null,
+      "task": "persona `autonomic` \u00b7 9 caller turns \u00b7 final state `\u2014`",
+      "expected": "",
+      "got": "",
+      "excerpt": "AGENT: Hello! How can I help you today?\nUSER: Yeah, hi, I've been having these really bad headaches on one side of my head, like around my eye, and I need to figure out what's going on because they're getting worse.\nAGENT: I'm here, take your time. Got it \u2014 pain around one eye on one side. Let me start by recording what brings you in today. Just so you know, I'm an AI assistant and this call is recorded for quality. How long have you been getting these headaches? I hear you \u2014 that sounds really ",
+      "artifact": "hx_cluster_signs_20260805T153944Z.mix.wav",
+      "why_shown": "The agent successfully captured the severe eye-centered attacks with one-sided autonomic signs (tearing, drooping lid, stuffy nose) and restlessness/agitation, and explicitly confirmed documentation of these symptoms including the pain picture and au"
+    },
+    {
+      "case_id": "hx_hormonal",
+      "outcome": "goal met",
+      "is_success": true,
+      "score": null,
+      "task": "persona `hormonal` \u00b7 9 caller turns \u00b7 final state `\u2014`",
+      "expected": "",
+      "got": "",
+      "excerpt": "AGENT: Hi, I'm Ember. I'd love to understand your headaches a little better. I'll ask you a few questions by voice \u2014 it takes about five minutes, and you can skip anything or pause and come back anytime. Ready to start? Hello! How can I help you today?\nUSER: Yeah, hi, I'm calling because I've been getting these really bad headaches and I'm not sure what's going on with them. I'm hoping you can help me figure out what's causing it.\nAGENT: Hi there! Just so you know, I'm an AI assistant and Got it",
+      "artifact": "hx_hormonal_20260805T155655Z.mix.wav",
+      "why_shown": "The customer successfully raised that headaches relate to their cycle and that they take hormonal birth control, and the agent confirmed multiple times that it is capturing and recording this hormonal context sensitively before continuing with the as"
+    },
+    {
+      "case_id": "hx_happy_full",
+      "outcome": "goal not met",
+      "is_success": false,
+      "score": null,
+      "task": "persona `full_intake` \u00b7 2 caller turns \u00b7 final state `\u2014`",
+      "expected": "",
+      "got": "",
+      "excerpt": "AGENT: Hello! How can I help you today?\nUSER: Hi, yes, I'm calling about these headaches I've been getting and I'm hoping you can help me figure out what's going on.\nAGENT: I'm here whenever you're ready \u2014 no rush at all. Great, thanks for calling. Just so you know, I'm an AI assistant and this call is recorded for quality. What brings you in today? I hear you \u2014 headaches, got it. Just\nUSER: Yeah, so I've been dealing with these pretty intense headaches for about two weeks now and they're really",
+      "artifact": "hx_happy_full_20260805T150123Z.mix.wav",
+      "why_shown": "not run"
+    },
+    {
+      "case_id": "hx_keep_it_quick",
+      "outcome": "goal not met",
+      "is_success": false,
+      "score": null,
+      "task": "persona `time_pressured` \u00b7 5 caller turns \u00b7 final state `\u2014`",
+      "expected": "",
+      "got": "",
+      "excerpt": "AGENT: Hi, I'm Ember. I'd love to understand your headaches a little better. I'll ask you a few questions by voice \u2014 it takes about five minutes, and you can skip anything or pause and come back anytime. Ready to start?\nUSER: Hey, hi, I'm in kind of a rush here\u2014can we make this quick? What do you need from me?\nAGENT: Got it \u2014 take your time. What's going on? Hello! How can I help you today? No problem. Let me keep this quick for you. Of course, I'll keep it quick. What's the main thing bringing ",
+      "artifact": "hx_keep_it_quick_20260805T155105Z.mix.wav",
+      "why_shown": "Ember acknowledged the customer's request to keep it quick but failed to deliver concise answers, instead asking repetitive and rambling questions that frustrated the customer, and did not reach a clean close within the turn budget."
+    }
+  ],
+  "limitations": [
+    {
+      "key": "tiny_n",
+      "text": "N = 10. At this size a single scenario flipping moves the headline by ten points. Every figure here is directional and is labelled PRELIMINARY for that reason.",
+      "severity": "high"
+    },
+    {
+      "key": "not_comparable",
+      "text": "The scenario set is ours, the flows are ours, and the grader is ours. Nothing here can be compared to any published number, and it should never be presented alongside one as if it could.",
+      "severity": "high"
+    },
+    {
+      "key": "simulated_caller",
+      "text": "The caller is a language model speaking through text-to-speech. It has cleaner prosody, no background noise and more patience than a person on a mobile in a car \u2014 so recognition error here is a floor, not an estimate.",
+      "severity": "high"
+    },
+    {
+      "key": "coverage",
+      "text": "4 declared transitions never fired across the whole set. Those branches are untested, and a green result says nothing about them.",
+      "severity": "medium"
+    },
+    {
+      "key": "run_to_run",
+      "text": "Speech recognition, generation and turn-taking are all stochastic. Two runs of the same scenario set differ; a one-scenario change between runs is noise until it repeats.",
+      "severity": "medium"
+    }
+  ],
+  "whatMeasured": "Whether a deployed voice agent actually completes its job on a phone call: does it collect what the flow says it must collect, does it handle a caller who answers out of order or refuses to engage, and does it end the call cleanly rather than trailing off. Real audio, real speech recognition, real turn-taking \u2014 not a text transcript stand-in.",
+  "whyMeasured": "Every text benchmark in this repository removes the two things that break voice products: recognition error and turn-taking. This suite exists to measure what those two things cost, on the flows we actually ship.",
+  "methodology": [
+    {
+      "term": "Agent under test",
+      "detail": "the deployed `headache_enrollment` agent, with its real flow definition, prompts and tools"
+    },
+    {
+      "term": "Mode",
+      "detail": "real-audio voice over a LiveKit room"
+    },
+    {
+      "term": "Endpoint",
+      "detail": "`POST /api/bench/voice/start` \u2192 LiveKit room"
+    },
+    {
+      "term": "Prompt handling",
+      "detail": "none \u2014 this is the shipped configuration, unmodified; that is the point of the suite and the reason its numbers are not comparable to a paper's"
+    },
+    {
+      "term": "Caller",
+      "detail": "an LLM user-simulator driving a persona and a goal, speaking through text-to-speech into the room"
+    },
+    {
+      "term": "Turn limit",
+      "detail": "a per-scenario turn budget plus a post-goal allowance; hitting the cap is recorded as `turn_cap_exceeded`, not silently truncated"
+    },
+    {
+      "term": "Tools bound",
+      "detail": "the agent's own production tools, gated by its own flow state machine"
+    },
+    {
+      "term": "Scoring rule",
+      "detail": "task success is judged per scenario against the caller's goal; clean close is read from the engine's `flow_end` trace event, not inferred from the transcript"
+    }
+  ],
+  "scoringRule": "task success = graded goal-met / executed sessions; clean close = sessions emitting `flow_end` / executed sessions",
+  "provenance": {
+    "agent_id": "653ce25c-3c2b-49f2-948e-0b5b3f76a93c",
+    "base_url": null,
+    "endpoint": "LiveKit voice room (POST /api/bench/voice/start)",
+    "mode": "voice",
+    "harness_commit": null,
+    "repo_commit": "89f2e02",
+    "run_dir": "/private/tmp/claude-501/-Users-karan-Desktop-work-whissle-live-assist/766421da-8ef4-4ce2-9733-86e5c5f3fced/scratchpad/wt-reports/results/whissle/flow_sim_baseline/headache_enrollment",
+    "captured_at": "2026-08-05",
+    "dataset": "scripted caller personas for `headache_enrollment`",
+    "dataset_size": 10,
+    "upstream": "internal \u2014 no published equivalent",
+    "extra": {
+      "agent_type": "headache_enrollment"
+    }
+  },
+  "sampling": {
+    "method": "hand-authored scenario set, exhaustive (not sampled)",
+    "n_population": 10,
+    "n_requested": 10,
+    "n_selected": 10,
+    "seed": null,
+    "strata_keys": [],
+    "strata_tables": [],
+    "note": "Every scenario in the set was run. There is no sampling error here \u2014 but there is selection: the set is what we thought to write down, and the transition-coverage table is the honest measure of what it misses."
+  },
+  "reproduction": {
+    "commands": [
+      "uv sync --extra dev --extra voice",
+      "./run_flow_sim.sh headache_enrollment",
+      "python -m tau2.reporting.cli build results/whissle/flow_sim/headache_enrollment"
+    ],
+    "environment": {
+      "repo commit at report time": "89f2e02",
+      "extras required": "voice (LiveKit, audio codecs)"
+    },
+    "notes": [
+      "Audio is captured per session (`*.caller.wav`, `*.bot.wav`, `*.mix.wav`) \u2014 a disputed grader verdict can be settled by listening.",
+      "The directory accumulates every historical run of the same scenario; this report covers the latest session per task id."
+    ]
+  },
+  "artifacts": [
+    {
+      "path": "SUMMARY.json",
+      "description": "run-level aggregation and coverage",
+      "present": true
+    },
+    {
+      "path": "SUMMARY.md",
+      "description": "the harness's own short summary",
+      "present": true
+    },
+    {
+      "path": "*.session.json",
+      "description": "per-session sidecar: turns, flow trace, findings",
+      "present": false
+    },
+    {
+      "path": "*.mix.wav",
+      "description": "the recorded call",
+      "present": false
+    },
+    {
+      "path": "REPORT.md",
+      "description": "this report",
+      "present": true
+    },
+    {
+      "path": "report.json",
+      "description": "machine-readable form of this report",
+      "present": true
+    }
+  ],
+  "licenceNote": "",
+  "warnings": [],
+  "reportMarkdown": "# Conversation-flow suite \u2014 `headache_enrollment` (real-audio voice)\n\n> **PRELIMINARY** \u2014 N = 10 is below the 30-unit threshold for a settled number. Treat every figure below as directional.\n\n## Abstract\n\nWhissle was evaluated on **Whissle conversation-flow suite** in `voice` mode. The headline result is **50.0%** (N = 10 \u00b7 PRELIMINARY) for task success, 95% CI [23.7%, 76.3%].\n\nWhether a deployed voice agent actually completes its job on a phone call: does it collect what the flow says it must collect, does it handle a caller who answers out of order or refuses to engage, and does it end the call cleanly rather than trailing off. Real audio, real speech recognition, real turn-taking \u2014 not a text transcript stand-in.\n\n## At a glance\n\n| Field | Value |\n|---|---|\n| **Task success** | **50.0%** (N = 10 \u00b7 PRELIMINARY) |\n<!-- honesty:allow-context -->\n| 95% CI | [23.7%, 76.3%] |\n| Attempted / scored / excluded | 10 / 10 / 0 (0.0%) |\n| Judge | rule analyzer + LLM grader |\n| Mode | `voice` |\n| Date | 2026-08-05 |\n| Run id | `flow_sim_baseline/headache_enrollment` |\n| Status | **PRELIMINARY** |\n<!-- /honesty:allow-context -->\n\n<!-- honesty:allow-context -->\n- **Reached a clean close:** 30.0% [10.8%, 60.3%], N = 10 \u2014 taken from the authoritative `flow_end` trace event\n- **Flow states visited:** 10, N = 10 \u2014 of 10 declared\n- **Flow transitions fired:** 10, N = 14 \u2014 of 14 declared\n<!-- /honesty:allow-context -->\n\n## 1. What was measured, and why\n\nWhether a deployed voice agent actually completes its job on a phone call: does it collect what the flow says it must collect, does it handle a caller who answers out of order or refuses to engage, and does it end the call cleanly rather than trailing off. Real audio, real speech recognition, real turn-taking \u2014 not a text transcript stand-in.\n\n**Why this benchmark.** Every text benchmark in this repository removes the two things that break voice products: recognition error and turn-taking. This suite exists to measure what those two things cost, on the flows we actually ship.\n\n## 2. Methodology\n\n| Field | Value |\n|---|---|\n| Agent under test | the deployed `headache_enrollment` agent, with its real flow definition, prompts and tools |\n| Mode | real-audio voice over a LiveKit room |\n| Endpoint | `POST /api/bench/voice/start` \u2192 LiveKit room |\n| Prompt handling | none \u2014 this is the shipped configuration, unmodified; that is the point of the suite and the reason its numbers are not comparable to a paper's |\n| Caller | an LLM user-simulator driving a persona and a goal, speaking through text-to-speech into the room |\n| Turn limit | a per-scenario turn budget plus a post-goal allowance; hitting the cap is recorded as `turn_cap_exceeded`, not silently truncated |\n| Tools bound | the agent's own production tools, gated by its own flow state machine |\n| Scoring rule | task success is judged per scenario against the caller's goal; clean close is read from the engine's `flow_end` trace event, not inferred from the transcript |\n\n**Scoring rule.** task success = graded goal-met / executed sessions; clean close = sessions emitting `flow_end` / executed sessions\n\n## 3. Setup and provenance\n\n| Field | Value |\n|---|---|\n| Agent id | `653ce25c-3c2b-49f2-948e-0b5b3f76a93c` |\n| Transport endpoint | `LiveKit voice room (POST /api/bench/voice/start)` |\n| Mode | `voice` |\n| Dataset | scripted caller personas for `headache_enrollment` |\n| Dataset size | 10 |\n| Upstream | internal \u2014 no published equivalent |\n| Repo commit at report time | `89f2e02` |\n| Captured at | 2026-08-05 |\n| Run directory | `results/whissle/flow_sim_baseline/headache_enrollment` |\n| Agent type | headache_enrollment |\n\n### 3.1 Judge and its independence\n\n| Field | Value |\n|---|---|\n| Grading kind | rule analyzer |\n| Independent of the agent's vendor | n/a \u2014 no judge model is called |\n\n<!-- honesty:allow-providers -->\n> Two graders, deliberately different in kind: a rule analyzer reads the engine's own flow trace (deterministic \u2014 it cannot be talked into a verdict), and an LLM grader judges goal satisfaction from the transcript. Where they disagree, the trace wins on questions of what happened and the grader wins on questions of whether the caller was served.\n<!-- /honesty:allow-providers -->\n\n### 3.2 Sampling and population\n\n| Field | Value |\n|---|---|\n| Method | hand-authored scenario set, exhaustive (not sampled) |\n| Population | 10 |\n| Requested | 10 |\n| Selected | 10 |\n| Scored | 10 |\n\nEvery scenario in the set was run. There is no sampling error here \u2014 but there is selection: the set is what we thought to write down, and the transition-coverage table is the honest measure of what it misses.\n\n## 4. Results\n\n**Task success: 50.0%** (N = 10 \u00b7 PRELIMINARY), 95% CI [23.7%, 76.3%].\n\n| Metric | Value | 95% CI | N | Qualifiers |\n|---|---:|---|---:|---|\n| **Task success** | **50.0%** | [23.7%, 76.3%] | 10 | N = 10 \u00b7 PRELIMINARY |\n<!-- honesty:allow-context -->\n| Reached a clean close | 30.0% | [10.8%, 60.3%] | 10 | taken from the authoritative `flow_end` trace event |\n| Flow states visited | 10 | \u2014 | 10 | of 10 declared |\n| Flow transitions fired | 10 | \u2014 | 14 | of 14 declared |\n<!-- /honesty:allow-context -->\n\n_The headline row is the claim and carries its qualifiers; the rest are components of it and inherit them._\n\n<!-- honesty:allow-context -->\n**Per-scenario outcomes**\n\n| Scenario | Turns | Closed | Goal met | Final state | Findings | Session |\n|---|---|---|---|---|---|---|\n| `hx_cluster_signs` (autonomic) | 9 | **no** | yes | `\u2014` | 1 | `20260805T153944Z` |\n| `hx_happy_full` (full_intake) | 2 | **no** | **no** | `\u2014` | 1 | `20260805T150123Z` |\n| `hx_hormonal` (hormonal) | 9 | **no** | yes | `\u2014` | 1 | `20260805T155655Z` |\n| `hx_keep_it_quick` (time_pressured) | 5 | **no** | **no** | `\u2014` | 1 | `20260805T155105Z` |\n| `hx_med_overuse` (medication) | 8 | **no** | **no** | `\u2014` | 1 | `20260805T160803Z` |\n| `hx_migraine_classic` (migraine) | 13 | yes | **no** | `\u2014` | 1 | `20260805T152556Z` |\n| `hx_out_of_order` (out_of_order) | 5 | **no** | yes | `\u2014` | 1 | `20260805T151940Z` |\n| `hx_red_flag_urgent` (urgent_escalation) | 2 | yes | yes | `\u2014` | 0 | `20260805T150407Z` |\n| `hx_skips_topics` (skips) | 7 | yes | yes | `\u2014` | 0 | `20260805T150552Z` |\n| `hx_unsure` (unsure) | 5 | **no** | **no** | `\u2014` | 1 | `20260805T151350Z` |\n\nEach row is one scripted caller persona driven over real audio, taken from the most recent session recorded for that scenario. 'Closed' and 'goal met' are independent: an agent can satisfy the caller and never hang up, or hang up having satisfied nobody.\n<!-- /honesty:allow-context -->\n\n<!-- honesty:allow-context -->\n**Per-scenario outcomes, as the harness summarised them**\n\n| Scenario | Turns | Closed | Goal met | Final state | High-severity findings |\n|---|---|---|---|---|---|\n| `hx_happy_full` (full_intake) | 2 | **no** | **no** | `None` | 1 |\n| `hx_red_flag_urgent` (urgent_escalation) | 2 | yes | yes | `None` | 0 |\n| `hx_skips_topics` (skips) | 7 | yes | yes | `None` | 0 |\n| `hx_unsure` (unsure) | 5 | **no** | **no** | `None` | 0 |\n| `hx_out_of_order` (out_of_order) | 5 | **no** | yes | `None` | 0 |\n| `hx_migraine_classic` (migraine) | 13 | yes | **no** | `None` | 0 |\n| `hx_cluster_signs` (autonomic) | 9 | **no** | yes | `None` | 0 |\n| `hx_keep_it_quick` (time_pressured) | 5 | **no** | **no** | `None` | 0 |\n| `hx_hormonal` (hormonal) | 9 | **no** | yes | `None` | 0 |\n| `hx_med_overuse` (medication) | 8 | **no** | **no** | `None` | 1 |\n\nEach row is one scripted caller persona driven over real audio. 'Closed' and 'goal met' are independent: an agent can satisfy the caller and never hang up, or hang up having satisfied nobody.\n<!-- /honesty:allow-context -->\n\n<!-- honesty:allow-context -->\n**Flow coverage**\n\n| Measure | Covered | Declared | Uncovered |\n|---|---|---|---|\n| States | 10 | 10 | none |\n| Transitions | 10 | 14 | `t2`, `t4`, `t8`, `t10` |\n\nAn unfired transition is an untested branch. It is not a failure \u2014 it is the part of the flow this scenario set never reached, and therefore the part no result here speaks to.\n<!-- /honesty:allow-context -->\n\n## 5. Comparison to published baselines\n\nThere is no external comparator and there cannot be one: this suite tests our own flow definitions on our own agents. Its value is longitudinal \u2014 the same scenario set re-run after a change \u2014 and the regression view in the cross-run index is where that comparison lives, not a leaderboard.\n\n_An empty comparison section is a result. Printing a number next to a differently-measured one would not be._\n\n## 6. Failure analysis\n\n| Category | Count | Rate | Severity |\n|---|---:|---:|---|\n<!-- honesty:allow-context -->\n| `stuck_termination` | 7 | 70.0% | medium |\n| `premature_termination` | 1 | 10.0% | medium |\n| `coverage` | 1 | 10.0% | info |\n| Caller's goal not met | 5 | 50.0% | high |\n<!-- /honesty:allow-context -->\n\n### 6.1 `stuck_termination` \u2014 7 of 10\n\n<!-- honesty:allow-context -->\nthe session stalled without a classified cause\n<!-- /honesty:allow-context -->\n\n- **`hx_cluster_signs`** \u2014 state `medications` \u00b7 9 turns\n  > session never reached an end state (cap/stuck); final state 'medications' with 1 outgoing edge(s) un-fired.\n  _artifact:_ `hx_cluster_signs_20260805T153944Z.session.json`\n- **`hx_happy_full`** \u2014 state `\u2014` \u00b7 2 turns\n  > session failed to run: ModelError: models/chat failed after 6 attempts: HTTP 502: {\"detail\":\"LLM call failed: all LLM providers failed; last error: [model provider] returned an empty completion\"}\n  _artifact:_ `hx_happy_full_20260805T150123Z.session.json`\n\n### 6.2 `premature_termination` \u2014 1 of 10\n\n<!-- honesty:allow-context -->\nthe flow closed the call before the intake it declares was complete \u2014 the caller was served politely and the record is short\n<!-- /honesty:allow-context -->\n\n- **`hx_migraine_classic`** \u2014 state `done` \u00b7 13 turns\n  > flow reached an end state but the simulated user's goal was NOT met (per the task-success judge).\n  _artifact:_ `hx_migraine_classic_20260805T152556Z.session.json`\n\n### 6.3 `coverage` \u2014 1 of 10\n\n<!-- honesty:allow-context -->\nbranches the scenario set never exercised\n<!-- /honesty:allow-context -->\n\n- **`run-level`** \u2014 state `\u2014`\n  > 4/14 transitions never fired across the session set: ['t2', 't4', 't8', 't10'].\n  _artifact:_ `SUMMARY.json`\n\n### 6.4 Caller's goal not met \u2014 5 of 10\n\n<!-- honesty:allow-context -->\nThe grader judged the caller left without what they came for. This is the headline's complement, and the reason quoted below is the grader's own words.\n<!-- /honesty:allow-context -->\n\n- **`hx_happy_full`** \u2014 full_intake \u00b7 2 turns \u00b7 final state `\u2014`\n  > not run\n  _artifact:_ `hx_happy_full_20260805T150123Z.session.json`\n- **`hx_keep_it_quick`** \u2014 time_pressured \u00b7 5 turns \u00b7 final state `\u2014`\n  > Ember acknowledged the customer's request to keep it quick but failed to deliver concise answers, instead asking repetitive and rambling questions that frustrated the customer, and did not reach a clean close within the turn budget.\n  _artifact:_ `hx_keep_it_quick_20260805T155105Z.session.json`\n- **`hx_med_overuse`** \u2014 medication \u00b7 8 turns \u00b7 final state `\u2014`\n  > not run\n  _artifact:_ `hx_med_overuse_20260805T160803Z.session.json`\n\n### Sample cases\n\nPicked deterministically from this run's own artifacts \u2014 the best and worst by the benchmark's own score \u2014 so re-generating the report shows the same cases rather than reshuffling them.\n\n<!-- honesty:allow-context -->\n**\u2713 `hx_cluster_signs`** \u2014 goal met\n  - _task:_ persona `autonomic` \u00b7 9 caller turns \u00b7 final state `\u2014`\n  > AGENT: Hello! How can I help you today? USER: Yeah, hi, I've been having these really bad headaches on one side of my head, like around my eye, and I need to figure out what's going on because they're getting worse. AGENT: I'm here, take your time. Got it \u2014 pain around one eye on one side. Let me start by recording what brings you in today. Just so you know, I'm an AI assistant and this call is recorded for quality. How long have you been getting these headaches? I hear you \u2014 that sounds really\n  - _why this one:_ The agent successfully captured the severe eye-centered attacks with one-sided autonomic signs (tearing, drooping lid, stuffy nose) and restlessness/agitation, and explicitly confirmed documentation of these symptoms including the pain picture and au\n  - _artifact:_ `hx_cluster_signs_20260805T153944Z.mix.wav`\n\n**\u2713 `hx_hormonal`** \u2014 goal met\n  - _task:_ persona `hormonal` \u00b7 9 caller turns \u00b7 final state `\u2014`\n  > AGENT: Hi, I'm Ember. I'd love to understand your headaches a little better. I'll ask you a few questions by voice \u2014 it takes about five minutes, and you can skip anything or pause and come back anytime. Ready to start? Hello! How can I help you today? USER: Yeah, hi, I'm calling because I've been getting these really bad headaches and I'm not sure what's going on with them. I'm hoping you can help me figure out what's causing it. AGENT: Hi there! Just so you know, I'm an AI assistant and Got it\n  - _why this one:_ The customer successfully raised that headaches relate to their cycle and that they take hormonal birth control, and the agent confirmed multiple times that it is capturing and recording this hormonal context sensitively before continuing with the as\n  - _artifact:_ `hx_hormonal_20260805T155655Z.mix.wav`\n\n**\u2717 `hx_happy_full`** \u2014 goal not met\n  - _task:_ persona `full_intake` \u00b7 2 caller turns \u00b7 final state `\u2014`\n  > AGENT: Hello! How can I help you today? USER: Hi, yes, I'm calling about these headaches I've been getting and I'm hoping you can help me figure out what's going on. AGENT: I'm here whenever you're ready \u2014 no rush at all. Great, thanks for calling. Just so you know, I'm an AI assistant and this call is recorded for quality. What brings you in today? I hear you \u2014 headaches, got it. Just USER: Yeah, so I've been dealing with these pretty intense headaches for about two weeks now and they're really\n  - _why this one:_ not run\n  - _artifact:_ `hx_happy_full_20260805T150123Z.mix.wav`\n\n**\u2717 `hx_keep_it_quick`** \u2014 goal not met\n  - _task:_ persona `time_pressured` \u00b7 5 caller turns \u00b7 final state `\u2014`\n  > AGENT: Hi, I'm Ember. I'd love to understand your headaches a little better. I'll ask you a few questions by voice \u2014 it takes about five minutes, and you can skip anything or pause and come back anytime. Ready to start? USER: Hey, hi, I'm in kind of a rush here\u2014can we make this quick? What do you need from me? AGENT: Got it \u2014 take your time. What's going on? Hello! How can I help you today? No problem. Let me keep this quick for you. Of course, I'll keep it quick. What's the main thing bringing\n  - _why this one:_ Ember acknowledged the customer's request to keep it quick but failed to deliver concise answers, instead asking repetitive and rambling questions that frustrated the customer, and did not reach a clean close within the turn budget.\n  - _artifact:_ `hx_keep_it_quick_20260805T155105Z.mix.wav`\n\n<!-- /honesty:allow-context -->\n\n## 7. Exclusions and what they do to the number\n\nNothing was excluded: all 10 attempted units produced a gradable result. The headline denominator is the full attempted set.\n\n## 8. Limitations and threats to validity\n\n- **tiny n** (high) \u2014 N = 10. At this size a single scenario flipping moves the headline by ten points. Every figure here is directional and is labelled PRELIMINARY for that reason.\n- **not comparable** (high) \u2014 The scenario set is ours, the flows are ours, and the grader is ours. Nothing here can be compared to any published number, and it should never be presented alongside one as if it could.\n- **simulated caller** (high) \u2014 The caller is a language model speaking through text-to-speech. It has cleaner prosody, no background noise and more patience than a person on a mobile in a car \u2014 so recognition error here is a floor, not an estimate.\n- **coverage** (medium) \u2014 4 declared transitions never fired across the whole set. Those branches are untested, and a green result says nothing about them.\n- **run to run** (medium) \u2014 Speech recognition, generation and turn-taking are all stochastic. Two runs of the same scenario set differ; a one-scenario change between runs is noise until it repeats.\n\n- **sample size** (high) \u2014 N = 10 is below the 30-unit threshold this reporting layer uses to call a figure settled. The report is labelled PRELIMINARY throughout.\n\n## 9. Reproduction\n\n```bash\nuv sync --extra dev --extra voice\n./run_flow_sim.sh headache_enrollment\npython -m tau2.reporting.cli build results/whissle/flow_sim/headache_enrollment\n```\n\n| Field | Value |\n|---|---|\n| repo commit at report time | 89f2e02 |\n| extras required | voice (LiveKit, audio codecs) |\n\n- Audio is captured per session (`*.caller.wav`, `*.bot.wav`, `*.mix.wav`) \u2014 a disputed grader verdict can be settled by listening.\n- The directory accumulates every historical run of the same scenario; this report covers the latest session per task id.\n\n## Appendix A \u2014 raw artifacts\n\n| Path | Present | What it is |\n|---|:---:|---|\n| `SUMMARY.json` | yes | run-level aggregation and coverage |\n| `SUMMARY.md` | yes | the harness's own short summary |\n| `*.session.json` | **missing** | per-session sidecar: turns, flow trace, findings |\n| `*.mix.wav` | **missing** | the recorded call |\n| `REPORT.md` | yes | this report |\n| `report.json` | yes | machine-readable form of this report |\n\nEvery per-case record carries a `diagnostics` block (`tau2.health.diagnostics/v1`) with flow trace, signals, metadata sidecar, tool forensics, provenance and cost \u2014 and explicit availability flags, so an absent measurement reads as absent rather than as zero. See `HEALTH_DIAGNOSTICS.md`.\n\n## Appendix B \u2014 honesty-rule compliance\n\nThese rules are executed against this document, not asserted about it. A failing rule blocks generation.\n\n| Rule | Verdict | Checked |\n|---|:---:|---|\n| `R1_headline_requires_n` | pass | headline carries N = 10 everywhere it is stated |\n| `R2_judge_independence_disclosed` | pass | not applicable \u2014 judge is independent or deterministic |\n| `R3_exclusion_rate_adjacent` | pass | not applicable \u2014 nothing was excluded |\n| `R4_preliminary_labelled` | pass | labelled PRELIMINARY |\n| `R5_no_provider_names` | pass | no LLM vendor named outside the published-baseline table |\n| `R6_comparability_stated` | pass | not applicable \u2014 no published baseline is registered |\n| `R7_baseline_named` | pass | not applicable \u2014 no published baseline is registered |\n\n<!-- generated by tau2.reporting from flow_sim_baseline/headache_enrollment; schema tau2.reporting.run_report/v1 -->\n",
+  "reportPath": "results/whissle/flow_sim_baseline/headache_enrollment/REPORT.md"
+}

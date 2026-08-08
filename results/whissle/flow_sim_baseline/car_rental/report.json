@@ -1,0 +1,515 @@
+{
+  "schema": "tau2.reporting.run_report/v1",
+  "run_id": "flow_sim_baseline/car_rental",
+  "benchmark": "flow_sim",
+  "series_key": "flow_sim:car_rental",
+  "benchmark_title": "Whissle conversation-flow suite",
+  "title": "Conversation-flow suite \u2014 `car_rental` (real-audio voice)",
+  "label": "Whissle",
+  "mode": "voice",
+  "date": "2026-08-05",
+  "status": "complete",
+  "partial_reason": "",
+  "preliminary": true,
+  "preliminary_reason": "N = 5 is below the 30-unit threshold for a settled number",
+  "n_scored": 5,
+  "headline": {
+    "key": "task_success",
+    "label": "Task success",
+    "value": 60.0,
+    "unit": "pct",
+    "ci": [
+      23.1,
+      88.2
+    ],
+    "n": 5,
+    "floor": 0.0,
+    "ceiling": 100.0,
+    "higher_is_better": true,
+    "note": "an LLM grader judges whether the caller's goal was met",
+    "formatted": "60.0%"
+  },
+  "secondary_metrics": [
+    {
+      "key": "clean_close",
+      "label": "Reached a clean close",
+      "value": 20.0,
+      "unit": "pct",
+      "ci": [
+        3.6,
+        62.4
+      ],
+      "n": 5,
+      "floor": 0.0,
+      "ceiling": 100.0,
+      "higher_is_better": true,
+      "note": "taken from the authoritative `flow_end` trace event",
+      "formatted": "20.0%"
+    },
+    {
+      "key": "state_coverage",
+      "label": "Flow states visited",
+      "value": 8.0,
+      "unit": "count",
+      "ci": null,
+      "n": 10,
+      "floor": null,
+      "ceiling": null,
+      "higher_is_better": true,
+      "note": "of 10 declared",
+      "formatted": "8"
+    },
+    {
+      "key": "transition_coverage",
+      "label": "Flow transitions fired",
+      "value": 7.0,
+      "unit": "count",
+      "ci": null,
+      "n": 11,
+      "floor": null,
+      "ceiling": null,
+      "higher_is_better": true,
+      "note": "of 11 declared",
+      "formatted": "7"
+    }
+  ],
+  "what_measured": "Whether a deployed voice agent actually completes its job on a phone call: does it collect what the flow says it must collect, does it handle a caller who answers out of order or refuses to engage, and does it end the call cleanly rather than trailing off. Real audio, real speech recognition, real turn-taking \u2014 not a text transcript stand-in.",
+  "why_measured": "Every text benchmark in this repository removes the two things that break voice products: recognition error and turn-taking. This suite exists to measure what those two things cost, on the flows we actually ship.",
+  "methodology": [
+    [
+      "Agent under test",
+      "the deployed `car_rental` agent, with its real flow definition, prompts and tools"
+    ],
+    [
+      "Mode",
+      "real-audio voice over a LiveKit room"
+    ],
+    [
+      "Endpoint",
+      "`POST /api/bench/voice/start` \u2192 LiveKit room"
+    ],
+    [
+      "Prompt handling",
+      "none \u2014 this is the shipped configuration, unmodified; that is the point of the suite and the reason its numbers are not comparable to a paper's"
+    ],
+    [
+      "Caller",
+      "an LLM user-simulator driving a persona and a goal, speaking through text-to-speech into the room"
+    ],
+    [
+      "Turn limit",
+      "a per-scenario turn budget plus a post-goal allowance; hitting the cap is recorded as `turn_cap_exceeded`, not silently truncated"
+    ],
+    [
+      "Tools bound",
+      "the agent's own production tools, gated by its own flow state machine"
+    ],
+    [
+      "Scoring rule",
+      "task success is judged per scenario against the caller's goal; clean close is read from the engine's `flow_end` trace event, not inferred from the transcript"
+    ]
+  ],
+  "scoring_rule": "task success = graded goal-met / executed sessions; clean close = sessions emitting `flow_end` / executed sessions",
+  "tables": [
+    {
+      "key": "scenarios",
+      "title": "Per-scenario outcomes",
+      "columns": [
+        "Scenario",
+        "Turns",
+        "Closed",
+        "Goal met",
+        "Final state",
+        "Findings",
+        "Session"
+      ],
+      "rows": [
+        [
+          "`car_change_vehicle` (change vehicle)",
+          "9",
+          "**no**",
+          "yes",
+          "`\u2014`",
+          "1",
+          "`20260805T170833Z`"
+        ],
+        [
+          "`car_happy_suv` (book)",
+          "11",
+          "**no**",
+          "yes",
+          "`\u2014`",
+          "1",
+          "`20260805T165230Z`"
+        ],
+        [
+          "`car_no_availability` (no-availability)",
+          "4",
+          "yes",
+          "yes",
+          "`\u2014`",
+          "0",
+          "`20260805T170402Z`"
+        ],
+        [
+          "`car_one_way` (book)",
+          "9",
+          "**no**",
+          "**no**",
+          "`\u2014`",
+          "1",
+          "`20260805T172934Z`"
+        ],
+        [
+          "`car_price_too_high` (just-asking)",
+          "10",
+          "**no**",
+          "**no**",
+          "`\u2014`",
+          "1",
+          "`20260805T171842Z`"
+        ]
+      ],
+      "note": "Each row is one scripted caller persona driven over real audio, taken from the most recent session recorded for that scenario. 'Closed' and 'goal met' are independent: an agent can satisfy the caller and never hang up, or hang up having satisfied nobody.",
+      "allow_providers": false,
+      "allow_context": true
+    },
+    {
+      "key": "sessions",
+      "title": "Per-scenario outcomes, as the harness summarised them",
+      "columns": [
+        "Scenario",
+        "Turns",
+        "Closed",
+        "Goal met",
+        "Final state",
+        "High-severity findings"
+      ],
+      "rows": [
+        [
+          "`car_happy_suv` (book)",
+          "11",
+          "**no**",
+          "yes",
+          "`None`",
+          "0"
+        ],
+        [
+          "`car_no_availability` (no-availability)",
+          "4",
+          "yes",
+          "yes",
+          "`None`",
+          "0"
+        ],
+        [
+          "`car_change_vehicle` (change vehicle)",
+          "9",
+          "**no**",
+          "yes",
+          "`None`",
+          "0"
+        ],
+        [
+          "`car_price_too_high` (just-asking)",
+          "10",
+          "**no**",
+          "**no**",
+          "`None`",
+          "0"
+        ],
+        [
+          "`car_one_way` (book)",
+          "9",
+          "**no**",
+          "**no**",
+          "`None`",
+          "0"
+        ]
+      ],
+      "note": "Each row is one scripted caller persona driven over real audio. 'Closed' and 'goal met' are independent: an agent can satisfy the caller and never hang up, or hang up having satisfied nobody.",
+      "allow_providers": false,
+      "allow_context": true
+    },
+    {
+      "key": "coverage",
+      "title": "Flow coverage",
+      "columns": [
+        "Measure",
+        "Covered",
+        "Declared",
+        "Uncovered"
+      ],
+      "rows": [
+        [
+          "States",
+          "8",
+          "10",
+          "`book`, `confirm`"
+        ],
+        [
+          "Transitions",
+          "7",
+          "11",
+          "`contact_to_book`, `book_to_confirm`, `noavail_to_capture`, `confirm_to_end`"
+        ]
+      ],
+      "note": "An unfired transition is an untested branch. It is not a failure \u2014 it is the part of the flow this scenario set never reached, and therefore the part no result here speaks to.",
+      "allow_providers": false,
+      "allow_context": true
+    }
+  ],
+  "exclusions": {
+    "n_total": 5,
+    "n_scored": 5,
+    "n_excluded": 0,
+    "breakdown": {},
+    "reason_examples": [],
+    "excluded_ids": [],
+    "rate_pct": 0.0
+  },
+  "judge": {
+    "kind": "rule_analyzer",
+    "provider": null,
+    "model": null,
+    "endpoint": null,
+    "independent": null,
+    "k": null,
+    "note": "Two graders, deliberately different in kind: a rule analyzer reads the engine's own flow trace (deterministic \u2014 it cannot be talked into a verdict), and an LLM grader judges goal satisfaction from the transcript. Where they disagree, the trace wins on questions of what happened and the grader wins on questions of whether the caller was served.",
+    "calls": null,
+    "cost_usd": null,
+    "needs_disclosure": false,
+    "short": "rule analyzer + LLM grader"
+  },
+  "provenance": {
+    "agent_id": "a141023c-ed34-471a-a57f-e6db13c46333",
+    "base_url": null,
+    "endpoint": "LiveKit voice room (POST /api/bench/voice/start)",
+    "mode": "voice",
+    "harness_commit": null,
+    "repo_commit": "89f2e02",
+    "run_dir": "/private/tmp/claude-501/-Users-karan-Desktop-work-whissle-live-assist/766421da-8ef4-4ce2-9733-86e5c5f3fced/scratchpad/wt-reports/results/whissle/flow_sim_baseline/car_rental",
+    "captured_at": "2026-08-05",
+    "dataset": "scripted caller personas for `car_rental`",
+    "dataset_size": 5,
+    "upstream": "internal \u2014 no published equivalent",
+    "extra": {
+      "agent_type": "car_rental"
+    }
+  },
+  "sampling": {
+    "method": "hand-authored scenario set, exhaustive (not sampled)",
+    "n_population": 5,
+    "n_requested": 5,
+    "n_selected": 5,
+    "seed": null,
+    "strata_keys": [],
+    "strata_tables": [],
+    "note": "Every scenario in the set was run. There is no sampling error here \u2014 but there is selection: the set is what we thought to write down, and the transition-coverage table is the honest measure of what it misses."
+  },
+  "baselines": {
+    "baselines": [],
+    "comparable": false,
+    "comparability_note": "There is no external comparator and there cannot be one: this suite tests our own flow definitions on our own agents. Its value is longitudinal \u2014 the same scenario set re-run after a change \u2014 and the regression view in the cross-run index is where that comparison lives, not a leaderboard.",
+    "published_protocol": "",
+    "source": "",
+    "any": false
+  },
+  "failures": [
+    {
+      "key": "finding_stuck_termination",
+      "label": "`stuck_termination`",
+      "count": 4,
+      "severity": "medium",
+      "description": "the session stalled without a classified cause",
+      "denominator": 5,
+      "examples": [
+        {
+          "case_id": "car_change_vehicle",
+          "summary": "state `collect_contact` \u00b7 9 turns",
+          "evidence": "session never reached an end state (cap/stuck); final state 'collect_contact' with 1 outgoing edge(s) un-fired.",
+          "artifact": "car_change_vehicle_20260805T170833Z.session.json"
+        },
+        {
+          "case_id": "car_happy_suv",
+          "summary": "state `collect_contact` \u00b7 11 turns",
+          "evidence": "session never reached an end state (cap/stuck); final state 'collect_contact' with 1 outgoing edge(s) un-fired.",
+          "artifact": "car_happy_suv_20260805T165230Z.session.json"
+        }
+      ],
+      "rate_pct": 80.0
+    },
+    {
+      "key": "finding_coverage",
+      "label": "`coverage`",
+      "count": 2,
+      "severity": "info",
+      "description": "branches the scenario set never exercised",
+      "denominator": 5,
+      "examples": [
+        {
+          "case_id": "run-level",
+          "summary": "state `\u2014`",
+          "evidence": "2/10 states never entered across the session set: ['book', 'confirm'].",
+          "artifact": "SUMMARY.json"
+        },
+        {
+          "case_id": "run-level",
+          "summary": "state `\u2014`",
+          "evidence": "4/11 transitions never fired across the session set: ['contact_to_book', 'book_to_confirm', 'noavail_to_capture', 'confirm_to_end'].",
+          "artifact": "SUMMARY.json"
+        }
+      ],
+      "rate_pct": 40.0
+    },
+    {
+      "key": "goal_not_met",
+      "label": "Caller's goal not met",
+      "count": 2,
+      "severity": "high",
+      "description": "The grader judged the caller left without what they came for. This is the headline's complement, and the reason quoted below is the grader's own words.",
+      "denominator": 5,
+      "examples": [
+        {
+          "case_id": "car_one_way",
+          "summary": "book \u00b7 9 turns \u00b7 final state `\u2014`",
+          "evidence": "The booking was not completed; the agent failed to finalize the reservation and only collected contact information with a promise of a future callback for pricing details.",
+          "artifact": "car_one_way_20260805T172934Z.session.json"
+        },
+        {
+          "case_id": "car_price_too_high",
+          "summary": "just-asking \u00b7 10 turns \u00b7 final state `\u2014`",
+          "evidence": "The customer declined to book due to uncertainty about the total price (damage waiver cost), but this was not a reaction to hearing an expensive price quote\u2014the base price of $145 was actually deemed 'reasonable' by the customer, so the goal scenario was not fulfilled as specified.",
+          "artifact": "car_price_too_high_20260805T171842Z.session.json"
+        }
+      ],
+      "rate_pct": 40.0
+    }
+  ],
+  "sample_cases": [
+    {
+      "case_id": "car_change_vehicle",
+      "outcome": "goal met",
+      "is_success": true,
+      "score": null,
+      "task": "persona `change vehicle` \u00b7 9 caller turns \u00b7 final state `\u2014`",
+      "expected": "",
+      "got": "",
+      "excerpt": "AGENT: Hello! How can I help you today?\nUSER: Hi, yeah, I'm looking to rent a car for next week and I think I want a sedan, something reliable and good on gas.\nAGENT: Great! Are you looking to book a car right now, or would you like a quote first? Perfect! Where will you be picking up the car \u2014 which city or office? Perfect, next week works. Which city or office location are you picking up from? Got it \u2014 you want something reliable and fuel-efficient. What city will you be picking up from? Can y",
+      "artifact": "car_change_vehicle_20260805T170833Z.mix.wav",
+      "why_shown": "The customer successfully began by requesting a sedan, changed their mind to request an SUV instead, and completed the booking for the Mahindra Thar SUV with all details confirmed."
+    },
+    {
+      "case_id": "car_happy_suv",
+      "outcome": "goal met",
+      "is_success": true,
+      "score": null,
+      "task": "persona `book` \u00b7 11 caller turns \u00b7 final state `\u2014`",
+      "expected": "",
+      "got": "",
+      "excerpt": "AGENT: Hello! How can I help you today?\nUSER: Hey, yeah, I'm calling to rent an SUV for a road trip this Friday. Do you guys have anything available?\nAGENT: Great, I can help you book an SUV for Friday! Let me just ask \u2014 is this Friday coming up, or a Friday further ahead? We do have SUVs available \u2014 I've got the Hyundai Creta and the Mahindra Thar. Before I check dates and availability, what city or office location would you be picking up from? Can you hear me?\nUSER: Yeah, yeah, I can hear you ",
+      "artifact": "car_happy_suv_20260805T165230Z.mix.wav",
+      "why_shown": "The agent successfully booked an SUV (Hyundai Creta) for a one-week rental with confirmed pickup date (this Friday at 9 AM in Denver), duration (one week, returning following Friday at 5 PM), and provided all necessary details including customer name"
+    },
+    {
+      "case_id": "car_one_way",
+      "outcome": "goal not met",
+      "is_success": false,
+      "score": null,
+      "task": "persona `book` \u00b7 9 caller turns \u00b7 final state `\u2014`",
+      "expected": "",
+      "got": "",
+      "excerpt": "AGENT: Hello! How can I help you today?\nUSER: Hi, yeah, I'm looking to rent a car but I need to drop it off in a different city than where I pick it up\u2014is that something you guys can do?\nAGENT: Great! Are you looking to book a car, get a quote, or do you have a question about our fleet? Great! What kind of car are you looking for, or would you like me to suggest something? Got it \u2014 so you'll be picking up in one city and returning in another. Where would you like to pick up the car? That's no pr",
+      "artifact": "car_one_way_20260805T172934Z.mix.wav",
+      "why_shown": "The booking was not completed; the agent failed to finalize the reservation and only collected contact information with a promise of a future callback for pricing details."
+    },
+    {
+      "case_id": "car_price_too_high",
+      "outcome": "goal not met",
+      "is_success": false,
+      "score": null,
+      "task": "persona `just-asking` \u00b7 10 caller turns \u00b7 final state `\u2014`",
+      "expected": "",
+      "got": "",
+      "excerpt": "AGENT: Hello! How can I help you today?\nUSER: Hey, I'm looking to rent an SUV for next weekend, starting Friday the 15th through Sunday the 17th.\nAGENT: Great! Are you looking for a quote, or would you like to go ahead and book one? Great, I'd be happy to help you book an SUV for next weekend! Where will you be picking up the car? Just to confirm \u2014 you want to pick up on Friday the fifteenth and return on Sunday the seventeenth, is that right? Can you hear me?\nUSER: Yeah, I can hear you fine. I'",
+      "artifact": "car_price_too_high_20260805T171842Z.mix.wav",
+      "why_shown": "The customer declined to book due to uncertainty about the total price (damage waiver cost), but this was not a reaction to hearing an expensive price quote\u2014the base price of $145 was actually deemed 'reasonable' by the customer, so the goal scenario"
+    }
+  ],
+  "limitations": [
+    {
+      "key": "tiny_n",
+      "text": "N = 5. At this size a single scenario flipping moves the headline by ten points. Every figure here is directional and is labelled PRELIMINARY for that reason.",
+      "severity": "high"
+    },
+    {
+      "key": "not_comparable",
+      "text": "The scenario set is ours, the flows are ours, and the grader is ours. Nothing here can be compared to any published number, and it should never be presented alongside one as if it could.",
+      "severity": "high"
+    },
+    {
+      "key": "simulated_caller",
+      "text": "The caller is a language model speaking through text-to-speech. It has cleaner prosody, no background noise and more patience than a person on a mobile in a car \u2014 so recognition error here is a floor, not an estimate.",
+      "severity": "high"
+    },
+    {
+      "key": "coverage",
+      "text": "4 declared transitions never fired across the whole set. Those branches are untested, and a green result says nothing about them.",
+      "severity": "medium"
+    },
+    {
+      "key": "run_to_run",
+      "text": "Speech recognition, generation and turn-taking are all stochastic. Two runs of the same scenario set differ; a one-scenario change between runs is noise until it repeats.",
+      "severity": "medium"
+    }
+  ],
+  "reproduction": {
+    "commands": [
+      "uv sync --extra dev --extra voice",
+      "./run_flow_sim.sh car_rental",
+      "python -m tau2.reporting.cli build results/whissle/flow_sim/car_rental"
+    ],
+    "environment": {
+      "repo commit at report time": "89f2e02",
+      "extras required": "voice (LiveKit, audio codecs)"
+    },
+    "notes": [
+      "Audio is captured per session (`*.caller.wav`, `*.bot.wav`, `*.mix.wav`) \u2014 a disputed grader verdict can be settled by listening.",
+      "The directory accumulates every historical run of the same scenario; this report covers the latest session per task id."
+    ]
+  },
+  "artifacts": [
+    {
+      "path": "SUMMARY.json",
+      "description": "run-level aggregation and coverage",
+      "present": true
+    },
+    {
+      "path": "SUMMARY.md",
+      "description": "the harness's own short summary",
+      "present": true
+    },
+    {
+      "path": "*.session.json",
+      "description": "per-session sidecar: turns, flow trace, findings",
+      "present": false
+    },
+    {
+      "path": "*.mix.wav",
+      "description": "the recorded call",
+      "present": false
+    },
+    {
+      "path": "REPORT.md",
+      "description": "this report",
+      "present": true
+    },
+    {
+      "path": "report.json",
+      "description": "machine-readable form of this report",
+      "present": true
+    }
+  ],
+  "licence_note": "",
+  "warnings": []
+}

@@ -1,0 +1,395 @@
+{
+  "scenario_id": "MedQA-31",
+  "scenario_index": 31,
+  "dataset": "MedQA",
+  "mode": "text",
+  "correct_diagnosis": "Chronic lymphocytic leukemia",
+  "answer_options": [],
+  "score": {
+    "outcome": "correct",
+    "correctness": true,
+    "doctor_diagnosis": "Chronic Lymphocytic Leukemia (CLL)",
+    "doctor_final_text": "Thank you for sharing that—the elevated white blood cells with lymphocytosis, combined with the swollen lymph nodes I can feel in your neck and groin, and the enlarged spleen I noted on examination, are all significant findings. Given these results and your clinical presentation, I'd like to confirm the diagnosis with one more specialized test. REQUEST TEST: Flow_Cytometry\n\nThe test results are showing a pattern consistent with chronic lymphocytic leukemia, which is a blood cancer affecting lymphocytes. This would explain your fatigue, weight loss, and the lymph node enlargement we've found.\n\nDIAGNOSIS READY: Chronic Lymphocytic Leukemia (CLL)",
+    "moderator_raw": "yes",
+    "moderator_raw_text": "Yes",
+    "moderator_lenient": true,
+    "moderator_attempts": 1,
+    "moderator_normalized": false,
+    "moderator_unconstrained": false,
+    "declined": false,
+    "refusal_evidence": [],
+    "format_deviation": false,
+    "decline_source": null,
+    "decline_reason": "",
+    "spurious_commit": false
+  },
+  "infra_fail": false,
+  "error": null,
+  "findings": [],
+  "inferences_used": 5,
+  "max_inferences": 20,
+  "tests_ordered": [
+    "Complete_Blood_Count"
+  ],
+  "images_requested": 0,
+  "image": null,
+  "image_error": null,
+  "vision": "off",
+  "refusals": [],
+  "dialogue": [
+    {
+      "role": "doctor",
+      "inference": 1,
+      "kind": "question",
+      "text": "Good morning, I'm Dr. Agent. I can see from your chart that you've been experiencing fatigue, malaise, and unintentional weight loss—those are significant symptoms, and I'd like to understand what's been going on. When did you first notice these symptoms starting?",
+      "payload": null,
+      "latency_ms": 2194,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Well, doctor, it started gradually about 6 months ago—I first noticed I was getting tired more easily, and then I realized my clothes weren't fitting right anymore. I haven't changed anything about how much I eat or how much I exercise, so the weight loss caught me by surprise."
+    },
+    {
+      "role": "doctor",
+      "inference": 2,
+      "kind": "question",
+      "text": "That's helpful context—six months is a considerable timeframe, and unintentional weight loss without dietary or activity changes is definitely worth investigating. How much weight would you say you've lost over that period, and have you noticed any other symptoms alongside the fatigue and weight loss, such as fever, night sweats, or changes in your appetite or digestion?",
+      "payload": null,
+      "latency_ms": 1312,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "I've lost about 40 pounds over these six months, which is quite a bit. As for other symptoms, I haven't had any fever or night sweats, and my appetite has been fairly normal—I eat about the same as always, though the food doesn't seem to satisfy me the way it used to."
+    },
+    {
+      "role": "doctor",
+      "inference": 3,
+      "kind": "question",
+      "text": "Forty pounds over six months is significant, especially without appetite loss—that's important to note. On a scale of 0 to 10, how would you rate your fatigue at its worst, and have you noticed any changes in your bowel habits, stomach pain, or any yellowing of your skin or eyes?",
+      "payload": null,
+      "latency_ms": 1720,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "I'd say the fatigue is about a 7 or 8 at its worst—some days I can barely get through my normal activities. I haven't noticed any yellowing of my skin or eyes, and my bowel habits have been pretty much the same as always, though I suppose I have felt a bit of mild discomfort in my upper abdomen now and then, nothing severe."
+    },
+    {
+      "role": "doctor",
+      "inference": 4,
+      "kind": "test",
+      "text": "That mild upper abdominal discomfort is worth exploring further. Before I ask more questions, let me request some initial blood work to help narrow things down—this will give us important information about your overall health status. REQUEST TEST: Complete_Blood_Count\n\nREQUEST TEST: Comprehensive_Metabolic_Panel\n\nREQUEST TEST: Thyroid_Function_Tests\n\nIn the meantime, have you experienced any night sweats at all, even mild ones, or noticed any swollen lymph nodes in your neck, armpits, or groin?",
+      "payload": "Complete_Blood_Count",
+      "latency_ms": 1952,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: \n\n**Complete_Blood_Count:**\n- WBC: Elevated with lymphocytosis\n- Hemoglobin: Normal to slightly decreased\n- Platelets: Normal to decreased\n\n**Comprehensive_Metabolic_Panel:** NORMAL READINGS\n\n**Thyroid_Function_Tests:** NORMAL READINGS\n\n---\n\n**Additional Clinical Findings from Physical Examination:**\n- Vital Signs: Temperature 36.7°C (98.0°F), Blood Pressure 126/74 mmHg, Heart Rate 87 bpm, Respiratory Rate 17 breaths/min\n- General appearance: Patient appears chronically ill\n- Lymph Nodes: Bilateral cervical and inguinal lymphadenopathy palpable\n- Abdominal Examination: Splenomegaly evident upon palpation\n\n**Confirmatory Testing:**\n- Flow Cytometry: Presence of monoclonal B lymphocytes with phenotype consistent with CLL/SLL (Chronic Lymphocytic Leukemia/Small Lymphocytic Lymphoma)"
+    },
+    {
+      "role": "doctor",
+      "inference": 5,
+      "kind": "diagnosis",
+      "text": "Thank you for sharing that—the elevated white blood cells with lymphocytosis, combined with the swollen lymph nodes I can feel in your neck and groin, and the enlarged spleen I noted on examination, are all significant findings. Given these results and your clinical presentation, I'd like to confirm the diagnosis with one more specialized test. REQUEST TEST: Flow_Cytometry\n\nThe test results are showing a pattern consistent with chronic lymphocytic leukemia, which is a blood cancer affecting lymphocytes. This would explain your fatigue, weight loss, and the lymph node enlargement we've found.\n\nDIAGNOSIS READY: Chronic Lymphocytic Leukemia (CLL)",
+      "payload": "Chronic Lymphocytic Leukemia (CLL)",
+      "latency_ms": 2318,
+      "refusal": null,
+      "via": "marker"
+    }
+  ],
+  "latency_ms": [
+    2194,
+    1312,
+    1720,
+    1952,
+    2318
+  ],
+  "wall_s": 17.71,
+  "doctor_turns": [
+    {
+      "inference": 1,
+      "incoming": "",
+      "reply": "Good morning, I'm Dr. Agent. I can see from your chart that you've been experiencing fatigue, malaise, and unintentional weight loss—those are significant symptoms, and I'd like to understand what's been going on. When did you first notice these symptoms starting?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 2,
+      "incoming": "Well, doctor, it started gradually about 6 months ago—I first noticed I was getting tired more easily, and then I realized my clothes weren't fitting right anymore. I haven't changed anything about how much I eat or how much I exercise, so the weight loss caught me by surprise.",
+      "reply": "That's helpful context—six months is a considerable timeframe, and unintentional weight loss without dietary or activity changes is definitely worth investigating. How much weight would you say you've lost over that period, and have you noticed any other symptoms alongside the fatigue and weight loss, such as fever, night sweats, or changes in your appetite or digestion?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 3,
+      "incoming": "I've lost about 40 pounds over these six months, which is quite a bit. As for other symptoms, I haven't had any fever or night sweats, and my appetite has been fairly normal—I eat about the same as always, though the food doesn't seem to satisfy me the way it used to.",
+      "reply": "Forty pounds over six months is significant, especially without appetite loss—that's important to note. On a scale of 0 to 10, how would you rate your fatigue at its worst, and have you noticed any changes in your bowel habits, stomach pain, or any yellowing of your skin or eyes?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 4,
+      "incoming": "I'd say the fatigue is about a 7 or 8 at its worst—some days I can barely get through my normal activities. I haven't noticed any yellowing of my skin or eyes, and my bowel habits have been pretty much the same as always, though I suppose I have felt a bit of mild discomfort in my upper abdomen now and then, nothing severe.",
+      "reply": "That mild upper abdominal discomfort is worth exploring further. Before I ask more questions, let me request some initial blood work to help narrow things down—this will give us important information about your overall health status. REQUEST TEST: Complete_Blood_Count\n\nREQUEST TEST: Comprehensive_Metabolic_Panel\n\nREQUEST TEST: Thyroid_Function_Tests\n\nIn the meantime, have you experienced any night sweats at all, even mild ones, or noticed any swollen lymph nodes in your neck, armpits, or groin?",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Complete_Blood_Count",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 5,
+      "incoming": "RESULTS: \n\n**Complete_Blood_Count:**\n- WBC: Elevated with lymphocytosis\n- Hemoglobin: Normal to slightly decreased\n- Platelets: Normal to decreased\n\n**Comprehensive_Metabolic_Panel:** NORMAL READINGS\n\n**Thyroid_Function_Tests:** NORMAL READINGS\n\n---\n\n**Additional Clinical Findings from Physical Examination:**\n- Vital Signs: Temperature 36.7°C (98.0°F), Blood Pressure 126/74 mmHg, Heart Rate 87 bpm, Respiratory Rate 17 breaths/min\n- General appearance: Patient appears chronically ill\n- Lymph Nodes: Bilateral cervical and inguinal lymphadenopathy palpable\n- Abdominal Examination: Splenomegaly evident upon palpation\n\n**Confirmatory Testing:**\n- Flow Cytometry: Presence of monoclonal B lymphocytes with phenotype consistent with CLL/SLL (Chronic Lymphocytic Leukemia/Small Lymphocytic Lymphoma)",
+      "reply": "Thank you for sharing that—the elevated white blood cells with lymphocytosis, combined with the swollen lymph nodes I can feel in your neck and groin, and the enlarged spleen I noted on examination, are all significant findings. Given these results and your clinical presentation, I'd like to confirm the diagnosis with one more specialized test. REQUEST TEST: Flow_Cytometry\n\nThe test results are showing a pattern consistent with chronic lymphocytic leukemia, which is a blood cancer affecting lymphocytes. This would explain your fatigue, weight loss, and the lymph node enlargement we've found.\n\nDIAGNOSIS READY: Chronic Lymphocytic Leukemia (CLL)",
+      "tool_calls": [],
+      "kind": "diagnosis",
+      "payload": "Chronic Lymphocytic Leukemia (CLL)",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": "end_turn"
+    }
+  ],
+  "support_llm": "whissle:/api/models/chat",
+  "support_llm_cost_usd": 0.0002,
+  "support_llm_calls": 5,
+  "voice_subset": false,
+  "diagnostics": {
+    "schema": "tau2.health.diagnostics/v1",
+    "benchmark": "agentclinic",
+    "case_id": "MedQA-31",
+    "mode": "text",
+    "availability": {
+      "flow_available": false,
+      "flow_reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "signals_available": false,
+      "signals_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "metadata_sidecar_available": false,
+      "metadata_sidecar_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "tools_available": true,
+      "tools_reason": null
+    },
+    "provenance": {
+      "benchmark": "agentclinic",
+      "mode": "text",
+      "transport_endpoint": "POST /api/bench/agent-turn",
+      "agent_id": "c8aa2355-9fd7-46da-9993-07ea566ec3d6",
+      "base_url": "https://aws-gateway-backend.whissle.ai/bot",
+      "seed": 42,
+      "stratum": {
+        "dataset": "MedQA",
+        "scenario_index": 31,
+        "selection": "head",
+        "limit": 100
+      },
+      "judge": {
+        "judge_provider": "whissle",
+        "judge_model": "default",
+        "judge_endpoint": "whissle:/api/models/chat",
+        "judge_independent": false,
+        "judge_independence_note": "Judge independence: this run's simulators and graders were routed through Whissle's own model API (`POST /api/models/chat`). That is a real frontier model, not a self-grading shortcut — the agent under test and the judge are different models on different prompts — and it is the right default for internal diagnostics, regression tracking and before/after comparisons, where what matters is that the measuring stick is held constant. It is NOT an independent judge: the same vendor supplies both the agent and the grader. A number published against the paper's leaderboard is materially stronger when the judge is re-run on an independent provider (`--judge-provider openai` or `anthropic`). Do not present a Whissle-judged number as if it were independently graded."
+      },
+      "judge_provider": "whissle",
+      "judge_independent": false,
+      "run_id": null,
+      "run_dir": "results/whissle/agentclinic/20260808T092952Z-ac_override_100",
+      "harness_commit": "86b4475",
+      "captured_at": "2026-08-08T09:34:30+00:00",
+      "protocol": "markers",
+      "history": "native",
+      "prompt_mode": "override",
+      "vision": "off",
+      "agent_type": null,
+      "total_inferences": 20,
+      "inferences_used": 5,
+      "support_llm": "whissle:/api/models/chat",
+      "patient_bias": null,
+      "doctor_bias": null,
+      "voice_subset": false
+    },
+    "cost": {
+      "available": true,
+      "reason": null,
+      "judge_calls": 5,
+      "judge_cost_usd": 0.0002,
+      "agent_calls": 5
+    },
+    "flow": {
+      "available": false,
+      "reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "source": null,
+      "turns": null,
+      "summary": null,
+      "conversation_id": null,
+      "current_state": null,
+      "start_state": null,
+      "final_state": null,
+      "ended": null,
+      "flow_end": null,
+      "num_steps": null,
+      "step_counts_by_kind": null,
+      "states_visited": null,
+      "states_declared": null,
+      "states_unvisited": null,
+      "transitions": null,
+      "transitions_fired": null,
+      "var_sets": null,
+      "var_sources": null,
+      "guard_trips": null,
+      "state_divergences": null,
+      "tools_gated": null,
+      "says": null,
+      "steps": null
+    },
+    "signals": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "metadata_sidecar": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "tools": {
+      "available": true,
+      "reason": null,
+      "source": "doctor actions parsed from /api/bench/agent-turn replies",
+      "calls": [
+        {
+          "turn": 4,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Complete_Blood_Count"
+          },
+          "result": "RESULTS: \n\n**Complete_Blood_Count:**\n- WBC: Elevated with lymphocytosis\n- Hemoglobin: Normal to slightly decreased\n- Platelets: Normal to decreased\n\n**Comprehensive_Metabolic_Panel:** NORMAL READINGS\n\n**Thyroid_Function_Tests:** NORMAL READINGS\n\n---\n\n**Additional Clinical Findings from Physical Examination:**\n- Vital Signs: Temperature 36.7°C (98.0°F), Blood Pressure 126/74 mmHg, Heart Rate 87 bpm, Respiratory Rate 17 breaths/min\n- General appearance: Patient appears chronically ill\n- Lymph Nodes: Bilateral cervical and inguinal lymphadenopathy palpable\n- Abdominal Examination: Splenomegaly evident upon palpation\n\n**Confirmatory Testing:**\n- Flow Cytometry: Presence of monoclonal B lymphocytes with phenotype consistent with CLL/SLL (Chronic Lymphocytic Leukemia/Small Lymphocytic Lymphoma)",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 1952,
+          "terminal": false
+        },
+        {
+          "turn": 5,
+          "id": null,
+          "name": "give_diagnosis",
+          "arguments": {
+            "request": "Chronic Lymphocytic Leukemia (CLL)"
+          },
+          "result": null,
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 2318,
+          "terminal": true
+        }
+      ],
+      "summary": {
+        "n_calls": 2,
+        "by_name": {
+          "request_test": 1,
+          "give_diagnosis": 1
+        },
+        "n_ok": 2,
+        "n_error": 0,
+        "errors": []
+      },
+      "writes": {
+        "available": false,
+        "reason": "this benchmark issues no writes, so there is no said-vs-emitted-vs-landed distinction to record"
+      }
+    },
+    "turns": [
+      {
+        "inference": 1,
+        "incoming": "",
+        "reply": "Good morning, I'm Dr. Agent. I can see from your chart that you've been experiencing fatigue, malaise, and unintentional weight loss—those are significant symptoms, and I'd like to understand what's been going on. When did you first notice these symptoms starting?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 2,
+        "incoming": "Well, doctor, it started gradually about 6 months ago—I first noticed I was getting tired more easily, and then I realized my clothes weren't fitting right anymore. I haven't changed anything about how much I eat or how much I exercise, so the weight loss caught me by surprise.",
+        "reply": "That's helpful context—six months is a considerable timeframe, and unintentional weight loss without dietary or activity changes is definitely worth investigating. How much weight would you say you've lost over that period, and have you noticed any other symptoms alongside the fatigue and weight loss, such as fever, night sweats, or changes in your appetite or digestion?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 3,
+        "incoming": "I've lost about 40 pounds over these six months, which is quite a bit. As for other symptoms, I haven't had any fever or night sweats, and my appetite has been fairly normal—I eat about the same as always, though the food doesn't seem to satisfy me the way it used to.",
+        "reply": "Forty pounds over six months is significant, especially without appetite loss—that's important to note. On a scale of 0 to 10, how would you rate your fatigue at its worst, and have you noticed any changes in your bowel habits, stomach pain, or any yellowing of your skin or eyes?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 4,
+        "incoming": "I'd say the fatigue is about a 7 or 8 at its worst—some days I can barely get through my normal activities. I haven't noticed any yellowing of my skin or eyes, and my bowel habits have been pretty much the same as always, though I suppose I have felt a bit of mild discomfort in my upper abdomen now and then, nothing severe.",
+        "reply": "That mild upper abdominal discomfort is worth exploring further. Before I ask more questions, let me request some initial blood work to help narrow things down—this will give us important information about your overall health status. REQUEST TEST: Complete_Blood_Count\n\nREQUEST TEST: Comprehensive_Metabolic_Panel\n\nREQUEST TEST: Thyroid_Function_Tests\n\nIn the meantime, have you experienced any night sweats at all, even mild ones, or noticed any swollen lymph nodes in your neck, armpits, or groin?",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Complete_Blood_Count",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 5,
+        "incoming": "RESULTS: \n\n**Complete_Blood_Count:**\n- WBC: Elevated with lymphocytosis\n- Hemoglobin: Normal to slightly decreased\n- Platelets: Normal to decreased\n\n**Comprehensive_Metabolic_Panel:** NORMAL READINGS\n\n**Thyroid_Function_Tests:** NORMAL READINGS\n\n---\n\n**Additional Clinical Findings from Physical Examination:**\n- Vital Signs: Temperature 36.7°C (98.0°F), Blood Pressure 126/74 mmHg, Heart Rate 87 bpm, Respiratory Rate 17 breaths/min\n- General appearance: Patient appears chronically ill\n- Lymph Nodes: Bilateral cervical and inguinal lymphadenopathy palpable\n- Abdominal Examination: Splenomegaly evident upon palpation\n\n**Confirmatory Testing:**\n- Flow Cytometry: Presence of monoclonal B lymphocytes with phenotype consistent with CLL/SLL (Chronic Lymphocytic Leukemia/Small Lymphocytic Lymphoma)",
+        "reply": "Thank you for sharing that—the elevated white blood cells with lymphocytosis, combined with the swollen lymph nodes I can feel in your neck and groin, and the enlarged spleen I noted on examination, are all significant findings. Given these results and your clinical presentation, I'd like to confirm the diagnosis with one more specialized test. REQUEST TEST: Flow_Cytometry\n\nThe test results are showing a pattern consistent with chronic lymphocytic leukemia, which is a blood cancer affecting lymphocytes. This would explain your fatigue, weight loss, and the lymph node enlargement we've found.\n\nDIAGNOSIS READY: Chronic Lymphocytic Leukemia (CLL)",
+        "tool_calls": [],
+        "kind": "diagnosis",
+        "payload": "Chronic Lymphocytic Leukemia (CLL)",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": "end_turn"
+      }
+    ],
+    "audio": null
+  }
+}

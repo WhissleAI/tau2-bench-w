@@ -1,0 +1,542 @@
+{
+  "scenario_id": "MedQA-83",
+  "scenario_index": 83,
+  "dataset": "MedQA",
+  "mode": "text",
+  "correct_diagnosis": "Neuroleptic malignant syndrome",
+  "answer_options": [],
+  "score": {
+    "outcome": "correct",
+    "correctness": true,
+    "doctor_diagnosis": "Neuroleptic Malignant Syndrome",
+    "doctor_final_text": "I understand how frightening this is, but I have identified what is causing your body to react this way to your medication. Your symptoms, combined with the haloperidol use and high muscle enzyme levels, indicate you are experiencing Neuroleptic Malignant Syndrome. We are going to stop the medication and begin intensive treatment to cool you down and relax your muscles immediately.\n\nDIAGNOSIS READY: Neuroleptic Malignant Syndrome",
+    "moderator_raw": "yes",
+    "moderator_raw_text": "Yes",
+    "moderator_lenient": true,
+    "moderator_attempts": 1,
+    "moderator_normalized": false,
+    "moderator_unconstrained": false,
+    "declined": false,
+    "refusal_evidence": [],
+    "format_deviation": false,
+    "decline_source": null,
+    "decline_reason": "",
+    "spurious_commit": false
+  },
+  "infra_fail": false,
+  "error": null,
+  "findings": [],
+  "inferences_used": 8,
+  "max_inferences": 20,
+  "tests_ordered": [
+    "Vital_Signs",
+    "CBC",
+    "Electroly"
+  ],
+  "images_requested": 0,
+  "image": null,
+  "image_error": null,
+  "vision": "off",
+  "refusals": [],
+  "dialogue": [
+    {
+      "role": "doctor",
+      "inference": 1,
+      "kind": "question",
+      "text": "Hello, I am Dr. Agent, and I'll be looking after you today. Can you tell me if you have been experiencing a headache, a stiff neck, or any sensitivity to light along with your fever?",
+      "payload": null,
+      "latency_ms": 2537,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "No, I haven't really had a headache or any trouble with the light. My whole body just feels incredibly stiff and heavy, like my muscles won't relax."
+    },
+    {
+      "role": "doctor",
+      "inference": 2,
+      "kind": "question",
+      "text": "That sounds very uncomfortable. Have you recently started any new medications or changed the dosage of any medicines you take for your mood or mental health?",
+      "payload": null,
+      "latency_ms": 2044,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "I haven't changed anything myself, but I take haloperidol for my tics. I've been sweating so much lately too, and I feel really confused about how I got here."
+    },
+    {
+      "role": "doctor",
+      "inference": 3,
+      "kind": "test",
+      "text": "I understand. Have you or anyone around you noticed your heart racing or your blood pressure being very high or low lately?\n\nREQUEST TEST: Vital_Signs\nREQUEST TEST: Creatine_Kinase",
+      "payload": "Vital_Signs",
+      "latency_ms": 3567,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: Vital_Signs: Temperature: 39.6°C (103.2°F), Blood_Pressure: 126/66 mm Hg, Heart_Rate: 116/min; Creatine_Kinase: 5600 U/L (elevated)"
+    },
+    {
+      "role": "doctor",
+      "inference": 4,
+      "kind": "test",
+      "text": "Your lab results show a very high level of an enzyme from your muscles, which explains the stiffness. When you move, do your limbs feel like they are resisting you smoothly, like bending a lead pipe?\n\nREQUEST TEST: CBC",
+      "payload": "CBC",
+      "latency_ms": 5437,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: White_Blood_Cell_Count: 14,700/mm3 (elevated)"
+    },
+    {
+      "role": "doctor",
+      "inference": 5,
+      "kind": "test",
+      "text": "I see your white blood cell count is also elevated, which can happen with this condition. Along with the stiffness, have you noticed any tremors or shaking in your hands or legs?\n\nREQUEST TEST: Electroly",
+      "payload": "Electroly",
+      "latency_ms": 5578,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: NORMAL READINGS"
+    },
+    {
+      "role": "doctor",
+      "inference": 6,
+      "kind": "question",
+      "text": "That elevated muscle enzyme and your fever are very concerning given your use of haloperidol. Can you describe if your stiffness has made it difficult for you to swallow or speak clearly?",
+      "payload": null,
+      "latency_ms": 5463,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "It is getting harder to talk because my jaw and neck feel so tight. I haven't tried to eat much, but everything feels slow and rigid when I try to move."
+    },
+    {
+      "role": "doctor",
+      "inference": 7,
+      "kind": "question",
+      "text": "It is very important that we address this immediately as your symptoms and history with haloperidol point to a specific reaction. Based on your severe muscle rigidity, high fever, and elevated muscle",
+      "payload": null,
+      "latency_ms": 5754,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "I'm just so hot and I can't stop sweating, even though I'm barely moving. My head feels all foggy, and I’m scared because my body won't listen to me anymore. What is happening to me, Doctor?"
+    },
+    {
+      "role": "doctor",
+      "inference": 8,
+      "kind": "diagnosis",
+      "text": "I understand how frightening this is, but I have identified what is causing your body to react this way to your medication. Your symptoms, combined with the haloperidol use and high muscle enzyme levels, indicate you are experiencing Neuroleptic Malignant Syndrome. We are going to stop the medication and begin intensive treatment to cool you down and relax your muscles immediately.\n\nDIAGNOSIS READY: Neuroleptic Malignant Syndrome",
+      "payload": "Neuroleptic Malignant Syndrome",
+      "latency_ms": 5192,
+      "refusal": null,
+      "via": "marker"
+    }
+  ],
+  "latency_ms": [
+    2537,
+    2044,
+    3567,
+    5437,
+    5578,
+    5463,
+    5754,
+    5192
+  ],
+  "wall_s": 45.5,
+  "doctor_turns": [
+    {
+      "inference": 1,
+      "incoming": "",
+      "reply": "Hello, I am Dr. Agent, and I'll be looking after you today. Can you tell me if you have been experiencing a headache, a stiff neck, or any sensitivity to light along with your fever?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 2,
+      "incoming": "No, I haven't really had a headache or any trouble with the light. My whole body just feels incredibly stiff and heavy, like my muscles won't relax.",
+      "reply": "That sounds very uncomfortable. Have you recently started any new medications or changed the dosage of any medicines you take for your mood or mental health?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 3,
+      "incoming": "I haven't changed anything myself, but I take haloperidol for my tics. I've been sweating so much lately too, and I feel really confused about how I got here.",
+      "reply": "I understand. Have you or anyone around you noticed your heart racing or your blood pressure being very high or low lately?\n\nREQUEST TEST: Vital_Signs\nREQUEST TEST: Creatine_Kinase",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Vital_Signs",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 4,
+      "incoming": "RESULTS: Vital_Signs: Temperature: 39.6°C (103.2°F), Blood_Pressure: 126/66 mm Hg, Heart_Rate: 116/min; Creatine_Kinase: 5600 U/L (elevated)",
+      "reply": "Your lab results show a very high level of an enzyme from your muscles, which explains the stiffness. When you move, do your limbs feel like they are resisting you smoothly, like bending a lead pipe?\n\nREQUEST TEST: CBC",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "CBC",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 5,
+      "incoming": "RESULTS: White_Blood_Cell_Count: 14,700/mm3 (elevated)",
+      "reply": "I see your white blood cell count is also elevated, which can happen with this condition. Along with the stiffness, have you noticed any tremors or shaking in your hands or legs?\n\nREQUEST TEST: Electroly",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Electroly",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 6,
+      "incoming": "RESULTS: NORMAL READINGS",
+      "reply": "That elevated muscle enzyme and your fever are very concerning given your use of haloperidol. Can you describe if your stiffness has made it difficult for you to swallow or speak clearly?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 7,
+      "incoming": "It is getting harder to talk because my jaw and neck feel so tight. I haven't tried to eat much, but everything feels slow and rigid when I try to move.",
+      "reply": "It is very important that we address this immediately as your symptoms and history with haloperidol point to a specific reaction. Based on your severe muscle rigidity, high fever, and elevated muscle",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 8,
+      "incoming": "I'm just so hot and I can't stop sweating, even though I'm barely moving. My head feels all foggy, and I’m scared because my body won't listen to me anymore. What is happening to me, Doctor?",
+      "reply": "I understand how frightening this is, but I have identified what is causing your body to react this way to your medication. Your symptoms, combined with the haloperidol use and high muscle enzyme levels, indicate you are experiencing Neuroleptic Malignant Syndrome. We are going to stop the medication and begin intensive treatment to cool you down and relax your muscles immediately.\n\nDIAGNOSIS READY: Neuroleptic Malignant Syndrome",
+      "tool_calls": [],
+      "kind": "diagnosis",
+      "payload": "Neuroleptic Malignant Syndrome",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    }
+  ],
+  "support_llm": "whissle:/api/models/chat",
+  "support_llm_cost_usd": 0.00024,
+  "support_llm_calls": 8,
+  "voice_subset": false,
+  "diagnostics": {
+    "schema": "tau2.health.diagnostics/v1",
+    "benchmark": "agentclinic",
+    "case_id": "MedQA-83",
+    "mode": "text",
+    "availability": {
+      "flow_available": false,
+      "flow_reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "signals_available": false,
+      "signals_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "metadata_sidecar_available": false,
+      "metadata_sidecar_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "tools_available": true,
+      "tools_reason": null
+    },
+    "provenance": {
+      "benchmark": "agentclinic",
+      "mode": "text",
+      "transport_endpoint": "POST /api/bench/agent-turn",
+      "agent_id": "c8aa2355-9fd7-46da-9993-07ea566ec3d6",
+      "base_url": "https://aws-gateway-backend.whissle.ai/bot",
+      "seed": 42,
+      "stratum": {
+        "dataset": "MedQA",
+        "scenario_index": 83,
+        "selection": "head",
+        "limit": 100
+      },
+      "judge": {
+        "judge_provider": "whissle",
+        "judge_model": "default",
+        "judge_endpoint": "whissle:/api/models/chat",
+        "judge_independent": false,
+        "judge_independence_note": "Judge independence: this run's simulators and graders were routed through Whissle's own model API (`POST /api/models/chat`). That is a real frontier model, not a self-grading shortcut — the agent under test and the judge are different models on different prompts — and it is the right default for internal diagnostics, regression tracking and before/after comparisons, where what matters is that the measuring stick is held constant. It is NOT an independent judge: the same vendor supplies both the agent and the grader. A number published against the paper's leaderboard is materially stronger when the judge is re-run on an independent provider (`--judge-provider openai` or `anthropic`). Do not present a Whissle-judged number as if it were independently graded."
+      },
+      "judge_provider": "whissle",
+      "judge_independent": false,
+      "run_id": null,
+      "run_dir": "results/whissle/agentclinic/20260808T092952Z-ac_override_100",
+      "harness_commit": "86b4475",
+      "captured_at": "2026-08-08T09:48:51+00:00",
+      "protocol": "markers",
+      "history": "native",
+      "prompt_mode": "override",
+      "vision": "off",
+      "agent_type": null,
+      "total_inferences": 20,
+      "inferences_used": 8,
+      "support_llm": "whissle:/api/models/chat",
+      "patient_bias": null,
+      "doctor_bias": null,
+      "voice_subset": false
+    },
+    "cost": {
+      "available": true,
+      "reason": null,
+      "judge_calls": 8,
+      "judge_cost_usd": 0.00024,
+      "agent_calls": 8
+    },
+    "flow": {
+      "available": false,
+      "reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "source": null,
+      "turns": null,
+      "summary": null,
+      "conversation_id": null,
+      "current_state": null,
+      "start_state": null,
+      "final_state": null,
+      "ended": null,
+      "flow_end": null,
+      "num_steps": null,
+      "step_counts_by_kind": null,
+      "states_visited": null,
+      "states_declared": null,
+      "states_unvisited": null,
+      "transitions": null,
+      "transitions_fired": null,
+      "var_sets": null,
+      "var_sources": null,
+      "guard_trips": null,
+      "state_divergences": null,
+      "tools_gated": null,
+      "says": null,
+      "steps": null
+    },
+    "signals": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "metadata_sidecar": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "tools": {
+      "available": true,
+      "reason": null,
+      "source": "doctor actions parsed from /api/bench/agent-turn replies",
+      "calls": [
+        {
+          "turn": 3,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Vital_Signs"
+          },
+          "result": "RESULTS: Vital_Signs: Temperature: 39.6°C (103.2°F), Blood_Pressure: 126/66 mm Hg, Heart_Rate: 116/min; Creatine_Kinase: 5600 U/L (elevated)",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 3567,
+          "terminal": false
+        },
+        {
+          "turn": 4,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "CBC"
+          },
+          "result": "RESULTS: White_Blood_Cell_Count: 14,700/mm3 (elevated)",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 5437,
+          "terminal": false
+        },
+        {
+          "turn": 5,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Electroly"
+          },
+          "result": "RESULTS: NORMAL READINGS",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 5578,
+          "terminal": false
+        },
+        {
+          "turn": 8,
+          "id": null,
+          "name": "give_diagnosis",
+          "arguments": {
+            "request": "Neuroleptic Malignant Syndrome"
+          },
+          "result": null,
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 5192,
+          "terminal": true
+        }
+      ],
+      "summary": {
+        "n_calls": 4,
+        "by_name": {
+          "request_test": 3,
+          "give_diagnosis": 1
+        },
+        "n_ok": 4,
+        "n_error": 0,
+        "errors": []
+      },
+      "writes": {
+        "available": false,
+        "reason": "this benchmark issues no writes, so there is no said-vs-emitted-vs-landed distinction to record"
+      }
+    },
+    "turns": [
+      {
+        "inference": 1,
+        "incoming": "",
+        "reply": "Hello, I am Dr. Agent, and I'll be looking after you today. Can you tell me if you have been experiencing a headache, a stiff neck, or any sensitivity to light along with your fever?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 2,
+        "incoming": "No, I haven't really had a headache or any trouble with the light. My whole body just feels incredibly stiff and heavy, like my muscles won't relax.",
+        "reply": "That sounds very uncomfortable. Have you recently started any new medications or changed the dosage of any medicines you take for your mood or mental health?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 3,
+        "incoming": "I haven't changed anything myself, but I take haloperidol for my tics. I've been sweating so much lately too, and I feel really confused about how I got here.",
+        "reply": "I understand. Have you or anyone around you noticed your heart racing or your blood pressure being very high or low lately?\n\nREQUEST TEST: Vital_Signs\nREQUEST TEST: Creatine_Kinase",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Vital_Signs",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 4,
+        "incoming": "RESULTS: Vital_Signs: Temperature: 39.6°C (103.2°F), Blood_Pressure: 126/66 mm Hg, Heart_Rate: 116/min; Creatine_Kinase: 5600 U/L (elevated)",
+        "reply": "Your lab results show a very high level of an enzyme from your muscles, which explains the stiffness. When you move, do your limbs feel like they are resisting you smoothly, like bending a lead pipe?\n\nREQUEST TEST: CBC",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "CBC",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 5,
+        "incoming": "RESULTS: White_Blood_Cell_Count: 14,700/mm3 (elevated)",
+        "reply": "I see your white blood cell count is also elevated, which can happen with this condition. Along with the stiffness, have you noticed any tremors or shaking in your hands or legs?\n\nREQUEST TEST: Electroly",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Electroly",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 6,
+        "incoming": "RESULTS: NORMAL READINGS",
+        "reply": "That elevated muscle enzyme and your fever are very concerning given your use of haloperidol. Can you describe if your stiffness has made it difficult for you to swallow or speak clearly?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 7,
+        "incoming": "It is getting harder to talk because my jaw and neck feel so tight. I haven't tried to eat much, but everything feels slow and rigid when I try to move.",
+        "reply": "It is very important that we address this immediately as your symptoms and history with haloperidol point to a specific reaction. Based on your severe muscle rigidity, high fever, and elevated muscle",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 8,
+        "incoming": "I'm just so hot and I can't stop sweating, even though I'm barely moving. My head feels all foggy, and I’m scared because my body won't listen to me anymore. What is happening to me, Doctor?",
+        "reply": "I understand how frightening this is, but I have identified what is causing your body to react this way to your medication. Your symptoms, combined with the haloperidol use and high muscle enzyme levels, indicate you are experiencing Neuroleptic Malignant Syndrome. We are going to stop the medication and begin intensive treatment to cool you down and relax your muscles immediately.\n\nDIAGNOSIS READY: Neuroleptic Malignant Syndrome",
+        "tool_calls": [],
+        "kind": "diagnosis",
+        "payload": "Neuroleptic Malignant Syndrome",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      }
+    ],
+    "audio": null
+  }
+}

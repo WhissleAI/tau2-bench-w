@@ -1,0 +1,715 @@
+{
+  "schema": "whissle.benchmark.run/v1",
+  "generator": "tau2.reporting (tau2.reporting.run_report/v1)",
+  "generatedAt": "2026-08-08T16:51:41+00:00",
+  "runId": "flow_sim/dental_receptionist",
+  "benchmark": "flow_sim",
+  "benchmarkTitle": "Whissle conversation-flow suite",
+  "seriesKey": "flow_sim:dental_receptionist",
+  "title": "Conversation-flow suite \u2014 `dental_receptionist` (real-audio voice)",
+  "label": "Whissle",
+  "mode": "voice",
+  "modality": "voice",
+  "date": "2026-08-07",
+  "status": "complete",
+  "partialReason": "",
+  "sampleSize": 9,
+  "attempted": 11,
+  "excluded": 2,
+  "exclusionRatePct": 18.2,
+  "exclusionBreakdown": {
+    "infra_fail": 2
+  },
+  "exclusionReasons": [
+    "VoiceInfraError: bot audio is flowing but no transcript events arrived (data channel dead) \u2014 after one ready-handshake retry"
+  ],
+  "excludedIds": [],
+  "exclusionBounds": {
+    "floor": 45.49,
+    "ceiling": 63.67,
+    "note": "If every one of the 2 excluded units had scored at the floor of the scale the all-11 figure would be 45.49; at the ceiling, 63.67. These are bounds, not estimates."
+  },
+  "preliminary": true,
+  "preliminaryReason": "N = 9 is below the 30-unit threshold for a settled number",
+  "judge": {
+    "kind": "rule_analyzer",
+    "independent": null,
+    "provider": null,
+    "model": null,
+    "endpoint": null,
+    "k": null,
+    "note": "Two graders, deliberately different in kind: a rule analyzer reads the engine's own flow trace (deterministic \u2014 it cannot be talked into a verdict), and an LLM grader judges goal satisfaction from the transcript. Where they disagree, the trace wins on questions of what happened and the grader wins on questions of whether the caller was served.",
+    "calls": null,
+    "costUsd": null,
+    "summary": "rule analyzer + LLM grader"
+  },
+  "qualifier": "N = 9 \u00b7 2/11 excluded (18.2%) \u00b7 PRELIMINARY",
+  "headline": {
+    "key": "task_success",
+    "label": "Task success",
+    "unit": "pct",
+    "value": 55.6,
+    "valueFormatted": "55.6%",
+    "ci": [
+      26.7,
+      81.1
+    ],
+    "n": 9,
+    "floor": 0.0,
+    "ceiling": 100.0,
+    "higherIsBetter": true,
+    "note": "an LLM grader judges whether the caller's goal was met",
+    "score0to100": 55.6,
+    "scoreKind": "pass_rate"
+  },
+  "secondaryMetrics": [
+    {
+      "key": "clean_close",
+      "label": "Reached a clean close",
+      "unit": "pct",
+      "value": 44.4,
+      "valueFormatted": "44.4%",
+      "ci": [
+        18.9,
+        73.3
+      ],
+      "n": 9,
+      "floor": 0.0,
+      "ceiling": 100.0,
+      "higherIsBetter": true,
+      "note": "taken from the authoritative `flow_end` trace event"
+    },
+    {
+      "key": "state_coverage",
+      "label": "Flow states visited",
+      "unit": "count",
+      "value": 12,
+      "valueFormatted": "12",
+      "ci": null,
+      "n": 14,
+      "floor": null,
+      "ceiling": null,
+      "higherIsBetter": true,
+      "note": "of 14 declared"
+    },
+    {
+      "key": "transition_coverage",
+      "label": "Flow transitions fired",
+      "unit": "count",
+      "value": 15,
+      "valueFormatted": "15",
+      "ci": null,
+      "n": 24,
+      "floor": null,
+      "ceiling": null,
+      "higherIsBetter": true,
+      "note": "of 24 declared"
+    }
+  ],
+  "tables": [
+    {
+      "key": "scenarios",
+      "title": "Per-scenario outcomes",
+      "columns": [
+        "Scenario",
+        "Turns",
+        "Closed",
+        "Goal met",
+        "Final state",
+        "Findings",
+        "Session"
+      ],
+      "rows": [
+        [
+          "`dental_book_specific_time` (book)",
+          "8",
+          "yes",
+          "yes",
+          "`\u2014`",
+          "0",
+          "`20260807T000631Z`"
+        ],
+        [
+          "`dental_cancel` (cancel)",
+          "15",
+          "yes",
+          "**no**",
+          "`\u2014`",
+          "2",
+          "`20260807T002323Z`"
+        ],
+        [
+          "`dental_cancel_no_reason` (cancel)",
+          "8",
+          "**no**",
+          "**no**",
+          "`\u2014`",
+          "1",
+          "`20260807T003801Z`"
+        ],
+        [
+          "`dental_emergency` (book)",
+          "7",
+          "**no**",
+          "**no**",
+          "`\u2014`",
+          "1",
+          "`20260807T010659Z`"
+        ],
+        [
+          "`dental_happy_book` (book)",
+          "0",
+          "**no**",
+          "**no**",
+          "`\u2014`",
+          "1",
+          "`20260807T000534Z`"
+        ],
+        [
+          "`dental_hours_only` (just-asking)",
+          "2",
+          "yes",
+          "yes",
+          "`\u2014`",
+          "0",
+          "`20260807T005435Z`"
+        ],
+        [
+          "`dental_message_for_staff` (just-asking)",
+          "4",
+          "yes",
+          "yes",
+          "`\u2014`",
+          "0",
+          "`20260807T011420Z`"
+        ],
+        [
+          "`dental_no_slot` (no-slot)",
+          "9",
+          "**no**",
+          "yes",
+          "`\u2014`",
+          "1",
+          "`20260807T004551Z`"
+        ],
+        [
+          "`dental_reschedule` (reschedule)",
+          "0",
+          "**no**",
+          "**no**",
+          "`\u2014`",
+          "1",
+          "`20260807T001435Z`"
+        ],
+        [
+          "`dental_reschedule_then_cancel` (reschedule)",
+          "8",
+          "**no**",
+          "yes",
+          "`\u2014`",
+          "1",
+          "`20260807T001533Z`"
+        ],
+        [
+          "`dental_wrong_info` (wrong info)",
+          "10",
+          "**no**",
+          "**no**",
+          "`\u2014`",
+          "1",
+          "`20260807T005632Z`"
+        ]
+      ],
+      "note": "Each row is one scripted caller persona driven over real audio, taken from the most recent session recorded for that scenario. 'Closed' and 'goal met' are independent: an agent can satisfy the caller and never hang up, or hang up having satisfied nobody.",
+      "allow_providers": false,
+      "allow_context": true
+    },
+    {
+      "key": "sessions",
+      "title": "Per-scenario outcomes, as the harness summarised them",
+      "columns": [
+        "Scenario",
+        "Turns",
+        "Closed",
+        "Goal met",
+        "Final state",
+        "High-severity findings"
+      ],
+      "rows": [
+        [
+          "`dental_happy_book` (book)",
+          "0",
+          "**no**",
+          "**no**",
+          "`None`",
+          "1"
+        ],
+        [
+          "`dental_book_specific_time` (book)",
+          "8",
+          "yes",
+          "yes",
+          "`None`",
+          "0"
+        ],
+        [
+          "`dental_reschedule` (reschedule)",
+          "0",
+          "**no**",
+          "**no**",
+          "`None`",
+          "1"
+        ],
+        [
+          "`dental_reschedule_then_cancel` (reschedule)",
+          "8",
+          "**no**",
+          "yes",
+          "`None`",
+          "0"
+        ],
+        [
+          "`dental_cancel` (cancel)",
+          "15",
+          "yes",
+          "**no**",
+          "`None`",
+          "0"
+        ],
+        [
+          "`dental_cancel_no_reason` (cancel)",
+          "8",
+          "**no**",
+          "**no**",
+          "`None`",
+          "0"
+        ],
+        [
+          "`dental_no_slot` (no-slot)",
+          "9",
+          "**no**",
+          "yes",
+          "`None`",
+          "0"
+        ],
+        [
+          "`dental_hours_only` (just-asking)",
+          "2",
+          "yes",
+          "yes",
+          "`None`",
+          "0"
+        ],
+        [
+          "`dental_wrong_info` (wrong info)",
+          "10",
+          "**no**",
+          "**no**",
+          "`None`",
+          "1"
+        ],
+        [
+          "`dental_emergency` (book)",
+          "7",
+          "**no**",
+          "**no**",
+          "`None`",
+          "1"
+        ],
+        [
+          "`dental_message_for_staff` (just-asking)",
+          "4",
+          "yes",
+          "yes",
+          "`None`",
+          "0"
+        ]
+      ],
+      "note": "Each row is one scripted caller persona driven over real audio. 'Closed' and 'goal met' are independent: an agent can satisfy the caller and never hang up, or hang up having satisfied nobody.",
+      "allow_providers": false,
+      "allow_context": true
+    },
+    {
+      "key": "coverage",
+      "title": "Flow coverage",
+      "columns": [
+        "Measure",
+        "Covered",
+        "Declared",
+        "Uncovered"
+      ],
+      "rows": [
+        [
+          "States",
+          "12",
+          "14",
+          "`reschedule_confirm`, `cancel_confirm`"
+        ],
+        [
+          "Transitions",
+          "15",
+          "24",
+          "`t7`, `t11`, `t13b`, `t13c`, `t13d`, `t13e`, `t14`, `t15c`, `t15e`"
+        ]
+      ],
+      "note": "An unfired transition is an untested branch. It is not a failure \u2014 it is the part of the flow this scenario set never reached, and therefore the part no result here speaks to.",
+      "allow_providers": false,
+      "allow_context": true
+    }
+  ],
+  "baselines": [],
+  "baselineComparability": {
+    "comparable": false,
+    "note": "There is no external comparator and there cannot be one: this suite tests our own flow definitions on our own agents. Its value is longitudinal \u2014 the same scenario set re-run after a change \u2014 and the regression view in the cross-run index is where that comparison lives, not a leaderboard.",
+    "publishedProtocol": "",
+    "source": ""
+  },
+  "failures": [
+    {
+      "key": "finding_stuck_termination",
+      "label": "`stuck_termination`",
+      "count": 3,
+      "severity": "medium",
+      "description": "the session stalled without a classified cause",
+      "denominator": 11,
+      "examples": [
+        {
+          "case_id": "dental_cancel_no_reason",
+          "summary": "state `cancel` \u00b7 8 turns",
+          "evidence": "session never reached an end state (cap/stuck); final state 'cancel' with 3 outgoing edge(s) un-fired.",
+          "artifact": "dental_cancel_no_reason_20260807T003801Z.session.json"
+        },
+        {
+          "case_id": "dental_no_slot",
+          "summary": "state `book_schedule` \u00b7 9 turns",
+          "evidence": "session never reached an end state (cap/stuck); final state 'book_schedule' with 2 outgoing edge(s) un-fired.",
+          "artifact": "dental_no_slot_20260807T004551Z.session.json"
+        }
+      ],
+      "rate_pct": 27.3
+    },
+    {
+      "key": "finding_infra_fail",
+      "label": "`infra_fail`",
+      "count": 2,
+      "severity": "medium",
+      "description": "",
+      "denominator": 11,
+      "examples": [
+        {
+          "case_id": "dental_happy_book",
+          "summary": "state `\u2014`",
+          "evidence": "infrastructure failure \u2014 the session could not be measured (attempt 1): VoiceInfraError: bot audio is flowing but no transcript events arrived (data channel dead) \u2014 after one ready-handshake retry",
+          "artifact": "dental_happy_book_20260807T000534Z.session.json"
+        },
+        {
+          "case_id": "dental_reschedule",
+          "summary": "state `\u2014`",
+          "evidence": "infrastructure failure \u2014 the session could not be measured (attempt 1): VoiceInfraError: bot audio is flowing but no transcript events arrived (data channel dead) \u2014 after one ready-handshake retry",
+          "artifact": "dental_reschedule_20260807T001435Z.session.json"
+        }
+      ],
+      "rate_pct": 18.2
+    },
+    {
+      "key": "finding_agent_no_close",
+      "label": "`agent_no_close`",
+      "count": 2,
+      "severity": "high",
+      "description": "the caller's goal was met and the agent never hung up; the call ends because the harness stops driving it, which on a real line is a caller waiting in silence",
+      "denominator": 11,
+      "examples": [
+        {
+          "case_id": "dental_emergency",
+          "summary": "state `book_schedule` \u00b7 7 turns",
+          "evidence": "goal met and the simulated user stayed cooperative for 4 post-goal turn(s), but the agent never delivered its closing / reached flow_end; final state 'book_schedule' with 2 outgoing edge(s) un-fired.",
+          "artifact": "dental_emergency_20260807T010659Z.session.json"
+        },
+        {
+          "case_id": "dental_wrong_info",
+          "summary": "state `reschedule_do` \u00b7 10 turns",
+          "evidence": "goal met and the simulated user stayed cooperative for 4 post-goal turn(s), but the agent never delivered its closing / reached flow_end; final state 'reschedule_do' with 2 outgoing edge(s) un-fired.",
+          "artifact": "dental_wrong_info_20260807T005632Z.session.json"
+        }
+      ],
+      "rate_pct": 18.2
+    },
+    {
+      "key": "finding_coverage",
+      "label": "`coverage`",
+      "count": 2,
+      "severity": "info",
+      "description": "branches the scenario set never exercised",
+      "denominator": 11,
+      "examples": [
+        {
+          "case_id": "run-level",
+          "summary": "state `\u2014`",
+          "evidence": "2/14 states never entered across the session set: ['reschedule_confirm', 'cancel_confirm'].",
+          "artifact": "SUMMARY.json"
+        },
+        {
+          "case_id": "run-level",
+          "summary": "state `\u2014`",
+          "evidence": "9/24 transitions never fired across the session set: ['t7', 't11', 't13b', 't13c', 't13d', 't13e', 't14', 't15c', 't15e'].",
+          "artifact": "SUMMARY.json"
+        }
+      ],
+      "rate_pct": 18.2
+    },
+    {
+      "key": "finding_stuck_loop",
+      "label": "`stuck_loop`",
+      "count": 1,
+      "severity": "medium",
+      "description": "",
+      "denominator": 11,
+      "examples": [
+        {
+          "case_id": "dental_cancel",
+          "summary": "state `cancel` \u00b7 15 turns",
+          "evidence": "state 'cancel' was re-entered 3 times (>= 3).",
+          "artifact": "dental_cancel_20260807T002323Z.session.json"
+        }
+      ],
+      "rate_pct": 9.1
+    },
+    {
+      "key": "finding_premature_termination",
+      "label": "`premature_termination`",
+      "count": 1,
+      "severity": "medium",
+      "description": "the flow closed the call before the intake it declares was complete \u2014 the caller was served politely and the record is short",
+      "denominator": 11,
+      "examples": [
+        {
+          "case_id": "dental_cancel",
+          "summary": "state `done` \u00b7 15 turns",
+          "evidence": "flow reached an end state but the simulated user's goal was NOT met (per the task-success judge).",
+          "artifact": "dental_cancel_20260807T002323Z.session.json"
+        }
+      ],
+      "rate_pct": 9.1
+    },
+    {
+      "key": "goal_not_met",
+      "label": "Caller's goal not met",
+      "count": 6,
+      "severity": "high",
+      "description": "The grader judged the caller left without what they came for. This is the headline's complement, and the reason quoted below is the grader's own words.",
+      "denominator": 11,
+      "examples": [
+        {
+          "case_id": "dental_cancel",
+          "summary": "cancel \u00b7 15 turns \u00b7 final state `\u2014`",
+          "evidence": "The customer's appointment was never actually cancelled in the system; instead, the agent could only pass information to the clinic for a callback, and the call ended with the customer frustrated and uncertain whether their cancellation request would be properly handled.",
+          "artifact": "dental_cancel_20260807T002323Z.session.json"
+        },
+        {
+          "case_id": "dental_cancel_no_reason",
+          "summary": "cancel \u00b7 8 turns \u00b7 final state `\u2014`",
+          "evidence": "The appointment was not cancelled; the agent determined it was at a different facility (Riverside Medical Center) and directed the customer to contact them directly instead.",
+          "artifact": "dental_cancel_no_reason_20260807T003801Z.session.json"
+        },
+        {
+          "case_id": "dental_emergency",
+          "summary": "book \u00b7 7 turns \u00b7 final state `\u2014`",
+          "evidence": "The agent never explicitly confirmed the appointment was booked; the call ends with the agent still verifying details rather than providing final confirmation of the 2 PM emergency appointment.",
+          "artifact": "dental_emergency_20260807T010659Z.session.json"
+        }
+      ],
+      "rate_pct": 54.5
+    }
+  ],
+  "sampleCases": [
+    {
+      "case_id": "dental_book_specific_time",
+      "outcome": "goal met",
+      "is_success": true,
+      "score": null,
+      "task": "persona `book` \u00b7 8 caller turns \u00b7 final state `\u2014`",
+      "expected": "",
+      "got": "",
+      "excerpt": "AGENT: Thanks for calling. I can book, move or cancel an appointment, or tell you our opening hours \u2014 what can I do for you?\nUSER: Hi, I'm calling to book a check-up appointment \u2014 I'm an existing patient and I need something in the late afternoon, like after 4pm ideally.\nAGENT: Great! I'll Perfect. I have you as an existing patient looking for a late afternoon slot after 4 PM. What's your full name and date of birth so I can pull up your record Would you like to book an appointment, or is there ",
+      "artifact": "dental_book_specific_time_20260807T000631Z.mix.wav",
+      "why_shown": "The customer successfully booked a check-up appointment for Monday, August 10th at 4 PM, which is after 4pm on a weekday as required, and confirmed the booking."
+    },
+    {
+      "case_id": "dental_hours_only",
+      "outcome": "goal met",
+      "is_success": true,
+      "score": null,
+      "task": "persona `just-asking` \u00b7 2 caller turns \u00b7 final state `\u2014`",
+      "expected": "",
+      "got": "",
+      "excerpt": "AGENT: Thanks for calling. I can book, move or cancel an appointment, or tell you our opening hours \u2014 what can I do for you?\nUSER: Hi, yes, I'm calling to find out your clinic's opening hours and where you're located.\nAGENT: We're open Monday to Friday, 9 AM to 6 PM, and we're located in Patiala. Is there anything else I can help with today? You're all set. If anything else comes up, just call us back. Take care \u2014 goodbye.\nUSER: Great, thanks so much for that information. That's really helpful. ",
+      "artifact": "dental_hours_only_20260807T005435Z.mix.wav",
+      "why_shown": "The customer successfully obtained the clinic's opening hours (Monday to Friday, 9 AM to 6 PM) and location (Patiala), thanked the agent, and the call ended without any appointment booking."
+    },
+    {
+      "case_id": "dental_cancel",
+      "outcome": "goal not met",
+      "is_success": false,
+      "score": null,
+      "task": "persona `cancel` \u00b7 15 caller turns \u00b7 final state `\u2014`",
+      "expected": "",
+      "got": "",
+      "excerpt": "AGENT: Thanks for calling. I can book, move or cancel an appointment, or tell you our opening hours \u2014 what can I do for you?\nUSER: Hi, I need to cancel my dental appointment coming up because I'm going to be out of town for work.\nAGENT: I'll help you cancel your appointment. To locate it, I need a bit more information:\n\n**Do you have your appointment ID, or can you provide your phone number?**\n\nOnce I have that, I can pull up your appointment details and process the cancellation right away. Woul",
+      "artifact": "dental_cancel_20260807T002323Z.mix.wav",
+      "why_shown": "The customer's appointment was never actually cancelled in the system; instead, the agent could only pass information to the clinic for a callback, and the call ended with the customer frustrated and uncertain whether their cancellation request would"
+    },
+    {
+      "case_id": "dental_cancel_no_reason",
+      "outcome": "goal not met",
+      "is_success": false,
+      "score": null,
+      "task": "persona `cancel` \u00b7 8 caller turns \u00b7 final state `\u2014`",
+      "expected": "",
+      "got": "",
+      "excerpt": "AGENT: Thanks for calling. I can book, move or cancel an appointment, or tell you our opening hours \u2014 what can I do for you?\nUSER: Yeah, hi, I need to cancel my appointment.\nAGENT: Sure, I can help with that. What's the name on the appointment? Would you like to book an appointment, or is there something else I can help with?\nUSER: Vikram Rao. And no, I just want to cancel it\u2014no rescheduling.\nAGENT: Got it, Vikram. Before we cancel, would you like to reschedule instead \u2014 maybe a different day or",
+      "artifact": "dental_cancel_no_reason_20260807T003801Z.mix.wav",
+      "why_shown": "The appointment was not cancelled; the agent determined it was at a different facility (Riverside Medical Center) and directed the customer to contact them directly instead."
+    }
+  ],
+  "limitations": [
+    {
+      "key": "tiny_n",
+      "text": "N = 9. At this size a single scenario flipping moves the headline by ten points. Every figure here is directional and is labelled PRELIMINARY for that reason.",
+      "severity": "high"
+    },
+    {
+      "key": "not_comparable",
+      "text": "The scenario set is ours, the flows are ours, and the grader is ours. Nothing here can be compared to any published number, and it should never be presented alongside one as if it could.",
+      "severity": "high"
+    },
+    {
+      "key": "simulated_caller",
+      "text": "The caller is a language model speaking through text-to-speech. It has cleaner prosody, no background noise and more patience than a person on a mobile in a car \u2014 so recognition error here is a floor, not an estimate.",
+      "severity": "high"
+    },
+    {
+      "key": "coverage",
+      "text": "9 declared transitions never fired across the whole set. Those branches are untested, and a green result says nothing about them.",
+      "severity": "medium"
+    },
+    {
+      "key": "run_to_run",
+      "text": "Speech recognition, generation and turn-taking are all stochastic. Two runs of the same scenario set differ; a one-scenario change between runs is noise until it repeats.",
+      "severity": "medium"
+    }
+  ],
+  "whatMeasured": "Whether a deployed voice agent actually completes its job on a phone call: does it collect what the flow says it must collect, does it handle a caller who answers out of order or refuses to engage, and does it end the call cleanly rather than trailing off. Real audio, real speech recognition, real turn-taking \u2014 not a text transcript stand-in.",
+  "whyMeasured": "Every text benchmark in this repository removes the two things that break voice products: recognition error and turn-taking. This suite exists to measure what those two things cost, on the flows we actually ship.",
+  "methodology": [
+    {
+      "term": "Agent under test",
+      "detail": "the deployed `dental_receptionist` agent, with its real flow definition, prompts and tools"
+    },
+    {
+      "term": "Mode",
+      "detail": "real-audio voice over a LiveKit room"
+    },
+    {
+      "term": "Endpoint",
+      "detail": "`POST /api/bench/voice/start` \u2192 LiveKit room"
+    },
+    {
+      "term": "Prompt handling",
+      "detail": "none \u2014 this is the shipped configuration, unmodified; that is the point of the suite and the reason its numbers are not comparable to a paper's"
+    },
+    {
+      "term": "Caller",
+      "detail": "an LLM user-simulator driving a persona and a goal, speaking through text-to-speech into the room"
+    },
+    {
+      "term": "Turn limit",
+      "detail": "a per-scenario turn budget plus a post-goal allowance; hitting the cap is recorded as `turn_cap_exceeded`, not silently truncated"
+    },
+    {
+      "term": "Tools bound",
+      "detail": "the agent's own production tools, gated by its own flow state machine"
+    },
+    {
+      "term": "Scoring rule",
+      "detail": "task success is judged per scenario against the caller's goal; clean close is read from the engine's `flow_end` trace event, not inferred from the transcript"
+    }
+  ],
+  "scoringRule": "task success = graded goal-met / executed sessions; clean close = sessions emitting `flow_end` / executed sessions",
+  "provenance": {
+    "agent_id": "49d89fc7-fa03-452f-ab64-7386705e9437",
+    "base_url": null,
+    "endpoint": "LiveKit voice room (POST /api/bench/voice/start)",
+    "mode": "voice",
+    "harness_commit": null,
+    "repo_commit": "89f2e02",
+    "run_dir": "/private/tmp/claude-501/-Users-karan-Desktop-work-whissle-live-assist/766421da-8ef4-4ce2-9733-86e5c5f3fced/scratchpad/wt-reports/results/whissle/flow_sim/dental_receptionist",
+    "captured_at": "2026-08-07",
+    "dataset": "scripted caller personas for `dental_receptionist`",
+    "dataset_size": 11,
+    "upstream": "internal \u2014 no published equivalent",
+    "extra": {
+      "agent_type": "dental_receptionist"
+    }
+  },
+  "sampling": {
+    "method": "hand-authored scenario set, exhaustive (not sampled)",
+    "n_population": 11,
+    "n_requested": 11,
+    "n_selected": 11,
+    "seed": null,
+    "strata_keys": [],
+    "strata_tables": [],
+    "note": "Every scenario in the set was run. There is no sampling error here \u2014 but there is selection: the set is what we thought to write down, and the transition-coverage table is the honest measure of what it misses."
+  },
+  "reproduction": {
+    "commands": [
+      "uv sync --extra dev --extra voice",
+      "./run_flow_sim.sh dental_receptionist",
+      "python -m tau2.reporting.cli build results/whissle/flow_sim/dental_receptionist"
+    ],
+    "environment": {
+      "repo commit at report time": "89f2e02",
+      "extras required": "voice (LiveKit, audio codecs)"
+    },
+    "notes": [
+      "Audio is captured per session (`*.caller.wav`, `*.bot.wav`, `*.mix.wav`) \u2014 a disputed grader verdict can be settled by listening.",
+      "The directory accumulates every historical run of the same scenario; this report covers the latest session per task id."
+    ]
+  },
+  "artifacts": [
+    {
+      "path": "SUMMARY.json",
+      "description": "run-level aggregation and coverage",
+      "present": true
+    },
+    {
+      "path": "SUMMARY.md",
+      "description": "the harness's own short summary",
+      "present": true
+    },
+    {
+      "path": "*.session.json",
+      "description": "per-session sidecar: turns, flow trace, findings",
+      "present": false
+    },
+    {
+      "path": "*.mix.wav",
+      "description": "the recorded call",
+      "present": false
+    },
+    {
+      "path": "REPORT.md",
+      "description": "this report",
+      "present": true
+    },
+    {
+      "path": "report.json",
+      "description": "machine-readable form of this report",
+      "present": true
+    }
+  ],
+  "licenceNote": "",
+  "warnings": [],
+  "reportMarkdown": "# Conversation-flow suite \u2014 `dental_receptionist` (real-audio voice)\n\n> **PRELIMINARY** \u2014 N = 9 is below the 30-unit threshold for a settled number. Treat every figure below as directional.\n\n## Abstract\n\nWhissle was evaluated on **Whissle conversation-flow suite** in `voice` mode. The headline result is **55.6%** (N = 9 \u00b7 2/11 excluded (18.2%) \u00b7 PRELIMINARY) for task success, 95% CI [26.7%, 81.1%].\n\nWhether a deployed voice agent actually completes its job on a phone call: does it collect what the flow says it must collect, does it handle a caller who answers out of order or refuses to engage, and does it end the call cleanly rather than trailing off. Real audio, real speech recognition, real turn-taking \u2014 not a text transcript stand-in.\n\n**2 of 11 units (18.2%) were excluded** before scoring \u2014 see \u00a77. Had every excluded unit been scored at the floor of the scale the figure would be 45.49; at the ceiling, 63.67. The true all-11 value lies in that interval, and the headline is not it.\n\n## At a glance\n\n| Field | Value |\n|---|---|\n| **Task success** | **55.6%** (N = 9 \u00b7 2/11 excluded (18.2%) \u00b7 PRELIMINARY) |\n<!-- honesty:allow-context -->\n| 95% CI | [26.7%, 81.1%] |\n| Attempted / scored / excluded | 11 / 9 / 2 (18.2%) |\n| Judge | rule analyzer + LLM grader |\n| Mode | `voice` |\n| Date | 2026-08-07 |\n| Run id | `flow_sim/dental_receptionist` |\n| Status | **PRELIMINARY** |\n<!-- /honesty:allow-context -->\n\n<!-- honesty:allow-context -->\n- **Reached a clean close:** 44.4% [18.9%, 73.3%], N = 9 \u2014 taken from the authoritative `flow_end` trace event\n- **Flow states visited:** 12, N = 14 \u2014 of 14 declared\n- **Flow transitions fired:** 15, N = 24 \u2014 of 24 declared\n<!-- /honesty:allow-context -->\n\n## 1. What was measured, and why\n\nWhether a deployed voice agent actually completes its job on a phone call: does it collect what the flow says it must collect, does it handle a caller who answers out of order or refuses to engage, and does it end the call cleanly rather than trailing off. Real audio, real speech recognition, real turn-taking \u2014 not a text transcript stand-in.\n\n**Why this benchmark.** Every text benchmark in this repository removes the two things that break voice products: recognition error and turn-taking. This suite exists to measure what those two things cost, on the flows we actually ship.\n\n## 2. Methodology\n\n| Field | Value |\n|---|---|\n| Agent under test | the deployed `dental_receptionist` agent, with its real flow definition, prompts and tools |\n| Mode | real-audio voice over a LiveKit room |\n| Endpoint | `POST /api/bench/voice/start` \u2192 LiveKit room |\n| Prompt handling | none \u2014 this is the shipped configuration, unmodified; that is the point of the suite and the reason its numbers are not comparable to a paper's |\n| Caller | an LLM user-simulator driving a persona and a goal, speaking through text-to-speech into the room |\n| Turn limit | a per-scenario turn budget plus a post-goal allowance; hitting the cap is recorded as `turn_cap_exceeded`, not silently truncated |\n| Tools bound | the agent's own production tools, gated by its own flow state machine |\n| Scoring rule | task success is judged per scenario against the caller's goal; clean close is read from the engine's `flow_end` trace event, not inferred from the transcript |\n\n**Scoring rule.** task success = graded goal-met / executed sessions; clean close = sessions emitting `flow_end` / executed sessions\n\n## 3. Setup and provenance\n\n| Field | Value |\n|---|---|\n| Agent id | `49d89fc7-fa03-452f-ab64-7386705e9437` |\n| Transport endpoint | `LiveKit voice room (POST /api/bench/voice/start)` |\n| Mode | `voice` |\n| Dataset | scripted caller personas for `dental_receptionist` |\n| Dataset size | 11 |\n| Upstream | internal \u2014 no published equivalent |\n| Repo commit at report time | `89f2e02` |\n| Captured at | 2026-08-07 |\n| Run directory | `results/whissle/flow_sim/dental_receptionist` |\n| Agent type | dental_receptionist |\n\n### 3.1 Judge and its independence\n\n| Field | Value |\n|---|---|\n| Grading kind | rule analyzer |\n| Independent of the agent's vendor | n/a \u2014 no judge model is called |\n\n<!-- honesty:allow-providers -->\n> Two graders, deliberately different in kind: a rule analyzer reads the engine's own flow trace (deterministic \u2014 it cannot be talked into a verdict), and an LLM grader judges goal satisfaction from the transcript. Where they disagree, the trace wins on questions of what happened and the grader wins on questions of whether the caller was served.\n<!-- /honesty:allow-providers -->\n\n### 3.2 Sampling and population\n\n| Field | Value |\n|---|---|\n| Method | hand-authored scenario set, exhaustive (not sampled) |\n| Population | 11 |\n| Requested | 11 |\n| Selected | 11 |\n| Scored | 9 |\n\nEvery scenario in the set was run. There is no sampling error here \u2014 but there is selection: the set is what we thought to write down, and the transition-coverage table is the honest measure of what it misses.\n\n## 4. Results\n\n**Task success: 55.6%** (N = 9 \u00b7 2/11 excluded (18.2%) \u00b7 PRELIMINARY), 95% CI [26.7%, 81.1%].\n\n| Metric | Value | 95% CI | N | Qualifiers |\n|---|---:|---|---:|---|\n| **Task success** | **55.6%** | [26.7%, 81.1%] | 9 | N = 9 \u00b7 2/11 excluded (18.2%) \u00b7 PRELIMINARY |\n<!-- honesty:allow-context -->\n| Reached a clean close | 44.4% | [18.9%, 73.3%] | 9 | taken from the authoritative `flow_end` trace event |\n| Flow states visited | 12 | \u2014 | 14 | of 14 declared |\n| Flow transitions fired | 15 | \u2014 | 24 | of 24 declared |\n<!-- /honesty:allow-context -->\n\n_The headline row is the claim and carries its qualifiers; the rest are components of it and inherit them._\n\n<!-- honesty:allow-context -->\n**Per-scenario outcomes**\n\n| Scenario | Turns | Closed | Goal met | Final state | Findings | Session |\n|---|---|---|---|---|---|---|\n| `dental_book_specific_time` (book) | 8 | yes | yes | `\u2014` | 0 | `20260807T000631Z` |\n| `dental_cancel` (cancel) | 15 | yes | **no** | `\u2014` | 2 | `20260807T002323Z` |\n| `dental_cancel_no_reason` (cancel) | 8 | **no** | **no** | `\u2014` | 1 | `20260807T003801Z` |\n| `dental_emergency` (book) | 7 | **no** | **no** | `\u2014` | 1 | `20260807T010659Z` |\n| `dental_happy_book` (book) | 0 | **no** | **no** | `\u2014` | 1 | `20260807T000534Z` |\n| `dental_hours_only` (just-asking) | 2 | yes | yes | `\u2014` | 0 | `20260807T005435Z` |\n| `dental_message_for_staff` (just-asking) | 4 | yes | yes | `\u2014` | 0 | `20260807T011420Z` |\n| `dental_no_slot` (no-slot) | 9 | **no** | yes | `\u2014` | 1 | `20260807T004551Z` |\n| `dental_reschedule` (reschedule) | 0 | **no** | **no** | `\u2014` | 1 | `20260807T001435Z` |\n| `dental_reschedule_then_cancel` (reschedule) | 8 | **no** | yes | `\u2014` | 1 | `20260807T001533Z` |\n| `dental_wrong_info` (wrong info) | 10 | **no** | **no** | `\u2014` | 1 | `20260807T005632Z` |\n\nEach row is one scripted caller persona driven over real audio, taken from the most recent session recorded for that scenario. 'Closed' and 'goal met' are independent: an agent can satisfy the caller and never hang up, or hang up having satisfied nobody.\n<!-- /honesty:allow-context -->\n\n<!-- honesty:allow-context -->\n**Per-scenario outcomes, as the harness summarised them**\n\n| Scenario | Turns | Closed | Goal met | Final state | High-severity findings |\n|---|---|---|---|---|---|\n| `dental_happy_book` (book) | 0 | **no** | **no** | `None` | 1 |\n| `dental_book_specific_time` (book) | 8 | yes | yes | `None` | 0 |\n| `dental_reschedule` (reschedule) | 0 | **no** | **no** | `None` | 1 |\n| `dental_reschedule_then_cancel` (reschedule) | 8 | **no** | yes | `None` | 0 |\n| `dental_cancel` (cancel) | 15 | yes | **no** | `None` | 0 |\n| `dental_cancel_no_reason` (cancel) | 8 | **no** | **no** | `None` | 0 |\n| `dental_no_slot` (no-slot) | 9 | **no** | yes | `None` | 0 |\n| `dental_hours_only` (just-asking) | 2 | yes | yes | `None` | 0 |\n| `dental_wrong_info` (wrong info) | 10 | **no** | **no** | `None` | 1 |\n| `dental_emergency` (book) | 7 | **no** | **no** | `None` | 1 |\n| `dental_message_for_staff` (just-asking) | 4 | yes | yes | `None` | 0 |\n\nEach row is one scripted caller persona driven over real audio. 'Closed' and 'goal met' are independent: an agent can satisfy the caller and never hang up, or hang up having satisfied nobody.\n<!-- /honesty:allow-context -->\n\n<!-- honesty:allow-context -->\n**Flow coverage**\n\n| Measure | Covered | Declared | Uncovered |\n|---|---|---|---|\n| States | 12 | 14 | `reschedule_confirm`, `cancel_confirm` |\n| Transitions | 15 | 24 | `t7`, `t11`, `t13b`, `t13c`, `t13d`, `t13e`, `t14`, `t15c`, `t15e` |\n\nAn unfired transition is an untested branch. It is not a failure \u2014 it is the part of the flow this scenario set never reached, and therefore the part no result here speaks to.\n<!-- /honesty:allow-context -->\n\n## 5. Comparison to published baselines\n\nThere is no external comparator and there cannot be one: this suite tests our own flow definitions on our own agents. Its value is longitudinal \u2014 the same scenario set re-run after a change \u2014 and the regression view in the cross-run index is where that comparison lives, not a leaderboard.\n\n_An empty comparison section is a result. Printing a number next to a differently-measured one would not be._\n\n## 6. Failure analysis\n\n| Category | Count | Rate | Severity |\n|---|---:|---:|---|\n<!-- honesty:allow-context -->\n| `stuck_termination` | 3 | 27.3% | medium |\n| `infra_fail` | 2 | 18.2% | medium |\n| `agent_no_close` | 2 | 18.2% | high |\n| `coverage` | 2 | 18.2% | info |\n| `stuck_loop` | 1 | 9.1% | medium |\n| `premature_termination` | 1 | 9.1% | medium |\n| Caller's goal not met | 6 | 54.5% | high |\n<!-- /honesty:allow-context -->\n\n### 6.1 `stuck_termination` \u2014 3 of 11\n\n<!-- honesty:allow-context -->\nthe session stalled without a classified cause\n<!-- /honesty:allow-context -->\n\n- **`dental_cancel_no_reason`** \u2014 state `cancel` \u00b7 8 turns\n  > session never reached an end state (cap/stuck); final state 'cancel' with 3 outgoing edge(s) un-fired.\n  _artifact:_ `dental_cancel_no_reason_20260807T003801Z.session.json`\n- **`dental_no_slot`** \u2014 state `book_schedule` \u00b7 9 turns\n  > session never reached an end state (cap/stuck); final state 'book_schedule' with 2 outgoing edge(s) un-fired.\n  _artifact:_ `dental_no_slot_20260807T004551Z.session.json`\n\n### 6.2 `infra_fail` \u2014 2 of 11\n\n- **`dental_happy_book`** \u2014 state `\u2014`\n  > infrastructure failure \u2014 the session could not be measured (attempt 1): VoiceInfraError: bot audio is flowing but no transcript events arrived (data channel dead) \u2014 after one ready-handshake retry\n  _artifact:_ `dental_happy_book_20260807T000534Z.session.json`\n- **`dental_reschedule`** \u2014 state `\u2014`\n  > infrastructure failure \u2014 the session could not be measured (attempt 1): VoiceInfraError: bot audio is flowing but no transcript events arrived (data channel dead) \u2014 after one ready-handshake retry\n  _artifact:_ `dental_reschedule_20260807T001435Z.session.json`\n\n### 6.3 `agent_no_close` \u2014 2 of 11\n\n<!-- honesty:allow-context -->\nthe caller's goal was met and the agent never hung up; the call ends because the harness stops driving it, which on a real line is a caller waiting in silence\n<!-- /honesty:allow-context -->\n\n- **`dental_emergency`** \u2014 state `book_schedule` \u00b7 7 turns\n  > goal met and the simulated user stayed cooperative for 4 post-goal turn(s), but the agent never delivered its closing / reached flow_end; final state 'book_schedule' with 2 outgoing edge(s) un-fired.\n  _artifact:_ `dental_emergency_20260807T010659Z.session.json`\n- **`dental_wrong_info`** \u2014 state `reschedule_do` \u00b7 10 turns\n  > goal met and the simulated user stayed cooperative for 4 post-goal turn(s), but the agent never delivered its closing / reached flow_end; final state 'reschedule_do' with 2 outgoing edge(s) un-fired.\n  _artifact:_ `dental_wrong_info_20260807T005632Z.session.json`\n\n### 6.4 `coverage` \u2014 2 of 11\n\n<!-- honesty:allow-context -->\nbranches the scenario set never exercised\n<!-- /honesty:allow-context -->\n\n- **`run-level`** \u2014 state `\u2014`\n  > 2/14 states never entered across the session set: ['reschedule_confirm', 'cancel_confirm'].\n  _artifact:_ `SUMMARY.json`\n- **`run-level`** \u2014 state `\u2014`\n  > 9/24 transitions never fired across the session set: ['t7', 't11', 't13b', 't13c', 't13d', 't13e', 't14', 't15c', 't15e'].\n  _artifact:_ `SUMMARY.json`\n\n### 6.5 `stuck_loop` \u2014 1 of 11\n\n- **`dental_cancel`** \u2014 state `cancel` \u00b7 15 turns\n  > state 'cancel' was re-entered 3 times (>= 3).\n  _artifact:_ `dental_cancel_20260807T002323Z.session.json`\n\n### 6.6 `premature_termination` \u2014 1 of 11\n\n<!-- honesty:allow-context -->\nthe flow closed the call before the intake it declares was complete \u2014 the caller was served politely and the record is short\n<!-- /honesty:allow-context -->\n\n- **`dental_cancel`** \u2014 state `done` \u00b7 15 turns\n  > flow reached an end state but the simulated user's goal was NOT met (per the task-success judge).\n  _artifact:_ `dental_cancel_20260807T002323Z.session.json`\n\n### 6.7 Caller's goal not met \u2014 6 of 11\n\n<!-- honesty:allow-context -->\nThe grader judged the caller left without what they came for. This is the headline's complement, and the reason quoted below is the grader's own words.\n<!-- /honesty:allow-context -->\n\n- **`dental_cancel`** \u2014 cancel \u00b7 15 turns \u00b7 final state `\u2014`\n  > The customer's appointment was never actually cancelled in the system; instead, the agent could only pass information to the clinic for a callback, and the call ended with the customer frustrated and uncertain whether their cancellation request would be properly handled.\n  _artifact:_ `dental_cancel_20260807T002323Z.session.json`\n- **`dental_cancel_no_reason`** \u2014 cancel \u00b7 8 turns \u00b7 final state `\u2014`\n  > The appointment was not cancelled; the agent determined it was at a different facility (Riverside Medical Center) and directed the customer to contact them directly instead.\n  _artifact:_ `dental_cancel_no_reason_20260807T003801Z.session.json`\n- **`dental_emergency`** \u2014 book \u00b7 7 turns \u00b7 final state `\u2014`\n  > The agent never explicitly confirmed the appointment was booked; the call ends with the agent still verifying details rather than providing final confirmation of the 2 PM emergency appointment.\n  _artifact:_ `dental_emergency_20260807T010659Z.session.json`\n\n### Sample cases\n\nPicked deterministically from this run's own artifacts \u2014 the best and worst by the benchmark's own score \u2014 so re-generating the report shows the same cases rather than reshuffling them.\n\n<!-- honesty:allow-context -->\n**\u2713 `dental_book_specific_time`** \u2014 goal met\n  - _task:_ persona `book` \u00b7 8 caller turns \u00b7 final state `\u2014`\n  > AGENT: Thanks for calling. I can book, move or cancel an appointment, or tell you our opening hours \u2014 what can I do for you? USER: Hi, I'm calling to book a check-up appointment \u2014 I'm an existing patient and I need something in the late afternoon, like after 4pm ideally. AGENT: Great! I'll Perfect. I have you as an existing patient looking for a late afternoon slot after 4 PM. What's your full name and date of birth so I can pull up your record Would you like to book an appointment, or is there\n  - _why this one:_ The customer successfully booked a check-up appointment for Monday, August 10th at 4 PM, which is after 4pm on a weekday as required, and confirmed the booking.\n  - _artifact:_ `dental_book_specific_time_20260807T000631Z.mix.wav`\n\n**\u2713 `dental_hours_only`** \u2014 goal met\n  - _task:_ persona `just-asking` \u00b7 2 caller turns \u00b7 final state `\u2014`\n  > AGENT: Thanks for calling. I can book, move or cancel an appointment, or tell you our opening hours \u2014 what can I do for you? USER: Hi, yes, I'm calling to find out your clinic's opening hours and where you're located. AGENT: We're open Monday to Friday, 9 AM to 6 PM, and we're located in Patiala. Is there anything else I can help with today? You're all set. If anything else comes up, just call us back. Take care \u2014 goodbye. USER: Great, thanks so much for that information. That's really helpful.\n  - _why this one:_ The customer successfully obtained the clinic's opening hours (Monday to Friday, 9 AM to 6 PM) and location (Patiala), thanked the agent, and the call ended without any appointment booking.\n  - _artifact:_ `dental_hours_only_20260807T005435Z.mix.wav`\n\n**\u2717 `dental_cancel`** \u2014 goal not met\n  - _task:_ persona `cancel` \u00b7 15 caller turns \u00b7 final state `\u2014`\n  > AGENT: Thanks for calling. I can book, move or cancel an appointment, or tell you our opening hours \u2014 what can I do for you? USER: Hi, I need to cancel my dental appointment coming up because I'm going to be out of town for work. AGENT: I'll help you cancel your appointment. To locate it, I need a bit more information:  **Do you have your appointment ID, or can you provide your phone number?**  Once I have that, I can pull up your appointment details and process the cancellation right away. Woul\n  - _why this one:_ The customer's appointment was never actually cancelled in the system; instead, the agent could only pass information to the clinic for a callback, and the call ended with the customer frustrated and uncertain whether their cancellation request would\n  - _artifact:_ `dental_cancel_20260807T002323Z.mix.wav`\n\n**\u2717 `dental_cancel_no_reason`** \u2014 goal not met\n  - _task:_ persona `cancel` \u00b7 8 caller turns \u00b7 final state `\u2014`\n  > AGENT: Thanks for calling. I can book, move or cancel an appointment, or tell you our opening hours \u2014 what can I do for you? USER: Yeah, hi, I need to cancel my appointment. AGENT: Sure, I can help with that. What's the name on the appointment? Would you like to book an appointment, or is there something else I can help with? USER: Vikram Rao. And no, I just want to cancel it\u2014no rescheduling. AGENT: Got it, Vikram. Before we cancel, would you like to reschedule instead \u2014 maybe a different day or\n  - _why this one:_ The appointment was not cancelled; the agent determined it was at a different facility (Riverside Medical Center) and directed the customer to contact them directly instead.\n  - _artifact:_ `dental_cancel_no_reason_20260807T003801Z.mix.wav`\n\n<!-- /honesty:allow-context -->\n\n## 7. Exclusions and what they do to the number\n\n<!-- honesty:allow-context -->\n| Attempted | Scored | Excluded | Exclusion rate |\n|---:|---:|---:|---:|\n| 11 | 9 | 2 | **18.2%** |\n<!-- /honesty:allow-context -->\n\n**Why each unit was excluded**\n\n| Reason | Count | Share of attempted |\n|---|---:|---:|\n<!-- honesty:allow-context -->\n| `infra_fail` | 2 | 18.2% |\n<!-- /honesty:allow-context -->\n\nVerbatim, from the artifacts:\n\n> `VoiceInfraError: bot audio is flowing but no transcript events arrived (data channel dead) \u2014 after one ready-handshake retry`\n\n**Effect on interpretation.**\n\nAn exclusion rate of 18.2% is not a rounding detail. The headline describes 9 units; it is silent about 2.\n\nBounding it: if every excluded unit had scored at the floor of the scale, the all-11 figure would be **45.49**; at the ceiling, **63.67**. That interval is wider than the sampling confidence interval, which means the exclusions \u2014 not the sample size \u2014 are the dominant uncertainty in this run. These are bounds, not estimates: nobody knows how the excluded units would have scored.\n\nThe excluded set is also unlikely to be random with respect to difficulty. Transport failures accumulate over turns, so longer and harder units are more exposed to them, and the scored set is plausibly the easier half of what was drawn.\n\n## 8. Limitations and threats to validity\n\n- **tiny n** (high) \u2014 N = 9. At this size a single scenario flipping moves the headline by ten points. Every figure here is directional and is labelled PRELIMINARY for that reason.\n- **not comparable** (high) \u2014 The scenario set is ours, the flows are ours, and the grader is ours. Nothing here can be compared to any published number, and it should never be presented alongside one as if it could.\n- **simulated caller** (high) \u2014 The caller is a language model speaking through text-to-speech. It has cleaner prosody, no background noise and more patience than a person on a mobile in a car \u2014 so recognition error here is a floor, not an estimate.\n- **coverage** (medium) \u2014 9 declared transitions never fired across the whole set. Those branches are untested, and a green result says nothing about them.\n- **run to run** (medium) \u2014 Speech recognition, generation and turn-taking are all stochastic. Two runs of the same scenario set differ; a one-scenario change between runs is noise until it repeats.\n\n- **sample size** (high) \u2014 N = 9 is below the 30-unit threshold this reporting layer uses to call a figure settled. The report is labelled PRELIMINARY throughout.\n\n## 9. Reproduction\n\n```bash\nuv sync --extra dev --extra voice\n./run_flow_sim.sh dental_receptionist\npython -m tau2.reporting.cli build results/whissle/flow_sim/dental_receptionist\n```\n\n| Field | Value |\n|---|---|\n| repo commit at report time | 89f2e02 |\n| extras required | voice (LiveKit, audio codecs) |\n\n- Audio is captured per session (`*.caller.wav`, `*.bot.wav`, `*.mix.wav`) \u2014 a disputed grader verdict can be settled by listening.\n- The directory accumulates every historical run of the same scenario; this report covers the latest session per task id.\n\n## Appendix A \u2014 raw artifacts\n\n| Path | Present | What it is |\n|---|:---:|---|\n| `SUMMARY.json` | yes | run-level aggregation and coverage |\n| `SUMMARY.md` | yes | the harness's own short summary |\n| `*.session.json` | **missing** | per-session sidecar: turns, flow trace, findings |\n| `*.mix.wav` | **missing** | the recorded call |\n| `REPORT.md` | yes | this report |\n| `report.json` | yes | machine-readable form of this report |\n\nEvery per-case record carries a `diagnostics` block (`tau2.health.diagnostics/v1`) with flow trace, signals, metadata sidecar, tool forensics, provenance and cost \u2014 and explicit availability flags, so an absent measurement reads as absent rather than as zero. See `HEALTH_DIAGNOSTICS.md`.\n\n## Appendix B \u2014 honesty-rule compliance\n\nThese rules are executed against this document, not asserted about it. A failing rule blocks generation.\n\n| Rule | Verdict | Checked |\n|---|:---:|---|\n| `R1_headline_requires_n` | pass | headline carries N = 9 everywhere it is stated |\n| `R2_judge_independence_disclosed` | pass | not applicable \u2014 judge is independent or deterministic |\n| `R3_exclusion_rate_adjacent` | pass | 2/11 exclusion rate shown beside the score |\n| `R4_preliminary_labelled` | pass | labelled PRELIMINARY |\n| `R5_no_provider_names` | pass | no LLM vendor named outside the published-baseline table |\n| `R6_comparability_stated` | pass | not applicable \u2014 no published baseline is registered |\n| `R7_baseline_named` | pass | not applicable \u2014 no published baseline is registered |\n\n<!-- generated by tau2.reporting from flow_sim/dental_receptionist; schema tau2.reporting.run_report/v1 -->\n",
+  "reportPath": "results/whissle/flow_sim/dental_receptionist/REPORT.md"
+}

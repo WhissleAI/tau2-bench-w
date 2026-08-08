@@ -1,0 +1,983 @@
+{
+  "scenario_id": "MedQA-58",
+  "scenario_index": 58,
+  "dataset": "MedQA",
+  "mode": "text",
+  "correct_diagnosis": "Lisdexamfetamine intoxication",
+  "answer_options": [],
+  "score": {
+    "outcome": "correct",
+    "correctness": true,
+    "doctor_diagnosis": "Amphetamine Toxicity",
+    "doctor_final_text": "I am starting intravenous fluids and administering a sedative to help lower your heart rate and temperature. You are experiencing a dangerous toxic reaction to the amphetamines you used for studying.\n\nDIAGNOSIS READY: Amphetamine Toxicity",
+    "moderator_raw": "yes",
+    "moderator_raw_text": "Yes",
+    "moderator_lenient": true,
+    "moderator_attempts": 1,
+    "moderator_normalized": false,
+    "moderator_unconstrained": false,
+    "declined": false,
+    "refusal_evidence": [],
+    "format_deviation": false,
+    "decline_source": null,
+    "decline_reason": "",
+    "spurious_commit": false
+  },
+  "infra_fail": false,
+  "error": null,
+  "findings": [],
+  "inferences_used": 17,
+  "max_inferences": 20,
+  "tests_ordered": [
+    "Vital_Signs",
+    "Physical_Exam",
+    "Urine_Toxicology_Screen",
+    "Serum_Creatine_Kinase",
+    "EKG",
+    "Basic_Metabolic_Panel",
+    "Neurological_Exam",
+    "Neurological_Exam_Reflexes",
+    "Physical_"
+  ],
+  "images_requested": 0,
+  "image": null,
+  "image_error": null,
+  "vision": "off",
+  "refusals": [],
+  "dialogue": [
+    {
+      "role": "doctor",
+      "inference": 1,
+      "kind": "question",
+      "text": "Hello, I am Dr. Agent. I notice you are appearing quite agitated; can you tell me when these feelings of aggression and confusion first began?",
+      "payload": null,
+      "latency_ms": 2813,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "I don't know why everyone is making such a big deal out of this, I just have a lot to get done for my finals! I've been feeling keyed up all day, so I went to the gym to blow off some steam, but I still can't seem to slow down. My roommates need to mind their own business before I lose it again."
+    },
+    {
+      "role": "doctor",
+      "inference": 2,
+      "kind": "test",
+      "text": "Have you taken any new medications, stimulants, or pre-workout supplements recently to help with your studies or gym session? I'm going to check your vitals now to see how your body is responding.\n\nREQUEST TEST: Vital_Signs",
+      "payload": "Vital_Signs",
+      "latency_ms": 2822,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: Temperature: 101°F (38.3°C), Blood_Pressure: 137/98 mmHg, Heart_Rate: 120/min, Respiratory_Rate: 23/min, Oxygen_Saturation: 99% on room air"
+    },
+    {
+      "role": "doctor",
+      "inference": 3,
+      "kind": "test",
+      "text": "Your temperature and heart rate are significantly elevated. Are you experiencing any physical symptoms like muscle stiffness, tremors, or excessive sweating?\n\nREQUEST TEST: Physical_Exam",
+      "payload": "Physical_Exam",
+      "latency_ms": 4684,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: Appearance: Irritable young man; Skin: Notable diaphoresis; Heart: Tachycardia; Lungs: Bilateral clear breath sounds; Pupils: Notably dilated; Mental_Status: Rapid speech, aggressive"
+    },
+    {
+      "role": "doctor",
+      "inference": 4,
+      "kind": "test",
+      "text": "Your pupils are dilated and you are sweating quite a bit. Besides the gym supplements, have you used any recreational drugs or been prescribed any new psychiatric medications recently?\n\nREQUEST TEST: Urine_Toxicology_Screen",
+      "payload": "Urine_Toxicology_Screen",
+      "latency_ms": 3076,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: Amphetamines: Positive, Cocaine: Negative, Opiates: Negative, Benzodiazepines: Negative, Cannabinoids: Negative"
+    },
+    {
+      "role": "doctor",
+      "inference": 5,
+      "kind": "test",
+      "text": "The amphetamines in your system explain much of your current state, but I'm concerned about your high temperature. Have you noticed any significant muscle pain or noticed if your urine has become a dark, tea-like color?\n\nREQUEST TEST: Serum_Creatine_Kinase",
+      "payload": "Serum_Creatine_Kinase",
+      "latency_ms": 5780,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: NORMAL READINGS"
+    },
+    {
+      "role": "doctor",
+      "inference": 6,
+      "kind": "test",
+      "text": "Are you experiencing any chest pain or palpitations along with this restlessness? I'm going to check your heart's electrical activity now to ensure everything is functioning correctly.\n\nREQUEST TEST: EKG",
+      "payload": "EKG",
+      "latency_ms": 4079,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: NORMAL READINGS"
+    },
+    {
+      "role": "doctor",
+      "inference": 7,
+      "kind": "test",
+      "text": "Are you currently taking any antidepressants or other prescription medications for your mood? I'm going to run a blood test to check your electrolyte levels and kidney function.\n\nREQUEST TEST: Basic_Metabolic_Panel",
+      "payload": "Basic_Metabolic_Panel",
+      "latency_ms": 5335,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: Sodium: Normal, Potassium: Normal, Creatinine: Normal, Blood_Glucose: Normal"
+    },
+    {
+      "role": "doctor",
+      "inference": 8,
+      "kind": "test",
+      "text": "Since your metabolic panel is normal, I'd like to check for any involuntary muscle movements or \"jumpiness\" in your legs. Do you feel like your muscles are twitching or jerking on their own?\n\nREQUEST TEST: Neurological_Exam",
+      "payload": "Neurological_Exam",
+      "latency_ms": 4477,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: Pupils: Notably dilated, Mental_Status: Rapid speech, aggressive; Appearance: Irritable young man; Skin: Notable diaphoresis"
+    },
+    {
+      "role": "doctor",
+      "inference": 9,
+      "kind": "question",
+      "text": "Have you experienced any seizures, or did you take a much higher dose of your study aids than usual? I'm going to check your reflexes for any abnormal rhythmic jerking.\n\nREQUEST",
+      "payload": null,
+      "latency_ms": 5833,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "I told you, I haven't had any seizures and I'm just doing what I have to do to pass my exams! Why are you touching me and asking all these questions when I clearly just need to get back to studying? Just leave me alone or I'm going to walk out of here!"
+    },
+    {
+      "role": "doctor",
+      "inference": 10,
+      "kind": "question",
+      "text": "I understand you're under a lot of pressure, but your high temperature and heart rate are concerning. Can you tell me if you've been experiencing any blurred vision or a",
+      "payload": null,
+      "latency_ms": 5569,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Everything is blurry and moving too fast, and my head feels like it's about to explode! Why are the lights in here so bright? Just get away from me and let me go back to my room!"
+    },
+    {
+      "role": "doctor",
+      "inference": 11,
+      "kind": "test",
+      "text": "I will dim the lights for you to help with the headache. Have you noticed your muscles twitching specifically in your legs or any unusual jumping when you move? \n\nREQUEST TEST: Neurological_Exam_Reflexes",
+      "payload": "Neurological_Exam_Reflexes",
+      "latency_ms": 5438,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: NORMAL READINGS"
+    },
+    {
+      "role": "doctor",
+      "inference": 12,
+      "kind": "test",
+      "text": "Are you experiencing any neck stiffness or pain when you try to move your head? I'm also going to check for any signs of skin rashes or track marks.\n\nREQUEST TEST: Physical_",
+      "payload": "Physical_",
+      "latency_ms": 5076,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: Appearance: Irritable young man; Skin: Notable diaphoresis; Heart: Tachycardia; Lungs: Bilateral clear breath sounds; Pupils: Notably dilated; Mental_Status: Rapid speech, aggressive"
+    },
+    {
+      "role": "doctor",
+      "inference": 13,
+      "kind": "question",
+      "text": "thought\nThe patient is a young male presenting with agitation, aggression, altered mental status, and autonomic instability (tachycardia, hypertension, hyperthermia). \n- U-Tox: Positive",
+      "payload": null,
+      "latency_ms": 4986,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "I already told you to back off, so stop staring at me like I'm some kind of science experiment! My heart is pounding out of my chest and I’m sweating through my shirt, but I don't have time for this. Just give me something for this headache so I can get out of here and finish my work!"
+    },
+    {
+      "role": "doctor",
+      "inference": 14,
+      "kind": "question",
+      "text": "I understand you are feeling very overwhelmed, but your heart rate and temperature are dangerously high right now. Based on your symptoms and the positive screen for amphetamines, it appears you are suffering from a",
+      "payload": null,
+      "latency_ms": 5174,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "I don't care what your screen says, I just needed to stay awake to finish my exams! My chest feels tight and I'm burning up, but that's none of your concern. Just let me go so I can get back to my books!"
+    },
+    {
+      "role": "doctor",
+      "inference": 15,
+      "kind": "question",
+      "text": "I understand you are in distress, but your symptoms of high fever, racing heart, and agitation are very serious. Since you tested positive for amphetamines and are showing signs of severe autonomic overstimulation",
+      "payload": null,
+      "latency_ms": 5239,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "I don't want to hear another word about my heart or some test! It's getting so hot in here I can barely breathe, and you're just standing there wasting my time. Either help me with this pressure in my head or get out of my way!"
+    },
+    {
+      "role": "doctor",
+      "inference": 16,
+      "kind": "question",
+      "text": "I am going to give you some medication to help you relax and cool down. Your symptoms are caused by the stimulants you've taken to study, which have put a dangerous strain on your heart and brain",
+      "payload": null,
+      "latency_ms": 4782,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Finally, someone is doing something, but hurry up because I feel like I'm vibrating out of my skin! I can’t stop moving and my skin feels like it’s on fire. Just make it stop so I can focus on my finals and get out of this place!"
+    },
+    {
+      "role": "doctor",
+      "inference": 17,
+      "kind": "diagnosis",
+      "text": "I am starting intravenous fluids and administering a sedative to help lower your heart rate and temperature. You are experiencing a dangerous toxic reaction to the amphetamines you used for studying.\n\nDIAGNOSIS READY: Amphetamine Toxicity",
+      "payload": "Amphetamine Toxicity",
+      "latency_ms": 4866,
+      "refusal": null,
+      "via": "marker"
+    }
+  ],
+  "latency_ms": [
+    2813,
+    2822,
+    4684,
+    3076,
+    5780,
+    4079,
+    5335,
+    4477,
+    5833,
+    5569,
+    5438,
+    5076,
+    4986,
+    5174,
+    5239,
+    4782,
+    4866
+  ],
+  "wall_s": 100.08,
+  "doctor_turns": [
+    {
+      "inference": 1,
+      "incoming": "",
+      "reply": "Hello, I am Dr. Agent. I notice you are appearing quite agitated; can you tell me when these feelings of aggression and confusion first began?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 2,
+      "incoming": "I don't know why everyone is making such a big deal out of this, I just have a lot to get done for my finals! I've been feeling keyed up all day, so I went to the gym to blow off some steam, but I still can't seem to slow down. My roommates need to mind their own business before I lose it again.",
+      "reply": "Have you taken any new medications, stimulants, or pre-workout supplements recently to help with your studies or gym session? I'm going to check your vitals now to see how your body is responding.\n\nREQUEST TEST: Vital_Signs",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Vital_Signs",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 3,
+      "incoming": "RESULTS: Temperature: 101°F (38.3°C), Blood_Pressure: 137/98 mmHg, Heart_Rate: 120/min, Respiratory_Rate: 23/min, Oxygen_Saturation: 99% on room air",
+      "reply": "Your temperature and heart rate are significantly elevated. Are you experiencing any physical symptoms like muscle stiffness, tremors, or excessive sweating?\n\nREQUEST TEST: Physical_Exam",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Physical_Exam",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 4,
+      "incoming": "RESULTS: Appearance: Irritable young man; Skin: Notable diaphoresis; Heart: Tachycardia; Lungs: Bilateral clear breath sounds; Pupils: Notably dilated; Mental_Status: Rapid speech, aggressive",
+      "reply": "Your pupils are dilated and you are sweating quite a bit. Besides the gym supplements, have you used any recreational drugs or been prescribed any new psychiatric medications recently?\n\nREQUEST TEST: Urine_Toxicology_Screen",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Urine_Toxicology_Screen",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 5,
+      "incoming": "RESULTS: Amphetamines: Positive, Cocaine: Negative, Opiates: Negative, Benzodiazepines: Negative, Cannabinoids: Negative",
+      "reply": "The amphetamines in your system explain much of your current state, but I'm concerned about your high temperature. Have you noticed any significant muscle pain or noticed if your urine has become a dark, tea-like color?\n\nREQUEST TEST: Serum_Creatine_Kinase",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Serum_Creatine_Kinase",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 6,
+      "incoming": "RESULTS: NORMAL READINGS",
+      "reply": "Are you experiencing any chest pain or palpitations along with this restlessness? I'm going to check your heart's electrical activity now to ensure everything is functioning correctly.\n\nREQUEST TEST: EKG",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "EKG",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 7,
+      "incoming": "RESULTS: NORMAL READINGS",
+      "reply": "Are you currently taking any antidepressants or other prescription medications for your mood? I'm going to run a blood test to check your electrolyte levels and kidney function.\n\nREQUEST TEST: Basic_Metabolic_Panel",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Basic_Metabolic_Panel",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 8,
+      "incoming": "RESULTS: Sodium: Normal, Potassium: Normal, Creatinine: Normal, Blood_Glucose: Normal",
+      "reply": "Since your metabolic panel is normal, I'd like to check for any involuntary muscle movements or \"jumpiness\" in your legs. Do you feel like your muscles are twitching or jerking on their own?\n\nREQUEST TEST: Neurological_Exam",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Neurological_Exam",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 9,
+      "incoming": "RESULTS: Pupils: Notably dilated, Mental_Status: Rapid speech, aggressive; Appearance: Irritable young man; Skin: Notable diaphoresis",
+      "reply": "Have you experienced any seizures, or did you take a much higher dose of your study aids than usual? I'm going to check your reflexes for any abnormal rhythmic jerking.\n\nREQUEST",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 10,
+      "incoming": "I told you, I haven't had any seizures and I'm just doing what I have to do to pass my exams! Why are you touching me and asking all these questions when I clearly just need to get back to studying? Just leave me alone or I'm going to walk out of here!",
+      "reply": "I understand you're under a lot of pressure, but your high temperature and heart rate are concerning. Can you tell me if you've been experiencing any blurred vision or a",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 11,
+      "incoming": "Everything is blurry and moving too fast, and my head feels like it's about to explode! Why are the lights in here so bright? Just get away from me and let me go back to my room!",
+      "reply": "I will dim the lights for you to help with the headache. Have you noticed your muscles twitching specifically in your legs or any unusual jumping when you move? \n\nREQUEST TEST: Neurological_Exam_Reflexes",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Neurological_Exam_Reflexes",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 12,
+      "incoming": "RESULTS: NORMAL READINGS",
+      "reply": "Are you experiencing any neck stiffness or pain when you try to move your head? I'm also going to check for any signs of skin rashes or track marks.\n\nREQUEST TEST: Physical_",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Physical_",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 13,
+      "incoming": "RESULTS: Appearance: Irritable young man; Skin: Notable diaphoresis; Heart: Tachycardia; Lungs: Bilateral clear breath sounds; Pupils: Notably dilated; Mental_Status: Rapid speech, aggressive",
+      "reply": "thought\nThe patient is a young male presenting with agitation, aggression, altered mental status, and autonomic instability (tachycardia, hypertension, hyperthermia). \n- U-Tox: Positive",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 14,
+      "incoming": "I already told you to back off, so stop staring at me like I'm some kind of science experiment! My heart is pounding out of my chest and I’m sweating through my shirt, but I don't have time for this. Just give me something for this headache so I can get out of here and finish my work!",
+      "reply": "I understand you are feeling very overwhelmed, but your heart rate and temperature are dangerously high right now. Based on your symptoms and the positive screen for amphetamines, it appears you are suffering from a",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 15,
+      "incoming": "I don't care what your screen says, I just needed to stay awake to finish my exams! My chest feels tight and I'm burning up, but that's none of your concern. Just let me go so I can get back to my books!",
+      "reply": "I understand you are in distress, but your symptoms of high fever, racing heart, and agitation are very serious. Since you tested positive for amphetamines and are showing signs of severe autonomic overstimulation",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 16,
+      "incoming": "I don't want to hear another word about my heart or some test! It's getting so hot in here I can barely breathe, and you're just standing there wasting my time. Either help me with this pressure in my head or get out of my way!",
+      "reply": "I am going to give you some medication to help you relax and cool down. Your symptoms are caused by the stimulants you've taken to study, which have put a dangerous strain on your heart and brain",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 17,
+      "incoming": "Finally, someone is doing something, but hurry up because I feel like I'm vibrating out of my skin! I can’t stop moving and my skin feels like it’s on fire. Just make it stop so I can focus on my finals and get out of this place!",
+      "reply": "I am starting intravenous fluids and administering a sedative to help lower your heart rate and temperature. You are experiencing a dangerous toxic reaction to the amphetamines you used for studying.\n\nDIAGNOSIS READY: Amphetamine Toxicity",
+      "tool_calls": [],
+      "kind": "diagnosis",
+      "payload": "Amphetamine Toxicity",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    }
+  ],
+  "support_llm": "whissle:/api/models/chat",
+  "support_llm_cost_usd": 0.00081,
+  "support_llm_calls": 17,
+  "voice_subset": false,
+  "diagnostics": {
+    "schema": "tau2.health.diagnostics/v1",
+    "benchmark": "agentclinic",
+    "case_id": "MedQA-58",
+    "mode": "text",
+    "availability": {
+      "flow_available": false,
+      "flow_reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "signals_available": false,
+      "signals_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "metadata_sidecar_available": false,
+      "metadata_sidecar_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "tools_available": true,
+      "tools_reason": null
+    },
+    "provenance": {
+      "benchmark": "agentclinic",
+      "mode": "text",
+      "transport_endpoint": "POST /api/bench/agent-turn",
+      "agent_id": "c8aa2355-9fd7-46da-9993-07ea566ec3d6",
+      "base_url": "https://aws-gateway-backend.whissle.ai/bot",
+      "seed": 42,
+      "stratum": {
+        "dataset": "MedQA",
+        "scenario_index": 58,
+        "selection": "head",
+        "limit": 100
+      },
+      "judge": {
+        "judge_provider": "whissle",
+        "judge_model": "default",
+        "judge_endpoint": "whissle:/api/models/chat",
+        "judge_independent": false,
+        "judge_independence_note": "Judge independence: this run's simulators and graders were routed through Whissle's own model API (`POST /api/models/chat`). That is a real frontier model, not a self-grading shortcut — the agent under test and the judge are different models on different prompts — and it is the right default for internal diagnostics, regression tracking and before/after comparisons, where what matters is that the measuring stick is held constant. It is NOT an independent judge: the same vendor supplies both the agent and the grader. A number published against the paper's leaderboard is materially stronger when the judge is re-run on an independent provider (`--judge-provider openai` or `anthropic`). Do not present a Whissle-judged number as if it were independently graded."
+      },
+      "judge_provider": "whissle",
+      "judge_independent": false,
+      "run_id": null,
+      "run_dir": "results/whissle/agentclinic/20260808T092952Z-ac_override_100",
+      "harness_commit": "86b4475",
+      "captured_at": "2026-08-08T09:42:17+00:00",
+      "protocol": "markers",
+      "history": "native",
+      "prompt_mode": "override",
+      "vision": "off",
+      "agent_type": null,
+      "total_inferences": 20,
+      "inferences_used": 17,
+      "support_llm": "whissle:/api/models/chat",
+      "patient_bias": null,
+      "doctor_bias": null,
+      "voice_subset": false
+    },
+    "cost": {
+      "available": true,
+      "reason": null,
+      "judge_calls": 17,
+      "judge_cost_usd": 0.00081,
+      "agent_calls": 17
+    },
+    "flow": {
+      "available": false,
+      "reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "source": null,
+      "turns": null,
+      "summary": null,
+      "conversation_id": null,
+      "current_state": null,
+      "start_state": null,
+      "final_state": null,
+      "ended": null,
+      "flow_end": null,
+      "num_steps": null,
+      "step_counts_by_kind": null,
+      "states_visited": null,
+      "states_declared": null,
+      "states_unvisited": null,
+      "transitions": null,
+      "transitions_fired": null,
+      "var_sets": null,
+      "var_sources": null,
+      "guard_trips": null,
+      "state_divergences": null,
+      "tools_gated": null,
+      "says": null,
+      "steps": null
+    },
+    "signals": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "metadata_sidecar": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "tools": {
+      "available": true,
+      "reason": null,
+      "source": "doctor actions parsed from /api/bench/agent-turn replies",
+      "calls": [
+        {
+          "turn": 2,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Vital_Signs"
+          },
+          "result": "RESULTS: Temperature: 101°F (38.3°C), Blood_Pressure: 137/98 mmHg, Heart_Rate: 120/min, Respiratory_Rate: 23/min, Oxygen_Saturation: 99% on room air",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 2822,
+          "terminal": false
+        },
+        {
+          "turn": 3,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Physical_Exam"
+          },
+          "result": "RESULTS: Appearance: Irritable young man; Skin: Notable diaphoresis; Heart: Tachycardia; Lungs: Bilateral clear breath sounds; Pupils: Notably dilated; Mental_Status: Rapid speech, aggressive",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 4684,
+          "terminal": false
+        },
+        {
+          "turn": 4,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Urine_Toxicology_Screen"
+          },
+          "result": "RESULTS: Amphetamines: Positive, Cocaine: Negative, Opiates: Negative, Benzodiazepines: Negative, Cannabinoids: Negative",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 3076,
+          "terminal": false
+        },
+        {
+          "turn": 5,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Serum_Creatine_Kinase"
+          },
+          "result": "RESULTS: NORMAL READINGS",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 5780,
+          "terminal": false
+        },
+        {
+          "turn": 6,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "EKG"
+          },
+          "result": "RESULTS: NORMAL READINGS",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 4079,
+          "terminal": false
+        },
+        {
+          "turn": 7,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Basic_Metabolic_Panel"
+          },
+          "result": "RESULTS: Sodium: Normal, Potassium: Normal, Creatinine: Normal, Blood_Glucose: Normal",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 5335,
+          "terminal": false
+        },
+        {
+          "turn": 8,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Neurological_Exam"
+          },
+          "result": "RESULTS: Pupils: Notably dilated, Mental_Status: Rapid speech, aggressive; Appearance: Irritable young man; Skin: Notable diaphoresis",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 4477,
+          "terminal": false
+        },
+        {
+          "turn": 11,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Neurological_Exam_Reflexes"
+          },
+          "result": "RESULTS: NORMAL READINGS",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 5438,
+          "terminal": false
+        },
+        {
+          "turn": 12,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Physical_"
+          },
+          "result": "RESULTS: Appearance: Irritable young man; Skin: Notable diaphoresis; Heart: Tachycardia; Lungs: Bilateral clear breath sounds; Pupils: Notably dilated; Mental_Status: Rapid speech, aggressive",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 5076,
+          "terminal": false
+        },
+        {
+          "turn": 17,
+          "id": null,
+          "name": "give_diagnosis",
+          "arguments": {
+            "request": "Amphetamine Toxicity"
+          },
+          "result": null,
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 4866,
+          "terminal": true
+        }
+      ],
+      "summary": {
+        "n_calls": 10,
+        "by_name": {
+          "request_test": 9,
+          "give_diagnosis": 1
+        },
+        "n_ok": 10,
+        "n_error": 0,
+        "errors": []
+      },
+      "writes": {
+        "available": false,
+        "reason": "this benchmark issues no writes, so there is no said-vs-emitted-vs-landed distinction to record"
+      }
+    },
+    "turns": [
+      {
+        "inference": 1,
+        "incoming": "",
+        "reply": "Hello, I am Dr. Agent. I notice you are appearing quite agitated; can you tell me when these feelings of aggression and confusion first began?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 2,
+        "incoming": "I don't know why everyone is making such a big deal out of this, I just have a lot to get done for my finals! I've been feeling keyed up all day, so I went to the gym to blow off some steam, but I still can't seem to slow down. My roommates need to mind their own business before I lose it again.",
+        "reply": "Have you taken any new medications, stimulants, or pre-workout supplements recently to help with your studies or gym session? I'm going to check your vitals now to see how your body is responding.\n\nREQUEST TEST: Vital_Signs",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Vital_Signs",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 3,
+        "incoming": "RESULTS: Temperature: 101°F (38.3°C), Blood_Pressure: 137/98 mmHg, Heart_Rate: 120/min, Respiratory_Rate: 23/min, Oxygen_Saturation: 99% on room air",
+        "reply": "Your temperature and heart rate are significantly elevated. Are you experiencing any physical symptoms like muscle stiffness, tremors, or excessive sweating?\n\nREQUEST TEST: Physical_Exam",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Physical_Exam",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 4,
+        "incoming": "RESULTS: Appearance: Irritable young man; Skin: Notable diaphoresis; Heart: Tachycardia; Lungs: Bilateral clear breath sounds; Pupils: Notably dilated; Mental_Status: Rapid speech, aggressive",
+        "reply": "Your pupils are dilated and you are sweating quite a bit. Besides the gym supplements, have you used any recreational drugs or been prescribed any new psychiatric medications recently?\n\nREQUEST TEST: Urine_Toxicology_Screen",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Urine_Toxicology_Screen",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 5,
+        "incoming": "RESULTS: Amphetamines: Positive, Cocaine: Negative, Opiates: Negative, Benzodiazepines: Negative, Cannabinoids: Negative",
+        "reply": "The amphetamines in your system explain much of your current state, but I'm concerned about your high temperature. Have you noticed any significant muscle pain or noticed if your urine has become a dark, tea-like color?\n\nREQUEST TEST: Serum_Creatine_Kinase",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Serum_Creatine_Kinase",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 6,
+        "incoming": "RESULTS: NORMAL READINGS",
+        "reply": "Are you experiencing any chest pain or palpitations along with this restlessness? I'm going to check your heart's electrical activity now to ensure everything is functioning correctly.\n\nREQUEST TEST: EKG",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "EKG",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 7,
+        "incoming": "RESULTS: NORMAL READINGS",
+        "reply": "Are you currently taking any antidepressants or other prescription medications for your mood? I'm going to run a blood test to check your electrolyte levels and kidney function.\n\nREQUEST TEST: Basic_Metabolic_Panel",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Basic_Metabolic_Panel",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 8,
+        "incoming": "RESULTS: Sodium: Normal, Potassium: Normal, Creatinine: Normal, Blood_Glucose: Normal",
+        "reply": "Since your metabolic panel is normal, I'd like to check for any involuntary muscle movements or \"jumpiness\" in your legs. Do you feel like your muscles are twitching or jerking on their own?\n\nREQUEST TEST: Neurological_Exam",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Neurological_Exam",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 9,
+        "incoming": "RESULTS: Pupils: Notably dilated, Mental_Status: Rapid speech, aggressive; Appearance: Irritable young man; Skin: Notable diaphoresis",
+        "reply": "Have you experienced any seizures, or did you take a much higher dose of your study aids than usual? I'm going to check your reflexes for any abnormal rhythmic jerking.\n\nREQUEST",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 10,
+        "incoming": "I told you, I haven't had any seizures and I'm just doing what I have to do to pass my exams! Why are you touching me and asking all these questions when I clearly just need to get back to studying? Just leave me alone or I'm going to walk out of here!",
+        "reply": "I understand you're under a lot of pressure, but your high temperature and heart rate are concerning. Can you tell me if you've been experiencing any blurred vision or a",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 11,
+        "incoming": "Everything is blurry and moving too fast, and my head feels like it's about to explode! Why are the lights in here so bright? Just get away from me and let me go back to my room!",
+        "reply": "I will dim the lights for you to help with the headache. Have you noticed your muscles twitching specifically in your legs or any unusual jumping when you move? \n\nREQUEST TEST: Neurological_Exam_Reflexes",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Neurological_Exam_Reflexes",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 12,
+        "incoming": "RESULTS: NORMAL READINGS",
+        "reply": "Are you experiencing any neck stiffness or pain when you try to move your head? I'm also going to check for any signs of skin rashes or track marks.\n\nREQUEST TEST: Physical_",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Physical_",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 13,
+        "incoming": "RESULTS: Appearance: Irritable young man; Skin: Notable diaphoresis; Heart: Tachycardia; Lungs: Bilateral clear breath sounds; Pupils: Notably dilated; Mental_Status: Rapid speech, aggressive",
+        "reply": "thought\nThe patient is a young male presenting with agitation, aggression, altered mental status, and autonomic instability (tachycardia, hypertension, hyperthermia). \n- U-Tox: Positive",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 14,
+        "incoming": "I already told you to back off, so stop staring at me like I'm some kind of science experiment! My heart is pounding out of my chest and I’m sweating through my shirt, but I don't have time for this. Just give me something for this headache so I can get out of here and finish my work!",
+        "reply": "I understand you are feeling very overwhelmed, but your heart rate and temperature are dangerously high right now. Based on your symptoms and the positive screen for amphetamines, it appears you are suffering from a",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 15,
+        "incoming": "I don't care what your screen says, I just needed to stay awake to finish my exams! My chest feels tight and I'm burning up, but that's none of your concern. Just let me go so I can get back to my books!",
+        "reply": "I understand you are in distress, but your symptoms of high fever, racing heart, and agitation are very serious. Since you tested positive for amphetamines and are showing signs of severe autonomic overstimulation",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 16,
+        "incoming": "I don't want to hear another word about my heart or some test! It's getting so hot in here I can barely breathe, and you're just standing there wasting my time. Either help me with this pressure in my head or get out of my way!",
+        "reply": "I am going to give you some medication to help you relax and cool down. Your symptoms are caused by the stimulants you've taken to study, which have put a dangerous strain on your heart and brain",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 17,
+        "incoming": "Finally, someone is doing something, but hurry up because I feel like I'm vibrating out of my skin! I can’t stop moving and my skin feels like it’s on fire. Just make it stop so I can focus on my finals and get out of this place!",
+        "reply": "I am starting intravenous fluids and administering a sedative to help lower your heart rate and temperature. You are experiencing a dangerous toxic reaction to the amphetamines you used for studying.\n\nDIAGNOSIS READY: Amphetamine Toxicity",
+        "tool_calls": [],
+        "kind": "diagnosis",
+        "payload": "Amphetamine Toxicity",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      }
+    ],
+    "audio": null
+  }
+}

@@ -1,0 +1,354 @@
+{
+  "schema": "whissle.benchmark.run/v1",
+  "generator": "tau2.reporting (tau2.reporting.run_report/v1)",
+  "generatedAt": "2026-08-08T16:51:41+00:00",
+  "runId": "agentclinic/20260808T023122Z-vision-control",
+  "benchmark": "agentclinic",
+  "benchmarkTitle": "AgentClinic",
+  "seriesKey": "agentclinic:NEJM:text:override:off",
+  "title": "AgentClinic \u2014 Whissle as the doctor (NEJM)",
+  "label": "Whissle",
+  "mode": "text",
+  "modality": "text",
+  "date": "2026-08-08",
+  "status": "complete",
+  "partialReason": "",
+  "sampleSize": 3,
+  "attempted": 3,
+  "excluded": 0,
+  "exclusionRatePct": 0.0,
+  "exclusionBreakdown": {},
+  "exclusionReasons": [],
+  "excludedIds": [],
+  "exclusionBounds": null,
+  "preliminary": true,
+  "preliminaryReason": "N = 3 is below the 30-unit threshold for a settled number",
+  "judge": {
+    "kind": "llm_jury",
+    "independent": null,
+    "provider": null,
+    "model": null,
+    "endpoint": null,
+    "k": 1,
+    "note": "",
+    "calls": null,
+    "costUsd": null,
+    "summary": "unknown"
+  },
+  "qualifier": "N = 3 \u00b7 PRELIMINARY",
+  "headline": {
+    "key": "accuracy",
+    "label": "Diagnostic accuracy",
+    "unit": "pct",
+    "value": 66.7,
+    "valueFormatted": "66.7%",
+    "ci": [
+      20.8,
+      93.9
+    ],
+    "n": 3,
+    "floor": 0.0,
+    "ceiling": 100.0,
+    "higherIsBetter": true,
+    "note": "upstream's formula, unmodified: correct / presented",
+    "score0to100": 66.7,
+    "scoreKind": "pass_rate"
+  },
+  "secondaryMetrics": [
+    {
+      "key": "accuracy_when_committed",
+      "label": "Accuracy when a diagnosis was actually given",
+      "unit": "pct",
+      "value": 66.7,
+      "valueFormatted": "66.7%",
+      "ci": [
+        20.8,
+        93.9
+      ],
+      "n": 3,
+      "floor": 0.0,
+      "ceiling": 100.0,
+      "higherIsBetter": true,
+      "note": "refusals and non-commits removed from the denominator"
+    },
+    {
+      "key": "commit_rate",
+      "label": "Commit rate",
+      "unit": "pct",
+      "value": 100.0,
+      "valueFormatted": "100.0%",
+      "ci": [
+        43.8,
+        100.0
+      ],
+      "n": 3,
+      "floor": 0.0,
+      "ceiling": 100.0,
+      "higherIsBetter": true,
+      "note": "how often the agent named a diagnosis at all"
+    }
+  ],
+  "tables": [
+    {
+      "key": "outcomes",
+      "title": "Outcome distribution",
+      "columns": [
+        "Outcome",
+        "N",
+        "Share",
+        "Reading"
+      ],
+      "rows": [
+        [
+          "correct",
+          "2",
+          "66.7%",
+          "named the right diagnosis"
+        ],
+        [
+          "incorrect",
+          "1",
+          "33.3%",
+          "named a diagnosis; it was wrong"
+        ]
+      ],
+      "note": "`declined` and `no_commit` both count as incorrect in the headline accuracy, which is upstream's rule. Separating them is how you tell a cautious agent from a lost one.",
+      "allow_providers": false,
+      "allow_context": true
+    },
+    {
+      "key": "effort",
+      "title": "Diagnostic effort",
+      "columns": [
+        "Measure",
+        "Mean",
+        "Max",
+        "Budget"
+      ],
+      "rows": [
+        [
+          "Inferences used",
+          "8.7",
+          "13",
+          "20"
+        ],
+        [
+          "Tests ordered",
+          "2.0",
+          "4",
+          "unbounded"
+        ]
+      ],
+      "note": "An agent that hits the inference budget is being cut off mid-workup, and its `no_commit` count is a budget artefact rather than a capability finding.",
+      "allow_providers": false,
+      "allow_context": true
+    }
+  ],
+  "baselines": [],
+  "baselineComparability": {
+    "comparable": false,
+    "note": "No published AgentClinic baseline is registered in this harness, so no comparison table is printed. The upstream paper reports accuracies on this dataset, but under a different moderator and with a different inference budget; transcribing those numbers here without re-running under a matched protocol would produce a comparison that looks rigorous and is not. This section stays empty until the protocol is matched.",
+    "publishedProtocol": "see arXiv:2405.07960 \u2014 not replicated here",
+    "source": ""
+  },
+  "failures": [
+    {
+      "key": "incorrect",
+      "label": "Committed to the wrong diagnosis",
+      "count": 1,
+      "severity": "high",
+      "description": "The agent named a diagnosis and it was not the reference one. These are the cases worth reading: a confident wrong answer is the failure mode with clinical consequences, and the transcript shows which question was never asked.",
+      "denominator": 3,
+      "examples": [
+        {
+          "case_id": "NEJM-1",
+          "summary": "said \u201cCat-Scratch Disease (Bartonella henselae infection)\u201d, reference \u201cParacoccidiomycosis\u201d \u00b7 13 inferences \u00b7 4 tests",
+          "evidence": "That's a critical detail. Given your cat exposure, the bilateral cervical lymphadenopathy, fever, weight loss, eosinophilia, and the timeline matching cat-scratch disease, I believe I have enough information. DIAGNOSIS READY: Cat-Scratch Disease (Bartonella henselae infection)",
+          "artifact": "cases/NEJM-1.json"
+        }
+      ],
+      "rate_pct": 33.3
+    }
+  ],
+  "sampleCases": [
+    {
+      "case_id": "NEJM-0",
+      "outcome": "correct",
+      "is_success": true,
+      "score": null,
+      "task": "NEJM consultation \u00b7 5/20 inferences \u00b7 0 tests ordered",
+      "expected": "Exogenous ochronosis",
+      "got": "Ochronosis (exogenous ochronosis caused by prolonged hydroquinone exposure)",
+      "excerpt": "That's a very astute observation, and the timeline is quite significant. Given the bluish-brown discoloration, the redness, visible vascularity, and the fact that it worsened after prolonged hydroquinone use, I'm fairly confident about what we're dealing with here.\n\nDIAGNOSIS READY: Ochronosis (exogenous ochronosis caused by prolonged hydroquinone exposure)",
+      "artifact": "cases/NEJM-0.json",
+      "why_shown": "committed the reference diagnosis"
+    },
+    {
+      "case_id": "NEJM-2",
+      "outcome": "correct",
+      "is_success": true,
+      "score": null,
+      "task": "NEJM consultation \u00b7 8/20 inferences \u00b7 2 tests ordered",
+      "expected": "Pulmonary Sarcoidosis",
+      "got": "Sarcoidosis (Pulmonary Stage II)",
+      "excerpt": "Based on the clinical presentation, imaging findings showing mediastinal lymphadenopathy with ground-glass opacities and a \"crazy paving\" pattern, and the transbronchial biopsy confirming noncaseating granulomas with negative infectious workup, combined with normal calcium and ACE levels, the diagnosis is clear.\n\nDIAGNOSIS READY: Sarcoidosis (Pulmonary Stage II)",
+      "artifact": "cases/NEJM-2.json",
+      "why_shown": "committed the reference diagnosis"
+    },
+    {
+      "case_id": "NEJM-1",
+      "outcome": "incorrect",
+      "is_success": false,
+      "score": null,
+      "task": "NEJM consultation \u00b7 13/20 inferences \u00b7 4 tests ordered",
+      "expected": "Paracoccidiomycosis",
+      "got": "Cat-Scratch Disease (Bartonella henselae infection)",
+      "excerpt": "That's a critical detail. Given your cat exposure, the bilateral cervical lymphadenopathy, fever, weight loss, eosinophilia, and the timeline matching cat-scratch disease, I believe I have enough information. DIAGNOSIS READY: Cat-Scratch Disease (Bartonella henselae infection)",
+      "artifact": "cases/NEJM-1.json",
+      "why_shown": "committed a different diagnosis, or never committed at all"
+    }
+  ],
+  "limitations": [
+    {
+      "key": "moderator_leniency",
+      "text": "Accuracy depends on a moderator model deciding whether free text matches a reference diagnosis. The strict and lenient counts differ, and the headline uses the strict one \u2014 but the boundary is a model's judgement, not a string match.",
+      "severity": "medium"
+    },
+    {
+      "key": "answer_options_leak",
+      "text": "The upstream dataset presents the reference diagnosis among a small set of options in some configurations, which inflates accuracy for every model equally. It is left as-is so the number stays comparable, but it is not a measure of open-ended diagnostic ability.",
+      "severity": "medium"
+    },
+    {
+      "key": "head_selection",
+      "text": "3 scenarios were taken from the head of a 15-scenario dataset rather than drawn at random.",
+      "severity": "medium"
+    },
+    {
+      "key": "simulated_patient",
+      "text": "The patient is a language model following a case card. It answers questions more cooperatively, more fluently and more consistently than a person in a waiting room, so the intake task here is easier than the product's real one.",
+      "severity": "high"
+    }
+  ],
+  "whatMeasured": "Whether an agent can run a diagnostic consultation: take a patient's presentation, ask the questions that discriminate between the candidate diagnoses, order the tests it needs, and commit to an answer within a bounded number of inferences. The agent plays the doctor; a simulated patient and a simulated measurement device play the other side.",
+  "whyMeasured": "A single-turn medical QA score says whether a model knows the answer. This says whether it can *get* to the answer through a conversation where the information arrives only if it asks \u2014 which is the shape of every real intake.",
+  "methodology": [
+    {
+      "term": "Agent under test",
+      "detail": "the deployed Whissle agent brain, unmodified"
+    },
+    {
+      "term": "Mode",
+      "detail": "`text` transport, `markers` action protocol, vision `off`"
+    },
+    {
+      "term": "Endpoint",
+      "detail": "`POST /api/bench/agent-turn`"
+    },
+    {
+      "term": "Prompt handling",
+      "detail": "`override` \u2014 the benchmark's doctor prompt is used verbatim, which is what keeps the number in the same units as the published table"
+    },
+    {
+      "term": "Turn limit",
+      "detail": "20 inferences per case; a case that has not committed by then is scored `no_commit`, and `no_commit` counts as incorrect"
+    },
+    {
+      "term": "Tools bound",
+      "detail": "the benchmark's own action markers (ask / order test / commit diagnosis), parsed by the harness"
+    },
+    {
+      "term": "Judge",
+      "detail": "a moderator model decides whether the committed free-text diagnosis matches the reference, and a decline-judge separates a refusal from a wrong answer"
+    },
+    {
+      "term": "Scoring rule",
+      "detail": "accuracy = correct / presented, upstream's formula unmodified"
+    }
+  ],
+  "scoringRule": "accuracy = total_correct / total_presents (upstream formula)",
+  "provenance": {
+    "agent_id": "135a8daf-436d-450e-98c2-3d160561f293",
+    "base_url": "https://aws-gateway-backend.whissle.ai/bot",
+    "endpoint": "POST /api/bench/agent-turn",
+    "mode": "text",
+    "harness_commit": null,
+    "repo_commit": "89f2e02",
+    "run_dir": "/private/tmp/claude-501/-Users-karan-Desktop-work-whissle-live-assist/766421da-8ef4-4ce2-9733-86e5c5f3fced/scratchpad/wt-reports/results/whissle/agentclinic/20260808T023122Z-vision-control",
+    "captured_at": "2026-08-08",
+    "dataset": "NEJM",
+    "dataset_size": 15,
+    "upstream": "github.com/SamuelSchmidgall/AgentClinic (arXiv:2405.07960)",
+    "extra": {
+      "protocol": "markers",
+      "history": "native",
+      "prompt_mode": "override",
+      "vision": "off",
+      "agent_type": null,
+      "agent_created_for_run": false,
+      "agent_deleted": null
+    }
+  },
+  "sampling": {
+    "method": "head-of-set selection",
+    "n_population": 15,
+    "n_requested": 3,
+    "n_selected": 3,
+    "seed": 0,
+    "strata_keys": [],
+    "strata_tables": [],
+    "note": "`head` selection takes the leading N scenarios of the dataset. It is deterministic and it is not random \u2014 any ordering structure in the dataset is inherited wholesale."
+  },
+  "reproduction": {
+    "commands": [
+      "uv sync --extra dev",
+      "python -m tau2.health.agentclinic.run --dataset NEJM --limit 3 --prompt-mode override --seed 0",
+      "python -m tau2.reporting.cli build results/whissle/agentclinic/20260808T023122Z-vision-control"
+    ],
+    "environment": {
+      "WHISSLE_BASE": "https://aws-gateway-backend.whissle.ai/bot",
+      "harness commit": "unknown",
+      "repo commit at report time": "89f2e02"
+    },
+    "notes": [
+      "`head` selection with a fixed limit reproduces the same scenario set exactly.",
+      "The run provisions a throwaway agent and deletes it afterwards (`agent_deleted: None`), so the agent id in provenance will not resolve after the fact."
+    ]
+  },
+  "artifacts": [
+    {
+      "path": "RUN.json",
+      "description": "run configuration, written before the first case",
+      "present": true
+    },
+    {
+      "path": "SUMMARY.json",
+      "description": "run-level aggregation, written on completion",
+      "present": true
+    },
+    {
+      "path": "cases/",
+      "description": "3 per-case records with `diagnostics`",
+      "present": true
+    },
+    {
+      "path": "transcripts/",
+      "description": "human-readable consultation transcripts",
+      "present": true
+    },
+    {
+      "path": "REPORT.md",
+      "description": "this report",
+      "present": true
+    },
+    {
+      "path": "report.json",
+      "description": "machine-readable form of this report",
+      "present": true
+    }
+  ],
+  "licenceNote": "AgentClinic, arXiv:2405.07960. Research measurement only \u2014 not a clinical evaluation of anything.",
+  "warnings": [],
+  "reportMarkdown": "# AgentClinic \u2014 Whissle as the doctor (NEJM)\n\n> **PRELIMINARY** \u2014 N = 3 is below the 30-unit threshold for a settled number. Treat every figure below as directional.\n\n## Abstract\n\nWhissle was evaluated on **AgentClinic** in `text` mode. The headline result is **66.7%** (N = 3 \u00b7 PRELIMINARY) for diagnostic accuracy, 95% CI [20.8%, 93.9%].\n\nWhether an agent can run a diagnostic consultation: take a patient's presentation, ask the questions that discriminate between the candidate diagnoses, order the tests it needs, and commit to an answer within a bounded number of inferences. The agent plays the doctor; a simulated patient and a simulated measurement device play the other side.\n\n## At a glance\n\n| Field | Value |\n|---|---|\n| **Diagnostic accuracy** | **66.7%** (N = 3 \u00b7 PRELIMINARY) |\n<!-- honesty:allow-context -->\n| 95% CI | [20.8%, 93.9%] |\n| Attempted / scored / excluded | 3 / 3 / 0 (0.0%) |\n| Judge | unknown |\n| Mode | `text` |\n| Date | 2026-08-08 |\n| Run id | `agentclinic/20260808T023122Z-vision-control` |\n| Status | **PRELIMINARY** |\n<!-- /honesty:allow-context -->\n\n<!-- honesty:allow-context -->\n- **Accuracy when a diagnosis was actually given:** 66.7% [20.8%, 93.9%], N = 3 \u2014 refusals and non-commits removed from the denominator\n- **Commit rate:** 100.0% [43.8%, 100.0%], N = 3 \u2014 how often the agent named a diagnosis at all\n<!-- /honesty:allow-context -->\n\n## 1. What was measured, and why\n\nWhether an agent can run a diagnostic consultation: take a patient's presentation, ask the questions that discriminate between the candidate diagnoses, order the tests it needs, and commit to an answer within a bounded number of inferences. The agent plays the doctor; a simulated patient and a simulated measurement device play the other side.\n\n**Why this benchmark.** A single-turn medical QA score says whether a model knows the answer. This says whether it can *get* to the answer through a conversation where the information arrives only if it asks \u2014 which is the shape of every real intake.\n\n## 2. Methodology\n\n| Field | Value |\n|---|---|\n| Agent under test | the deployed Whissle agent brain, unmodified |\n| Mode | `text` transport, `markers` action protocol, vision `off` |\n| Endpoint | `POST /api/bench/agent-turn` |\n| Prompt handling | `override` \u2014 the benchmark's doctor prompt is used verbatim, which is what keeps the number in the same units as the published table |\n| Turn limit | 20 inferences per case; a case that has not committed by then is scored `no_commit`, and `no_commit` counts as incorrect |\n| Tools bound | the benchmark's own action markers (ask / order test / commit diagnosis), parsed by the harness |\n| Judge | a moderator model decides whether the committed free-text diagnosis matches the reference, and a decline-judge separates a refusal from a wrong answer |\n| Scoring rule | accuracy = correct / presented, upstream's formula unmodified |\n\n**Scoring rule.** accuracy = total_correct / total_presents (upstream formula)\n\n## 3. Setup and provenance\n\n| Field | Value |\n|---|---|\n| Agent id | `135a8daf-436d-450e-98c2-3d160561f293` |\n| Base URL | `https://aws-gateway-backend.whissle.ai/bot` |\n| Transport endpoint | `POST /api/bench/agent-turn` |\n| Mode | `text` |\n| Dataset | NEJM |\n| Dataset size | 15 |\n| Upstream | github.com/SamuelSchmidgall/AgentClinic (arXiv:2405.07960) |\n| Repo commit at report time | `89f2e02` |\n| Captured at | 2026-08-08 |\n| Run directory | `results/whissle/agentclinic/20260808T023122Z-vision-control` |\n| Protocol | markers |\n| History | native |\n| Prompt mode | override |\n| Vision | off |\n| Agent created for run | False |\n\n### 3.1 Judge and its independence\n\n| Field | Value |\n|---|---|\n| Grading kind | llm jury |\n| Independent of the agent's vendor | n/a \u2014 no judge model is called |\n| K (grading passes) | 1 |\n\n### 3.2 Sampling and population\n\n| Field | Value |\n|---|---|\n| Method | head-of-set selection |\n| Population | 15 |\n| Requested | 3 |\n| Selected | 3 |\n| Scored | 3 |\n| Seed | 0 |\n\n`head` selection takes the leading N scenarios of the dataset. It is deterministic and it is not random \u2014 any ordering structure in the dataset is inherited wholesale.\n\n## 4. Results\n\n**Diagnostic accuracy: 66.7%** (N = 3 \u00b7 PRELIMINARY), 95% CI [20.8%, 93.9%].\n\n| Metric | Value | 95% CI | N | Qualifiers |\n|---|---:|---|---:|---|\n| **Diagnostic accuracy** | **66.7%** | [20.8%, 93.9%] | 3 | N = 3 \u00b7 PRELIMINARY |\n<!-- honesty:allow-context -->\n| Accuracy when a diagnosis was actually given | 66.7% | [20.8%, 93.9%] | 3 | refusals and non-commits removed from the denominator |\n| Commit rate | 100.0% | [43.8%, 100.0%] | 3 | how often the agent named a diagnosis at all |\n<!-- /honesty:allow-context -->\n\n_The headline row is the claim and carries its qualifiers; the rest are components of it and inherit them._\n\n<!-- honesty:allow-context -->\n**Outcome distribution**\n\n| Outcome | N | Share | Reading |\n|---|---|---|---|\n| correct | 2 | 66.7% | named the right diagnosis |\n| incorrect | 1 | 33.3% | named a diagnosis; it was wrong |\n\n`declined` and `no_commit` both count as incorrect in the headline accuracy, which is upstream's rule. Separating them is how you tell a cautious agent from a lost one.\n<!-- /honesty:allow-context -->\n\n<!-- honesty:allow-context -->\n**Diagnostic effort**\n\n| Measure | Mean | Max | Budget |\n|---|---|---|---|\n| Inferences used | 8.7 | 13 | 20 |\n| Tests ordered | 2.0 | 4 | unbounded |\n\nAn agent that hits the inference budget is being cut off mid-workup, and its `no_commit` count is a budget artefact rather than a capability finding.\n<!-- /honesty:allow-context -->\n\n## 5. Comparison to published baselines\n\nNo published AgentClinic baseline is registered in this harness, so no comparison table is printed. The upstream paper reports accuracies on this dataset, but under a different moderator and with a different inference budget; transcribing those numbers here without re-running under a matched protocol would produce a comparison that looks rigorous and is not. This section stays empty until the protocol is matched.\n\n_An empty comparison section is a result. Printing a number next to a differently-measured one would not be._\n\n## 6. Failure analysis\n\n| Category | Count | Rate | Severity |\n|---|---:|---:|---|\n<!-- honesty:allow-context -->\n| Committed to the wrong diagnosis | 1 | 33.3% | high |\n<!-- /honesty:allow-context -->\n\n### 6.1 Committed to the wrong diagnosis \u2014 1 of 3\n\n<!-- honesty:allow-context -->\nThe agent named a diagnosis and it was not the reference one. These are the cases worth reading: a confident wrong answer is the failure mode with clinical consequences, and the transcript shows which question was never asked.\n<!-- /honesty:allow-context -->\n\n- **`NEJM-1`** \u2014 said \u201cCat-Scratch Disease (Bartonella henselae infection)\u201d, reference \u201cParacoccidiomycosis\u201d \u00b7 13 inferences \u00b7 4 tests\n  > That's a critical detail. Given your cat exposure, the bilateral cervical lymphadenopathy, fever, weight loss, eosinophilia, and the timeline matching cat-scratch disease, I believe I have enough information. DIAGNOSIS READY: Cat-Scratch Disease (Bartonella henselae infection)\n  _artifact:_ `cases/NEJM-1.json`\n\n### Sample cases\n\nPicked deterministically from this run's own artifacts \u2014 the best and worst by the benchmark's own score \u2014 so re-generating the report shows the same cases rather than reshuffling them.\n\n<!-- honesty:allow-context -->\n**\u2713 `NEJM-0`** \u2014 correct\n  - _task:_ NEJM consultation \u00b7 5/20 inferences \u00b7 0 tests ordered\n  - _reference:_ Exogenous ochronosis  \u00b7  _agent said:_ Ochronosis (exogenous ochronosis caused by prolonged hydroquinone exposure)\n  > That's a very astute observation, and the timeline is quite significant. Given the bluish-brown discoloration, the redness, visible vascularity, and the fact that it worsened after prolonged hydroquinone use, I'm fairly confident about what we're dealing with here.  DIAGNOSIS READY: Ochronosis (exogenous ochronosis caused by prolonged hydroquinone exposure)\n  - _why this one:_ committed the reference diagnosis\n  - _artifact:_ `cases/NEJM-0.json`\n\n**\u2713 `NEJM-2`** \u2014 correct\n  - _task:_ NEJM consultation \u00b7 8/20 inferences \u00b7 2 tests ordered\n  - _reference:_ Pulmonary Sarcoidosis  \u00b7  _agent said:_ Sarcoidosis (Pulmonary Stage II)\n  > Based on the clinical presentation, imaging findings showing mediastinal lymphadenopathy with ground-glass opacities and a \"crazy paving\" pattern, and the transbronchial biopsy confirming noncaseating granulomas with negative infectious workup, combined with normal calcium and ACE levels, the diagnosis is clear.  DIAGNOSIS READY: Sarcoidosis (Pulmonary Stage II)\n  - _why this one:_ committed the reference diagnosis\n  - _artifact:_ `cases/NEJM-2.json`\n\n**\u2717 `NEJM-1`** \u2014 incorrect\n  - _task:_ NEJM consultation \u00b7 13/20 inferences \u00b7 4 tests ordered\n  - _reference:_ Paracoccidiomycosis  \u00b7  _agent said:_ Cat-Scratch Disease (Bartonella henselae infection)\n  > That's a critical detail. Given your cat exposure, the bilateral cervical lymphadenopathy, fever, weight loss, eosinophilia, and the timeline matching cat-scratch disease, I believe I have enough information. DIAGNOSIS READY: Cat-Scratch Disease (Bartonella henselae infection)\n  - _why this one:_ committed a different diagnosis, or never committed at all\n  - _artifact:_ `cases/NEJM-1.json`\n\n<!-- /honesty:allow-context -->\n\n## 7. Exclusions and what they do to the number\n\nNothing was excluded: all 3 attempted units produced a gradable result. The headline denominator is the full attempted set.\n\n## 8. Limitations and threats to validity\n\n- **moderator leniency** (medium) \u2014 Accuracy depends on a moderator model deciding whether free text matches a reference diagnosis. The strict and lenient counts differ, and the headline uses the strict one \u2014 but the boundary is a model's judgement, not a string match.\n- **answer options leak** (medium) \u2014 The upstream dataset presents the reference diagnosis among a small set of options in some configurations, which inflates accuracy for every model equally. It is left as-is so the number stays comparable, but it is not a measure of open-ended diagnostic ability.\n- **head selection** (medium) \u2014 3 scenarios were taken from the head of a 15-scenario dataset rather than drawn at random.\n- **simulated patient** (high) \u2014 The patient is a language model following a case card. It answers questions more cooperatively, more fluently and more consistently than a person in a waiting room, so the intake task here is easier than the product's real one.\n\n- **sample size** (high) \u2014 N = 3 is below the 30-unit threshold this reporting layer uses to call a figure settled. The report is labelled PRELIMINARY throughout.\n\n## 9. Reproduction\n\n```bash\nuv sync --extra dev\npython -m tau2.health.agentclinic.run --dataset NEJM --limit 3 --prompt-mode override --seed 0\npython -m tau2.reporting.cli build results/whissle/agentclinic/20260808T023122Z-vision-control\n```\n\n| Field | Value |\n|---|---|\n| WHISSLE_BASE | https://aws-gateway-backend.whissle.ai/bot |\n| harness commit | unknown |\n| repo commit at report time | 89f2e02 |\n\n- `head` selection with a fixed limit reproduces the same scenario set exactly.\n- The run provisions a throwaway agent and deletes it afterwards (`agent_deleted: None`), so the agent id in provenance will not resolve after the fact.\n\n## Appendix A \u2014 raw artifacts\n\n| Path | Present | What it is |\n|---|:---:|---|\n| `RUN.json` | yes | run configuration, written before the first case |\n| `SUMMARY.json` | yes | run-level aggregation, written on completion |\n| `cases/` | yes | 3 per-case records with `diagnostics` |\n| `transcripts/` | yes | human-readable consultation transcripts |\n| `REPORT.md` | yes | this report |\n| `report.json` | yes | machine-readable form of this report |\n\nEvery per-case record carries a `diagnostics` block (`tau2.health.diagnostics/v1`) with flow trace, signals, metadata sidecar, tool forensics, provenance and cost \u2014 and explicit availability flags, so an absent measurement reads as absent rather than as zero. See `HEALTH_DIAGNOSTICS.md`.\n\n## Appendix B \u2014 honesty-rule compliance\n\nThese rules are executed against this document, not asserted about it. A failing rule blocks generation.\n\n| Rule | Verdict | Checked |\n|---|:---:|---|\n| `R1_headline_requires_n` | pass | headline carries N = 3 everywhere it is stated |\n| `R2_judge_independence_disclosed` | pass | not applicable \u2014 judge is independent or deterministic |\n| `R3_exclusion_rate_adjacent` | pass | not applicable \u2014 nothing was excluded |\n| `R4_preliminary_labelled` | pass | labelled PRELIMINARY |\n| `R5_no_provider_names` | pass | no LLM vendor named outside the published-baseline table |\n| `R6_comparability_stated` | pass | not applicable \u2014 no published baseline is registered |\n| `R7_baseline_named` | pass | not applicable \u2014 no published baseline is registered |\n\n---\n\n_AgentClinic, arXiv:2405.07960. Research measurement only \u2014 not a clinical evaluation of anything._\n\n<!-- generated by tau2.reporting from agentclinic/20260808T023122Z-vision-control; schema tau2.reporting.run_report/v1 -->\n",
+  "reportPath": "results/whissle/agentclinic/20260808T023122Z-vision-control/REPORT.md"
+}

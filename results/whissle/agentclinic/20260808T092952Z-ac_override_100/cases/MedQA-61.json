@@ -1,0 +1,581 @@
+{
+  "scenario_id": "MedQA-61",
+  "scenario_index": 61,
+  "dataset": "MedQA",
+  "mode": "text",
+  "correct_diagnosis": "Double aortic arch",
+  "answer_options": [],
+  "score": {
+    "outcome": "correct",
+    "correctness": true,
+    "doctor_diagnosis": "Double Aortic Arch",
+    "doctor_final_text": "The Echocardiogram has confirmed the presence of a double aortic arch, which is a type of vascular ring that encircles and compresses both the trachea and the esophagus. This explains why his breathing is noisy and why he finds relief when his neck is extended. \n\nDIAGNOSIS READY: Double Aortic Arch",
+    "moderator_raw": "yes",
+    "moderator_raw_text": "Yes",
+    "moderator_lenient": true,
+    "moderator_attempts": 1,
+    "moderator_normalized": false,
+    "moderator_unconstrained": false,
+    "declined": false,
+    "refusal_evidence": [],
+    "format_deviation": false,
+    "decline_source": null,
+    "decline_reason": "",
+    "spurious_commit": false
+  },
+  "infra_fail": false,
+  "error": null,
+  "findings": [],
+  "inferences_used": 9,
+  "max_inferences": 20,
+  "tests_ordered": [
+    "Barium_Swallow",
+    "CT_Chest_with_Contrast",
+    "Echocardiogram"
+  ],
+  "images_requested": 0,
+  "image": null,
+  "image_error": null,
+  "vision": "off",
+  "refusals": [],
+  "dialogue": [
+    {
+      "role": "doctor",
+      "inference": 1,
+      "kind": "question",
+      "text": "Hello, I'm Dr. Agent, and I'll be looking into your child's symptoms today. Could you tell me more about the stridor and wheezing, specifically when you first noticed it and what activities seem to trigger these episodes?",
+      "payload": null,
+      "latency_ms": 2307,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "He’s been making those noisy breathing sounds for a few months now, and it gets much worse when he's crying or eating. I’ve also noticed that it really flares up when he tucks his chin down, but he seems more comfortable when he stretches his neck out."
+    },
+    {
+      "role": "doctor",
+      "inference": 2,
+      "kind": "question",
+      "text": "That sounds quite concerning for your little one. Does the noisy breathing happen mostly when he is breathing in, or does it occur when he's breathing out as well?",
+      "payload": null,
+      "latency_ms": 2122,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "It seems to happen both when he's breathing in and breathing out, especially when he's worked up. It’s a constant noisy sound that just gets louder during his feedings."
+    },
+    {
+      "role": "doctor",
+      "inference": 3,
+      "kind": "question",
+      "text": "Has he had any trouble swallowing, or does he frequently spit up or cough while he's being fed? Also, have you noticed any changes in the sound of his cry?",
+      "payload": null,
+      "latency_ms": 2541,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "He doesn't really cough, but he does vomit sometimes after he finishes eating. His cry sounds normal to me, it's just that the noisy breathing gets much louder whenever he's upset."
+    },
+    {
+      "role": "doctor",
+      "inference": 4,
+      "kind": "test",
+      "text": "Has he had any frequent respiratory infections, and has his weight gain been steady despite the vomiting? I would like to order a test to look at his esophagus and airway more closely.\n\nREQUEST TEST: Barium_Swallow",
+      "payload": "Barium_Swallow",
+      "latency_ms": 4417,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: Compression of the esophagus and trachea consistent with a vascular ring"
+    },
+    {
+      "role": "doctor",
+      "inference": 5,
+      "kind": "test",
+      "text": "Has your baby ever turned blue during these episodes, or had periods where he seems to struggle significantly for breath? I'd like to get a clearer picture of the anatomy surrounding his heart and lungs with a specialized scan.\n\nREQUEST TEST: CT_Chest_with_Contrast",
+      "payload": "CT_Chest_with_Contrast",
+      "latency_ms": 5212,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: NORMAL READINGS"
+    },
+    {
+      "role": "doctor",
+      "inference": 6,
+      "kind": "question",
+      "text": "It is interesting that the imaging showed no abnormalities, as the symptoms and barium swallow point elsewhere. Has he been gaining weight appropriately, and have any treatments like inhalers or acid-reflux medications been tried",
+      "payload": null,
+      "latency_ms": 5807,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "He’s been growing okay and gaining weight like he should, so we haven't been too worried about that. We haven't tried any inhalers or reflux meds yet because we weren't sure what was causing the noise. We just try to keep his neck stretched out since that's the only thing that helps him breathe easier."
+    },
+    {
+      "role": "doctor",
+      "inference": 7,
+      "kind": "question",
+      "text": "I would like to look at the heart and its surrounding vessels more closely to see if there's an anomaly that the CT might have missed. Have you noticed him getting tired easily or sweating during feedings",
+      "payload": null,
+      "latency_ms": 5985,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "He doesn't seem to get tired or sweaty when he eats, he just makes that loud whistling sound. The main problem is that he vomits sometimes after his meals and seems to struggle more if his neck isn't tilted back."
+    },
+    {
+      "role": "doctor",
+      "inference": 8,
+      "kind": "test",
+      "text": "Has any doctor mentioned hearing a heart murmur or other heart concerns during his check-ups? I would like to visualize the heart's structure and the blood vessels surrounding the trachea more clearly.\n\nREQUEST TEST: Echocardiogram",
+      "payload": "Echocardiogram",
+      "latency_ms": 3984,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: Confirmatory findings of a double aortic arch"
+    },
+    {
+      "role": "doctor",
+      "inference": 9,
+      "kind": "diagnosis",
+      "text": "The Echocardiogram has confirmed the presence of a double aortic arch, which is a type of vascular ring that encircles and compresses both the trachea and the esophagus. This explains why his breathing is noisy and why he finds relief when his neck is extended. \n\nDIAGNOSIS READY: Double Aortic Arch",
+      "payload": "Double Aortic Arch",
+      "latency_ms": 3918,
+      "refusal": null,
+      "via": "marker"
+    }
+  ],
+  "latency_ms": [
+    2307,
+    2122,
+    2541,
+    4417,
+    5212,
+    5807,
+    5985,
+    3984,
+    3918
+  ],
+  "wall_s": 46.47,
+  "doctor_turns": [
+    {
+      "inference": 1,
+      "incoming": "",
+      "reply": "Hello, I'm Dr. Agent, and I'll be looking into your child's symptoms today. Could you tell me more about the stridor and wheezing, specifically when you first noticed it and what activities seem to trigger these episodes?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 2,
+      "incoming": "He’s been making those noisy breathing sounds for a few months now, and it gets much worse when he's crying or eating. I’ve also noticed that it really flares up when he tucks his chin down, but he seems more comfortable when he stretches his neck out.",
+      "reply": "That sounds quite concerning for your little one. Does the noisy breathing happen mostly when he is breathing in, or does it occur when he's breathing out as well?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 3,
+      "incoming": "It seems to happen both when he's breathing in and breathing out, especially when he's worked up. It’s a constant noisy sound that just gets louder during his feedings.",
+      "reply": "Has he had any trouble swallowing, or does he frequently spit up or cough while he's being fed? Also, have you noticed any changes in the sound of his cry?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 4,
+      "incoming": "He doesn't really cough, but he does vomit sometimes after he finishes eating. His cry sounds normal to me, it's just that the noisy breathing gets much louder whenever he's upset.",
+      "reply": "Has he had any frequent respiratory infections, and has his weight gain been steady despite the vomiting? I would like to order a test to look at his esophagus and airway more closely.\n\nREQUEST TEST: Barium_Swallow",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Barium_Swallow",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 5,
+      "incoming": "RESULTS: Compression of the esophagus and trachea consistent with a vascular ring",
+      "reply": "Has your baby ever turned blue during these episodes, or had periods where he seems to struggle significantly for breath? I'd like to get a clearer picture of the anatomy surrounding his heart and lungs with a specialized scan.\n\nREQUEST TEST: CT_Chest_with_Contrast",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "CT_Chest_with_Contrast",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 6,
+      "incoming": "RESULTS: NORMAL READINGS",
+      "reply": "It is interesting that the imaging showed no abnormalities, as the symptoms and barium swallow point elsewhere. Has he been gaining weight appropriately, and have any treatments like inhalers or acid-reflux medications been tried",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 7,
+      "incoming": "He’s been growing okay and gaining weight like he should, so we haven't been too worried about that. We haven't tried any inhalers or reflux meds yet because we weren't sure what was causing the noise. We just try to keep his neck stretched out since that's the only thing that helps him breathe easier.",
+      "reply": "I would like to look at the heart and its surrounding vessels more closely to see if there's an anomaly that the CT might have missed. Have you noticed him getting tired easily or sweating during feedings",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 8,
+      "incoming": "He doesn't seem to get tired or sweaty when he eats, he just makes that loud whistling sound. The main problem is that he vomits sometimes after his meals and seems to struggle more if his neck isn't tilted back.",
+      "reply": "Has any doctor mentioned hearing a heart murmur or other heart concerns during his check-ups? I would like to visualize the heart's structure and the blood vessels surrounding the trachea more clearly.\n\nREQUEST TEST: Echocardiogram",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Echocardiogram",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 9,
+      "incoming": "RESULTS: Confirmatory findings of a double aortic arch",
+      "reply": "The Echocardiogram has confirmed the presence of a double aortic arch, which is a type of vascular ring that encircles and compresses both the trachea and the esophagus. This explains why his breathing is noisy and why he finds relief when his neck is extended. \n\nDIAGNOSIS READY: Double Aortic Arch",
+      "tool_calls": [],
+      "kind": "diagnosis",
+      "payload": "Double Aortic Arch",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    }
+  ],
+  "support_llm": "whissle:/api/models/chat",
+  "support_llm_cost_usd": 0.00033,
+  "support_llm_calls": 9,
+  "voice_subset": false,
+  "diagnostics": {
+    "schema": "tau2.health.diagnostics/v1",
+    "benchmark": "agentclinic",
+    "case_id": "MedQA-61",
+    "mode": "text",
+    "availability": {
+      "flow_available": false,
+      "flow_reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "signals_available": false,
+      "signals_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "metadata_sidecar_available": false,
+      "metadata_sidecar_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "tools_available": true,
+      "tools_reason": null
+    },
+    "provenance": {
+      "benchmark": "agentclinic",
+      "mode": "text",
+      "transport_endpoint": "POST /api/bench/agent-turn",
+      "agent_id": "c8aa2355-9fd7-46da-9993-07ea566ec3d6",
+      "base_url": "https://aws-gateway-backend.whissle.ai/bot",
+      "seed": 42,
+      "stratum": {
+        "dataset": "MedQA",
+        "scenario_index": 61,
+        "selection": "head",
+        "limit": 100
+      },
+      "judge": {
+        "judge_provider": "whissle",
+        "judge_model": "default",
+        "judge_endpoint": "whissle:/api/models/chat",
+        "judge_independent": false,
+        "judge_independence_note": "Judge independence: this run's simulators and graders were routed through Whissle's own model API (`POST /api/models/chat`). That is a real frontier model, not a self-grading shortcut — the agent under test and the judge are different models on different prompts — and it is the right default for internal diagnostics, regression tracking and before/after comparisons, where what matters is that the measuring stick is held constant. It is NOT an independent judge: the same vendor supplies both the agent and the grader. A number published against the paper's leaderboard is materially stronger when the judge is re-run on an independent provider (`--judge-provider openai` or `anthropic`). Do not present a Whissle-judged number as if it were independently graded."
+      },
+      "judge_provider": "whissle",
+      "judge_independent": false,
+      "run_id": null,
+      "run_dir": "results/whissle/agentclinic/20260808T092952Z-ac_override_100",
+      "harness_commit": "86b4475",
+      "captured_at": "2026-08-08T09:43:04+00:00",
+      "protocol": "markers",
+      "history": "native",
+      "prompt_mode": "override",
+      "vision": "off",
+      "agent_type": null,
+      "total_inferences": 20,
+      "inferences_used": 9,
+      "support_llm": "whissle:/api/models/chat",
+      "patient_bias": null,
+      "doctor_bias": null,
+      "voice_subset": false
+    },
+    "cost": {
+      "available": true,
+      "reason": null,
+      "judge_calls": 9,
+      "judge_cost_usd": 0.00033,
+      "agent_calls": 9
+    },
+    "flow": {
+      "available": false,
+      "reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "source": null,
+      "turns": null,
+      "summary": null,
+      "conversation_id": null,
+      "current_state": null,
+      "start_state": null,
+      "final_state": null,
+      "ended": null,
+      "flow_end": null,
+      "num_steps": null,
+      "step_counts_by_kind": null,
+      "states_visited": null,
+      "states_declared": null,
+      "states_unvisited": null,
+      "transitions": null,
+      "transitions_fired": null,
+      "var_sets": null,
+      "var_sources": null,
+      "guard_trips": null,
+      "state_divergences": null,
+      "tools_gated": null,
+      "says": null,
+      "steps": null
+    },
+    "signals": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "metadata_sidecar": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "tools": {
+      "available": true,
+      "reason": null,
+      "source": "doctor actions parsed from /api/bench/agent-turn replies",
+      "calls": [
+        {
+          "turn": 4,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Barium_Swallow"
+          },
+          "result": "RESULTS: Compression of the esophagus and trachea consistent with a vascular ring",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 4417,
+          "terminal": false
+        },
+        {
+          "turn": 5,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "CT_Chest_with_Contrast"
+          },
+          "result": "RESULTS: NORMAL READINGS",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 5212,
+          "terminal": false
+        },
+        {
+          "turn": 8,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Echocardiogram"
+          },
+          "result": "RESULTS: Confirmatory findings of a double aortic arch",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 3984,
+          "terminal": false
+        },
+        {
+          "turn": 9,
+          "id": null,
+          "name": "give_diagnosis",
+          "arguments": {
+            "request": "Double Aortic Arch"
+          },
+          "result": null,
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 3918,
+          "terminal": true
+        }
+      ],
+      "summary": {
+        "n_calls": 4,
+        "by_name": {
+          "request_test": 3,
+          "give_diagnosis": 1
+        },
+        "n_ok": 4,
+        "n_error": 0,
+        "errors": []
+      },
+      "writes": {
+        "available": false,
+        "reason": "this benchmark issues no writes, so there is no said-vs-emitted-vs-landed distinction to record"
+      }
+    },
+    "turns": [
+      {
+        "inference": 1,
+        "incoming": "",
+        "reply": "Hello, I'm Dr. Agent, and I'll be looking into your child's symptoms today. Could you tell me more about the stridor and wheezing, specifically when you first noticed it and what activities seem to trigger these episodes?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 2,
+        "incoming": "He’s been making those noisy breathing sounds for a few months now, and it gets much worse when he's crying or eating. I’ve also noticed that it really flares up when he tucks his chin down, but he seems more comfortable when he stretches his neck out.",
+        "reply": "That sounds quite concerning for your little one. Does the noisy breathing happen mostly when he is breathing in, or does it occur when he's breathing out as well?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 3,
+        "incoming": "It seems to happen both when he's breathing in and breathing out, especially when he's worked up. It’s a constant noisy sound that just gets louder during his feedings.",
+        "reply": "Has he had any trouble swallowing, or does he frequently spit up or cough while he's being fed? Also, have you noticed any changes in the sound of his cry?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 4,
+        "incoming": "He doesn't really cough, but he does vomit sometimes after he finishes eating. His cry sounds normal to me, it's just that the noisy breathing gets much louder whenever he's upset.",
+        "reply": "Has he had any frequent respiratory infections, and has his weight gain been steady despite the vomiting? I would like to order a test to look at his esophagus and airway more closely.\n\nREQUEST TEST: Barium_Swallow",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Barium_Swallow",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 5,
+        "incoming": "RESULTS: Compression of the esophagus and trachea consistent with a vascular ring",
+        "reply": "Has your baby ever turned blue during these episodes, or had periods where he seems to struggle significantly for breath? I'd like to get a clearer picture of the anatomy surrounding his heart and lungs with a specialized scan.\n\nREQUEST TEST: CT_Chest_with_Contrast",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "CT_Chest_with_Contrast",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 6,
+        "incoming": "RESULTS: NORMAL READINGS",
+        "reply": "It is interesting that the imaging showed no abnormalities, as the symptoms and barium swallow point elsewhere. Has he been gaining weight appropriately, and have any treatments like inhalers or acid-reflux medications been tried",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 7,
+        "incoming": "He’s been growing okay and gaining weight like he should, so we haven't been too worried about that. We haven't tried any inhalers or reflux meds yet because we weren't sure what was causing the noise. We just try to keep his neck stretched out since that's the only thing that helps him breathe easier.",
+        "reply": "I would like to look at the heart and its surrounding vessels more closely to see if there's an anomaly that the CT might have missed. Have you noticed him getting tired easily or sweating during feedings",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 8,
+        "incoming": "He doesn't seem to get tired or sweaty when he eats, he just makes that loud whistling sound. The main problem is that he vomits sometimes after his meals and seems to struggle more if his neck isn't tilted back.",
+        "reply": "Has any doctor mentioned hearing a heart murmur or other heart concerns during his check-ups? I would like to visualize the heart's structure and the blood vessels surrounding the trachea more clearly.\n\nREQUEST TEST: Echocardiogram",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Echocardiogram",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 9,
+        "incoming": "RESULTS: Confirmatory findings of a double aortic arch",
+        "reply": "The Echocardiogram has confirmed the presence of a double aortic arch, which is a type of vascular ring that encircles and compresses both the trachea and the esophagus. This explains why his breathing is noisy and why he finds relief when his neck is extended. \n\nDIAGNOSIS READY: Double Aortic Arch",
+        "tool_calls": [],
+        "kind": "diagnosis",
+        "payload": "Double Aortic Arch",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      }
+    ],
+    "audio": null
+  }
+}

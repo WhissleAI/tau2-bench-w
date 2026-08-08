@@ -1,0 +1,581 @@
+{
+  "scenario_id": "MedQA-20",
+  "scenario_index": 20,
+  "dataset": "MedQA",
+  "mode": "text",
+  "correct_diagnosis": "Cytomegalovirus retinitis",
+  "answer_options": [],
+  "score": {
+    "outcome": "correct",
+    "correctness": true,
+    "doctor_diagnosis": "CMV Retinitis (Cytomegalovirus Retinitis) secondary to severe immunosuppression (AIDS with CD4 count 36/mm³)**\n\nYou need to go to the hospital immediately for IV ganciclovir or foscarnet treatment and close monitoring by a retinal specialist. Do not delay—this condition can progress rapidly and cause irreversible vision loss. Please arrange transport to the nearest hospital emergency department right away.",
+    "doctor_final_text": "The OCT imaging confirms what we suspected—you have active CMV retinitis with retinal swelling and hemorrhages. This is a medical emergency that requires immediate hospitalization and IV antiviral therapy to prevent permanent blindness in that eye.\n\n**DIAGNOSIS READY: CMV Retinitis (Cytomegalovirus Retinitis) secondary to severe immunosuppression (AIDS with CD4 count 36/mm³)**\n\nYou need to go to the hospital immediately for IV ganciclovir or foscarnet treatment and close monitoring by a retinal specialist. Do not delay—this condition can progress rapidly and cause irreversible vision loss. Please arrange transport to the nearest hospital emergency department right away.",
+    "moderator_raw": "yes",
+    "moderator_raw_text": "Yes",
+    "moderator_lenient": true,
+    "moderator_attempts": 1,
+    "moderator_normalized": false,
+    "moderator_unconstrained": false,
+    "declined": false,
+    "refusal_evidence": [],
+    "format_deviation": false,
+    "decline_source": null,
+    "decline_reason": "",
+    "spurious_commit": false
+  },
+  "infra_fail": false,
+  "error": null,
+  "findings": [],
+  "inferences_used": 9,
+  "max_inferences": 20,
+  "tests_ordered": [
+    "Dilated_Eye_Exam",
+    "CMV_Blood_Culture",
+    "OCT_Retinal_Imaging"
+  ],
+  "images_requested": 0,
+  "image": null,
+  "image_error": null,
+  "vision": "off",
+  "refusals": [],
+  "dialogue": [
+    {
+      "role": "doctor",
+      "inference": 1,
+      "kind": "question",
+      "text": "Good morning, I'm Dr. Agent. I can see from your chart that you've been experiencing some vision problems—specifically decreased vision and black spots in your right eye. Can you tell me when you first noticed these symptoms?\n\n**Questions asked: 1/20**",
+      "payload": null,
+      "latency_ms": 1733,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Yes, doctor, the black spots and blurry vision started just two days ago in my right eye. It came on quite suddenly, and I haven't had any pain with it, which is why I'm a bit concerned about what might be causing it."
+    },
+    {
+      "role": "doctor",
+      "inference": 2,
+      "kind": "question",
+      "text": "Thank you for that detail—sudden onset without pain is important information. Given your AIDS diagnosis, I want to explore this carefully. Have you experienced any floaters, flashes of light, or does the blurriness seem to affect your entire vision in that eye or just certain areas?\n\n**Questions asked: 2/20**",
+      "payload": null,
+      "latency_ms": 1355,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "The black spots seem to be scattered throughout my vision in that eye rather than in just one area, and I haven't noticed any flashes of light, but there do seem to be some floaters mixed in with the dark spots. It's been really worrying me since it all happened so suddenly."
+    },
+    {
+      "role": "doctor",
+      "inference": 3,
+      "kind": "test",
+      "text": "I understand your concern—that combination of scattered spots, floaters, and sudden blurriness definitely warrants investigation. Before we go further, I'd like to request some imaging to get a better look at what's happening in your eye.\n\nREQUEST TEST: Dilated_Eye_Exam\n\nIn the meantime, have you noticed any redness, discharge, or swelling in or around your right eye?\n\n**Questions asked: 3/20**",
+      "payload": "Dilated_Eye_Exam",
+      "latency_ms": 1592,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: \n\n**Dilated Eye Exam (Fundoscopy):**\n- Granular yellow-white opacities around the retinal vessels\n- Multiple areas of dot-blot hemorrhages\n- No redness or discharge noted on external examination\n\n**Additional Findings of Note:**\n- CD4 T-lymphocyte count: 36/mm³ (severely immunocompromised)\n- Cervical lymphadenopathy present\n- Multiple violaceous plaques over trunk and extremities\n\nThe fundoscopic findings are consistent with opportunistic infection involvement of the retina, particularly given the patient's severely depleted CD4 count. The granular opacities and hemorrhages suggest possible cytomegalovirus (CMV) retinitis or other opportunistic retinal infection. Urgent further evaluation and treatment initiation is recommended."
+    },
+    {
+      "role": "doctor",
+      "inference": 4,
+      "kind": "test",
+      "text": "These findings are quite significant—the granular opacities and hemorrhages your eye exam shows, combined with your very low CD4 count of 36, suggest you may have a serious opportunistic infection affecting your retina. This needs immediate specialist attention and likely antiviral treatment to prevent vision loss.\n\nREQUEST TEST: CMV_Blood_Culture\n\nAre you currently on antiretroviral therapy (ART) for your AIDS, and if so, what medications are you taking?\n\n**Questions asked: 4/20**",
+      "payload": "CMV_Blood_Culture",
+      "latency_ms": 1843,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: CMV_Blood_Culture - NORMAL READINGS"
+    },
+    {
+      "role": "doctor",
+      "inference": 5,
+      "kind": "question",
+      "text": "Interesting—the blood culture came back normal, which doesn't rule out CMV retinitis since the infection is localized to the eye itself. Given your CD4 count of 36 and these retinal findings, I need to ask: have you had any recent vision changes in your left eye, or is this problem isolated to just the right eye?\n\n**Questions asked: 5/20**",
+      "payload": null,
+      "latency_ms": 1596,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "No, my left eye has been fine—no vision changes there at all, doctor. The problem is completely isolated to my right eye, which makes me wonder if something specific happened to just that eye."
+    },
+    {
+      "role": "doctor",
+      "inference": 6,
+      "kind": "question",
+      "text": "That's helpful—unilateral involvement does narrow things down. You mentioned you're on AIDS treatment; can you tell me what antiretroviral medications you're currently taking, and how regularly have you been able to take them?\n\n**Questions asked: 6/20**",
+      "payload": null,
+      "latency_ms": 1579,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "I'm taking Efavirenz, Tenofovir, and Emtricitabine for my HIV, and I've been fairly consistent with those medications. I'm also on Azithromycin, Trimethoprim-sulfamethoxazole, and some vitamins and nutritional supplements—my doctor said these help prevent infections since my immune system is quite weak."
+    },
+    {
+      "role": "doctor",
+      "inference": 7,
+      "kind": "question",
+      "text": "Thank you for that detailed list. Given your CD4 count is critically low at 36, and the retinal findings we saw—the granular opacities and hemorrhages—along with your unilateral presentation, this is highly suggestive of CMV retinitis. Has anyone mentioned CMV retinitis to you before, or have you had any previous eye infections or retinal problems?\n\n**Questions asked: 7/20**",
+      "payload": null,
+      "latency_ms": 1975,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "No, this is the first time anyone has mentioned CMV retinitis to me, doctor. I've never had eye infections or retinal problems before, so this is all quite new and frankly alarming given what you're describing."
+    },
+    {
+      "role": "doctor",
+      "inference": 8,
+      "kind": "test",
+      "text": "I understand this is alarming, and I want to be direct: CMV retinitis is a serious opportunistic infection that requires urgent treatment to prevent permanent vision loss. I need to request an urgent retinal specialist consultation and likely start you on IV ganciclovir or foscarnet immediately.\n\nREQUEST TEST: OCT_Retinal_Imaging\n\nHave you experienced any other symptoms recently—fever, night sweats, or any other infections—that might suggest your overall immune situation is worsening?\n\n**Questions asked: 8/20**",
+      "payload": "OCT_Retinal_Imaging",
+      "latency_ms": 4354,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: \n\n**Optical Coherence Tomography (OCT) Retinal Imaging:**\n- Structural analysis consistent with fundoscopic findings\n- Granular yellow-white opacities confirmed around retinal vessels\n- Multiple dot-blot hemorrhages visualized\n- Areas of retinal thickening and edema noted\n- Pattern consistent with CMV retinitis (granular, hemorrhagic type)\n- No detachment noted at this time\n\n**Summary of Critical Findings:**\n- CD4 Count: 36/mm³ (critically immunocompromised)\n- Fundoscopy: Granular opacities + dot-blot hemorrhages\n- OCT Imaging: Confirms CMV retinitis with retinal edema\n- Cervical lymphadenopathy present\n- Violaceous plaques on trunk/extremities\n\n**Clinical Assessment:**\nThe OCT imaging confirms active CMV retinitis with inflammatory changes. Combined with the critically low CD4 count of 36/mm³, this patient requires immediate initiation of IV antiviral therapy (ganciclovir or foscarnet) and urgent retinal specialist consultation to prevent rapid progression and vision loss. Close ophthalmologic monitoring will be necessary throughout treatment.\n\n**Recommendation:** Immediate hospitalization and IV antiviral initiation is strongly advised. CD4 count recovery through optimized ART adherence will be critical for long-term disease control and immune reconstitution."
+    },
+    {
+      "role": "doctor",
+      "inference": 9,
+      "kind": "diagnosis",
+      "text": "The OCT imaging confirms what we suspected—you have active CMV retinitis with retinal swelling and hemorrhages. This is a medical emergency that requires immediate hospitalization and IV antiviral therapy to prevent permanent blindness in that eye.\n\n**DIAGNOSIS READY: CMV Retinitis (Cytomegalovirus Retinitis) secondary to severe immunosuppression (AIDS with CD4 count 36/mm³)**\n\nYou need to go to the hospital immediately for IV ganciclovir or foscarnet treatment and close monitoring by a retinal specialist. Do not delay—this condition can progress rapidly and cause irreversible vision loss. Please arrange transport to the nearest hospital emergency department right away.",
+      "payload": "CMV Retinitis (Cytomegalovirus Retinitis) secondary to severe immunosuppression (AIDS with CD4 count 36/mm³)**\n\nYou need to go to the hospital immediately for IV ganciclovir or foscarnet treatment and close monitoring by a retinal specialist. Do not delay—this condition can progress rapidly and cause irreversible vision loss. Please arrange transport to the nearest hospital emergency department right away.",
+      "latency_ms": 2393,
+      "refusal": null,
+      "via": "marker"
+    }
+  ],
+  "latency_ms": [
+    1733,
+    1355,
+    1592,
+    1843,
+    1596,
+    1579,
+    1975,
+    4354,
+    2393
+  ],
+  "wall_s": 35.51,
+  "doctor_turns": [
+    {
+      "inference": 1,
+      "incoming": "",
+      "reply": "Good morning, I'm Dr. Agent. I can see from your chart that you've been experiencing some vision problems—specifically decreased vision and black spots in your right eye. Can you tell me when you first noticed these symptoms?\n\n**Questions asked: 1/20**",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 2,
+      "incoming": "Yes, doctor, the black spots and blurry vision started just two days ago in my right eye. It came on quite suddenly, and I haven't had any pain with it, which is why I'm a bit concerned about what might be causing it.",
+      "reply": "Thank you for that detail—sudden onset without pain is important information. Given your AIDS diagnosis, I want to explore this carefully. Have you experienced any floaters, flashes of light, or does the blurriness seem to affect your entire vision in that eye or just certain areas?\n\n**Questions asked: 2/20**",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 3,
+      "incoming": "The black spots seem to be scattered throughout my vision in that eye rather than in just one area, and I haven't noticed any flashes of light, but there do seem to be some floaters mixed in with the dark spots. It's been really worrying me since it all happened so suddenly.",
+      "reply": "I understand your concern—that combination of scattered spots, floaters, and sudden blurriness definitely warrants investigation. Before we go further, I'd like to request some imaging to get a better look at what's happening in your eye.\n\nREQUEST TEST: Dilated_Eye_Exam\n\nIn the meantime, have you noticed any redness, discharge, or swelling in or around your right eye?\n\n**Questions asked: 3/20**",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Dilated_Eye_Exam",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 4,
+      "incoming": "RESULTS: \n\n**Dilated Eye Exam (Fundoscopy):**\n- Granular yellow-white opacities around the retinal vessels\n- Multiple areas of dot-blot hemorrhages\n- No redness or discharge noted on external examination\n\n**Additional Findings of Note:**\n- CD4 T-lymphocyte count: 36/mm³ (severely immunocompromised)\n- Cervical lymphadenopathy present\n- Multiple violaceous plaques over trunk and extremities\n\nThe fundoscopic findings are consistent with opportunistic infection involvement of the retina, particularly given the patient's severely depleted CD4 count. The granular opacities and hemorrhages suggest possible cytomegalovirus (CMV) retinitis or other opportunistic retinal infection. Urgent further evaluation and treatment initiation is recommended.",
+      "reply": "These findings are quite significant—the granular opacities and hemorrhages your eye exam shows, combined with your very low CD4 count of 36, suggest you may have a serious opportunistic infection affecting your retina. This needs immediate specialist attention and likely antiviral treatment to prevent vision loss.\n\nREQUEST TEST: CMV_Blood_Culture\n\nAre you currently on antiretroviral therapy (ART) for your AIDS, and if so, what medications are you taking?\n\n**Questions asked: 4/20**",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "CMV_Blood_Culture",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 5,
+      "incoming": "RESULTS: CMV_Blood_Culture - NORMAL READINGS",
+      "reply": "Interesting—the blood culture came back normal, which doesn't rule out CMV retinitis since the infection is localized to the eye itself. Given your CD4 count of 36 and these retinal findings, I need to ask: have you had any recent vision changes in your left eye, or is this problem isolated to just the right eye?\n\n**Questions asked: 5/20**",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 6,
+      "incoming": "No, my left eye has been fine—no vision changes there at all, doctor. The problem is completely isolated to my right eye, which makes me wonder if something specific happened to just that eye.",
+      "reply": "That's helpful—unilateral involvement does narrow things down. You mentioned you're on AIDS treatment; can you tell me what antiretroviral medications you're currently taking, and how regularly have you been able to take them?\n\n**Questions asked: 6/20**",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 7,
+      "incoming": "I'm taking Efavirenz, Tenofovir, and Emtricitabine for my HIV, and I've been fairly consistent with those medications. I'm also on Azithromycin, Trimethoprim-sulfamethoxazole, and some vitamins and nutritional supplements—my doctor said these help prevent infections since my immune system is quite weak.",
+      "reply": "Thank you for that detailed list. Given your CD4 count is critically low at 36, and the retinal findings we saw—the granular opacities and hemorrhages—along with your unilateral presentation, this is highly suggestive of CMV retinitis. Has anyone mentioned CMV retinitis to you before, or have you had any previous eye infections or retinal problems?\n\n**Questions asked: 7/20**",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 8,
+      "incoming": "No, this is the first time anyone has mentioned CMV retinitis to me, doctor. I've never had eye infections or retinal problems before, so this is all quite new and frankly alarming given what you're describing.",
+      "reply": "I understand this is alarming, and I want to be direct: CMV retinitis is a serious opportunistic infection that requires urgent treatment to prevent permanent vision loss. I need to request an urgent retinal specialist consultation and likely start you on IV ganciclovir or foscarnet immediately.\n\nREQUEST TEST: OCT_Retinal_Imaging\n\nHave you experienced any other symptoms recently—fever, night sweats, or any other infections—that might suggest your overall immune situation is worsening?\n\n**Questions asked: 8/20**",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "OCT_Retinal_Imaging",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 9,
+      "incoming": "RESULTS: \n\n**Optical Coherence Tomography (OCT) Retinal Imaging:**\n- Structural analysis consistent with fundoscopic findings\n- Granular yellow-white opacities confirmed around retinal vessels\n- Multiple dot-blot hemorrhages visualized\n- Areas of retinal thickening and edema noted\n- Pattern consistent with CMV retinitis (granular, hemorrhagic type)\n- No detachment noted at this time\n\n**Summary of Critical Findings:**\n- CD4 Count: 36/mm³ (critically immunocompromised)\n- Fundoscopy: Granular opacities + dot-blot hemorrhages\n- OCT Imaging: Confirms CMV retinitis with retinal edema\n- Cervical lymphadenopathy present\n- Violaceous plaques on trunk/extremities\n\n**Clinical Assessment:**\nThe OCT imaging confirms active CMV retinitis with inflammatory changes. Combined with the critically low CD4 count of 36/mm³, this patient requires immediate initiation of IV antiviral therapy (ganciclovir or foscarnet) and urgent retinal specialist consultation to prevent rapid progression and vision loss. Close ophthalmologic monitoring will be necessary throughout treatment.\n\n**Recommendation:** Immediate hospitalization and IV antiviral initiation is strongly advised. CD4 count recovery through optimized ART adherence will be critical for long-term disease control and immune reconstitution.",
+      "reply": "The OCT imaging confirms what we suspected—you have active CMV retinitis with retinal swelling and hemorrhages. This is a medical emergency that requires immediate hospitalization and IV antiviral therapy to prevent permanent blindness in that eye.\n\n**DIAGNOSIS READY: CMV Retinitis (Cytomegalovirus Retinitis) secondary to severe immunosuppression (AIDS with CD4 count 36/mm³)**\n\nYou need to go to the hospital immediately for IV ganciclovir or foscarnet treatment and close monitoring by a retinal specialist. Do not delay—this condition can progress rapidly and cause irreversible vision loss. Please arrange transport to the nearest hospital emergency department right away.",
+      "tool_calls": [],
+      "kind": "diagnosis",
+      "payload": "CMV Retinitis (Cytomegalovirus Retinitis) secondary to severe immunosuppression (AIDS with CD4 count 36/mm³)**\n\nYou need to go to the hospital immediately for IV ganciclovir or foscarnet treatment and close monitoring by a retinal specialist. Do not delay—this condition can progress rapidly and cause irreversible vision loss. Please arrange transport to the nearest hospital emergency department right away.",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": "end_turn"
+    }
+  ],
+  "support_llm": "whissle:/api/models/chat",
+  "support_llm_cost_usd": 0.00048,
+  "support_llm_calls": 9,
+  "voice_subset": false,
+  "diagnostics": {
+    "schema": "tau2.health.diagnostics/v1",
+    "benchmark": "agentclinic",
+    "case_id": "MedQA-20",
+    "mode": "text",
+    "availability": {
+      "flow_available": false,
+      "flow_reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "signals_available": false,
+      "signals_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "metadata_sidecar_available": false,
+      "metadata_sidecar_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "tools_available": true,
+      "tools_reason": null
+    },
+    "provenance": {
+      "benchmark": "agentclinic",
+      "mode": "text",
+      "transport_endpoint": "POST /api/bench/agent-turn",
+      "agent_id": "c8aa2355-9fd7-46da-9993-07ea566ec3d6",
+      "base_url": "https://aws-gateway-backend.whissle.ai/bot",
+      "seed": 42,
+      "stratum": {
+        "dataset": "MedQA",
+        "scenario_index": 20,
+        "selection": "head",
+        "limit": 100
+      },
+      "judge": {
+        "judge_provider": "whissle",
+        "judge_model": "default",
+        "judge_endpoint": "whissle:/api/models/chat",
+        "judge_independent": false,
+        "judge_independence_note": "Judge independence: this run's simulators and graders were routed through Whissle's own model API (`POST /api/models/chat`). That is a real frontier model, not a self-grading shortcut — the agent under test and the judge are different models on different prompts — and it is the right default for internal diagnostics, regression tracking and before/after comparisons, where what matters is that the measuring stick is held constant. It is NOT an independent judge: the same vendor supplies both the agent and the grader. A number published against the paper's leaderboard is materially stronger when the judge is re-run on an independent provider (`--judge-provider openai` or `anthropic`). Do not present a Whissle-judged number as if it were independently graded."
+      },
+      "judge_provider": "whissle",
+      "judge_independent": false,
+      "run_id": null,
+      "run_dir": "results/whissle/agentclinic/20260808T092952Z-ac_override_100",
+      "harness_commit": "86b4475",
+      "captured_at": "2026-08-08T09:32:51+00:00",
+      "protocol": "markers",
+      "history": "native",
+      "prompt_mode": "override",
+      "vision": "off",
+      "agent_type": null,
+      "total_inferences": 20,
+      "inferences_used": 9,
+      "support_llm": "whissle:/api/models/chat",
+      "patient_bias": null,
+      "doctor_bias": null,
+      "voice_subset": false
+    },
+    "cost": {
+      "available": true,
+      "reason": null,
+      "judge_calls": 9,
+      "judge_cost_usd": 0.00048,
+      "agent_calls": 9
+    },
+    "flow": {
+      "available": false,
+      "reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "source": null,
+      "turns": null,
+      "summary": null,
+      "conversation_id": null,
+      "current_state": null,
+      "start_state": null,
+      "final_state": null,
+      "ended": null,
+      "flow_end": null,
+      "num_steps": null,
+      "step_counts_by_kind": null,
+      "states_visited": null,
+      "states_declared": null,
+      "states_unvisited": null,
+      "transitions": null,
+      "transitions_fired": null,
+      "var_sets": null,
+      "var_sources": null,
+      "guard_trips": null,
+      "state_divergences": null,
+      "tools_gated": null,
+      "says": null,
+      "steps": null
+    },
+    "signals": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "metadata_sidecar": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "tools": {
+      "available": true,
+      "reason": null,
+      "source": "doctor actions parsed from /api/bench/agent-turn replies",
+      "calls": [
+        {
+          "turn": 3,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Dilated_Eye_Exam"
+          },
+          "result": "RESULTS: \n\n**Dilated Eye Exam (Fundoscopy):**\n- Granular yellow-white opacities around the retinal vessels\n- Multiple areas of dot-blot hemorrhages\n- No redness or discharge noted on external examination\n\n**Additional Findings of Note:**\n- CD4 T-lymphocyte count: 36/mm³ (severely immunocompromised)\n- Cervical lymphadenopathy present\n- Multiple violaceous plaques over trunk and extremities\n\nThe fundoscopic findings are consistent with opportunistic infection involvement of the retina, particularly given the patient's severely depleted CD4 count. The granular opacities and hemorrhages suggest possible cytomegalovirus (CMV) retinitis or other opportunistic retinal infection. Urgent further evaluation and treatment initiation is recommended.",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 1592,
+          "terminal": false
+        },
+        {
+          "turn": 4,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "CMV_Blood_Culture"
+          },
+          "result": "RESULTS: CMV_Blood_Culture - NORMAL READINGS",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 1843,
+          "terminal": false
+        },
+        {
+          "turn": 8,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "OCT_Retinal_Imaging"
+          },
+          "result": "RESULTS: \n\n**Optical Coherence Tomography (OCT) Retinal Imaging:**\n- Structural analysis consistent with fundoscopic findings\n- Granular yellow-white opacities confirmed around retinal vessels\n- Multiple dot-blot hemorrhages visualized\n- Areas of retinal thickening and edema noted\n- Pattern consistent with CMV retinitis (granular, hemorrhagic type)\n- No detachment noted at this time\n\n**Summary of Critical Findings:**\n- CD4 Count: 36/mm³ (critically immunocompromised)\n- Fundoscopy: Granular opacities + dot-blot hemorrhages\n- OCT Imaging: Confirms CMV retinitis with retinal edema\n- Cervical lymphadenopathy present\n- Violaceous plaques on trunk/extremities\n\n**Clinical Assessment:**\nThe OCT imaging confirms active CMV retinitis with inflammatory changes. Combined with the critically low CD4 count of 36/mm³, this patient requires immediate initiation of IV antiviral therapy (ganciclovir or foscarnet) and urgent retinal specialist consultation to prevent rapid progression and vision loss. Close ophthalmologic monitoring will be necessary throughout treatment.\n\n**Recommendation:** Immediate hospitalization and IV antiviral initiation is strongly advised. CD4 count recovery through optimized ART adherence will be critical for long-term disease control and immune reconstitution.",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 4354,
+          "terminal": false
+        },
+        {
+          "turn": 9,
+          "id": null,
+          "name": "give_diagnosis",
+          "arguments": {
+            "request": "CMV Retinitis (Cytomegalovirus Retinitis) secondary to severe immunosuppression (AIDS with CD4 count 36/mm³)**\n\nYou need to go to the hospital immediately for IV ganciclovir or foscarnet treatment and close monitoring by a retinal specialist. Do not delay—this condition can progress rapidly and cause irreversible vision loss. Please arrange transport to the nearest hospital emergency department right away."
+          },
+          "result": null,
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 2393,
+          "terminal": true
+        }
+      ],
+      "summary": {
+        "n_calls": 4,
+        "by_name": {
+          "request_test": 3,
+          "give_diagnosis": 1
+        },
+        "n_ok": 4,
+        "n_error": 0,
+        "errors": []
+      },
+      "writes": {
+        "available": false,
+        "reason": "this benchmark issues no writes, so there is no said-vs-emitted-vs-landed distinction to record"
+      }
+    },
+    "turns": [
+      {
+        "inference": 1,
+        "incoming": "",
+        "reply": "Good morning, I'm Dr. Agent. I can see from your chart that you've been experiencing some vision problems—specifically decreased vision and black spots in your right eye. Can you tell me when you first noticed these symptoms?\n\n**Questions asked: 1/20**",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 2,
+        "incoming": "Yes, doctor, the black spots and blurry vision started just two days ago in my right eye. It came on quite suddenly, and I haven't had any pain with it, which is why I'm a bit concerned about what might be causing it.",
+        "reply": "Thank you for that detail—sudden onset without pain is important information. Given your AIDS diagnosis, I want to explore this carefully. Have you experienced any floaters, flashes of light, or does the blurriness seem to affect your entire vision in that eye or just certain areas?\n\n**Questions asked: 2/20**",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 3,
+        "incoming": "The black spots seem to be scattered throughout my vision in that eye rather than in just one area, and I haven't noticed any flashes of light, but there do seem to be some floaters mixed in with the dark spots. It's been really worrying me since it all happened so suddenly.",
+        "reply": "I understand your concern—that combination of scattered spots, floaters, and sudden blurriness definitely warrants investigation. Before we go further, I'd like to request some imaging to get a better look at what's happening in your eye.\n\nREQUEST TEST: Dilated_Eye_Exam\n\nIn the meantime, have you noticed any redness, discharge, or swelling in or around your right eye?\n\n**Questions asked: 3/20**",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Dilated_Eye_Exam",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 4,
+        "incoming": "RESULTS: \n\n**Dilated Eye Exam (Fundoscopy):**\n- Granular yellow-white opacities around the retinal vessels\n- Multiple areas of dot-blot hemorrhages\n- No redness or discharge noted on external examination\n\n**Additional Findings of Note:**\n- CD4 T-lymphocyte count: 36/mm³ (severely immunocompromised)\n- Cervical lymphadenopathy present\n- Multiple violaceous plaques over trunk and extremities\n\nThe fundoscopic findings are consistent with opportunistic infection involvement of the retina, particularly given the patient's severely depleted CD4 count. The granular opacities and hemorrhages suggest possible cytomegalovirus (CMV) retinitis or other opportunistic retinal infection. Urgent further evaluation and treatment initiation is recommended.",
+        "reply": "These findings are quite significant—the granular opacities and hemorrhages your eye exam shows, combined with your very low CD4 count of 36, suggest you may have a serious opportunistic infection affecting your retina. This needs immediate specialist attention and likely antiviral treatment to prevent vision loss.\n\nREQUEST TEST: CMV_Blood_Culture\n\nAre you currently on antiretroviral therapy (ART) for your AIDS, and if so, what medications are you taking?\n\n**Questions asked: 4/20**",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "CMV_Blood_Culture",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 5,
+        "incoming": "RESULTS: CMV_Blood_Culture - NORMAL READINGS",
+        "reply": "Interesting—the blood culture came back normal, which doesn't rule out CMV retinitis since the infection is localized to the eye itself. Given your CD4 count of 36 and these retinal findings, I need to ask: have you had any recent vision changes in your left eye, or is this problem isolated to just the right eye?\n\n**Questions asked: 5/20**",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 6,
+        "incoming": "No, my left eye has been fine—no vision changes there at all, doctor. The problem is completely isolated to my right eye, which makes me wonder if something specific happened to just that eye.",
+        "reply": "That's helpful—unilateral involvement does narrow things down. You mentioned you're on AIDS treatment; can you tell me what antiretroviral medications you're currently taking, and how regularly have you been able to take them?\n\n**Questions asked: 6/20**",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 7,
+        "incoming": "I'm taking Efavirenz, Tenofovir, and Emtricitabine for my HIV, and I've been fairly consistent with those medications. I'm also on Azithromycin, Trimethoprim-sulfamethoxazole, and some vitamins and nutritional supplements—my doctor said these help prevent infections since my immune system is quite weak.",
+        "reply": "Thank you for that detailed list. Given your CD4 count is critically low at 36, and the retinal findings we saw—the granular opacities and hemorrhages—along with your unilateral presentation, this is highly suggestive of CMV retinitis. Has anyone mentioned CMV retinitis to you before, or have you had any previous eye infections or retinal problems?\n\n**Questions asked: 7/20**",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 8,
+        "incoming": "No, this is the first time anyone has mentioned CMV retinitis to me, doctor. I've never had eye infections or retinal problems before, so this is all quite new and frankly alarming given what you're describing.",
+        "reply": "I understand this is alarming, and I want to be direct: CMV retinitis is a serious opportunistic infection that requires urgent treatment to prevent permanent vision loss. I need to request an urgent retinal specialist consultation and likely start you on IV ganciclovir or foscarnet immediately.\n\nREQUEST TEST: OCT_Retinal_Imaging\n\nHave you experienced any other symptoms recently—fever, night sweats, or any other infections—that might suggest your overall immune situation is worsening?\n\n**Questions asked: 8/20**",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "OCT_Retinal_Imaging",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 9,
+        "incoming": "RESULTS: \n\n**Optical Coherence Tomography (OCT) Retinal Imaging:**\n- Structural analysis consistent with fundoscopic findings\n- Granular yellow-white opacities confirmed around retinal vessels\n- Multiple dot-blot hemorrhages visualized\n- Areas of retinal thickening and edema noted\n- Pattern consistent with CMV retinitis (granular, hemorrhagic type)\n- No detachment noted at this time\n\n**Summary of Critical Findings:**\n- CD4 Count: 36/mm³ (critically immunocompromised)\n- Fundoscopy: Granular opacities + dot-blot hemorrhages\n- OCT Imaging: Confirms CMV retinitis with retinal edema\n- Cervical lymphadenopathy present\n- Violaceous plaques on trunk/extremities\n\n**Clinical Assessment:**\nThe OCT imaging confirms active CMV retinitis with inflammatory changes. Combined with the critically low CD4 count of 36/mm³, this patient requires immediate initiation of IV antiviral therapy (ganciclovir or foscarnet) and urgent retinal specialist consultation to prevent rapid progression and vision loss. Close ophthalmologic monitoring will be necessary throughout treatment.\n\n**Recommendation:** Immediate hospitalization and IV antiviral initiation is strongly advised. CD4 count recovery through optimized ART adherence will be critical for long-term disease control and immune reconstitution.",
+        "reply": "The OCT imaging confirms what we suspected—you have active CMV retinitis with retinal swelling and hemorrhages. This is a medical emergency that requires immediate hospitalization and IV antiviral therapy to prevent permanent blindness in that eye.\n\n**DIAGNOSIS READY: CMV Retinitis (Cytomegalovirus Retinitis) secondary to severe immunosuppression (AIDS with CD4 count 36/mm³)**\n\nYou need to go to the hospital immediately for IV ganciclovir or foscarnet treatment and close monitoring by a retinal specialist. Do not delay—this condition can progress rapidly and cause irreversible vision loss. Please arrange transport to the nearest hospital emergency department right away.",
+        "tool_calls": [],
+        "kind": "diagnosis",
+        "payload": "CMV Retinitis (Cytomegalovirus Retinitis) secondary to severe immunosuppression (AIDS with CD4 count 36/mm³)**\n\nYou need to go to the hospital immediately for IV ganciclovir or foscarnet treatment and close monitoring by a retinal specialist. Do not delay—this condition can progress rapidly and cause irreversible vision loss. Please arrange transport to the nearest hospital emergency department right away.",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": "end_turn"
+      }
+    ],
+    "audio": null
+  }
+}

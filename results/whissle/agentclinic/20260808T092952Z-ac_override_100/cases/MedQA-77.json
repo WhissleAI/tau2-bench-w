@@ -1,0 +1,449 @@
+{
+  "scenario_id": "MedQA-77",
+  "scenario_index": 77,
+  "dataset": "MedQA",
+  "mode": "text",
+  "correct_diagnosis": "Pneumonia",
+  "answer_options": [],
+  "score": {
+    "outcome": "correct",
+    "correctness": true,
+    "doctor_diagnosis": "Pneumonia",
+    "doctor_final_text": "Yes, this is a serious medical emergency and you need to be seen immediately. Please go to the emergency room now or call 911.\n\nDIAGNOSIS READY: Pneumonia",
+    "moderator_raw": "yes",
+    "moderator_raw_text": "Yes",
+    "moderator_lenient": true,
+    "moderator_attempts": 1,
+    "moderator_normalized": false,
+    "moderator_unconstrained": false,
+    "declined": false,
+    "refusal_evidence": [],
+    "format_deviation": false,
+    "decline_source": null,
+    "decline_reason": "",
+    "spurious_commit": false
+  },
+  "infra_fail": false,
+  "error": null,
+  "findings": [],
+  "inferences_used": 6,
+  "max_inferences": 20,
+  "tests_ordered": [
+    "Physical_Exam",
+    "Chest_X-"
+  ],
+  "images_requested": 0,
+  "image": null,
+  "image_error": null,
+  "vision": "off",
+  "refusals": [],
+  "dialogue": [
+    {
+      "role": "doctor",
+      "inference": 1,
+      "kind": "question",
+      "text": "Hello, I am Dr. Agent. When did your chest pain and shortness of breath begin, and have you noticed any fever or chills?",
+      "payload": null,
+      "latency_ms": 6001,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "The chest pain and the shortness of breath started about a week ago, right around the time I started coughing up this thick, nasty phlegm. I've definitely been feeling feverish and just generally worn out lately. It's been pretty rough ever since I stopped taking that medicine for the flu I had."
+    },
+    {
+      "role": "doctor",
+      "inference": 2,
+      "kind": "question",
+      "text": "That sounds very difficult to manage. Could you tell me what color the phlegm is, and does your chest pain feel worse when you take a deep breath or cough?",
+      "payload": null,
+      "latency_ms": 2212,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "The phlegm is a thick, yellowish-green color. My chest hurts a lot more whenever I try to take a deep breath or have a coughing fit."
+    },
+    {
+      "role": "doctor",
+      "inference": 3,
+      "kind": "test",
+      "text": "I'd like to perform a physical exam to listen to your lungs. Have you ever smoked, or do you have any long-term health conditions like asthma or COPD? REQUEST TEST: Physical_Exam",
+      "payload": "Physical_Exam",
+      "latency_ms": 3289,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: Temperature: 38.7°C (101.7°F), Blood Pressure: 120/60 mm Hg, Heart Rate: 70 bpm, Respiratory Rate: 22 breaths/min, SO2: 80%. Inspection: No cyanosis or use of accessory respiratory muscles. Auscultation: Decreased breath sounds at the left base, crackles. Percussion: Dullness to percussion over the left lower lung fields. Palpation: No significant findings."
+    },
+    {
+      "role": "doctor",
+      "inference": 4,
+      "kind": "test",
+      "text": "Your oxygen level is dangerously low at 80 percent, which is a medical emergency. You need immediate medical attention and should go to the emergency room right now. REQUEST TEST: Chest_X-",
+      "payload": "Chest_X-",
+      "latency_ms": 5186,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: Alveolar infiltrates in the left base with air bronchograms"
+    },
+    {
+      "role": "doctor",
+      "inference": 5,
+      "kind": "question",
+      "text": "Your oxygen levels are critically low at 80%, so please call 911 or go to the nearest emergency room immediately. Based on your symptoms and the X-ray showing alveolar infiltrates",
+      "payload": null,
+      "latency_ms": 5362,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Wait, are you saying this is an emergency? I knew I felt short of breath, but I didn't realize it was that serious. I'll head to the hospital right away—I should have finished those flu meds like I was told."
+    },
+    {
+      "role": "doctor",
+      "inference": 6,
+      "kind": "diagnosis",
+      "text": "Yes, this is a serious medical emergency and you need to be seen immediately. Please go to the emergency room now or call 911.\n\nDIAGNOSIS READY: Pneumonia",
+      "payload": "Pneumonia",
+      "latency_ms": 5572,
+      "refusal": null,
+      "via": "marker"
+    }
+  ],
+  "latency_ms": [
+    6001,
+    2212,
+    3289,
+    5186,
+    5362,
+    5572
+  ],
+  "wall_s": 34.12,
+  "doctor_turns": [
+    {
+      "inference": 1,
+      "incoming": "",
+      "reply": "Hello, I am Dr. Agent. When did your chest pain and shortness of breath begin, and have you noticed any fever or chills?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 2,
+      "incoming": "The chest pain and the shortness of breath started about a week ago, right around the time I started coughing up this thick, nasty phlegm. I've definitely been feeling feverish and just generally worn out lately. It's been pretty rough ever since I stopped taking that medicine for the flu I had.",
+      "reply": "That sounds very difficult to manage. Could you tell me what color the phlegm is, and does your chest pain feel worse when you take a deep breath or cough?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 3,
+      "incoming": "The phlegm is a thick, yellowish-green color. My chest hurts a lot more whenever I try to take a deep breath or have a coughing fit.",
+      "reply": "I'd like to perform a physical exam to listen to your lungs. Have you ever smoked, or do you have any long-term health conditions like asthma or COPD? REQUEST TEST: Physical_Exam",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Physical_Exam",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 4,
+      "incoming": "RESULTS: Temperature: 38.7°C (101.7°F), Blood Pressure: 120/60 mm Hg, Heart Rate: 70 bpm, Respiratory Rate: 22 breaths/min, SO2: 80%. Inspection: No cyanosis or use of accessory respiratory muscles. Auscultation: Decreased breath sounds at the left base, crackles. Percussion: Dullness to percussion over the left lower lung fields. Palpation: No significant findings.",
+      "reply": "Your oxygen level is dangerously low at 80 percent, which is a medical emergency. You need immediate medical attention and should go to the emergency room right now. REQUEST TEST: Chest_X-",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Chest_X-",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 5,
+      "incoming": "RESULTS: Alveolar infiltrates in the left base with air bronchograms",
+      "reply": "Your oxygen levels are critically low at 80%, so please call 911 or go to the nearest emergency room immediately. Based on your symptoms and the X-ray showing alveolar infiltrates",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 6,
+      "incoming": "Wait, are you saying this is an emergency? I knew I felt short of breath, but I didn't realize it was that serious. I'll head to the hospital right away—I should have finished those flu meds like I was told.",
+      "reply": "Yes, this is a serious medical emergency and you need to be seen immediately. Please go to the emergency room now or call 911.\n\nDIAGNOSIS READY: Pneumonia",
+      "tool_calls": [],
+      "kind": "diagnosis",
+      "payload": "Pneumonia",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    }
+  ],
+  "support_llm": "whissle:/api/models/chat",
+  "support_llm_cost_usd": 0.00018,
+  "support_llm_calls": 6,
+  "voice_subset": false,
+  "diagnostics": {
+    "schema": "tau2.health.diagnostics/v1",
+    "benchmark": "agentclinic",
+    "case_id": "MedQA-77",
+    "mode": "text",
+    "availability": {
+      "flow_available": false,
+      "flow_reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "signals_available": false,
+      "signals_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "metadata_sidecar_available": false,
+      "metadata_sidecar_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "tools_available": true,
+      "tools_reason": null
+    },
+    "provenance": {
+      "benchmark": "agentclinic",
+      "mode": "text",
+      "transport_endpoint": "POST /api/bench/agent-turn",
+      "agent_id": "c8aa2355-9fd7-46da-9993-07ea566ec3d6",
+      "base_url": "https://aws-gateway-backend.whissle.ai/bot",
+      "seed": 42,
+      "stratum": {
+        "dataset": "MedQA",
+        "scenario_index": 77,
+        "selection": "head",
+        "limit": 100
+      },
+      "judge": {
+        "judge_provider": "whissle",
+        "judge_model": "default",
+        "judge_endpoint": "whissle:/api/models/chat",
+        "judge_independent": false,
+        "judge_independence_note": "Judge independence: this run's simulators and graders were routed through Whissle's own model API (`POST /api/models/chat`). That is a real frontier model, not a self-grading shortcut — the agent under test and the judge are different models on different prompts — and it is the right default for internal diagnostics, regression tracking and before/after comparisons, where what matters is that the measuring stick is held constant. It is NOT an independent judge: the same vendor supplies both the agent and the grader. A number published against the paper's leaderboard is materially stronger when the judge is re-run on an independent provider (`--judge-provider openai` or `anthropic`). Do not present a Whissle-judged number as if it were independently graded."
+      },
+      "judge_provider": "whissle",
+      "judge_independent": false,
+      "run_id": null,
+      "run_dir": "results/whissle/agentclinic/20260808T092952Z-ac_override_100",
+      "harness_commit": "86b4475",
+      "captured_at": "2026-08-08T09:47:42+00:00",
+      "protocol": "markers",
+      "history": "native",
+      "prompt_mode": "override",
+      "vision": "off",
+      "agent_type": null,
+      "total_inferences": 20,
+      "inferences_used": 6,
+      "support_llm": "whissle:/api/models/chat",
+      "patient_bias": null,
+      "doctor_bias": null,
+      "voice_subset": false
+    },
+    "cost": {
+      "available": true,
+      "reason": null,
+      "judge_calls": 6,
+      "judge_cost_usd": 0.00018,
+      "agent_calls": 6
+    },
+    "flow": {
+      "available": false,
+      "reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "source": null,
+      "turns": null,
+      "summary": null,
+      "conversation_id": null,
+      "current_state": null,
+      "start_state": null,
+      "final_state": null,
+      "ended": null,
+      "flow_end": null,
+      "num_steps": null,
+      "step_counts_by_kind": null,
+      "states_visited": null,
+      "states_declared": null,
+      "states_unvisited": null,
+      "transitions": null,
+      "transitions_fired": null,
+      "var_sets": null,
+      "var_sources": null,
+      "guard_trips": null,
+      "state_divergences": null,
+      "tools_gated": null,
+      "says": null,
+      "steps": null
+    },
+    "signals": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "metadata_sidecar": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "tools": {
+      "available": true,
+      "reason": null,
+      "source": "doctor actions parsed from /api/bench/agent-turn replies",
+      "calls": [
+        {
+          "turn": 3,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Physical_Exam"
+          },
+          "result": "RESULTS: Temperature: 38.7°C (101.7°F), Blood Pressure: 120/60 mm Hg, Heart Rate: 70 bpm, Respiratory Rate: 22 breaths/min, SO2: 80%. Inspection: No cyanosis or use of accessory respiratory muscles. Auscultation: Decreased breath sounds at the left base, crackles. Percussion: Dullness to percussion over the left lower lung fields. Palpation: No significant findings.",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 3289,
+          "terminal": false
+        },
+        {
+          "turn": 4,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Chest_X-"
+          },
+          "result": "RESULTS: Alveolar infiltrates in the left base with air bronchograms",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 5186,
+          "terminal": false
+        },
+        {
+          "turn": 6,
+          "id": null,
+          "name": "give_diagnosis",
+          "arguments": {
+            "request": "Pneumonia"
+          },
+          "result": null,
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 5572,
+          "terminal": true
+        }
+      ],
+      "summary": {
+        "n_calls": 3,
+        "by_name": {
+          "request_test": 2,
+          "give_diagnosis": 1
+        },
+        "n_ok": 3,
+        "n_error": 0,
+        "errors": []
+      },
+      "writes": {
+        "available": false,
+        "reason": "this benchmark issues no writes, so there is no said-vs-emitted-vs-landed distinction to record"
+      }
+    },
+    "turns": [
+      {
+        "inference": 1,
+        "incoming": "",
+        "reply": "Hello, I am Dr. Agent. When did your chest pain and shortness of breath begin, and have you noticed any fever or chills?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 2,
+        "incoming": "The chest pain and the shortness of breath started about a week ago, right around the time I started coughing up this thick, nasty phlegm. I've definitely been feeling feverish and just generally worn out lately. It's been pretty rough ever since I stopped taking that medicine for the flu I had.",
+        "reply": "That sounds very difficult to manage. Could you tell me what color the phlegm is, and does your chest pain feel worse when you take a deep breath or cough?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 3,
+        "incoming": "The phlegm is a thick, yellowish-green color. My chest hurts a lot more whenever I try to take a deep breath or have a coughing fit.",
+        "reply": "I'd like to perform a physical exam to listen to your lungs. Have you ever smoked, or do you have any long-term health conditions like asthma or COPD? REQUEST TEST: Physical_Exam",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Physical_Exam",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 4,
+        "incoming": "RESULTS: Temperature: 38.7°C (101.7°F), Blood Pressure: 120/60 mm Hg, Heart Rate: 70 bpm, Respiratory Rate: 22 breaths/min, SO2: 80%. Inspection: No cyanosis or use of accessory respiratory muscles. Auscultation: Decreased breath sounds at the left base, crackles. Percussion: Dullness to percussion over the left lower lung fields. Palpation: No significant findings.",
+        "reply": "Your oxygen level is dangerously low at 80 percent, which is a medical emergency. You need immediate medical attention and should go to the emergency room right now. REQUEST TEST: Chest_X-",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Chest_X-",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 5,
+        "incoming": "RESULTS: Alveolar infiltrates in the left base with air bronchograms",
+        "reply": "Your oxygen levels are critically low at 80%, so please call 911 or go to the nearest emergency room immediately. Based on your symptoms and the X-ray showing alveolar infiltrates",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 6,
+        "incoming": "Wait, are you saying this is an emergency? I knew I felt short of breath, but I didn't realize it was that serious. I'll head to the hospital right away—I should have finished those flu meds like I was told.",
+        "reply": "Yes, this is a serious medical emergency and you need to be seen immediately. Please go to the emergency room now or call 911.\n\nDIAGNOSIS READY: Pneumonia",
+        "tool_calls": [],
+        "kind": "diagnosis",
+        "payload": "Pneumonia",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      }
+    ],
+    "audio": null
+  }
+}

@@ -1,0 +1,605 @@
+{
+  "scenario_id": "MedQA-49",
+  "scenario_index": 49,
+  "dataset": "MedQA",
+  "mode": "text",
+  "correct_diagnosis": "Steven-Johnson syndrome",
+  "answer_options": [],
+  "score": {
+    "outcome": "correct",
+    "correctness": true,
+    "doctor_diagnosis": "Stevens-Johnson Syndrome (SJS)\n\nI will ensure your medical records regarding the Allopurinol and Sulfamethoxazole are available for the emergency team. Please stay on the line with 911 and get to the hospital safely.",
+    "doctor_final_text": "DIAGNOSIS READY: Stevens-Johnson Syndrome (SJS)\n\nI will ensure your medical records regarding the Allopurinol and Sulfamethoxazole are available for the emergency team. Please stay on the line with 911 and get to the hospital safely.",
+    "moderator_raw": "yes",
+    "moderator_raw_text": "Yes",
+    "moderator_lenient": true,
+    "moderator_attempts": 1,
+    "moderator_normalized": false,
+    "moderator_unconstrained": false,
+    "declined": false,
+    "refusal_evidence": [],
+    "format_deviation": false,
+    "decline_source": null,
+    "decline_reason": "",
+    "spurious_commit": false
+  },
+  "infra_fail": false,
+  "error": null,
+  "findings": [],
+  "inferences_used": 10,
+  "max_inferences": 20,
+  "tests_ordered": [
+    ":",
+    "Body_Surface_Area_Calculation"
+  ],
+  "images_requested": 0,
+  "image": null,
+  "image_error": null,
+  "vision": "off",
+  "refusals": [],
+  "dialogue": [
+    {
+      "role": "doctor",
+      "inference": 1,
+      "kind": "question",
+      "text": "Hello, I am Dr. Agent. I see you've been concerned about a rash and some recent health changes; could you describe the appearance and location of the rash for me?\n\nQuestions asked: 1/20",
+      "payload": null,
+      "latency_ms": 1850,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "It's all over the upper half of my back and it just appeared out of nowhere last night. I've also noticed some painful sores inside my mouth that are making it hard to eat. I haven't changed my soap or been out in the woods, so I have no idea why this is happening."
+    },
+    {
+      "role": "doctor",
+      "inference": 2,
+      "kind": "question",
+      "text": "I understand. Have you experienced any fever or chills, and have you started taking any new medications or supplements recently?\n\nQuestions asked: 2/20",
+      "payload": null,
+      "latency_ms": 2747,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "I haven't had any fevers or chills, but my doctor did start me on some new medicine for my arthritis and this cough I've had. It's really frightening how fast this skin reaction and the mouth sores showed up right after."
+    },
+    {
+      "role": "doctor",
+      "inference": 3,
+      "kind": "test",
+      "text": "What are the names of the new medications you started for your arthritis and cough? Also, are there any blisters forming, or does the skin peel away if you rub it? REQUEST TEST:",
+      "payload": ":",
+      "latency_ms": 5543,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: Temperature 37.5°C (99.5°F), Blood Pressure 127/68 mmHg, Heart Rate 125 bpm, Respiratory Rate 18 breaths/min, Oxygen Saturation 98% on room air; Skin Examination shows coalescing erythematous macules, bullae, and desquamation localized to the upper half of the back, with ulcers and erythema in the oropharynx; Complete Blood Count (WBC, Hemoglobin, Platelets) is Normal; Chemistry Panel (Liver/Renal Function and Electrolytes) is Normal; Skin Biopsy shows epidermal necrosis and detachment consistent with severe drug reaction."
+    },
+    {
+      "role": "doctor",
+      "inference": 4,
+      "kind": "question",
+      "text": "This is a very serious condition, and given your symptoms and the biopsy results, you need immediate medical attention. Based on the epidermal necrosis and mucosal involvement following new medication, I have reached a conclusion.",
+      "payload": null,
+      "latency_ms": 6368,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Please, doctor, you're making me really nervous. What exactly is happening to my skin, and was it caused by the pills I just started taking? Is this going to keep spreading to the rest of my body?"
+    },
+    {
+      "role": "doctor",
+      "inference": 5,
+      "kind": "test",
+      "text": "It is very likely that this reaction is a severe response to one of your new medications, which can unfortunately spread without treatment. Could you please tell me the exact names of the medications you started, and have you noticed any irritation in your eyes or other mucosal areas?\n\nREQUEST TEST: Body_Surface_Area_Calculation\n\nQuestions asked: 6/20",
+      "payload": "Body_Surface_Area_Calculation",
+      "latency_ms": 6294,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: NORMAL READINGS"
+    },
+    {
+      "role": "doctor",
+      "inference": 6,
+      "kind": "question",
+      "text": "I understand your concern; this appears to be a severe reaction where your immune system is attacking your skin and mucous membranes, likely triggered by your new medication. To help me confirm the diagnosis, what are the",
+      "payload": null,
+      "latency_ms": 5757,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "What else do you need to know, doctor? I’m just terrified because my skin feels like it's peeling off and the inside of my mouth is so raw. Please tell me there's a way to stop this before it gets any worse."
+    },
+    {
+      "role": "doctor",
+      "inference": 7,
+      "kind": "question",
+      "text": "You must call 911 or go to the nearest emergency room immediately, as this is a life-threatening medical emergency. Please tell me the names of the new medications you started, and are",
+      "payload": null,
+      "latency_ms": 5897,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "I'm so scared, my doctor just prescribed me Allopurinol for my joints and some Sulfamethoxazole for this cough. Does that mean those pills are what's making my skin fall off like this? I'll head to the hospital right away, I just want this pain to stop."
+    },
+    {
+      "role": "doctor",
+      "inference": 8,
+      "kind": "question",
+      "text": "Yes, both Allopurinol and Sulfamethoxazole are known triggers for this life-threatening condition, and you must call 911 or get to the emergency room immediately.",
+      "payload": null,
+      "latency_ms": 5634,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "I'm calling for a ride to the emergency room right now. My skin is starting to blister even more and I can barely swallow because of these mouth sores. Please, tell the doctors there what's happening so they can help me as soon as I arrive."
+    },
+    {
+      "role": "doctor",
+      "inference": 9,
+      "kind": "question",
+      "text": "Please call 911 for an ambulance immediately, as this is a life-threatening medical emergency that requires specialized hospital care. Based on your symptoms and the medications you took, you are experiencing a",
+      "payload": null,
+      "latency_ms": 6252,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "I'm hanging up and calling 911 right now. Please, just make sure they know about the Allopurinol and the other one, because I feel like my whole back is raw. I’m heading out the door, I just hope they can stop my skin from peeling."
+    },
+    {
+      "role": "doctor",
+      "inference": 10,
+      "kind": "diagnosis",
+      "text": "DIAGNOSIS READY: Stevens-Johnson Syndrome (SJS)\n\nI will ensure your medical records regarding the Allopurinol and Sulfamethoxazole are available for the emergency team. Please stay on the line with 911 and get to the hospital safely.",
+      "payload": "Stevens-Johnson Syndrome (SJS)\n\nI will ensure your medical records regarding the Allopurinol and Sulfamethoxazole are available for the emergency team. Please stay on the line with 911 and get to the hospital safely.",
+      "latency_ms": 3757,
+      "refusal": null,
+      "via": "marker"
+    }
+  ],
+  "latency_ms": [
+    1850,
+    2747,
+    5543,
+    6368,
+    6294,
+    5757,
+    5897,
+    5634,
+    6252,
+    3757
+  ],
+  "wall_s": 62.49,
+  "doctor_turns": [
+    {
+      "inference": 1,
+      "incoming": "",
+      "reply": "Hello, I am Dr. Agent. I see you've been concerned about a rash and some recent health changes; could you describe the appearance and location of the rash for me?\n\nQuestions asked: 1/20",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 2,
+      "incoming": "It's all over the upper half of my back and it just appeared out of nowhere last night. I've also noticed some painful sores inside my mouth that are making it hard to eat. I haven't changed my soap or been out in the woods, so I have no idea why this is happening.",
+      "reply": "I understand. Have you experienced any fever or chills, and have you started taking any new medications or supplements recently?\n\nQuestions asked: 2/20",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 3,
+      "incoming": "I haven't had any fevers or chills, but my doctor did start me on some new medicine for my arthritis and this cough I've had. It's really frightening how fast this skin reaction and the mouth sores showed up right after.",
+      "reply": "What are the names of the new medications you started for your arthritis and cough? Also, are there any blisters forming, or does the skin peel away if you rub it? REQUEST TEST:",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": ":",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 4,
+      "incoming": "RESULTS: Temperature 37.5°C (99.5°F), Blood Pressure 127/68 mmHg, Heart Rate 125 bpm, Respiratory Rate 18 breaths/min, Oxygen Saturation 98% on room air; Skin Examination shows coalescing erythematous macules, bullae, and desquamation localized to the upper half of the back, with ulcers and erythema in the oropharynx; Complete Blood Count (WBC, Hemoglobin, Platelets) is Normal; Chemistry Panel (Liver/Renal Function and Electrolytes) is Normal; Skin Biopsy shows epidermal necrosis and detachment consistent with severe drug reaction.",
+      "reply": "This is a very serious condition, and given your symptoms and the biopsy results, you need immediate medical attention. Based on the epidermal necrosis and mucosal involvement following new medication, I have reached a conclusion.",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 5,
+      "incoming": "Please, doctor, you're making me really nervous. What exactly is happening to my skin, and was it caused by the pills I just started taking? Is this going to keep spreading to the rest of my body?",
+      "reply": "It is very likely that this reaction is a severe response to one of your new medications, which can unfortunately spread without treatment. Could you please tell me the exact names of the medications you started, and have you noticed any irritation in your eyes or other mucosal areas?\n\nREQUEST TEST: Body_Surface_Area_Calculation\n\nQuestions asked: 6/20",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Body_Surface_Area_Calculation",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 6,
+      "incoming": "RESULTS: NORMAL READINGS",
+      "reply": "I understand your concern; this appears to be a severe reaction where your immune system is attacking your skin and mucous membranes, likely triggered by your new medication. To help me confirm the diagnosis, what are the",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 7,
+      "incoming": "What else do you need to know, doctor? I’m just terrified because my skin feels like it's peeling off and the inside of my mouth is so raw. Please tell me there's a way to stop this before it gets any worse.",
+      "reply": "You must call 911 or go to the nearest emergency room immediately, as this is a life-threatening medical emergency. Please tell me the names of the new medications you started, and are",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 8,
+      "incoming": "I'm so scared, my doctor just prescribed me Allopurinol for my joints and some Sulfamethoxazole for this cough. Does that mean those pills are what's making my skin fall off like this? I'll head to the hospital right away, I just want this pain to stop.",
+      "reply": "Yes, both Allopurinol and Sulfamethoxazole are known triggers for this life-threatening condition, and you must call 911 or get to the emergency room immediately.",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 9,
+      "incoming": "I'm calling for a ride to the emergency room right now. My skin is starting to blister even more and I can barely swallow because of these mouth sores. Please, tell the doctors there what's happening so they can help me as soon as I arrive.",
+      "reply": "Please call 911 for an ambulance immediately, as this is a life-threatening medical emergency that requires specialized hospital care. Based on your symptoms and the medications you took, you are experiencing a",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 10,
+      "incoming": "I'm hanging up and calling 911 right now. Please, just make sure they know about the Allopurinol and the other one, because I feel like my whole back is raw. I’m heading out the door, I just hope they can stop my skin from peeling.",
+      "reply": "DIAGNOSIS READY: Stevens-Johnson Syndrome (SJS)\n\nI will ensure your medical records regarding the Allopurinol and Sulfamethoxazole are available for the emergency team. Please stay on the line with 911 and get to the hospital safely.",
+      "tool_calls": [],
+      "kind": "diagnosis",
+      "payload": "Stevens-Johnson Syndrome (SJS)\n\nI will ensure your medical records regarding the Allopurinol and Sulfamethoxazole are available for the emergency team. Please stay on the line with 911 and get to the hospital safely.",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    }
+  ],
+  "support_llm": "whissle:/api/models/chat",
+  "support_llm_cost_usd": 0.00047,
+  "support_llm_calls": 10,
+  "voice_subset": false,
+  "diagnostics": {
+    "schema": "tau2.health.diagnostics/v1",
+    "benchmark": "agentclinic",
+    "case_id": "MedQA-49",
+    "mode": "text",
+    "availability": {
+      "flow_available": false,
+      "flow_reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "signals_available": false,
+      "signals_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "metadata_sidecar_available": false,
+      "metadata_sidecar_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "tools_available": true,
+      "tools_reason": null
+    },
+    "provenance": {
+      "benchmark": "agentclinic",
+      "mode": "text",
+      "transport_endpoint": "POST /api/bench/agent-turn",
+      "agent_id": "c8aa2355-9fd7-46da-9993-07ea566ec3d6",
+      "base_url": "https://aws-gateway-backend.whissle.ai/bot",
+      "seed": 42,
+      "stratum": {
+        "dataset": "MedQA",
+        "scenario_index": 49,
+        "selection": "head",
+        "limit": 100
+      },
+      "judge": {
+        "judge_provider": "whissle",
+        "judge_model": "default",
+        "judge_endpoint": "whissle:/api/models/chat",
+        "judge_independent": false,
+        "judge_independence_note": "Judge independence: this run's simulators and graders were routed through Whissle's own model API (`POST /api/models/chat`). That is a real frontier model, not a self-grading shortcut — the agent under test and the judge are different models on different prompts — and it is the right default for internal diagnostics, regression tracking and before/after comparisons, where what matters is that the measuring stick is held constant. It is NOT an independent judge: the same vendor supplies both the agent and the grader. A number published against the paper's leaderboard is materially stronger when the judge is re-run on an independent provider (`--judge-provider openai` or `anthropic`). Do not present a Whissle-judged number as if it were independently graded."
+      },
+      "judge_provider": "whissle",
+      "judge_independent": false,
+      "run_id": null,
+      "run_dir": "results/whissle/agentclinic/20260808T092952Z-ac_override_100",
+      "harness_commit": "86b4475",
+      "captured_at": "2026-08-08T09:38:24+00:00",
+      "protocol": "markers",
+      "history": "native",
+      "prompt_mode": "override",
+      "vision": "off",
+      "agent_type": null,
+      "total_inferences": 20,
+      "inferences_used": 10,
+      "support_llm": "whissle:/api/models/chat",
+      "patient_bias": null,
+      "doctor_bias": null,
+      "voice_subset": false
+    },
+    "cost": {
+      "available": true,
+      "reason": null,
+      "judge_calls": 10,
+      "judge_cost_usd": 0.00047,
+      "agent_calls": 10
+    },
+    "flow": {
+      "available": false,
+      "reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "source": null,
+      "turns": null,
+      "summary": null,
+      "conversation_id": null,
+      "current_state": null,
+      "start_state": null,
+      "final_state": null,
+      "ended": null,
+      "flow_end": null,
+      "num_steps": null,
+      "step_counts_by_kind": null,
+      "states_visited": null,
+      "states_declared": null,
+      "states_unvisited": null,
+      "transitions": null,
+      "transitions_fired": null,
+      "var_sets": null,
+      "var_sources": null,
+      "guard_trips": null,
+      "state_divergences": null,
+      "tools_gated": null,
+      "says": null,
+      "steps": null
+    },
+    "signals": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "metadata_sidecar": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "tools": {
+      "available": true,
+      "reason": null,
+      "source": "doctor actions parsed from /api/bench/agent-turn replies",
+      "calls": [
+        {
+          "turn": 3,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": ":"
+          },
+          "result": "RESULTS: Temperature 37.5°C (99.5°F), Blood Pressure 127/68 mmHg, Heart Rate 125 bpm, Respiratory Rate 18 breaths/min, Oxygen Saturation 98% on room air; Skin Examination shows coalescing erythematous macules, bullae, and desquamation localized to the upper half of the back, with ulcers and erythema in the oropharynx; Complete Blood Count (WBC, Hemoglobin, Platelets) is Normal; Chemistry Panel (Liver/Renal Function and Electrolytes) is Normal; Skin Biopsy shows epidermal necrosis and detachment consistent with severe drug reaction.",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 5543,
+          "terminal": false
+        },
+        {
+          "turn": 5,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Body_Surface_Area_Calculation"
+          },
+          "result": "RESULTS: NORMAL READINGS",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 6294,
+          "terminal": false
+        },
+        {
+          "turn": 10,
+          "id": null,
+          "name": "give_diagnosis",
+          "arguments": {
+            "request": "Stevens-Johnson Syndrome (SJS)\n\nI will ensure your medical records regarding the Allopurinol and Sulfamethoxazole are available for the emergency team. Please stay on the line with 911 and get to the hospital safely."
+          },
+          "result": null,
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 3757,
+          "terminal": true
+        }
+      ],
+      "summary": {
+        "n_calls": 3,
+        "by_name": {
+          "request_test": 2,
+          "give_diagnosis": 1
+        },
+        "n_ok": 3,
+        "n_error": 0,
+        "errors": []
+      },
+      "writes": {
+        "available": false,
+        "reason": "this benchmark issues no writes, so there is no said-vs-emitted-vs-landed distinction to record"
+      }
+    },
+    "turns": [
+      {
+        "inference": 1,
+        "incoming": "",
+        "reply": "Hello, I am Dr. Agent. I see you've been concerned about a rash and some recent health changes; could you describe the appearance and location of the rash for me?\n\nQuestions asked: 1/20",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 2,
+        "incoming": "It's all over the upper half of my back and it just appeared out of nowhere last night. I've also noticed some painful sores inside my mouth that are making it hard to eat. I haven't changed my soap or been out in the woods, so I have no idea why this is happening.",
+        "reply": "I understand. Have you experienced any fever or chills, and have you started taking any new medications or supplements recently?\n\nQuestions asked: 2/20",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 3,
+        "incoming": "I haven't had any fevers or chills, but my doctor did start me on some new medicine for my arthritis and this cough I've had. It's really frightening how fast this skin reaction and the mouth sores showed up right after.",
+        "reply": "What are the names of the new medications you started for your arthritis and cough? Also, are there any blisters forming, or does the skin peel away if you rub it? REQUEST TEST:",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": ":",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 4,
+        "incoming": "RESULTS: Temperature 37.5°C (99.5°F), Blood Pressure 127/68 mmHg, Heart Rate 125 bpm, Respiratory Rate 18 breaths/min, Oxygen Saturation 98% on room air; Skin Examination shows coalescing erythematous macules, bullae, and desquamation localized to the upper half of the back, with ulcers and erythema in the oropharynx; Complete Blood Count (WBC, Hemoglobin, Platelets) is Normal; Chemistry Panel (Liver/Renal Function and Electrolytes) is Normal; Skin Biopsy shows epidermal necrosis and detachment consistent with severe drug reaction.",
+        "reply": "This is a very serious condition, and given your symptoms and the biopsy results, you need immediate medical attention. Based on the epidermal necrosis and mucosal involvement following new medication, I have reached a conclusion.",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 5,
+        "incoming": "Please, doctor, you're making me really nervous. What exactly is happening to my skin, and was it caused by the pills I just started taking? Is this going to keep spreading to the rest of my body?",
+        "reply": "It is very likely that this reaction is a severe response to one of your new medications, which can unfortunately spread without treatment. Could you please tell me the exact names of the medications you started, and have you noticed any irritation in your eyes or other mucosal areas?\n\nREQUEST TEST: Body_Surface_Area_Calculation\n\nQuestions asked: 6/20",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Body_Surface_Area_Calculation",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 6,
+        "incoming": "RESULTS: NORMAL READINGS",
+        "reply": "I understand your concern; this appears to be a severe reaction where your immune system is attacking your skin and mucous membranes, likely triggered by your new medication. To help me confirm the diagnosis, what are the",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 7,
+        "incoming": "What else do you need to know, doctor? I’m just terrified because my skin feels like it's peeling off and the inside of my mouth is so raw. Please tell me there's a way to stop this before it gets any worse.",
+        "reply": "You must call 911 or go to the nearest emergency room immediately, as this is a life-threatening medical emergency. Please tell me the names of the new medications you started, and are",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 8,
+        "incoming": "I'm so scared, my doctor just prescribed me Allopurinol for my joints and some Sulfamethoxazole for this cough. Does that mean those pills are what's making my skin fall off like this? I'll head to the hospital right away, I just want this pain to stop.",
+        "reply": "Yes, both Allopurinol and Sulfamethoxazole are known triggers for this life-threatening condition, and you must call 911 or get to the emergency room immediately.",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 9,
+        "incoming": "I'm calling for a ride to the emergency room right now. My skin is starting to blister even more and I can barely swallow because of these mouth sores. Please, tell the doctors there what's happening so they can help me as soon as I arrive.",
+        "reply": "Please call 911 for an ambulance immediately, as this is a life-threatening medical emergency that requires specialized hospital care. Based on your symptoms and the medications you took, you are experiencing a",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 10,
+        "incoming": "I'm hanging up and calling 911 right now. Please, just make sure they know about the Allopurinol and the other one, because I feel like my whole back is raw. I’m heading out the door, I just hope they can stop my skin from peeling.",
+        "reply": "DIAGNOSIS READY: Stevens-Johnson Syndrome (SJS)\n\nI will ensure your medical records regarding the Allopurinol and Sulfamethoxazole are available for the emergency team. Please stay on the line with 911 and get to the hospital safely.",
+        "tool_calls": [],
+        "kind": "diagnosis",
+        "payload": "Stevens-Johnson Syndrome (SJS)\n\nI will ensure your medical records regarding the Allopurinol and Sulfamethoxazole are available for the emergency team. Please stay on the line with 911 and get to the hospital safely.",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      }
+    ],
+    "audio": null
+  }
+}

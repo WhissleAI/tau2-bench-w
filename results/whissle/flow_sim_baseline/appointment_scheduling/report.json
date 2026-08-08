@@ -1,0 +1,532 @@
+{
+  "schema": "tau2.reporting.run_report/v1",
+  "run_id": "flow_sim_baseline/appointment_scheduling",
+  "benchmark": "flow_sim",
+  "series_key": "flow_sim:appointment_scheduling",
+  "benchmark_title": "Whissle conversation-flow suite",
+  "title": "Conversation-flow suite \u2014 `appointment_scheduling` (real-audio voice)",
+  "label": "Whissle",
+  "mode": "voice",
+  "date": "2026-08-05",
+  "status": "complete",
+  "partial_reason": "",
+  "preliminary": true,
+  "preliminary_reason": "N = 5 is below the 30-unit threshold for a settled number",
+  "n_scored": 5,
+  "headline": {
+    "key": "task_success",
+    "label": "Task success",
+    "value": 20.0,
+    "unit": "pct",
+    "ci": [
+      3.6,
+      62.4
+    ],
+    "n": 5,
+    "floor": 0.0,
+    "ceiling": 100.0,
+    "higher_is_better": true,
+    "note": "an LLM grader judges whether the caller's goal was met",
+    "formatted": "20.0%"
+  },
+  "secondary_metrics": [
+    {
+      "key": "clean_close",
+      "label": "Reached a clean close",
+      "value": 40.0,
+      "unit": "pct",
+      "ci": [
+        11.8,
+        76.9
+      ],
+      "n": 5,
+      "floor": 0.0,
+      "ceiling": 100.0,
+      "higher_is_better": true,
+      "note": "taken from the authoritative `flow_end` trace event",
+      "formatted": "40.0%"
+    },
+    {
+      "key": "state_coverage",
+      "label": "Flow states visited",
+      "value": 7.0,
+      "unit": "count",
+      "ci": null,
+      "n": 10,
+      "floor": null,
+      "ceiling": null,
+      "higher_is_better": true,
+      "note": "of 10 declared",
+      "formatted": "7"
+    },
+    {
+      "key": "transition_coverage",
+      "label": "Flow transitions fired",
+      "value": 6.0,
+      "unit": "count",
+      "ci": null,
+      "n": 13,
+      "floor": null,
+      "ceiling": null,
+      "higher_is_better": true,
+      "note": "of 13 declared",
+      "formatted": "6"
+    }
+  ],
+  "what_measured": "Whether a deployed voice agent actually completes its job on a phone call: does it collect what the flow says it must collect, does it handle a caller who answers out of order or refuses to engage, and does it end the call cleanly rather than trailing off. Real audio, real speech recognition, real turn-taking \u2014 not a text transcript stand-in.",
+  "why_measured": "Every text benchmark in this repository removes the two things that break voice products: recognition error and turn-taking. This suite exists to measure what those two things cost, on the flows we actually ship.",
+  "methodology": [
+    [
+      "Agent under test",
+      "the deployed `appointment_scheduling` agent, with its real flow definition, prompts and tools"
+    ],
+    [
+      "Mode",
+      "real-audio voice over a LiveKit room"
+    ],
+    [
+      "Endpoint",
+      "`POST /api/bench/voice/start` \u2192 LiveKit room"
+    ],
+    [
+      "Prompt handling",
+      "none \u2014 this is the shipped configuration, unmodified; that is the point of the suite and the reason its numbers are not comparable to a paper's"
+    ],
+    [
+      "Caller",
+      "an LLM user-simulator driving a persona and a goal, speaking through text-to-speech into the room"
+    ],
+    [
+      "Turn limit",
+      "a per-scenario turn budget plus a post-goal allowance; hitting the cap is recorded as `turn_cap_exceeded`, not silently truncated"
+    ],
+    [
+      "Tools bound",
+      "the agent's own production tools, gated by its own flow state machine"
+    ],
+    [
+      "Scoring rule",
+      "task success is judged per scenario against the caller's goal; clean close is read from the engine's `flow_end` trace event, not inferred from the transcript"
+    ]
+  ],
+  "scoring_rule": "task success = graded goal-met / executed sessions; clean close = sessions emitting `flow_end` / executed sessions",
+  "tables": [
+    {
+      "key": "scenarios",
+      "title": "Per-scenario outcomes",
+      "columns": [
+        "Scenario",
+        "Turns",
+        "Closed",
+        "Goal met",
+        "Final state",
+        "Findings",
+        "Session"
+      ],
+      "rows": [
+        [
+          "`appt_cancel` (cancel)",
+          "7",
+          "yes",
+          "**no**",
+          "`\u2014`",
+          "1",
+          "`20260805T175103Z`"
+        ],
+        [
+          "`appt_double_booking` (new)",
+          "7",
+          "**no**",
+          "yes",
+          "`\u2014`",
+          "1",
+          "`20260805T180858Z`"
+        ],
+        [
+          "`appt_new` (new)",
+          "3",
+          "**no**",
+          "**no**",
+          "`\u2014`",
+          "1",
+          "`20260805T173908Z`"
+        ],
+        [
+          "`appt_out_of_hours` (out-of-hours)",
+          "9",
+          "**no**",
+          "**no**",
+          "`\u2014`",
+          "1",
+          "`20260805T175846Z`"
+        ],
+        [
+          "`appt_reschedule` (reschedule)",
+          "8",
+          "yes",
+          "**no**",
+          "`\u2014`",
+          "1",
+          "`20260805T174254Z`"
+        ]
+      ],
+      "note": "Each row is one scripted caller persona driven over real audio, taken from the most recent session recorded for that scenario. 'Closed' and 'goal met' are independent: an agent can satisfy the caller and never hang up, or hang up having satisfied nobody.",
+      "allow_providers": false,
+      "allow_context": true
+    },
+    {
+      "key": "sessions",
+      "title": "Per-scenario outcomes, as the harness summarised them",
+      "columns": [
+        "Scenario",
+        "Turns",
+        "Closed",
+        "Goal met",
+        "Final state",
+        "High-severity findings"
+      ],
+      "rows": [
+        [
+          "`appt_new` (new)",
+          "3",
+          "**no**",
+          "**no**",
+          "`None`",
+          "1"
+        ],
+        [
+          "`appt_reschedule` (reschedule)",
+          "8",
+          "yes",
+          "**no**",
+          "`None`",
+          "0"
+        ],
+        [
+          "`appt_cancel` (cancel)",
+          "7",
+          "yes",
+          "**no**",
+          "`None`",
+          "0"
+        ],
+        [
+          "`appt_out_of_hours` (out-of-hours)",
+          "9",
+          "**no**",
+          "**no**",
+          "`None`",
+          "0"
+        ],
+        [
+          "`appt_double_booking` (new)",
+          "7",
+          "**no**",
+          "yes",
+          "`None`",
+          "0"
+        ]
+      ],
+      "note": "Each row is one scripted caller persona driven over real audio. 'Closed' and 'goal met' are independent: an agent can satisfy the caller and never hang up, or hang up having satisfied nobody.",
+      "allow_providers": false,
+      "allow_context": true
+    },
+    {
+      "key": "coverage",
+      "title": "Flow coverage",
+      "columns": [
+        "Measure",
+        "Covered",
+        "Declared",
+        "Uncovered"
+      ],
+      "rows": [
+        [
+          "States",
+          "7",
+          "10",
+          "`confirm_booked`, `send_confirmation`, `confirm_change`"
+        ],
+        [
+          "Transitions",
+          "6",
+          "13",
+          "`t_slot_transfer`, `t_booked`, `t_book_fail`, `t_book_flag`, `t_sms_done`, `t_change_ok`, `t_change_confirmed`"
+        ]
+      ],
+      "note": "An unfired transition is an untested branch. It is not a failure \u2014 it is the part of the flow this scenario set never reached, and therefore the part no result here speaks to.",
+      "allow_providers": false,
+      "allow_context": true
+    }
+  ],
+  "exclusions": {
+    "n_total": 5,
+    "n_scored": 5,
+    "n_excluded": 0,
+    "breakdown": {},
+    "reason_examples": [],
+    "excluded_ids": [],
+    "rate_pct": 0.0
+  },
+  "judge": {
+    "kind": "rule_analyzer",
+    "provider": null,
+    "model": null,
+    "endpoint": null,
+    "independent": null,
+    "k": null,
+    "note": "Two graders, deliberately different in kind: a rule analyzer reads the engine's own flow trace (deterministic \u2014 it cannot be talked into a verdict), and an LLM grader judges goal satisfaction from the transcript. Where they disagree, the trace wins on questions of what happened and the grader wins on questions of whether the caller was served.",
+    "calls": null,
+    "cost_usd": null,
+    "needs_disclosure": false,
+    "short": "rule analyzer + LLM grader"
+  },
+  "provenance": {
+    "agent_id": "8d88abb4-c792-4d0b-9f38-b98529bce19f",
+    "base_url": null,
+    "endpoint": "LiveKit voice room (POST /api/bench/voice/start)",
+    "mode": "voice",
+    "harness_commit": null,
+    "repo_commit": "89f2e02",
+    "run_dir": "/private/tmp/claude-501/-Users-karan-Desktop-work-whissle-live-assist/766421da-8ef4-4ce2-9733-86e5c5f3fced/scratchpad/wt-reports/results/whissle/flow_sim_baseline/appointment_scheduling",
+    "captured_at": "2026-08-05",
+    "dataset": "scripted caller personas for `appointment_scheduling`",
+    "dataset_size": 5,
+    "upstream": "internal \u2014 no published equivalent",
+    "extra": {
+      "agent_type": "appointment_scheduling"
+    }
+  },
+  "sampling": {
+    "method": "hand-authored scenario set, exhaustive (not sampled)",
+    "n_population": 5,
+    "n_requested": 5,
+    "n_selected": 5,
+    "seed": null,
+    "strata_keys": [],
+    "strata_tables": [],
+    "note": "Every scenario in the set was run. There is no sampling error here \u2014 but there is selection: the set is what we thought to write down, and the transition-coverage table is the honest measure of what it misses."
+  },
+  "baselines": {
+    "baselines": [],
+    "comparable": false,
+    "comparability_note": "There is no external comparator and there cannot be one: this suite tests our own flow definitions on our own agents. Its value is longitudinal \u2014 the same scenario set re-run after a change \u2014 and the regression view in the cross-run index is where that comparison lives, not a leaderboard.",
+    "published_protocol": "",
+    "source": "",
+    "any": false
+  },
+  "failures": [
+    {
+      "key": "finding_stuck_termination",
+      "label": "`stuck_termination`",
+      "count": 3,
+      "severity": "medium",
+      "description": "the session stalled without a classified cause",
+      "denominator": 5,
+      "examples": [
+        {
+          "case_id": "appt_double_booking",
+          "summary": "state `capture_need` \u00b7 7 turns",
+          "evidence": "session never reached an end state (cap/stuck); final state 'capture_need' with 1 outgoing edge(s) un-fired.",
+          "artifact": "appt_double_booking_20260805T180858Z.session.json"
+        },
+        {
+          "case_id": "appt_new",
+          "summary": "state `\u2014` \u00b7 3 turns",
+          "evidence": "session failed to run: ModelError: models/chat failed after 6 attempts: HTTP 502: {\"detail\":\"LLM call failed: all LLM providers failed; last error: gemini returned an empty completion\"}",
+          "artifact": "appt_new_20260805T173908Z.session.json"
+        }
+      ],
+      "rate_pct": 60.0
+    },
+    {
+      "key": "finding_premature_termination",
+      "label": "`premature_termination`",
+      "count": 2,
+      "severity": "medium",
+      "description": "the flow closed the call before the intake it declares was complete \u2014 the caller was served politely and the record is short",
+      "denominator": 5,
+      "examples": [
+        {
+          "case_id": "appt_cancel",
+          "summary": "state `done` \u00b7 7 turns",
+          "evidence": "flow reached an end state but the simulated user's goal was NOT met (per the task-success judge).",
+          "artifact": "appt_cancel_20260805T175103Z.session.json"
+        },
+        {
+          "case_id": "appt_reschedule",
+          "summary": "state `done` \u00b7 8 turns",
+          "evidence": "flow reached an end state but the simulated user's goal was NOT met (per the task-success judge).",
+          "artifact": "appt_reschedule_20260805T174254Z.session.json"
+        }
+      ],
+      "rate_pct": 40.0
+    },
+    {
+      "key": "finding_coverage",
+      "label": "`coverage`",
+      "count": 2,
+      "severity": "info",
+      "description": "branches the scenario set never exercised",
+      "denominator": 5,
+      "examples": [
+        {
+          "case_id": "run-level",
+          "summary": "state `\u2014`",
+          "evidence": "3/10 states never entered across the session set: ['confirm_booked', 'send_confirmation', 'confirm_change'].",
+          "artifact": "SUMMARY.json"
+        },
+        {
+          "case_id": "run-level",
+          "summary": "state `\u2014`",
+          "evidence": "7/13 transitions never fired across the session set: ['t_slot_transfer', 't_booked', 't_book_fail', 't_book_flag', 't_sms_done', 't_change_ok', 't_change_confirmed'].",
+          "artifact": "SUMMARY.json"
+        }
+      ],
+      "rate_pct": 40.0
+    },
+    {
+      "key": "goal_not_met",
+      "label": "Caller's goal not met",
+      "count": 4,
+      "severity": "high",
+      "description": "The grader judged the caller left without what they came for. This is the headline's complement, and the reason quoted below is the grader's own words.",
+      "denominator": 5,
+      "examples": [
+        {
+          "case_id": "appt_cancel",
+          "summary": "cancel \u00b7 7 turns \u00b7 final state `\u2014`",
+          "evidence": "The appointment was not cancelled; instead, the customer was transferred to another team without confirmation that the cancellation would be completed.",
+          "artifact": "appt_cancel_20260805T175103Z.session.json"
+        },
+        {
+          "case_id": "appt_new",
+          "summary": "new \u00b7 3 turns \u00b7 final state `\u2014`",
+          "evidence": "not run",
+          "artifact": "appt_new_20260805T173908Z.session.json"
+        },
+        {
+          "case_id": "appt_out_of_hours",
+          "summary": "out-of-hours \u00b7 9 turns \u00b7 final state `\u2014`",
+          "evidence": "The customer initially requested late evening or Sunday appointments, was told those weren't available, asked for the nearest in-hours option (5 PM), and accepted it\u2014fulfilling the conditional goal; however, 5 PM is still daytime/early evening rather than the late evening (7-8 PM) or Sunday the customer originally soug",
+          "artifact": "appt_out_of_hours_20260805T175846Z.session.json"
+        }
+      ],
+      "rate_pct": 80.0
+    }
+  ],
+  "sample_cases": [
+    {
+      "case_id": "appt_double_booking",
+      "outcome": "goal met",
+      "is_success": true,
+      "score": null,
+      "task": "persona `new` \u00b7 7 caller turns \u00b7 final state `\u2014`",
+      "expected": "",
+      "got": "",
+      "excerpt": "AGENT: Hello! How can I help you today?\nUSER: Hi, I'm trying to book an appointment and I heard you have some slots available next week?\nAGENT: Hi there! I'm listening \u2014 go ahead, what can I help you with? Hi there! I'm here to help you book an appointment. What service would you like to schedule? That's great! What type of appointment are you looking to book \u2014 is it for the dental clinic, tut oring, or car rental? That's right, we do have availability next week. What type of appointment would y",
+      "artifact": "appt_double_booking_20260805T180858Z.mix.wav",
+      "why_shown": "The customer asked for a popular slot (2 PM Wednesday afternoon), the agent confirmed it was available, and the customer accepted and confirmed the booking for Wednesday, August 13th at 2 PM."
+    },
+    {
+      "case_id": "appt_cancel",
+      "outcome": "goal not met",
+      "is_success": false,
+      "score": null,
+      "task": "persona `cancel` \u00b7 7 caller turns \u00b7 final state `\u2014`",
+      "expected": "",
+      "got": "",
+      "excerpt": "AGENT: Hello! How can I help you today?\nUSER: Hi, yeah, I need to cancel an appointment I have coming up. Can you help me with that?\nAGENT: I'm here to help \u2014 what do you need? I can help you with that. Can you tell me the date or time of the appointment you'd like to cancel? Of course, I can help you cancel it. What's the phone number the appointment was booked under? Would you like to book an appointment, or is there something else I can help with?\nUSER: It's booked under 555-0147, and the app",
+      "artifact": "appt_cancel_20260805T175103Z.mix.wav",
+      "why_shown": "The appointment was not cancelled; instead, the customer was transferred to another team without confirmation that the cancellation would be completed."
+    },
+    {
+      "case_id": "appt_new",
+      "outcome": "goal not met",
+      "is_success": false,
+      "score": null,
+      "task": "persona `new` \u00b7 3 caller turns \u00b7 final state `\u2014`",
+      "expected": "",
+      "got": "",
+      "excerpt": "AGENT: Hello! How can I help you today?\nUSER: Hi, yeah, I'm calling because I'd like to schedule a consultation appointment for next week if you have anything available.\nAGENT: Great! I'd be happy to help you book a consultation. Which service would you like to schedule \u2014 is it for the dental clinic, the tutoring service, or the car rental business? Got it, next week works. But I still need to know which service you'd like to cons ult about \u2014 is it the dental clinic in Patiala, the online tutori",
+      "artifact": "appt_new_20260805T173908Z.mix.wav",
+      "why_shown": "not run"
+    }
+  ],
+  "limitations": [
+    {
+      "key": "tiny_n",
+      "text": "N = 5. At this size a single scenario flipping moves the headline by ten points. Every figure here is directional and is labelled PRELIMINARY for that reason.",
+      "severity": "high"
+    },
+    {
+      "key": "not_comparable",
+      "text": "The scenario set is ours, the flows are ours, and the grader is ours. Nothing here can be compared to any published number, and it should never be presented alongside one as if it could.",
+      "severity": "high"
+    },
+    {
+      "key": "simulated_caller",
+      "text": "The caller is a language model speaking through text-to-speech. It has cleaner prosody, no background noise and more patience than a person on a mobile in a car \u2014 so recognition error here is a floor, not an estimate.",
+      "severity": "high"
+    },
+    {
+      "key": "coverage",
+      "text": "7 declared transitions never fired across the whole set. Those branches are untested, and a green result says nothing about them.",
+      "severity": "medium"
+    },
+    {
+      "key": "run_to_run",
+      "text": "Speech recognition, generation and turn-taking are all stochastic. Two runs of the same scenario set differ; a one-scenario change between runs is noise until it repeats.",
+      "severity": "medium"
+    }
+  ],
+  "reproduction": {
+    "commands": [
+      "uv sync --extra dev --extra voice",
+      "./run_flow_sim.sh appointment_scheduling",
+      "python -m tau2.reporting.cli build results/whissle/flow_sim/appointment_scheduling"
+    ],
+    "environment": {
+      "repo commit at report time": "89f2e02",
+      "extras required": "voice (LiveKit, audio codecs)"
+    },
+    "notes": [
+      "Audio is captured per session (`*.caller.wav`, `*.bot.wav`, `*.mix.wav`) \u2014 a disputed grader verdict can be settled by listening.",
+      "The directory accumulates every historical run of the same scenario; this report covers the latest session per task id."
+    ]
+  },
+  "artifacts": [
+    {
+      "path": "SUMMARY.json",
+      "description": "run-level aggregation and coverage",
+      "present": true
+    },
+    {
+      "path": "SUMMARY.md",
+      "description": "the harness's own short summary",
+      "present": true
+    },
+    {
+      "path": "*.session.json",
+      "description": "per-session sidecar: turns, flow trace, findings",
+      "present": false
+    },
+    {
+      "path": "*.mix.wav",
+      "description": "the recorded call",
+      "present": false
+    },
+    {
+      "path": "REPORT.md",
+      "description": "this report",
+      "present": true
+    },
+    {
+      "path": "report.json",
+      "description": "machine-readable form of this report",
+      "present": true
+    }
+  ],
+  "licence_note": "",
+  "warnings": []
+}

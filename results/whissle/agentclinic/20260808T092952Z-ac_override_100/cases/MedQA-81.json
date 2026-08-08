@@ -1,0 +1,395 @@
+{
+  "scenario_id": "MedQA-81",
+  "scenario_index": 81,
+  "dataset": "MedQA",
+  "mode": "text",
+  "correct_diagnosis": "Huntington disease",
+  "answer_options": [],
+  "score": {
+    "outcome": "correct",
+    "correctness": true,
+    "doctor_diagnosis": "Huntington's Disease",
+    "doctor_final_text": "Based on your symptoms and the MRI findings showing atrophy of the caudate nuclei, it appears you are suffering from a specific condition. This explains the combination of movement issues, psychiatric symptoms, and cognitive changes you are experiencing.\n\nDIAGNOSIS READY: Huntington's Disease",
+    "moderator_raw": "yes",
+    "moderator_raw_text": "Yes",
+    "moderator_lenient": true,
+    "moderator_attempts": 1,
+    "moderator_normalized": false,
+    "moderator_unconstrained": false,
+    "declined": false,
+    "refusal_evidence": [],
+    "format_deviation": false,
+    "decline_source": null,
+    "decline_reason": "",
+    "spurious_commit": false
+  },
+  "infra_fail": false,
+  "error": null,
+  "findings": [],
+  "inferences_used": 5,
+  "max_inferences": 20,
+  "tests_ordered": [
+    "MRI_Brain"
+  ],
+  "images_requested": 0,
+  "image": null,
+  "image_error": null,
+  "vision": "off",
+  "refusals": [],
+  "dialogue": [
+    {
+      "role": "doctor",
+      "inference": 1,
+      "kind": "question",
+      "text": "Hello, I am Dr. Agent. Can you tell me when you first started noticing these involuntary movements and the difficulty swallowing?",
+      "payload": null,
+      "latency_ms": 2668,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "The movements and the trouble swallowing just started getting bad this past month. Before that, for about a year, I've mainly been feeling so restless and hearing voices that aren't there. It’s hard to even talk clearly sometimes, and I just feel so irritable."
+    },
+    {
+      "role": "doctor",
+      "inference": 2,
+      "kind": "question",
+      "text": "I see; that sounds very distressing. Does anyone in your family have a history of similar movement issues or psychiatric conditions?",
+      "payload": null,
+      "latency_ms": 2164,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Well, my father struggled with his mental health and ended up taking his own life when he was only fifty. I'm not really sure if he had these same twitches, but he was definitely going through a hard time like I am. I just feel so confused and forgetful lately, and it's making everything harder."
+    },
+    {
+      "role": "doctor",
+      "inference": 3,
+      "kind": "question",
+      "text": "I am very sorry to hear about your father. Are you currently taking any medications for the voices you've been hearing, and have you noticed any changes in your coordination or balance?",
+      "payload": null,
+      "latency_ms": 3784,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "I haven't been taking anything for the voices yet, and I'm not really sure about my balance. I just know I'm restless and these jerking movements make me feel like I can't control my own body anymore. It's all so confusing, and I've been losing my way with things I used to know how to do."
+    },
+    {
+      "role": "doctor",
+      "inference": 4,
+      "kind": "test",
+      "text": "I understand. Can you describe the jerking movements in more detail—do they happen all the time, and do they affect your whole body? \n\nREQUEST TEST: MRI_Brain",
+      "payload": "MRI_Brain",
+      "latency_ms": 4025,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: Atrophy of the caudate nuclei with ex vacuo dilatation of the frontal horns of the lateral ventricles."
+    },
+    {
+      "role": "doctor",
+      "inference": 5,
+      "kind": "diagnosis",
+      "text": "Based on your symptoms and the MRI findings showing atrophy of the caudate nuclei, it appears you are suffering from a specific condition. This explains the combination of movement issues, psychiatric symptoms, and cognitive changes you are experiencing.\n\nDIAGNOSIS READY: Huntington's Disease",
+      "payload": "Huntington's Disease",
+      "latency_ms": 4000,
+      "refusal": null,
+      "via": "marker"
+    }
+  ],
+  "latency_ms": [
+    2668,
+    2164,
+    3784,
+    4025,
+    4000
+  ],
+  "wall_s": 23.4,
+  "doctor_turns": [
+    {
+      "inference": 1,
+      "incoming": "",
+      "reply": "Hello, I am Dr. Agent. Can you tell me when you first started noticing these involuntary movements and the difficulty swallowing?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 2,
+      "incoming": "The movements and the trouble swallowing just started getting bad this past month. Before that, for about a year, I've mainly been feeling so restless and hearing voices that aren't there. It’s hard to even talk clearly sometimes, and I just feel so irritable.",
+      "reply": "I see; that sounds very distressing. Does anyone in your family have a history of similar movement issues or psychiatric conditions?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 3,
+      "incoming": "Well, my father struggled with his mental health and ended up taking his own life when he was only fifty. I'm not really sure if he had these same twitches, but he was definitely going through a hard time like I am. I just feel so confused and forgetful lately, and it's making everything harder.",
+      "reply": "I am very sorry to hear about your father. Are you currently taking any medications for the voices you've been hearing, and have you noticed any changes in your coordination or balance?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 4,
+      "incoming": "I haven't been taking anything for the voices yet, and I'm not really sure about my balance. I just know I'm restless and these jerking movements make me feel like I can't control my own body anymore. It's all so confusing, and I've been losing my way with things I used to know how to do.",
+      "reply": "I understand. Can you describe the jerking movements in more detail—do they happen all the time, and do they affect your whole body? \n\nREQUEST TEST: MRI_Brain",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "MRI_Brain",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 5,
+      "incoming": "RESULTS: Atrophy of the caudate nuclei with ex vacuo dilatation of the frontal horns of the lateral ventricles.",
+      "reply": "Based on your symptoms and the MRI findings showing atrophy of the caudate nuclei, it appears you are suffering from a specific condition. This explains the combination of movement issues, psychiatric symptoms, and cognitive changes you are experiencing.\n\nDIAGNOSIS READY: Huntington's Disease",
+      "tool_calls": [],
+      "kind": "diagnosis",
+      "payload": "Huntington's Disease",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    }
+  ],
+  "support_llm": "whissle:/api/models/chat",
+  "support_llm_cost_usd": 0.00016,
+  "support_llm_calls": 5,
+  "voice_subset": false,
+  "diagnostics": {
+    "schema": "tau2.health.diagnostics/v1",
+    "benchmark": "agentclinic",
+    "case_id": "MedQA-81",
+    "mode": "text",
+    "availability": {
+      "flow_available": false,
+      "flow_reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "signals_available": false,
+      "signals_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "metadata_sidecar_available": false,
+      "metadata_sidecar_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "tools_available": true,
+      "tools_reason": null
+    },
+    "provenance": {
+      "benchmark": "agentclinic",
+      "mode": "text",
+      "transport_endpoint": "POST /api/bench/agent-turn",
+      "agent_id": "c8aa2355-9fd7-46da-9993-07ea566ec3d6",
+      "base_url": "https://aws-gateway-backend.whissle.ai/bot",
+      "seed": 42,
+      "stratum": {
+        "dataset": "MedQA",
+        "scenario_index": 81,
+        "selection": "head",
+        "limit": 100
+      },
+      "judge": {
+        "judge_provider": "whissle",
+        "judge_model": "default",
+        "judge_endpoint": "whissle:/api/models/chat",
+        "judge_independent": false,
+        "judge_independence_note": "Judge independence: this run's simulators and graders were routed through Whissle's own model API (`POST /api/models/chat`). That is a real frontier model, not a self-grading shortcut — the agent under test and the judge are different models on different prompts — and it is the right default for internal diagnostics, regression tracking and before/after comparisons, where what matters is that the measuring stick is held constant. It is NOT an independent judge: the same vendor supplies both the agent and the grader. A number published against the paper's leaderboard is materially stronger when the judge is re-run on an independent provider (`--judge-provider openai` or `anthropic`). Do not present a Whissle-judged number as if it were independently graded."
+      },
+      "judge_provider": "whissle",
+      "judge_independent": false,
+      "run_id": null,
+      "run_dir": "results/whissle/agentclinic/20260808T092952Z-ac_override_100",
+      "harness_commit": "86b4475",
+      "captured_at": "2026-08-08T09:48:06+00:00",
+      "protocol": "markers",
+      "history": "native",
+      "prompt_mode": "override",
+      "vision": "off",
+      "agent_type": null,
+      "total_inferences": 20,
+      "inferences_used": 5,
+      "support_llm": "whissle:/api/models/chat",
+      "patient_bias": null,
+      "doctor_bias": null,
+      "voice_subset": false
+    },
+    "cost": {
+      "available": true,
+      "reason": null,
+      "judge_calls": 5,
+      "judge_cost_usd": 0.00016,
+      "agent_calls": 5
+    },
+    "flow": {
+      "available": false,
+      "reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "source": null,
+      "turns": null,
+      "summary": null,
+      "conversation_id": null,
+      "current_state": null,
+      "start_state": null,
+      "final_state": null,
+      "ended": null,
+      "flow_end": null,
+      "num_steps": null,
+      "step_counts_by_kind": null,
+      "states_visited": null,
+      "states_declared": null,
+      "states_unvisited": null,
+      "transitions": null,
+      "transitions_fired": null,
+      "var_sets": null,
+      "var_sources": null,
+      "guard_trips": null,
+      "state_divergences": null,
+      "tools_gated": null,
+      "says": null,
+      "steps": null
+    },
+    "signals": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "metadata_sidecar": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "tools": {
+      "available": true,
+      "reason": null,
+      "source": "doctor actions parsed from /api/bench/agent-turn replies",
+      "calls": [
+        {
+          "turn": 4,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "MRI_Brain"
+          },
+          "result": "RESULTS: Atrophy of the caudate nuclei with ex vacuo dilatation of the frontal horns of the lateral ventricles.",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 4025,
+          "terminal": false
+        },
+        {
+          "turn": 5,
+          "id": null,
+          "name": "give_diagnosis",
+          "arguments": {
+            "request": "Huntington's Disease"
+          },
+          "result": null,
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 4000,
+          "terminal": true
+        }
+      ],
+      "summary": {
+        "n_calls": 2,
+        "by_name": {
+          "request_test": 1,
+          "give_diagnosis": 1
+        },
+        "n_ok": 2,
+        "n_error": 0,
+        "errors": []
+      },
+      "writes": {
+        "available": false,
+        "reason": "this benchmark issues no writes, so there is no said-vs-emitted-vs-landed distinction to record"
+      }
+    },
+    "turns": [
+      {
+        "inference": 1,
+        "incoming": "",
+        "reply": "Hello, I am Dr. Agent. Can you tell me when you first started noticing these involuntary movements and the difficulty swallowing?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 2,
+        "incoming": "The movements and the trouble swallowing just started getting bad this past month. Before that, for about a year, I've mainly been feeling so restless and hearing voices that aren't there. It’s hard to even talk clearly sometimes, and I just feel so irritable.",
+        "reply": "I see; that sounds very distressing. Does anyone in your family have a history of similar movement issues or psychiatric conditions?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 3,
+        "incoming": "Well, my father struggled with his mental health and ended up taking his own life when he was only fifty. I'm not really sure if he had these same twitches, but he was definitely going through a hard time like I am. I just feel so confused and forgetful lately, and it's making everything harder.",
+        "reply": "I am very sorry to hear about your father. Are you currently taking any medications for the voices you've been hearing, and have you noticed any changes in your coordination or balance?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 4,
+        "incoming": "I haven't been taking anything for the voices yet, and I'm not really sure about my balance. I just know I'm restless and these jerking movements make me feel like I can't control my own body anymore. It's all so confusing, and I've been losing my way with things I used to know how to do.",
+        "reply": "I understand. Can you describe the jerking movements in more detail—do they happen all the time, and do they affect your whole body? \n\nREQUEST TEST: MRI_Brain",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "MRI_Brain",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 5,
+        "incoming": "RESULTS: Atrophy of the caudate nuclei with ex vacuo dilatation of the frontal horns of the lateral ventricles.",
+        "reply": "Based on your symptoms and the MRI findings showing atrophy of the caudate nuclei, it appears you are suffering from a specific condition. This explains the combination of movement issues, psychiatric symptoms, and cognitive changes you are experiencing.\n\nDIAGNOSIS READY: Huntington's Disease",
+        "tool_calls": [],
+        "kind": "diagnosis",
+        "payload": "Huntington's Disease",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      }
+    ],
+    "audio": null
+  }
+}

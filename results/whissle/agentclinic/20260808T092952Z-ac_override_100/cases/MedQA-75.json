@@ -1,0 +1,557 @@
+{
+  "scenario_id": "MedQA-75",
+  "scenario_index": 75,
+  "dataset": "MedQA",
+  "mode": "text",
+  "correct_diagnosis": "Intraventricular Hemorrhage",
+  "answer_options": [],
+  "score": {
+    "outcome": "correct",
+    "correctness": true,
+    "doctor_diagnosis": ":",
+    "doctor_final_text": "It sounds like the baby is experiencing significant neurological distress and respiratory instability. Given the ultrasound findings of bleeding and the physical symptoms, I am ready to conclude my evaluation. \n\nDIAGNOSIS READY:",
+    "moderator_raw": "yes",
+    "moderator_raw_text": "Yes",
+    "moderator_lenient": true,
+    "moderator_attempts": 1,
+    "moderator_normalized": false,
+    "moderator_unconstrained": false,
+    "declined": false,
+    "refusal_evidence": [],
+    "format_deviation": false,
+    "decline_source": null,
+    "decline_reason": "",
+    "spurious_commit": false
+  },
+  "infra_fail": false,
+  "error": null,
+  "findings": [],
+  "inferences_used": 8,
+  "max_inferences": 20,
+  "tests_ordered": [
+    "Cranial_Ultrasound",
+    "Complete_Blood_Count",
+    "Lumbar_Puncture",
+    "Blood_Glucose_and_Electrolytes"
+  ],
+  "images_requested": 0,
+  "image": null,
+  "image_error": null,
+  "vision": "off",
+  "refusals": [],
+  "dialogue": [
+    {
+      "role": "doctor",
+      "inference": 1,
+      "kind": "question",
+      "text": "Hello, I am Dr. Agent, and I'll be evaluating your baby today. To start, were there any complications during the pregnancy or the delivery process? \n\nQuestions asked: 1/20",
+      "payload": null,
+      "latency_ms": 2867,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "My mother had chorioamnionitis before I was born at just 31 weeks. My Apgar scores weren't very high at birth, and I only weighed 1100 grams."
+    },
+    {
+      "role": "doctor",
+      "inference": 2,
+      "kind": "test",
+      "text": "Can you describe the seizures, and have you noticed any bulging in the baby's soft spot on their head? \n\nREQUEST TEST: Cranial_Ultrasound\n\nQuestions asked: 2/20",
+      "payload": "Cranial_Ultrasound",
+      "latency_ms": 2822,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: Evidence of bleeding within the ventricles"
+    },
+    {
+      "role": "doctor",
+      "inference": 3,
+      "kind": "test",
+      "text": "Could you tell me if the ultrasound showed any dilation of the ventricles or involvement of the brain tissue? I would also like to see the baby's current blood cell counts.\n\nREQUEST TEST: Complete_Blood_Count\n\nQuestions asked: 5/20",
+      "payload": "Complete_Blood_Count",
+      "latency_ms": 3939,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: WBC: Slightly elevated, Hemoglobin: Within normal limits"
+    },
+    {
+      "role": "doctor",
+      "inference": 4,
+      "kind": "test",
+      "text": "Has the baby had any fevers or trouble maintaining their temperature since birth? I would like to check the spinal fluid for any signs of infection.\n\nREQUEST TEST: Lumbar_Puncture\n\nQuestions asked: 6/20",
+      "payload": "Lumbar_Puncture",
+      "latency_ms": 4402,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: NORMAL READINGS"
+    },
+    {
+      "role": "doctor",
+      "inference": 5,
+      "kind": "test",
+      "text": "How would you describe the baby's muscle tone—does the baby seem limp or stiff—and have there been any pauses in their breathing? I also need to check the baby's electrolyte and glucose levels.\n\nREQUEST TEST: Blood_Glucose_and_Electrolytes\n\nQuestions asked: 8/20",
+      "payload": "Blood_Glucose_and_Electrolytes",
+      "latency_ms": 3547,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: NORMAL READINGS"
+    },
+    {
+      "role": "doctor",
+      "inference": 6,
+      "kind": "question",
+      "text": "Have you noticed any abnormal eye movements or a shrill, high-pitched cry, and how has the baby's feeding been? I would like to request an MRI to get a more detailed look",
+      "payload": null,
+      "latency_ms": 4985,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "I've been making slow, conjugate back and forth movements with my eyes, and my pupils are slow to react to the light. I've become very lethargic over the last 18 hours and I'm not acting like myself at all. My head also feels very tight, especially at the soft spot on top."
+    },
+    {
+      "role": "doctor",
+      "inference": 7,
+      "kind": "question",
+      "text": "Thank you for those details; the bulging soft spot and eye movement changes are concerning. Have you noticed any significant drops in the baby's heart rate or blood pressure recently? I would also like to",
+      "payload": null,
+      "latency_ms": 5408,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "My pulse is currently 123 beats per minute, but I have been very sleepy and floppy in my arms and legs. My breathing has also become irregular and I'm not moving as much as I should. I even had a scary episode where my whole body went stiff for nearly thirty seconds."
+    },
+    {
+      "role": "doctor",
+      "inference": 8,
+      "kind": "diagnosis",
+      "text": "It sounds like the baby is experiencing significant neurological distress and respiratory instability. Given the ultrasound findings of bleeding and the physical symptoms, I am ready to conclude my evaluation. \n\nDIAGNOSIS READY:",
+      "payload": ":",
+      "latency_ms": 5779,
+      "refusal": null,
+      "via": "marker"
+    }
+  ],
+  "latency_ms": [
+    2867,
+    2822,
+    3939,
+    4402,
+    3547,
+    4985,
+    5408,
+    5779
+  ],
+  "wall_s": 42.52,
+  "doctor_turns": [
+    {
+      "inference": 1,
+      "incoming": "",
+      "reply": "Hello, I am Dr. Agent, and I'll be evaluating your baby today. To start, were there any complications during the pregnancy or the delivery process? \n\nQuestions asked: 1/20",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 2,
+      "incoming": "My mother had chorioamnionitis before I was born at just 31 weeks. My Apgar scores weren't very high at birth, and I only weighed 1100 grams.",
+      "reply": "Can you describe the seizures, and have you noticed any bulging in the baby's soft spot on their head? \n\nREQUEST TEST: Cranial_Ultrasound\n\nQuestions asked: 2/20",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Cranial_Ultrasound",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 3,
+      "incoming": "RESULTS: Evidence of bleeding within the ventricles",
+      "reply": "Could you tell me if the ultrasound showed any dilation of the ventricles or involvement of the brain tissue? I would also like to see the baby's current blood cell counts.\n\nREQUEST TEST: Complete_Blood_Count\n\nQuestions asked: 5/20",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Complete_Blood_Count",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 4,
+      "incoming": "RESULTS: WBC: Slightly elevated, Hemoglobin: Within normal limits",
+      "reply": "Has the baby had any fevers or trouble maintaining their temperature since birth? I would like to check the spinal fluid for any signs of infection.\n\nREQUEST TEST: Lumbar_Puncture\n\nQuestions asked: 6/20",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Lumbar_Puncture",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 5,
+      "incoming": "RESULTS: NORMAL READINGS",
+      "reply": "How would you describe the baby's muscle tone—does the baby seem limp or stiff—and have there been any pauses in their breathing? I also need to check the baby's electrolyte and glucose levels.\n\nREQUEST TEST: Blood_Glucose_and_Electrolytes\n\nQuestions asked: 8/20",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Blood_Glucose_and_Electrolytes",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 6,
+      "incoming": "RESULTS: NORMAL READINGS",
+      "reply": "Have you noticed any abnormal eye movements or a shrill, high-pitched cry, and how has the baby's feeding been? I would like to request an MRI to get a more detailed look",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 7,
+      "incoming": "I've been making slow, conjugate back and forth movements with my eyes, and my pupils are slow to react to the light. I've become very lethargic over the last 18 hours and I'm not acting like myself at all. My head also feels very tight, especially at the soft spot on top.",
+      "reply": "Thank you for those details; the bulging soft spot and eye movement changes are concerning. Have you noticed any significant drops in the baby's heart rate or blood pressure recently? I would also like to",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 8,
+      "incoming": "My pulse is currently 123 beats per minute, but I have been very sleepy and floppy in my arms and legs. My breathing has also become irregular and I'm not moving as much as I should. I even had a scary episode where my whole body went stiff for nearly thirty seconds.",
+      "reply": "It sounds like the baby is experiencing significant neurological distress and respiratory instability. Given the ultrasound findings of bleeding and the physical symptoms, I am ready to conclude my evaluation. \n\nDIAGNOSIS READY:",
+      "tool_calls": [],
+      "kind": "diagnosis",
+      "payload": ":",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    }
+  ],
+  "support_llm": "whissle:/api/models/chat",
+  "support_llm_cost_usd": 0.00022,
+  "support_llm_calls": 8,
+  "voice_subset": false,
+  "diagnostics": {
+    "schema": "tau2.health.diagnostics/v1",
+    "benchmark": "agentclinic",
+    "case_id": "MedQA-75",
+    "mode": "text",
+    "availability": {
+      "flow_available": false,
+      "flow_reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "signals_available": false,
+      "signals_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "metadata_sidecar_available": false,
+      "metadata_sidecar_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "tools_available": true,
+      "tools_reason": null
+    },
+    "provenance": {
+      "benchmark": "agentclinic",
+      "mode": "text",
+      "transport_endpoint": "POST /api/bench/agent-turn",
+      "agent_id": "c8aa2355-9fd7-46da-9993-07ea566ec3d6",
+      "base_url": "https://aws-gateway-backend.whissle.ai/bot",
+      "seed": 42,
+      "stratum": {
+        "dataset": "MedQA",
+        "scenario_index": 75,
+        "selection": "head",
+        "limit": 100
+      },
+      "judge": {
+        "judge_provider": "whissle",
+        "judge_model": "default",
+        "judge_endpoint": "whissle:/api/models/chat",
+        "judge_independent": false,
+        "judge_independence_note": "Judge independence: this run's simulators and graders were routed through Whissle's own model API (`POST /api/models/chat`). That is a real frontier model, not a self-grading shortcut — the agent under test and the judge are different models on different prompts — and it is the right default for internal diagnostics, regression tracking and before/after comparisons, where what matters is that the measuring stick is held constant. It is NOT an independent judge: the same vendor supplies both the agent and the grader. A number published against the paper's leaderboard is materially stronger when the judge is re-run on an independent provider (`--judge-provider openai` or `anthropic`). Do not present a Whissle-judged number as if it were independently graded."
+      },
+      "judge_provider": "whissle",
+      "judge_independent": false,
+      "run_id": null,
+      "run_dir": "results/whissle/agentclinic/20260808T092952Z-ac_override_100",
+      "harness_commit": "86b4475",
+      "captured_at": "2026-08-08T09:47:12+00:00",
+      "protocol": "markers",
+      "history": "native",
+      "prompt_mode": "override",
+      "vision": "off",
+      "agent_type": null,
+      "total_inferences": 20,
+      "inferences_used": 8,
+      "support_llm": "whissle:/api/models/chat",
+      "patient_bias": null,
+      "doctor_bias": null,
+      "voice_subset": false
+    },
+    "cost": {
+      "available": true,
+      "reason": null,
+      "judge_calls": 8,
+      "judge_cost_usd": 0.00022,
+      "agent_calls": 8
+    },
+    "flow": {
+      "available": false,
+      "reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "source": null,
+      "turns": null,
+      "summary": null,
+      "conversation_id": null,
+      "current_state": null,
+      "start_state": null,
+      "final_state": null,
+      "ended": null,
+      "flow_end": null,
+      "num_steps": null,
+      "step_counts_by_kind": null,
+      "states_visited": null,
+      "states_declared": null,
+      "states_unvisited": null,
+      "transitions": null,
+      "transitions_fired": null,
+      "var_sets": null,
+      "var_sources": null,
+      "guard_trips": null,
+      "state_divergences": null,
+      "tools_gated": null,
+      "says": null,
+      "steps": null
+    },
+    "signals": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "metadata_sidecar": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "tools": {
+      "available": true,
+      "reason": null,
+      "source": "doctor actions parsed from /api/bench/agent-turn replies",
+      "calls": [
+        {
+          "turn": 2,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Cranial_Ultrasound"
+          },
+          "result": "RESULTS: Evidence of bleeding within the ventricles",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 2822,
+          "terminal": false
+        },
+        {
+          "turn": 3,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Complete_Blood_Count"
+          },
+          "result": "RESULTS: WBC: Slightly elevated, Hemoglobin: Within normal limits",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 3939,
+          "terminal": false
+        },
+        {
+          "turn": 4,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Lumbar_Puncture"
+          },
+          "result": "RESULTS: NORMAL READINGS",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 4402,
+          "terminal": false
+        },
+        {
+          "turn": 5,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Blood_Glucose_and_Electrolytes"
+          },
+          "result": "RESULTS: NORMAL READINGS",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 3547,
+          "terminal": false
+        },
+        {
+          "turn": 8,
+          "id": null,
+          "name": "give_diagnosis",
+          "arguments": {
+            "request": ":"
+          },
+          "result": null,
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 5779,
+          "terminal": true
+        }
+      ],
+      "summary": {
+        "n_calls": 5,
+        "by_name": {
+          "request_test": 4,
+          "give_diagnosis": 1
+        },
+        "n_ok": 5,
+        "n_error": 0,
+        "errors": []
+      },
+      "writes": {
+        "available": false,
+        "reason": "this benchmark issues no writes, so there is no said-vs-emitted-vs-landed distinction to record"
+      }
+    },
+    "turns": [
+      {
+        "inference": 1,
+        "incoming": "",
+        "reply": "Hello, I am Dr. Agent, and I'll be evaluating your baby today. To start, were there any complications during the pregnancy or the delivery process? \n\nQuestions asked: 1/20",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 2,
+        "incoming": "My mother had chorioamnionitis before I was born at just 31 weeks. My Apgar scores weren't very high at birth, and I only weighed 1100 grams.",
+        "reply": "Can you describe the seizures, and have you noticed any bulging in the baby's soft spot on their head? \n\nREQUEST TEST: Cranial_Ultrasound\n\nQuestions asked: 2/20",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Cranial_Ultrasound",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 3,
+        "incoming": "RESULTS: Evidence of bleeding within the ventricles",
+        "reply": "Could you tell me if the ultrasound showed any dilation of the ventricles or involvement of the brain tissue? I would also like to see the baby's current blood cell counts.\n\nREQUEST TEST: Complete_Blood_Count\n\nQuestions asked: 5/20",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Complete_Blood_Count",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 4,
+        "incoming": "RESULTS: WBC: Slightly elevated, Hemoglobin: Within normal limits",
+        "reply": "Has the baby had any fevers or trouble maintaining their temperature since birth? I would like to check the spinal fluid for any signs of infection.\n\nREQUEST TEST: Lumbar_Puncture\n\nQuestions asked: 6/20",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Lumbar_Puncture",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 5,
+        "incoming": "RESULTS: NORMAL READINGS",
+        "reply": "How would you describe the baby's muscle tone—does the baby seem limp or stiff—and have there been any pauses in their breathing? I also need to check the baby's electrolyte and glucose levels.\n\nREQUEST TEST: Blood_Glucose_and_Electrolytes\n\nQuestions asked: 8/20",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Blood_Glucose_and_Electrolytes",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 6,
+        "incoming": "RESULTS: NORMAL READINGS",
+        "reply": "Have you noticed any abnormal eye movements or a shrill, high-pitched cry, and how has the baby's feeding been? I would like to request an MRI to get a more detailed look",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 7,
+        "incoming": "I've been making slow, conjugate back and forth movements with my eyes, and my pupils are slow to react to the light. I've become very lethargic over the last 18 hours and I'm not acting like myself at all. My head also feels very tight, especially at the soft spot on top.",
+        "reply": "Thank you for those details; the bulging soft spot and eye movement changes are concerning. Have you noticed any significant drops in the baby's heart rate or blood pressure recently? I would also like to",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 8,
+        "incoming": "My pulse is currently 123 beats per minute, but I have been very sleepy and floppy in my arms and legs. My breathing has also become irregular and I'm not moving as much as I should. I even had a scary episode where my whole body went stiff for nearly thirty seconds.",
+        "reply": "It sounds like the baby is experiencing significant neurological distress and respiratory instability. Given the ultrasound findings of bleeding and the physical symptoms, I am ready to conclude my evaluation. \n\nDIAGNOSIS READY:",
+        "tool_calls": [],
+        "kind": "diagnosis",
+        "payload": ":",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      }
+    ],
+    "audio": null
+  }
+}

@@ -1,0 +1,953 @@
+{
+  "scenario_id": "MedQA-90",
+  "scenario_index": 90,
+  "dataset": "MedQA",
+  "mode": "text",
+  "correct_diagnosis": "Waldenstrom macroglobulinemia",
+  "answer_options": [],
+  "score": {
+    "outcome": "correct",
+    "correctness": true,
+    "doctor_diagnosis": "Waldenström Macroglobulinemia",
+    "doctor_final_text": "We can begin the coordination for your treatment immediately. Based on your symptoms and the test results showing high levels of pentameric IgM protein, your condition is consistent with a specific type of blood cancer called Waldenström Macroglobulinemia.\n\nDIAGNOSIS READY: Waldenström Macroglobulinemia",
+    "moderator_raw": "yes",
+    "moderator_raw_text": "Yes",
+    "moderator_lenient": true,
+    "moderator_attempts": 1,
+    "moderator_normalized": false,
+    "moderator_unconstrained": false,
+    "declined": false,
+    "refusal_evidence": [],
+    "format_deviation": false,
+    "decline_source": null,
+    "decline_reason": "",
+    "spurious_commit": false
+  },
+  "infra_fail": false,
+  "error": null,
+  "findings": [],
+  "inferences_used": 17,
+  "max_inferences": 20,
+  "tests_ordered": [
+    "Fundoscopy",
+    "Blood_Pressure",
+    "You didn't mention if you've experienced jaw pain while chewing or scalp sensitivity, so please let me know. Additionally, have you had any fevers or unexpected weight loss recently?\n\nREQUEST TEST",
+    "MRI_Head",
+    "CBC",
+    "I've noted that your hemoglobin levels are normal. Have you noticed any increased thirst or frequent urination lately? I would also like to check your blood sugar and inflammatory markers.\n\nREQUEST TEST",
+    "Serum_Protein_Electrophoresis"
+  ],
+  "images_requested": 0,
+  "image": null,
+  "image_error": null,
+  "vision": "off",
+  "refusals": [],
+  "dialogue": [
+    {
+      "role": "doctor",
+      "inference": 1,
+      "kind": "question",
+      "text": "Hello, I am Dr. Agent, and I will be assisting you today. Can you describe the nature of your headache and tell me exactly where you feel the pain?",
+      "payload": null,
+      "latency_ms": 3148,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "The pain is quite dull and constant, but it's been getting worse over the last three weeks. It feels like it's mostly behind my eyes and across my forehead."
+    },
+    {
+      "role": "doctor",
+      "inference": 2,
+      "kind": "question",
+      "text": "I understand. You also mentioned your vision has been worsening; could you describe those changes and let me know if they affect both eyes?",
+      "payload": null,
+      "latency_ms": 2448,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "It's like everything is becoming blurry and it's getting harder to read my books, even with my glasses. It seems to be happening in both of my eyes at the same time."
+    },
+    {
+      "role": "doctor",
+      "inference": 3,
+      "kind": "test",
+      "text": "Have you noticed any nausea, vomiting, or a \"whooshing\" sound in your ears that pulses with your heartbeat? I would also like to examine the back of your eyes to check for any swelling.\n\nREQUEST TEST: Fundoscopy",
+      "payload": "Fundoscopy",
+      "latency_ms": 4277,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: Details are not provided in this scenario but imagine findings suggestive of retinal vein occlusion or hemorrhages."
+    },
+    {
+      "role": "doctor",
+      "inference": 4,
+      "kind": "test",
+      "text": "Have you experienced any jaw pain while chewing or noticed that your scalp feels sensitive when you brush your hair? I would also like to check your blood pressure immediately.\n\nREQUEST TEST: Blood_Pressure",
+      "payload": "Blood_Pressure",
+      "latency_ms": 4204,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: 135/85 mmHg"
+    },
+    {
+      "role": "doctor",
+      "inference": 5,
+      "kind": "test",
+      "text": "You didn't mention if you've experienced jaw pain while chewing or scalp sensitivity, so please let me know. Additionally, have you had any fevers or unexpected weight loss recently?\n\nREQUEST TEST",
+      "payload": null,
+      "latency_ms": 5548,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: Temperature 36.8°C (98.2°F)"
+    },
+    {
+      "role": "doctor",
+      "inference": 6,
+      "kind": "question",
+      "text": "I see your temperature is normal, but I still need to know if you've had jaw pain while chewing or scalp tenderness. Additionally, are you currently taking any medications, such as",
+      "payload": null,
+      "latency_ms": 4994,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "No, I haven't had any pain in my jaw when I eat or any soreness on my scalp. For my health, I only take my regular pills for high blood pressure and my cholesterol medication."
+    },
+    {
+      "role": "doctor",
+      "inference": 7,
+      "kind": "question",
+      "text": "I would like to know if you've experienced that \"whooshing\" sound in your ears or any brief episodes where your vision completely blacks out for a few seconds. I",
+      "payload": null,
+      "latency_ms": 5557,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "I haven't noticed any strange noises or whooshing in my ears lately. However, there have been a few moments where my vision just goes completely dark for a second or two before coming back."
+    },
+    {
+      "role": "doctor",
+      "inference": 8,
+      "kind": "test",
+      "text": "Thank you for sharing that; those brief blackouts can be very concerning. Have you noticed any weakness in your arms or legs, or any numbness or tingling in your body? I would also like to order an MRI of your head to get a clearer picture of what is happening.\n\nREQUEST TEST: MRI_Head",
+      "payload": "MRI_Head",
+      "latency_ms": 4437,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: NORMAL READINGS"
+    },
+    {
+      "role": "doctor",
+      "inference": 9,
+      "kind": "question",
+      "text": "Since your MRI is normal, I would like to investigate potential blood-related causes for the changes in your eyes. Have you noticed any unusual bruising or bleeding, and do you feel",
+      "payload": null,
+      "latency_ms": 5977,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "I haven't seen any odd bruises on my skin or had any issues with bleeding lately. I generally feel okay otherwise, just quite frustrated with how much my vision is failing me."
+    },
+    {
+      "role": "doctor",
+      "inference": 10,
+      "kind": "test",
+      "text": "I'm sorry to hear how much this is impacting your life. Have you noticed any unusual fatigue, or perhaps an intense itchiness after taking a warm shower?\n\nREQUEST TEST: CBC",
+      "payload": "CBC",
+      "latency_ms": 5549,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: Hemoglobin: 14.2 g/dL; other CBC components not specified."
+    },
+    {
+      "role": "doctor",
+      "inference": 11,
+      "kind": "test",
+      "text": "I've noted that your hemoglobin levels are normal. Have you noticed any increased thirst or frequent urination lately? I would also like to check your blood sugar and inflammatory markers.\n\nREQUEST TEST",
+      "payload": null,
+      "latency_ms": 5899,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: NORMAL READINGS"
+    },
+    {
+      "role": "doctor",
+      "inference": 12,
+      "kind": "question",
+      "text": "It is helpful to know that your blood sugar and inflammatory markers are normal. Since we've seen specific changes in your eyes but your MRI was clear, I'd like to check your protein levels.",
+      "payload": null,
+      "latency_ms": 5981,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "That sounds like a good idea, as I'm willing to try anything to find out why my sight is getting so blurry. Will a blood test be able to show those protein levels you are looking for? I just want to get back to my reading as soon as possible."
+    },
+    {
+      "role": "doctor",
+      "inference": 13,
+      "kind": "test",
+      "text": "Yes, a specialized blood test can detect abnormal protein levels that might be making your blood too thick. Have you felt any bone pain, particularly in your back or ribs?\n\nREQUEST TEST: Serum_Protein_Electrophoresis",
+      "payload": "Serum_Protein_Electrophoresis",
+      "latency_ms": 5038,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: Increased concentration of a pentameric immunoglobulin, consistent with a monoclonal gammopathy."
+    },
+    {
+      "role": "doctor",
+      "inference": 14,
+      "kind": "question",
+      "text": "The presence of that specific pentameric immunoglobulin in your blood is a significant finding that explains why your vision is blurry. It suggests that your blood has become too thick, which is",
+      "payload": null,
+      "latency_ms": 4845,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Oh dear, does that mean the thickness of my blood is what's causing all these headaches and the darkness in my vision? I've never heard of such a thing happening before. What can be done to thin it out so I can see clearly again?"
+    },
+    {
+      "role": "doctor",
+      "inference": 15,
+      "kind": "question",
+      "text": "Yes, that is correct; the excess protein makes your blood thicker, which leads to the headaches and vision issues you are experiencing. This condition where a specific pentameric protein builds",
+      "payload": null,
+      "latency_ms": 4715,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "I'm relieved to finally have an answer, though it sounds quite serious. Is there a specific treatment or a procedure that can remove this protein from my blood quickly? I'm really hoping to get my vision back to normal soon."
+    },
+    {
+      "role": "doctor",
+      "inference": 16,
+      "kind": "question",
+      "text": "We can perform a procedure called plasmapheresis to filter the excess protein from your blood and reduce its thickness. Given your symptoms and the presence of pentameric IgM proteins, I have",
+      "payload": null,
+      "latency_ms": 4826,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "That procedure sounds like a relief if it will help me see my books clearly again. How soon can we start the process to get this protein out of my system? I'm ready to do whatever it takes to stop these headaches and get my sight back."
+    },
+    {
+      "role": "doctor",
+      "inference": 17,
+      "kind": "diagnosis",
+      "text": "We can begin the coordination for your treatment immediately. Based on your symptoms and the test results showing high levels of pentameric IgM protein, your condition is consistent with a specific type of blood cancer called Waldenström Macroglobulinemia.\n\nDIAGNOSIS READY: Waldenström Macroglobulinemia",
+      "payload": "Waldenström Macroglobulinemia",
+      "latency_ms": 4166,
+      "refusal": null,
+      "via": "marker"
+    }
+  ],
+  "latency_ms": [
+    3148,
+    2448,
+    4277,
+    4204,
+    5548,
+    4994,
+    5557,
+    4437,
+    5977,
+    5549,
+    5899,
+    5981,
+    5038,
+    4845,
+    4715,
+    4826,
+    4166
+  ],
+  "wall_s": 100.06,
+  "doctor_turns": [
+    {
+      "inference": 1,
+      "incoming": "",
+      "reply": "Hello, I am Dr. Agent, and I will be assisting you today. Can you describe the nature of your headache and tell me exactly where you feel the pain?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 2,
+      "incoming": "The pain is quite dull and constant, but it's been getting worse over the last three weeks. It feels like it's mostly behind my eyes and across my forehead.",
+      "reply": "I understand. You also mentioned your vision has been worsening; could you describe those changes and let me know if they affect both eyes?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 3,
+      "incoming": "It's like everything is becoming blurry and it's getting harder to read my books, even with my glasses. It seems to be happening in both of my eyes at the same time.",
+      "reply": "Have you noticed any nausea, vomiting, or a \"whooshing\" sound in your ears that pulses with your heartbeat? I would also like to examine the back of your eyes to check for any swelling.\n\nREQUEST TEST: Fundoscopy",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Fundoscopy",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 4,
+      "incoming": "RESULTS: Details are not provided in this scenario but imagine findings suggestive of retinal vein occlusion or hemorrhages.",
+      "reply": "Have you experienced any jaw pain while chewing or noticed that your scalp feels sensitive when you brush your hair? I would also like to check your blood pressure immediately.\n\nREQUEST TEST: Blood_Pressure",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Blood_Pressure",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 5,
+      "incoming": "RESULTS: 135/85 mmHg",
+      "reply": "You didn't mention if you've experienced jaw pain while chewing or scalp sensitivity, so please let me know. Additionally, have you had any fevers or unexpected weight loss recently?\n\nREQUEST TEST",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 6,
+      "incoming": "RESULTS: Temperature 36.8°C (98.2°F)",
+      "reply": "I see your temperature is normal, but I still need to know if you've had jaw pain while chewing or scalp tenderness. Additionally, are you currently taking any medications, such as",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 7,
+      "incoming": "No, I haven't had any pain in my jaw when I eat or any soreness on my scalp. For my health, I only take my regular pills for high blood pressure and my cholesterol medication.",
+      "reply": "I would like to know if you've experienced that \"whooshing\" sound in your ears or any brief episodes where your vision completely blacks out for a few seconds. I",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 8,
+      "incoming": "I haven't noticed any strange noises or whooshing in my ears lately. However, there have been a few moments where my vision just goes completely dark for a second or two before coming back.",
+      "reply": "Thank you for sharing that; those brief blackouts can be very concerning. Have you noticed any weakness in your arms or legs, or any numbness or tingling in your body? I would also like to order an MRI of your head to get a clearer picture of what is happening.\n\nREQUEST TEST: MRI_Head",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "MRI_Head",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 9,
+      "incoming": "RESULTS: NORMAL READINGS",
+      "reply": "Since your MRI is normal, I would like to investigate potential blood-related causes for the changes in your eyes. Have you noticed any unusual bruising or bleeding, and do you feel",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 10,
+      "incoming": "I haven't seen any odd bruises on my skin or had any issues with bleeding lately. I generally feel okay otherwise, just quite frustrated with how much my vision is failing me.",
+      "reply": "I'm sorry to hear how much this is impacting your life. Have you noticed any unusual fatigue, or perhaps an intense itchiness after taking a warm shower?\n\nREQUEST TEST: CBC",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "CBC",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 11,
+      "incoming": "RESULTS: Hemoglobin: 14.2 g/dL; other CBC components not specified.",
+      "reply": "I've noted that your hemoglobin levels are normal. Have you noticed any increased thirst or frequent urination lately? I would also like to check your blood sugar and inflammatory markers.\n\nREQUEST TEST",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 12,
+      "incoming": "RESULTS: NORMAL READINGS",
+      "reply": "It is helpful to know that your blood sugar and inflammatory markers are normal. Since we've seen specific changes in your eyes but your MRI was clear, I'd like to check your protein levels.",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 13,
+      "incoming": "That sounds like a good idea, as I'm willing to try anything to find out why my sight is getting so blurry. Will a blood test be able to show those protein levels you are looking for? I just want to get back to my reading as soon as possible.",
+      "reply": "Yes, a specialized blood test can detect abnormal protein levels that might be making your blood too thick. Have you felt any bone pain, particularly in your back or ribs?\n\nREQUEST TEST: Serum_Protein_Electrophoresis",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Serum_Protein_Electrophoresis",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 14,
+      "incoming": "RESULTS: Increased concentration of a pentameric immunoglobulin, consistent with a monoclonal gammopathy.",
+      "reply": "The presence of that specific pentameric immunoglobulin in your blood is a significant finding that explains why your vision is blurry. It suggests that your blood has become too thick, which is",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 15,
+      "incoming": "Oh dear, does that mean the thickness of my blood is what's causing all these headaches and the darkness in my vision? I've never heard of such a thing happening before. What can be done to thin it out so I can see clearly again?",
+      "reply": "Yes, that is correct; the excess protein makes your blood thicker, which leads to the headaches and vision issues you are experiencing. This condition where a specific pentameric protein builds",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 16,
+      "incoming": "I'm relieved to finally have an answer, though it sounds quite serious. Is there a specific treatment or a procedure that can remove this protein from my blood quickly? I'm really hoping to get my vision back to normal soon.",
+      "reply": "We can perform a procedure called plasmapheresis to filter the excess protein from your blood and reduce its thickness. Given your symptoms and the presence of pentameric IgM proteins, I have",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 17,
+      "incoming": "That procedure sounds like a relief if it will help me see my books clearly again. How soon can we start the process to get this protein out of my system? I'm ready to do whatever it takes to stop these headaches and get my sight back.",
+      "reply": "We can begin the coordination for your treatment immediately. Based on your symptoms and the test results showing high levels of pentameric IgM protein, your condition is consistent with a specific type of blood cancer called Waldenström Macroglobulinemia.\n\nDIAGNOSIS READY: Waldenström Macroglobulinemia",
+      "tool_calls": [],
+      "kind": "diagnosis",
+      "payload": "Waldenström Macroglobulinemia",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    }
+  ],
+  "support_llm": "whissle:/api/models/chat",
+  "support_llm_cost_usd": 0.00072,
+  "support_llm_calls": 17,
+  "voice_subset": false,
+  "diagnostics": {
+    "schema": "tau2.health.diagnostics/v1",
+    "benchmark": "agentclinic",
+    "case_id": "MedQA-90",
+    "mode": "text",
+    "availability": {
+      "flow_available": false,
+      "flow_reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "signals_available": false,
+      "signals_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "metadata_sidecar_available": false,
+      "metadata_sidecar_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "tools_available": true,
+      "tools_reason": null
+    },
+    "provenance": {
+      "benchmark": "agentclinic",
+      "mode": "text",
+      "transport_endpoint": "POST /api/bench/agent-turn",
+      "agent_id": "c8aa2355-9fd7-46da-9993-07ea566ec3d6",
+      "base_url": "https://aws-gateway-backend.whissle.ai/bot",
+      "seed": 42,
+      "stratum": {
+        "dataset": "MedQA",
+        "scenario_index": 90,
+        "selection": "head",
+        "limit": 100
+      },
+      "judge": {
+        "judge_provider": "whissle",
+        "judge_model": "default",
+        "judge_endpoint": "whissle:/api/models/chat",
+        "judge_independent": false,
+        "judge_independence_note": "Judge independence: this run's simulators and graders were routed through Whissle's own model API (`POST /api/models/chat`). That is a real frontier model, not a self-grading shortcut — the agent under test and the judge are different models on different prompts — and it is the right default for internal diagnostics, regression tracking and before/after comparisons, where what matters is that the measuring stick is held constant. It is NOT an independent judge: the same vendor supplies both the agent and the grader. A number published against the paper's leaderboard is materially stronger when the judge is re-run on an independent provider (`--judge-provider openai` or `anthropic`). Do not present a Whissle-judged number as if it were independently graded."
+      },
+      "judge_provider": "whissle",
+      "judge_independent": false,
+      "run_id": null,
+      "run_dir": "results/whissle/agentclinic/20260808T092952Z-ac_override_100",
+      "harness_commit": "86b4475",
+      "captured_at": "2026-08-08T09:51:56+00:00",
+      "protocol": "markers",
+      "history": "native",
+      "prompt_mode": "override",
+      "vision": "off",
+      "agent_type": null,
+      "total_inferences": 20,
+      "inferences_used": 17,
+      "support_llm": "whissle:/api/models/chat",
+      "patient_bias": null,
+      "doctor_bias": null,
+      "voice_subset": false
+    },
+    "cost": {
+      "available": true,
+      "reason": null,
+      "judge_calls": 17,
+      "judge_cost_usd": 0.00072,
+      "agent_calls": 17
+    },
+    "flow": {
+      "available": false,
+      "reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "source": null,
+      "turns": null,
+      "summary": null,
+      "conversation_id": null,
+      "current_state": null,
+      "start_state": null,
+      "final_state": null,
+      "ended": null,
+      "flow_end": null,
+      "num_steps": null,
+      "step_counts_by_kind": null,
+      "states_visited": null,
+      "states_declared": null,
+      "states_unvisited": null,
+      "transitions": null,
+      "transitions_fired": null,
+      "var_sets": null,
+      "var_sources": null,
+      "guard_trips": null,
+      "state_divergences": null,
+      "tools_gated": null,
+      "says": null,
+      "steps": null
+    },
+    "signals": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "metadata_sidecar": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "tools": {
+      "available": true,
+      "reason": null,
+      "source": "doctor actions parsed from /api/bench/agent-turn replies",
+      "calls": [
+        {
+          "turn": 3,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Fundoscopy"
+          },
+          "result": "RESULTS: Details are not provided in this scenario but imagine findings suggestive of retinal vein occlusion or hemorrhages.",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 4277,
+          "terminal": false
+        },
+        {
+          "turn": 4,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Blood_Pressure"
+          },
+          "result": "RESULTS: 135/85 mmHg",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 4204,
+          "terminal": false
+        },
+        {
+          "turn": 5,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "You didn't mention if you've experienced jaw pain while chewing or scalp sensitivity, so please let me know. Additionally, have you had any fevers or unexpected weight loss recently?\n\nREQUEST TEST"
+          },
+          "result": "RESULTS: Temperature 36.8°C (98.2°F)",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 5548,
+          "terminal": false
+        },
+        {
+          "turn": 8,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "MRI_Head"
+          },
+          "result": "RESULTS: NORMAL READINGS",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 4437,
+          "terminal": false
+        },
+        {
+          "turn": 10,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "CBC"
+          },
+          "result": "RESULTS: Hemoglobin: 14.2 g/dL; other CBC components not specified.",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 5549,
+          "terminal": false
+        },
+        {
+          "turn": 11,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "I've noted that your hemoglobin levels are normal. Have you noticed any increased thirst or frequent urination lately? I would also like to check your blood sugar and inflammatory markers.\n\nREQUEST TEST"
+          },
+          "result": "RESULTS: NORMAL READINGS",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 5899,
+          "terminal": false
+        },
+        {
+          "turn": 13,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Serum_Protein_Electrophoresis"
+          },
+          "result": "RESULTS: Increased concentration of a pentameric immunoglobulin, consistent with a monoclonal gammopathy.",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 5038,
+          "terminal": false
+        },
+        {
+          "turn": 17,
+          "id": null,
+          "name": "give_diagnosis",
+          "arguments": {
+            "request": "Waldenström Macroglobulinemia"
+          },
+          "result": null,
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 4166,
+          "terminal": true
+        }
+      ],
+      "summary": {
+        "n_calls": 8,
+        "by_name": {
+          "request_test": 7,
+          "give_diagnosis": 1
+        },
+        "n_ok": 8,
+        "n_error": 0,
+        "errors": []
+      },
+      "writes": {
+        "available": false,
+        "reason": "this benchmark issues no writes, so there is no said-vs-emitted-vs-landed distinction to record"
+      }
+    },
+    "turns": [
+      {
+        "inference": 1,
+        "incoming": "",
+        "reply": "Hello, I am Dr. Agent, and I will be assisting you today. Can you describe the nature of your headache and tell me exactly where you feel the pain?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 2,
+        "incoming": "The pain is quite dull and constant, but it's been getting worse over the last three weeks. It feels like it's mostly behind my eyes and across my forehead.",
+        "reply": "I understand. You also mentioned your vision has been worsening; could you describe those changes and let me know if they affect both eyes?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 3,
+        "incoming": "It's like everything is becoming blurry and it's getting harder to read my books, even with my glasses. It seems to be happening in both of my eyes at the same time.",
+        "reply": "Have you noticed any nausea, vomiting, or a \"whooshing\" sound in your ears that pulses with your heartbeat? I would also like to examine the back of your eyes to check for any swelling.\n\nREQUEST TEST: Fundoscopy",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Fundoscopy",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 4,
+        "incoming": "RESULTS: Details are not provided in this scenario but imagine findings suggestive of retinal vein occlusion or hemorrhages.",
+        "reply": "Have you experienced any jaw pain while chewing or noticed that your scalp feels sensitive when you brush your hair? I would also like to check your blood pressure immediately.\n\nREQUEST TEST: Blood_Pressure",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Blood_Pressure",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 5,
+        "incoming": "RESULTS: 135/85 mmHg",
+        "reply": "You didn't mention if you've experienced jaw pain while chewing or scalp sensitivity, so please let me know. Additionally, have you had any fevers or unexpected weight loss recently?\n\nREQUEST TEST",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 6,
+        "incoming": "RESULTS: Temperature 36.8°C (98.2°F)",
+        "reply": "I see your temperature is normal, but I still need to know if you've had jaw pain while chewing or scalp tenderness. Additionally, are you currently taking any medications, such as",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 7,
+        "incoming": "No, I haven't had any pain in my jaw when I eat or any soreness on my scalp. For my health, I only take my regular pills for high blood pressure and my cholesterol medication.",
+        "reply": "I would like to know if you've experienced that \"whooshing\" sound in your ears or any brief episodes where your vision completely blacks out for a few seconds. I",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 8,
+        "incoming": "I haven't noticed any strange noises or whooshing in my ears lately. However, there have been a few moments where my vision just goes completely dark for a second or two before coming back.",
+        "reply": "Thank you for sharing that; those brief blackouts can be very concerning. Have you noticed any weakness in your arms or legs, or any numbness or tingling in your body? I would also like to order an MRI of your head to get a clearer picture of what is happening.\n\nREQUEST TEST: MRI_Head",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "MRI_Head",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 9,
+        "incoming": "RESULTS: NORMAL READINGS",
+        "reply": "Since your MRI is normal, I would like to investigate potential blood-related causes for the changes in your eyes. Have you noticed any unusual bruising or bleeding, and do you feel",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 10,
+        "incoming": "I haven't seen any odd bruises on my skin or had any issues with bleeding lately. I generally feel okay otherwise, just quite frustrated with how much my vision is failing me.",
+        "reply": "I'm sorry to hear how much this is impacting your life. Have you noticed any unusual fatigue, or perhaps an intense itchiness after taking a warm shower?\n\nREQUEST TEST: CBC",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "CBC",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 11,
+        "incoming": "RESULTS: Hemoglobin: 14.2 g/dL; other CBC components not specified.",
+        "reply": "I've noted that your hemoglobin levels are normal. Have you noticed any increased thirst or frequent urination lately? I would also like to check your blood sugar and inflammatory markers.\n\nREQUEST TEST",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 12,
+        "incoming": "RESULTS: NORMAL READINGS",
+        "reply": "It is helpful to know that your blood sugar and inflammatory markers are normal. Since we've seen specific changes in your eyes but your MRI was clear, I'd like to check your protein levels.",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 13,
+        "incoming": "That sounds like a good idea, as I'm willing to try anything to find out why my sight is getting so blurry. Will a blood test be able to show those protein levels you are looking for? I just want to get back to my reading as soon as possible.",
+        "reply": "Yes, a specialized blood test can detect abnormal protein levels that might be making your blood too thick. Have you felt any bone pain, particularly in your back or ribs?\n\nREQUEST TEST: Serum_Protein_Electrophoresis",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Serum_Protein_Electrophoresis",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 14,
+        "incoming": "RESULTS: Increased concentration of a pentameric immunoglobulin, consistent with a monoclonal gammopathy.",
+        "reply": "The presence of that specific pentameric immunoglobulin in your blood is a significant finding that explains why your vision is blurry. It suggests that your blood has become too thick, which is",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 15,
+        "incoming": "Oh dear, does that mean the thickness of my blood is what's causing all these headaches and the darkness in my vision? I've never heard of such a thing happening before. What can be done to thin it out so I can see clearly again?",
+        "reply": "Yes, that is correct; the excess protein makes your blood thicker, which leads to the headaches and vision issues you are experiencing. This condition where a specific pentameric protein builds",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 16,
+        "incoming": "I'm relieved to finally have an answer, though it sounds quite serious. Is there a specific treatment or a procedure that can remove this protein from my blood quickly? I'm really hoping to get my vision back to normal soon.",
+        "reply": "We can perform a procedure called plasmapheresis to filter the excess protein from your blood and reduce its thickness. Given your symptoms and the presence of pentameric IgM proteins, I have",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 17,
+        "incoming": "That procedure sounds like a relief if it will help me see my books clearly again. How soon can we start the process to get this protein out of my system? I'm ready to do whatever it takes to stop these headaches and get my sight back.",
+        "reply": "We can begin the coordination for your treatment immediately. Based on your symptoms and the test results showing high levels of pentameric IgM protein, your condition is consistent with a specific type of blood cancer called Waldenström Macroglobulinemia.\n\nDIAGNOSIS READY: Waldenström Macroglobulinemia",
+        "tool_calls": [],
+        "kind": "diagnosis",
+        "payload": "Waldenström Macroglobulinemia",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      }
+    ],
+    "audio": null
+  }
+}

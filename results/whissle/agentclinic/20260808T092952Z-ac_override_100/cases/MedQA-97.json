@@ -1,0 +1,356 @@
+{
+  "scenario_id": "MedQA-97",
+  "scenario_index": 97,
+  "dataset": "MedQA",
+  "mode": "text",
+  "correct_diagnosis": "Pemphigus vulgaris",
+  "answer_options": [],
+  "score": {
+    "outcome": "correct",
+    "correctness": true,
+    "doctor_diagnosis": "Pemphigus Vulgaris",
+    "doctor_final_text": "The test results are very telling and point toward a specific autoimmune condition. Are you experiencing any vision changes, eye redness, or any other symptoms like weight loss or fatigue? \n\nDIAGNOSIS READY: Pemphigus Vulgaris",
+    "moderator_raw": "yes",
+    "moderator_raw_text": "Yes",
+    "moderator_lenient": true,
+    "moderator_attempts": 1,
+    "moderator_normalized": false,
+    "moderator_unconstrained": false,
+    "declined": false,
+    "refusal_evidence": [],
+    "format_deviation": false,
+    "decline_source": null,
+    "decline_reason": "",
+    "spurious_commit": false
+  },
+  "infra_fail": false,
+  "error": null,
+  "findings": [],
+  "inferences_used": 4,
+  "max_inferences": 20,
+  "tests_ordered": [
+    "Skin_Biopsy_with_DIF"
+  ],
+  "images_requested": 0,
+  "image": null,
+  "image_error": null,
+  "vision": "off",
+  "refusals": [],
+  "dialogue": [
+    {
+      "role": "doctor",
+      "inference": 1,
+      "kind": "question",
+      "text": "Hello, I am Dr. Agent, and I'll be looking into these symptoms for you today. When did you first notice the blisters on your forearm and the ulcers on your mucosal surfaces?",
+      "payload": null,
+      "latency_ms": 2732,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "The blisters on my forearm showed up about three days ago, but the sores in my mouth and down below have been bothering me for a week. It’s reached the point where it’s really painful to eat or even have intimacy with my husband. I thought it might be something from the woods, but I don't think I touched any poisonous plants."
+    },
+    {
+      "role": "doctor",
+      "inference": 2,
+      "kind": "question",
+      "text": "I'm sorry to hear how much discomfort this is causing you. If you rub the skin near one of the blisters, does the top layer peel or slide off easily?",
+      "payload": null,
+      "latency_ms": 3085,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Actually, I noticed that earlier today when I was cleaning my arm; the skin just sort of slid right off when I pressed on it. It’s very strange because the blisters themselves seem quite thin and break easily. Does that help you figure out what's going on?"
+    },
+    {
+      "role": "doctor",
+      "inference": 3,
+      "kind": "test",
+      "text": "That detail is very helpful for my assessment. Have you experienced any fever, or have you recently started any new medications? \n\nREQUEST TEST: Skin_Biopsy_with_DIF",
+      "payload": "Skin_Biopsy_with_DIF",
+      "latency_ms": 4042,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: Histopathology shows acantholysis and intraepidermal blister formation. Direct Immunofluorescence (DIF) shows intercellular IgG and C3 deposition within the epidermis."
+    },
+    {
+      "role": "doctor",
+      "inference": 4,
+      "kind": "diagnosis",
+      "text": "The test results are very telling and point toward a specific autoimmune condition. Are you experiencing any vision changes, eye redness, or any other symptoms like weight loss or fatigue? \n\nDIAGNOSIS READY: Pemphigus Vulgaris",
+      "payload": "Pemphigus Vulgaris",
+      "latency_ms": 4424,
+      "refusal": null,
+      "via": "marker"
+    }
+  ],
+  "latency_ms": [
+    2732,
+    3085,
+    4042,
+    4424
+  ],
+  "wall_s": 18.75,
+  "doctor_turns": [
+    {
+      "inference": 1,
+      "incoming": "",
+      "reply": "Hello, I am Dr. Agent, and I'll be looking into these symptoms for you today. When did you first notice the blisters on your forearm and the ulcers on your mucosal surfaces?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 2,
+      "incoming": "The blisters on my forearm showed up about three days ago, but the sores in my mouth and down below have been bothering me for a week. It’s reached the point where it’s really painful to eat or even have intimacy with my husband. I thought it might be something from the woods, but I don't think I touched any poisonous plants.",
+      "reply": "I'm sorry to hear how much discomfort this is causing you. If you rub the skin near one of the blisters, does the top layer peel or slide off easily?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 3,
+      "incoming": "Actually, I noticed that earlier today when I was cleaning my arm; the skin just sort of slid right off when I pressed on it. It’s very strange because the blisters themselves seem quite thin and break easily. Does that help you figure out what's going on?",
+      "reply": "That detail is very helpful for my assessment. Have you experienced any fever, or have you recently started any new medications? \n\nREQUEST TEST: Skin_Biopsy_with_DIF",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Skin_Biopsy_with_DIF",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 4,
+      "incoming": "RESULTS: Histopathology shows acantholysis and intraepidermal blister formation. Direct Immunofluorescence (DIF) shows intercellular IgG and C3 deposition within the epidermis.",
+      "reply": "The test results are very telling and point toward a specific autoimmune condition. Are you experiencing any vision changes, eye redness, or any other symptoms like weight loss or fatigue? \n\nDIAGNOSIS READY: Pemphigus Vulgaris",
+      "tool_calls": [],
+      "kind": "diagnosis",
+      "payload": "Pemphigus Vulgaris",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    }
+  ],
+  "support_llm": "whissle:/api/models/chat",
+  "support_llm_cost_usd": 0.00012,
+  "support_llm_calls": 4,
+  "voice_subset": false,
+  "diagnostics": {
+    "schema": "tau2.health.diagnostics/v1",
+    "benchmark": "agentclinic",
+    "case_id": "MedQA-97",
+    "mode": "text",
+    "availability": {
+      "flow_available": false,
+      "flow_reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "signals_available": false,
+      "signals_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "metadata_sidecar_available": false,
+      "metadata_sidecar_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "tools_available": true,
+      "tools_reason": null
+    },
+    "provenance": {
+      "benchmark": "agentclinic",
+      "mode": "text",
+      "transport_endpoint": "POST /api/bench/agent-turn",
+      "agent_id": "c8aa2355-9fd7-46da-9993-07ea566ec3d6",
+      "base_url": "https://aws-gateway-backend.whissle.ai/bot",
+      "seed": 42,
+      "stratum": {
+        "dataset": "MedQA",
+        "scenario_index": 97,
+        "selection": "head",
+        "limit": 100
+      },
+      "judge": {
+        "judge_provider": "whissle",
+        "judge_model": "default",
+        "judge_endpoint": "whissle:/api/models/chat",
+        "judge_independent": false,
+        "judge_independence_note": "Judge independence: this run's simulators and graders were routed through Whissle's own model API (`POST /api/models/chat`). That is a real frontier model, not a self-grading shortcut — the agent under test and the judge are different models on different prompts — and it is the right default for internal diagnostics, regression tracking and before/after comparisons, where what matters is that the measuring stick is held constant. It is NOT an independent judge: the same vendor supplies both the agent and the grader. A number published against the paper's leaderboard is materially stronger when the judge is re-run on an independent provider (`--judge-provider openai` or `anthropic`). Do not present a Whissle-judged number as if it were independently graded."
+      },
+      "judge_provider": "whissle",
+      "judge_independent": false,
+      "run_id": null,
+      "run_dir": "results/whissle/agentclinic/20260808T092952Z-ac_override_100",
+      "harness_commit": "86b4475",
+      "captured_at": "2026-08-08T09:53:43+00:00",
+      "protocol": "markers",
+      "history": "native",
+      "prompt_mode": "override",
+      "vision": "off",
+      "agent_type": null,
+      "total_inferences": 20,
+      "inferences_used": 4,
+      "support_llm": "whissle:/api/models/chat",
+      "patient_bias": null,
+      "doctor_bias": null,
+      "voice_subset": false
+    },
+    "cost": {
+      "available": true,
+      "reason": null,
+      "judge_calls": 4,
+      "judge_cost_usd": 0.00012,
+      "agent_calls": 4
+    },
+    "flow": {
+      "available": false,
+      "reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "source": null,
+      "turns": null,
+      "summary": null,
+      "conversation_id": null,
+      "current_state": null,
+      "start_state": null,
+      "final_state": null,
+      "ended": null,
+      "flow_end": null,
+      "num_steps": null,
+      "step_counts_by_kind": null,
+      "states_visited": null,
+      "states_declared": null,
+      "states_unvisited": null,
+      "transitions": null,
+      "transitions_fired": null,
+      "var_sets": null,
+      "var_sources": null,
+      "guard_trips": null,
+      "state_divergences": null,
+      "tools_gated": null,
+      "says": null,
+      "steps": null
+    },
+    "signals": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "metadata_sidecar": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "tools": {
+      "available": true,
+      "reason": null,
+      "source": "doctor actions parsed from /api/bench/agent-turn replies",
+      "calls": [
+        {
+          "turn": 3,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Skin_Biopsy_with_DIF"
+          },
+          "result": "RESULTS: Histopathology shows acantholysis and intraepidermal blister formation. Direct Immunofluorescence (DIF) shows intercellular IgG and C3 deposition within the epidermis.",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 4042,
+          "terminal": false
+        },
+        {
+          "turn": 4,
+          "id": null,
+          "name": "give_diagnosis",
+          "arguments": {
+            "request": "Pemphigus Vulgaris"
+          },
+          "result": null,
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 4424,
+          "terminal": true
+        }
+      ],
+      "summary": {
+        "n_calls": 2,
+        "by_name": {
+          "request_test": 1,
+          "give_diagnosis": 1
+        },
+        "n_ok": 2,
+        "n_error": 0,
+        "errors": []
+      },
+      "writes": {
+        "available": false,
+        "reason": "this benchmark issues no writes, so there is no said-vs-emitted-vs-landed distinction to record"
+      }
+    },
+    "turns": [
+      {
+        "inference": 1,
+        "incoming": "",
+        "reply": "Hello, I am Dr. Agent, and I'll be looking into these symptoms for you today. When did you first notice the blisters on your forearm and the ulcers on your mucosal surfaces?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 2,
+        "incoming": "The blisters on my forearm showed up about three days ago, but the sores in my mouth and down below have been bothering me for a week. It’s reached the point where it’s really painful to eat or even have intimacy with my husband. I thought it might be something from the woods, but I don't think I touched any poisonous plants.",
+        "reply": "I'm sorry to hear how much discomfort this is causing you. If you rub the skin near one of the blisters, does the top layer peel or slide off easily?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 3,
+        "incoming": "Actually, I noticed that earlier today when I was cleaning my arm; the skin just sort of slid right off when I pressed on it. It’s very strange because the blisters themselves seem quite thin and break easily. Does that help you figure out what's going on?",
+        "reply": "That detail is very helpful for my assessment. Have you experienced any fever, or have you recently started any new medications? \n\nREQUEST TEST: Skin_Biopsy_with_DIF",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Skin_Biopsy_with_DIF",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 4,
+        "incoming": "RESULTS: Histopathology shows acantholysis and intraepidermal blister formation. Direct Immunofluorescence (DIF) shows intercellular IgG and C3 deposition within the epidermis.",
+        "reply": "The test results are very telling and point toward a specific autoimmune condition. Are you experiencing any vision changes, eye redness, or any other symptoms like weight loss or fatigue? \n\nDIAGNOSIS READY: Pemphigus Vulgaris",
+        "tool_calls": [],
+        "kind": "diagnosis",
+        "payload": "Pemphigus Vulgaris",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      }
+    ],
+    "audio": null
+  }
+}

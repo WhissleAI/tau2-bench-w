@@ -1,0 +1,314 @@
+{
+  "schema": "tau2.reporting.run_report/v1",
+  "run_id": "agentclinic/20260808T020515Z-smoke-generic",
+  "benchmark": "agentclinic",
+  "series_key": "agentclinic:MedQA:text:override:off",
+  "benchmark_title": "AgentClinic",
+  "title": "AgentClinic \u2014 Whissle as the doctor (MedQA)",
+  "label": "Whissle",
+  "mode": "text",
+  "date": "2026-08-08",
+  "status": "complete",
+  "partial_reason": "",
+  "preliminary": true,
+  "preliminary_reason": "N = 5 is below the 30-unit threshold for a settled number",
+  "n_scored": 5,
+  "headline": {
+    "key": "accuracy",
+    "label": "Diagnostic accuracy",
+    "value": 100.0,
+    "unit": "pct",
+    "ci": [
+      56.6,
+      100.0
+    ],
+    "n": 5,
+    "floor": 0.0,
+    "ceiling": 100.0,
+    "higher_is_better": true,
+    "note": "upstream's formula, unmodified: correct / presented",
+    "formatted": "100.0%"
+  },
+  "secondary_metrics": [
+    {
+      "key": "accuracy_when_committed",
+      "label": "Accuracy when a diagnosis was actually given",
+      "value": 100.0,
+      "unit": "pct",
+      "ci": [
+        56.6,
+        100.0
+      ],
+      "n": 5,
+      "floor": 0.0,
+      "ceiling": 100.0,
+      "higher_is_better": true,
+      "note": "refusals and non-commits removed from the denominator",
+      "formatted": "100.0%"
+    },
+    {
+      "key": "commit_rate",
+      "label": "Commit rate",
+      "value": 100.0,
+      "unit": "pct",
+      "ci": [
+        56.6,
+        100.0
+      ],
+      "n": 5,
+      "floor": 0.0,
+      "ceiling": 100.0,
+      "higher_is_better": true,
+      "note": "how often the agent named a diagnosis at all",
+      "formatted": "100.0%"
+    }
+  ],
+  "what_measured": "Whether an agent can run a diagnostic consultation: take a patient's presentation, ask the questions that discriminate between the candidate diagnoses, order the tests it needs, and commit to an answer within a bounded number of inferences. The agent plays the doctor; a simulated patient and a simulated measurement device play the other side.",
+  "why_measured": "A single-turn medical QA score says whether a model knows the answer. This says whether it can *get* to the answer through a conversation where the information arrives only if it asks \u2014 which is the shape of every real intake.",
+  "methodology": [
+    [
+      "Agent under test",
+      "the deployed Whissle agent brain, unmodified"
+    ],
+    [
+      "Mode",
+      "`text` transport, `markers` action protocol, vision `off`"
+    ],
+    [
+      "Endpoint",
+      "`POST /api/bench/agent-turn`"
+    ],
+    [
+      "Prompt handling",
+      "`override` \u2014 the benchmark's doctor prompt is used verbatim, which is what keeps the number in the same units as the published table"
+    ],
+    [
+      "Turn limit",
+      "20 inferences per case; a case that has not committed by then is scored `no_commit`, and `no_commit` counts as incorrect"
+    ],
+    [
+      "Tools bound",
+      "the benchmark's own action markers (ask / order test / commit diagnosis), parsed by the harness"
+    ],
+    [
+      "Judge",
+      "a moderator model decides whether the committed free-text diagnosis matches the reference, and a decline-judge separates a refusal from a wrong answer"
+    ],
+    [
+      "Scoring rule",
+      "accuracy = correct / presented, upstream's formula unmodified"
+    ]
+  ],
+  "scoring_rule": "accuracy = total_correct / total_presents (upstream formula)",
+  "tables": [
+    {
+      "key": "outcomes",
+      "title": "Outcome distribution",
+      "columns": [
+        "Outcome",
+        "N",
+        "Share",
+        "Reading"
+      ],
+      "rows": [
+        [
+          "correct",
+          "5",
+          "100.0%",
+          "named the right diagnosis"
+        ]
+      ],
+      "note": "`declined` and `no_commit` both count as incorrect in the headline accuracy, which is upstream's rule. Separating them is how you tell a cautious agent from a lost one.",
+      "allow_providers": false,
+      "allow_context": true
+    },
+    {
+      "key": "effort",
+      "title": "Diagnostic effort",
+      "columns": [
+        "Measure",
+        "Mean",
+        "Max",
+        "Budget"
+      ],
+      "rows": [
+        [
+          "Inferences used",
+          "8.0",
+          "11",
+          "20"
+        ],
+        [
+          "Tests ordered",
+          "1.6",
+          "2",
+          "unbounded"
+        ]
+      ],
+      "note": "An agent that hits the inference budget is being cut off mid-workup, and its `no_commit` count is a budget artefact rather than a capability finding.",
+      "allow_providers": false,
+      "allow_context": true
+    }
+  ],
+  "exclusions": {
+    "n_total": 5,
+    "n_scored": 5,
+    "n_excluded": 0,
+    "breakdown": {},
+    "reason_examples": [],
+    "excluded_ids": [],
+    "rate_pct": 0.0
+  },
+  "judge": {
+    "kind": "llm_jury",
+    "provider": null,
+    "model": null,
+    "endpoint": null,
+    "independent": null,
+    "k": 1,
+    "note": "",
+    "calls": null,
+    "cost_usd": null,
+    "needs_disclosure": false,
+    "short": "unknown"
+  },
+  "provenance": {
+    "agent_id": "135a8daf-436d-450e-98c2-3d160561f293",
+    "base_url": "https://aws-gateway-backend.whissle.ai/bot",
+    "endpoint": "POST /api/bench/agent-turn",
+    "mode": "text",
+    "harness_commit": null,
+    "repo_commit": "89f2e02",
+    "run_dir": "/private/tmp/claude-501/-Users-karan-Desktop-work-whissle-live-assist/766421da-8ef4-4ce2-9733-86e5c5f3fced/scratchpad/wt-reports/results/whissle/agentclinic/20260808T020515Z-smoke-generic",
+    "captured_at": "2026-08-08",
+    "dataset": "MedQA",
+    "dataset_size": 107,
+    "upstream": "github.com/SamuelSchmidgall/AgentClinic (arXiv:2405.07960)",
+    "extra": {
+      "protocol": "markers",
+      "history": "native",
+      "prompt_mode": null,
+      "vision": "off",
+      "agent_type": null,
+      "agent_created_for_run": false,
+      "agent_deleted": null
+    }
+  },
+  "sampling": {
+    "method": "head-of-set selection",
+    "n_population": 107,
+    "n_requested": 5,
+    "n_selected": 5,
+    "seed": 0,
+    "strata_keys": [],
+    "strata_tables": [],
+    "note": "`head` selection takes the leading N scenarios of the dataset. It is deterministic and it is not random \u2014 any ordering structure in the dataset is inherited wholesale."
+  },
+  "baselines": {
+    "baselines": [],
+    "comparable": false,
+    "comparability_note": "No published AgentClinic baseline is registered in this harness, so no comparison table is printed. The upstream paper reports accuracies on this dataset, but under a different moderator and with a different inference budget; transcribing those numbers here without re-running under a matched protocol would produce a comparison that looks rigorous and is not. This section stays empty until the protocol is matched.",
+    "published_protocol": "see arXiv:2405.07960 \u2014 not replicated here",
+    "source": "",
+    "any": false
+  },
+  "failures": [],
+  "sample_cases": [
+    {
+      "case_id": "MedQA-0",
+      "outcome": "correct",
+      "is_success": true,
+      "score": null,
+      "task": "MedQA consultation \u00b7 6/20 inferences \u00b7 1 tests ordered",
+      "expected": "Myasthenia gravis",
+      "got": "Myasthenia Gravis",
+      "excerpt": "Thank you for that result. Given your classic presentation\u2014the drooping eyelids and double vision that worsen with activity, upper limb weakness with repetitive tasks, and improvement with rest\u2014combined with the diagnostic tests we have on file showing acetylcholine receptor antibodies and characteristic EMG findings, I have sufficient information to make my diagnosis.\n\nDIAGNOSIS READY: Myasthenia",
+      "artifact": "cases/MedQA-0.json",
+      "why_shown": "committed the reference diagnosis"
+    },
+    {
+      "case_id": "MedQA-1",
+      "outcome": "correct",
+      "is_success": true,
+      "score": null,
+      "task": "MedQA consultation \u00b7 11/20 inferences \u00b7 2 tests ordered",
+      "expected": "Progressive multifocal encephalopathy (PML)",
+      "got": "Progressive Multifocal Leukoencephalopathy (PML)",
+      "excerpt": "Based on your clinical presentation, imaging findings, and medical history with natalizumab use for Crohn's disease, the evidence is quite compelling. The sudden onset of ataxic gait, right-sided weakness, and the characteristic demyelinating lesions on MRI are classic for PML. Even with the normal CSF result, the MRI findings combined with your natalizumab exposure make this diagnosis clear.\n\nDIA",
+      "artifact": "cases/MedQA-1.json",
+      "why_shown": "committed the reference diagnosis"
+    }
+  ],
+  "limitations": [
+    {
+      "key": "moderator_leniency",
+      "text": "Accuracy depends on a moderator model deciding whether free text matches a reference diagnosis. The strict and lenient counts differ, and the headline uses the strict one \u2014 but the boundary is a model's judgement, not a string match.",
+      "severity": "medium"
+    },
+    {
+      "key": "answer_options_leak",
+      "text": "The upstream dataset presents the reference diagnosis among a small set of options in some configurations, which inflates accuracy for every model equally. It is left as-is so the number stays comparable, but it is not a measure of open-ended diagnostic ability.",
+      "severity": "medium"
+    },
+    {
+      "key": "head_selection",
+      "text": "5 scenarios were taken from the head of a 107-scenario dataset rather than drawn at random.",
+      "severity": "medium"
+    },
+    {
+      "key": "simulated_patient",
+      "text": "The patient is a language model following a case card. It answers questions more cooperatively, more fluently and more consistently than a person in a waiting room, so the intake task here is easier than the product's real one.",
+      "severity": "high"
+    }
+  ],
+  "reproduction": {
+    "commands": [
+      "uv sync --extra dev",
+      "python -m tau2.health.agentclinic.run --dataset MedQA --limit 5 --prompt-mode override --seed 0",
+      "python -m tau2.reporting.cli build results/whissle/agentclinic/20260808T020515Z-smoke-generic"
+    ],
+    "environment": {
+      "WHISSLE_BASE": "https://aws-gateway-backend.whissle.ai/bot",
+      "harness commit": "unknown",
+      "repo commit at report time": "89f2e02"
+    },
+    "notes": [
+      "`head` selection with a fixed limit reproduces the same scenario set exactly.",
+      "The run provisions a throwaway agent and deletes it afterwards (`agent_deleted: None`), so the agent id in provenance will not resolve after the fact."
+    ]
+  },
+  "artifacts": [
+    {
+      "path": "RUN.json",
+      "description": "run configuration, written before the first case",
+      "present": true
+    },
+    {
+      "path": "SUMMARY.json",
+      "description": "run-level aggregation, written on completion",
+      "present": true
+    },
+    {
+      "path": "cases/",
+      "description": "5 per-case records with `diagnostics`",
+      "present": true
+    },
+    {
+      "path": "transcripts/",
+      "description": "human-readable consultation transcripts",
+      "present": true
+    },
+    {
+      "path": "REPORT.md",
+      "description": "this report",
+      "present": true
+    },
+    {
+      "path": "report.json",
+      "description": "machine-readable form of this report",
+      "present": true
+    }
+  ],
+  "licence_note": "AgentClinic, arXiv:2405.07960. Research measurement only \u2014 not a clinical evaluation of anything.",
+  "warnings": []
+}

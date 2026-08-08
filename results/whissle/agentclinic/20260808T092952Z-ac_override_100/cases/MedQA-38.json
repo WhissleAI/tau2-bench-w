@@ -1,0 +1,356 @@
+{
+  "scenario_id": "MedQA-38",
+  "scenario_index": 38,
+  "dataset": "MedQA",
+  "mode": "text",
+  "correct_diagnosis": "Duodenal atresia",
+  "answer_options": [],
+  "score": {
+    "outcome": "correct",
+    "correctness": true,
+    "doctor_diagnosis": "Duodenal Atresia",
+    "doctor_final_text": "Thank you for those results. The imaging shows a classic \"double bubble\" sign, which is diagnostic of duodenal atresia—a condition where part of your baby's small intestine didn't form properly and is blocking food passage. This explains the bilious vomiting and feeding difficulty perfectly.\n\nYour baby is hemodynamically stable right now, which is good, but this condition requires surgical repair and cannot be managed without it. I'm referring your newborn for immediate surgical consultation—the surgical team will take over his care and plan the repair procedure.\n\nDIAGNOSIS READY: Duodenal Atresia",
+    "moderator_raw": "yes",
+    "moderator_raw_text": "Yes",
+    "moderator_lenient": true,
+    "moderator_attempts": 1,
+    "moderator_normalized": false,
+    "moderator_unconstrained": false,
+    "declined": false,
+    "refusal_evidence": [],
+    "format_deviation": false,
+    "decline_source": null,
+    "decline_reason": "",
+    "spurious_commit": false
+  },
+  "infra_fail": false,
+  "error": null,
+  "findings": [],
+  "inferences_used": 4,
+  "max_inferences": 20,
+  "tests_ordered": [
+    "Abdominal_X-Ray."
+  ],
+  "images_requested": 0,
+  "image": null,
+  "image_error": null,
+  "vision": "off",
+  "refusals": [],
+  "dialogue": [
+    {
+      "role": "doctor",
+      "inference": 1,
+      "kind": "question",
+      "text": "Good morning. I'm Dr. Agent, and I'm here to help figure out what's going on with your newborn. I understand there have been feeding difficulties and bilious vomiting—can you tell me when these symptoms first started?",
+      "payload": null,
+      "latency_ms": 1269,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Yes, doctor. The vomiting started just a few hours after he was born, and he's already had several episodes. He seems very uncomfortable when we try to feed him, and the vomit has a greenish color to it."
+    },
+    {
+      "role": "doctor",
+      "inference": 2,
+      "kind": "question",
+      "text": "That's very helpful information, thank you. Bilious vomiting within hours of birth is concerning and needs prompt attention. Has your baby passed any stool since birth, and if so, what did it look like?",
+      "payload": null,
+      "latency_ms": 1470,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "He hasn't passed much stool yet, doctor—just maybe a small amount of meconium early on, but nothing since then. I'm getting worried because he keeps bringing up that greenish fluid whenever we try to feed him."
+    },
+    {
+      "role": "doctor",
+      "inference": 3,
+      "kind": "test",
+      "text": "I understand your concern completely. The combination of early bilious vomiting, feeding intolerance, and minimal stool passage suggests we need imaging to evaluate his bowel. REQUEST TEST: Abdominal_X-Ray.\n\nHas your baby shown any abdominal swelling or distension, or does his belly feel hard or tight to you?",
+      "payload": "Abdominal_X-Ray.",
+      "latency_ms": 1518,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: \n\n**Abdominal X-Ray Findings:**\nThe x-ray image shows a characteristic **'double bubble' sign** indicative of **duodenal atresia**.\n\n**Physical Examination Findings:**\n- **Inspection:** Distended upper abdomen with a concave-shaped lower abdomen\n- **Auscultation:** Normal bowel sounds\n- **Percussion:** Tympanic sound in the upper abdomen\n- **Palpation:** No organomegaly or masses palpable\n\n**Vital Signs:**\n- Temperature: Within normal limits\n- Blood Pressure: Within normal limits\n- Heart Rate: Within normal limits\n- Respiratory Rate: Within normal limits\n\n---\n\n**Clinical Correlation:** The imaging findings are consistent with duodenal atresia, which explains the early onset bilious vomiting, feeding intolerance, and the characteristic abdominal distension pattern (upper abdominal fullness with lower abdominal concavity) observed on examination. This condition requires surgical intervention. The normal vital signs indicate your baby is currently hemodynamically stable, but immediate surgical consultation is recommended."
+    },
+    {
+      "role": "doctor",
+      "inference": 4,
+      "kind": "diagnosis",
+      "text": "Thank you for those results. The imaging shows a classic \"double bubble\" sign, which is diagnostic of duodenal atresia—a condition where part of your baby's small intestine didn't form properly and is blocking food passage. This explains the bilious vomiting and feeding difficulty perfectly.\n\nYour baby is hemodynamically stable right now, which is good, but this condition requires surgical repair and cannot be managed without it. I'm referring your newborn for immediate surgical consultation—the surgical team will take over his care and plan the repair procedure.\n\nDIAGNOSIS READY: Duodenal Atresia",
+      "payload": "Duodenal Atresia",
+      "latency_ms": 2305,
+      "refusal": null,
+      "via": "marker"
+    }
+  ],
+  "latency_ms": [
+    1269,
+    1470,
+    1518,
+    2305
+  ],
+  "wall_s": 12.76,
+  "doctor_turns": [
+    {
+      "inference": 1,
+      "incoming": "",
+      "reply": "Good morning. I'm Dr. Agent, and I'm here to help figure out what's going on with your newborn. I understand there have been feeding difficulties and bilious vomiting—can you tell me when these symptoms first started?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 2,
+      "incoming": "Yes, doctor. The vomiting started just a few hours after he was born, and he's already had several episodes. He seems very uncomfortable when we try to feed him, and the vomit has a greenish color to it.",
+      "reply": "That's very helpful information, thank you. Bilious vomiting within hours of birth is concerning and needs prompt attention. Has your baby passed any stool since birth, and if so, what did it look like?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 3,
+      "incoming": "He hasn't passed much stool yet, doctor—just maybe a small amount of meconium early on, but nothing since then. I'm getting worried because he keeps bringing up that greenish fluid whenever we try to feed him.",
+      "reply": "I understand your concern completely. The combination of early bilious vomiting, feeding intolerance, and minimal stool passage suggests we need imaging to evaluate his bowel. REQUEST TEST: Abdominal_X-Ray.\n\nHas your baby shown any abdominal swelling or distension, or does his belly feel hard or tight to you?",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Abdominal_X-Ray.",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 4,
+      "incoming": "RESULTS: \n\n**Abdominal X-Ray Findings:**\nThe x-ray image shows a characteristic **'double bubble' sign** indicative of **duodenal atresia**.\n\n**Physical Examination Findings:**\n- **Inspection:** Distended upper abdomen with a concave-shaped lower abdomen\n- **Auscultation:** Normal bowel sounds\n- **Percussion:** Tympanic sound in the upper abdomen\n- **Palpation:** No organomegaly or masses palpable\n\n**Vital Signs:**\n- Temperature: Within normal limits\n- Blood Pressure: Within normal limits\n- Heart Rate: Within normal limits\n- Respiratory Rate: Within normal limits\n\n---\n\n**Clinical Correlation:** The imaging findings are consistent with duodenal atresia, which explains the early onset bilious vomiting, feeding intolerance, and the characteristic abdominal distension pattern (upper abdominal fullness with lower abdominal concavity) observed on examination. This condition requires surgical intervention. The normal vital signs indicate your baby is currently hemodynamically stable, but immediate surgical consultation is recommended.",
+      "reply": "Thank you for those results. The imaging shows a classic \"double bubble\" sign, which is diagnostic of duodenal atresia—a condition where part of your baby's small intestine didn't form properly and is blocking food passage. This explains the bilious vomiting and feeding difficulty perfectly.\n\nYour baby is hemodynamically stable right now, which is good, but this condition requires surgical repair and cannot be managed without it. I'm referring your newborn for immediate surgical consultation—the surgical team will take over his care and plan the repair procedure.\n\nDIAGNOSIS READY: Duodenal Atresia",
+      "tool_calls": [],
+      "kind": "diagnosis",
+      "payload": "Duodenal Atresia",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": "end_turn"
+    }
+  ],
+  "support_llm": "whissle:/api/models/chat",
+  "support_llm_cost_usd": 0.00015,
+  "support_llm_calls": 4,
+  "voice_subset": false,
+  "diagnostics": {
+    "schema": "tau2.health.diagnostics/v1",
+    "benchmark": "agentclinic",
+    "case_id": "MedQA-38",
+    "mode": "text",
+    "availability": {
+      "flow_available": false,
+      "flow_reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "signals_available": false,
+      "signals_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "metadata_sidecar_available": false,
+      "metadata_sidecar_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "tools_available": true,
+      "tools_reason": null
+    },
+    "provenance": {
+      "benchmark": "agentclinic",
+      "mode": "text",
+      "transport_endpoint": "POST /api/bench/agent-turn",
+      "agent_id": "c8aa2355-9fd7-46da-9993-07ea566ec3d6",
+      "base_url": "https://aws-gateway-backend.whissle.ai/bot",
+      "seed": 42,
+      "stratum": {
+        "dataset": "MedQA",
+        "scenario_index": 38,
+        "selection": "head",
+        "limit": 100
+      },
+      "judge": {
+        "judge_provider": "whissle",
+        "judge_model": "default",
+        "judge_endpoint": "whissle:/api/models/chat",
+        "judge_independent": false,
+        "judge_independence_note": "Judge independence: this run's simulators and graders were routed through Whissle's own model API (`POST /api/models/chat`). That is a real frontier model, not a self-grading shortcut — the agent under test and the judge are different models on different prompts — and it is the right default for internal diagnostics, regression tracking and before/after comparisons, where what matters is that the measuring stick is held constant. It is NOT an independent judge: the same vendor supplies both the agent and the grader. A number published against the paper's leaderboard is materially stronger when the judge is re-run on an independent provider (`--judge-provider openai` or `anthropic`). Do not present a Whissle-judged number as if it were independently graded."
+      },
+      "judge_provider": "whissle",
+      "judge_independent": false,
+      "run_id": null,
+      "run_dir": "results/whissle/agentclinic/20260808T092952Z-ac_override_100",
+      "harness_commit": "86b4475",
+      "captured_at": "2026-08-08T09:35:37+00:00",
+      "protocol": "markers",
+      "history": "native",
+      "prompt_mode": "override",
+      "vision": "off",
+      "agent_type": null,
+      "total_inferences": 20,
+      "inferences_used": 4,
+      "support_llm": "whissle:/api/models/chat",
+      "patient_bias": null,
+      "doctor_bias": null,
+      "voice_subset": false
+    },
+    "cost": {
+      "available": true,
+      "reason": null,
+      "judge_calls": 4,
+      "judge_cost_usd": 0.00015,
+      "agent_calls": 4
+    },
+    "flow": {
+      "available": false,
+      "reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "source": null,
+      "turns": null,
+      "summary": null,
+      "conversation_id": null,
+      "current_state": null,
+      "start_state": null,
+      "final_state": null,
+      "ended": null,
+      "flow_end": null,
+      "num_steps": null,
+      "step_counts_by_kind": null,
+      "states_visited": null,
+      "states_declared": null,
+      "states_unvisited": null,
+      "transitions": null,
+      "transitions_fired": null,
+      "var_sets": null,
+      "var_sources": null,
+      "guard_trips": null,
+      "state_divergences": null,
+      "tools_gated": null,
+      "says": null,
+      "steps": null
+    },
+    "signals": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "metadata_sidecar": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "tools": {
+      "available": true,
+      "reason": null,
+      "source": "doctor actions parsed from /api/bench/agent-turn replies",
+      "calls": [
+        {
+          "turn": 3,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Abdominal_X-Ray."
+          },
+          "result": "RESULTS: \n\n**Abdominal X-Ray Findings:**\nThe x-ray image shows a characteristic **'double bubble' sign** indicative of **duodenal atresia**.\n\n**Physical Examination Findings:**\n- **Inspection:** Distended upper abdomen with a concave-shaped lower abdomen\n- **Auscultation:** Normal bowel sounds\n- **Percussion:** Tympanic sound in the upper abdomen\n- **Palpation:** No organomegaly or masses palpable\n\n**Vital Signs:**\n- Temperature: Within normal limits\n- Blood Pressure: Within normal limits\n- Heart Rate: Within normal limits\n- Respiratory Rate: Within normal limits\n\n---\n\n**Clinical Correlation:** The imaging findings are consistent with duodenal atresia, which explains the early onset bilious vomiting, feeding intolerance, and the characteristic abdominal distension pattern (upper abdominal fullness with lower abdominal concavity) observed on examination. This condition requires surgical intervention. The normal vital signs indicate your baby is currently hemodynamically stable, but immediate surgical consultation is recommended.",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 1518,
+          "terminal": false
+        },
+        {
+          "turn": 4,
+          "id": null,
+          "name": "give_diagnosis",
+          "arguments": {
+            "request": "Duodenal Atresia"
+          },
+          "result": null,
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 2305,
+          "terminal": true
+        }
+      ],
+      "summary": {
+        "n_calls": 2,
+        "by_name": {
+          "request_test": 1,
+          "give_diagnosis": 1
+        },
+        "n_ok": 2,
+        "n_error": 0,
+        "errors": []
+      },
+      "writes": {
+        "available": false,
+        "reason": "this benchmark issues no writes, so there is no said-vs-emitted-vs-landed distinction to record"
+      }
+    },
+    "turns": [
+      {
+        "inference": 1,
+        "incoming": "",
+        "reply": "Good morning. I'm Dr. Agent, and I'm here to help figure out what's going on with your newborn. I understand there have been feeding difficulties and bilious vomiting—can you tell me when these symptoms first started?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 2,
+        "incoming": "Yes, doctor. The vomiting started just a few hours after he was born, and he's already had several episodes. He seems very uncomfortable when we try to feed him, and the vomit has a greenish color to it.",
+        "reply": "That's very helpful information, thank you. Bilious vomiting within hours of birth is concerning and needs prompt attention. Has your baby passed any stool since birth, and if so, what did it look like?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 3,
+        "incoming": "He hasn't passed much stool yet, doctor—just maybe a small amount of meconium early on, but nothing since then. I'm getting worried because he keeps bringing up that greenish fluid whenever we try to feed him.",
+        "reply": "I understand your concern completely. The combination of early bilious vomiting, feeding intolerance, and minimal stool passage suggests we need imaging to evaluate his bowel. REQUEST TEST: Abdominal_X-Ray.\n\nHas your baby shown any abdominal swelling or distension, or does his belly feel hard or tight to you?",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Abdominal_X-Ray.",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 4,
+        "incoming": "RESULTS: \n\n**Abdominal X-Ray Findings:**\nThe x-ray image shows a characteristic **'double bubble' sign** indicative of **duodenal atresia**.\n\n**Physical Examination Findings:**\n- **Inspection:** Distended upper abdomen with a concave-shaped lower abdomen\n- **Auscultation:** Normal bowel sounds\n- **Percussion:** Tympanic sound in the upper abdomen\n- **Palpation:** No organomegaly or masses palpable\n\n**Vital Signs:**\n- Temperature: Within normal limits\n- Blood Pressure: Within normal limits\n- Heart Rate: Within normal limits\n- Respiratory Rate: Within normal limits\n\n---\n\n**Clinical Correlation:** The imaging findings are consistent with duodenal atresia, which explains the early onset bilious vomiting, feeding intolerance, and the characteristic abdominal distension pattern (upper abdominal fullness with lower abdominal concavity) observed on examination. This condition requires surgical intervention. The normal vital signs indicate your baby is currently hemodynamically stable, but immediate surgical consultation is recommended.",
+        "reply": "Thank you for those results. The imaging shows a classic \"double bubble\" sign, which is diagnostic of duodenal atresia—a condition where part of your baby's small intestine didn't form properly and is blocking food passage. This explains the bilious vomiting and feeding difficulty perfectly.\n\nYour baby is hemodynamically stable right now, which is good, but this condition requires surgical repair and cannot be managed without it. I'm referring your newborn for immediate surgical consultation—the surgical team will take over his care and plan the repair procedure.\n\nDIAGNOSIS READY: Duodenal Atresia",
+        "tool_calls": [],
+        "kind": "diagnosis",
+        "payload": "Duodenal Atresia",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": "end_turn"
+      }
+    ],
+    "audio": null
+  }
+}

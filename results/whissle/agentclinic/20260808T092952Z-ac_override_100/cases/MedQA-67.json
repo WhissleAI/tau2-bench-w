@@ -1,0 +1,425 @@
+{
+  "scenario_id": "MedQA-67",
+  "scenario_index": 67,
+  "dataset": "MedQA",
+  "mode": "text",
+  "correct_diagnosis": "Acute lymphoblastic leukemia",
+  "answer_options": [],
+  "score": {
+    "outcome": "correct",
+    "correctness": true,
+    "doctor_diagnosis": "Acute Lymphoblastic Leukemia",
+    "doctor_final_text": "Based on your symptoms and the specific markers found in your bone marrow, I have identified the cause of your illness. The presence of TdT, CD10, and CD19 positive cells in your marrow confirms this condition.\n\nDIAGNOSIS READY: Acute Lymphoblastic Leukemia",
+    "moderator_raw": "yes",
+    "moderator_raw_text": "Yes",
+    "moderator_lenient": true,
+    "moderator_attempts": 1,
+    "moderator_normalized": false,
+    "moderator_unconstrained": false,
+    "declined": false,
+    "refusal_evidence": [],
+    "format_deviation": false,
+    "decline_source": null,
+    "decline_reason": "",
+    "spurious_commit": false
+  },
+  "infra_fail": false,
+  "error": null,
+  "findings": [],
+  "inferences_used": 5,
+  "max_inferences": 20,
+  "tests_ordered": [
+    "Complete_Blood_Count",
+    "Peripheral_Blood_Smear",
+    "Bone_Marrow_Aspiration"
+  ],
+  "images_requested": 0,
+  "image": null,
+  "image_error": null,
+  "vision": "off",
+  "refusals": [],
+  "dialogue": [
+    {
+      "role": "doctor",
+      "inference": 1,
+      "kind": "question",
+      "text": "Hello, I am Dr. Agent. I'll be evaluating your symptoms today; could you tell me more about when this leg pain started and if it's in both legs or just one?",
+      "payload": null,
+      "latency_ms": 3118,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "My legs have been hurting so much for about a week, especially at night when I'm trying to sleep. It hurts in both of my legs, and I feel too tired to even play at school."
+    },
+    {
+      "role": "doctor",
+      "inference": 2,
+      "kind": "test",
+      "text": "I understand, that sounds very difficult for you. Have you noticed if your fever comes and goes at certain times, and where exactly are you seeing these bruises? REQUEST TEST: Complete_Blood_Count",
+      "payload": "Complete_Blood_Count",
+      "latency_ms": 3064,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: Hemoglobin: 10.1 g/dL, Leukocyte_Count: 63,000/mm3 (elevated), Platelet_Count: 27,000/mm3 (decreased)"
+    },
+    {
+      "role": "doctor",
+      "inference": 3,
+      "kind": "test",
+      "text": "Thank you for sharing those details. Have you noticed any lumps or swelling in your neck, underarms, or around your belly? \n\nREQUEST TEST: Peripheral_Blood_Smear",
+      "payload": "Peripheral_Blood_Smear",
+      "latency_ms": 3293,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: NORMAL READINGS"
+    },
+    {
+      "role": "doctor",
+      "inference": 4,
+      "kind": "test",
+      "text": "I'm sorry to hear you've been feeling so unwell. Have you had any nosebleeds or noticed any weight loss recently? \n\nREQUEST TEST: Bone_Marrow_Aspiration",
+      "payload": "Bone_Marrow_Aspiration",
+      "latency_ms": 3867,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: Predominantly immature cells that are positive for CD10, CD19, and TdT."
+    },
+    {
+      "role": "doctor",
+      "inference": 5,
+      "kind": "diagnosis",
+      "text": "Based on your symptoms and the specific markers found in your bone marrow, I have identified the cause of your illness. The presence of TdT, CD10, and CD19 positive cells in your marrow confirms this condition.\n\nDIAGNOSIS READY: Acute Lymphoblastic Leukemia",
+      "payload": "Acute Lymphoblastic Leukemia",
+      "latency_ms": 4828,
+      "refusal": null,
+      "via": "marker"
+    }
+  ],
+  "latency_ms": [
+    3118,
+    3064,
+    3293,
+    3867,
+    4828
+  ],
+  "wall_s": 23.23,
+  "doctor_turns": [
+    {
+      "inference": 1,
+      "incoming": "",
+      "reply": "Hello, I am Dr. Agent. I'll be evaluating your symptoms today; could you tell me more about when this leg pain started and if it's in both legs or just one?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 2,
+      "incoming": "My legs have been hurting so much for about a week, especially at night when I'm trying to sleep. It hurts in both of my legs, and I feel too tired to even play at school.",
+      "reply": "I understand, that sounds very difficult for you. Have you noticed if your fever comes and goes at certain times, and where exactly are you seeing these bruises? REQUEST TEST: Complete_Blood_Count",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Complete_Blood_Count",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 3,
+      "incoming": "RESULTS: Hemoglobin: 10.1 g/dL, Leukocyte_Count: 63,000/mm3 (elevated), Platelet_Count: 27,000/mm3 (decreased)",
+      "reply": "Thank you for sharing those details. Have you noticed any lumps or swelling in your neck, underarms, or around your belly? \n\nREQUEST TEST: Peripheral_Blood_Smear",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Peripheral_Blood_Smear",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 4,
+      "incoming": "RESULTS: NORMAL READINGS",
+      "reply": "I'm sorry to hear you've been feeling so unwell. Have you had any nosebleeds or noticed any weight loss recently? \n\nREQUEST TEST: Bone_Marrow_Aspiration",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Bone_Marrow_Aspiration",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 5,
+      "incoming": "RESULTS: Predominantly immature cells that are positive for CD10, CD19, and TdT.",
+      "reply": "Based on your symptoms and the specific markers found in your bone marrow, I have identified the cause of your illness. The presence of TdT, CD10, and CD19 positive cells in your marrow confirms this condition.\n\nDIAGNOSIS READY: Acute Lymphoblastic Leukemia",
+      "tool_calls": [],
+      "kind": "diagnosis",
+      "payload": "Acute Lymphoblastic Leukemia",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    }
+  ],
+  "support_llm": "whissle:/api/models/chat",
+  "support_llm_cost_usd": 0.0001,
+  "support_llm_calls": 5,
+  "voice_subset": false,
+  "diagnostics": {
+    "schema": "tau2.health.diagnostics/v1",
+    "benchmark": "agentclinic",
+    "case_id": "MedQA-67",
+    "mode": "text",
+    "availability": {
+      "flow_available": false,
+      "flow_reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "signals_available": false,
+      "signals_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "metadata_sidecar_available": false,
+      "metadata_sidecar_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "tools_available": true,
+      "tools_reason": null
+    },
+    "provenance": {
+      "benchmark": "agentclinic",
+      "mode": "text",
+      "transport_endpoint": "POST /api/bench/agent-turn",
+      "agent_id": "c8aa2355-9fd7-46da-9993-07ea566ec3d6",
+      "base_url": "https://aws-gateway-backend.whissle.ai/bot",
+      "seed": 42,
+      "stratum": {
+        "dataset": "MedQA",
+        "scenario_index": 67,
+        "selection": "head",
+        "limit": 100
+      },
+      "judge": {
+        "judge_provider": "whissle",
+        "judge_model": "default",
+        "judge_endpoint": "whissle:/api/models/chat",
+        "judge_independent": false,
+        "judge_independence_note": "Judge independence: this run's simulators and graders were routed through Whissle's own model API (`POST /api/models/chat`). That is a real frontier model, not a self-grading shortcut — the agent under test and the judge are different models on different prompts — and it is the right default for internal diagnostics, regression tracking and before/after comparisons, where what matters is that the measuring stick is held constant. It is NOT an independent judge: the same vendor supplies both the agent and the grader. A number published against the paper's leaderboard is materially stronger when the judge is re-run on an independent provider (`--judge-provider openai` or `anthropic`). Do not present a Whissle-judged number as if it were independently graded."
+      },
+      "judge_provider": "whissle",
+      "judge_independent": false,
+      "run_id": null,
+      "run_dir": "results/whissle/agentclinic/20260808T092952Z-ac_override_100",
+      "harness_commit": "86b4475",
+      "captured_at": "2026-08-08T09:44:39+00:00",
+      "protocol": "markers",
+      "history": "native",
+      "prompt_mode": "override",
+      "vision": "off",
+      "agent_type": null,
+      "total_inferences": 20,
+      "inferences_used": 5,
+      "support_llm": "whissle:/api/models/chat",
+      "patient_bias": null,
+      "doctor_bias": null,
+      "voice_subset": false
+    },
+    "cost": {
+      "available": true,
+      "reason": null,
+      "judge_calls": 5,
+      "judge_cost_usd": 0.0001,
+      "agent_calls": 5
+    },
+    "flow": {
+      "available": false,
+      "reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "source": null,
+      "turns": null,
+      "summary": null,
+      "conversation_id": null,
+      "current_state": null,
+      "start_state": null,
+      "final_state": null,
+      "ended": null,
+      "flow_end": null,
+      "num_steps": null,
+      "step_counts_by_kind": null,
+      "states_visited": null,
+      "states_declared": null,
+      "states_unvisited": null,
+      "transitions": null,
+      "transitions_fired": null,
+      "var_sets": null,
+      "var_sources": null,
+      "guard_trips": null,
+      "state_divergences": null,
+      "tools_gated": null,
+      "says": null,
+      "steps": null
+    },
+    "signals": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "metadata_sidecar": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "tools": {
+      "available": true,
+      "reason": null,
+      "source": "doctor actions parsed from /api/bench/agent-turn replies",
+      "calls": [
+        {
+          "turn": 2,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Complete_Blood_Count"
+          },
+          "result": "RESULTS: Hemoglobin: 10.1 g/dL, Leukocyte_Count: 63,000/mm3 (elevated), Platelet_Count: 27,000/mm3 (decreased)",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 3064,
+          "terminal": false
+        },
+        {
+          "turn": 3,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Peripheral_Blood_Smear"
+          },
+          "result": "RESULTS: NORMAL READINGS",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 3293,
+          "terminal": false
+        },
+        {
+          "turn": 4,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Bone_Marrow_Aspiration"
+          },
+          "result": "RESULTS: Predominantly immature cells that are positive for CD10, CD19, and TdT.",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 3867,
+          "terminal": false
+        },
+        {
+          "turn": 5,
+          "id": null,
+          "name": "give_diagnosis",
+          "arguments": {
+            "request": "Acute Lymphoblastic Leukemia"
+          },
+          "result": null,
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 4828,
+          "terminal": true
+        }
+      ],
+      "summary": {
+        "n_calls": 4,
+        "by_name": {
+          "request_test": 3,
+          "give_diagnosis": 1
+        },
+        "n_ok": 4,
+        "n_error": 0,
+        "errors": []
+      },
+      "writes": {
+        "available": false,
+        "reason": "this benchmark issues no writes, so there is no said-vs-emitted-vs-landed distinction to record"
+      }
+    },
+    "turns": [
+      {
+        "inference": 1,
+        "incoming": "",
+        "reply": "Hello, I am Dr. Agent. I'll be evaluating your symptoms today; could you tell me more about when this leg pain started and if it's in both legs or just one?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 2,
+        "incoming": "My legs have been hurting so much for about a week, especially at night when I'm trying to sleep. It hurts in both of my legs, and I feel too tired to even play at school.",
+        "reply": "I understand, that sounds very difficult for you. Have you noticed if your fever comes and goes at certain times, and where exactly are you seeing these bruises? REQUEST TEST: Complete_Blood_Count",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Complete_Blood_Count",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 3,
+        "incoming": "RESULTS: Hemoglobin: 10.1 g/dL, Leukocyte_Count: 63,000/mm3 (elevated), Platelet_Count: 27,000/mm3 (decreased)",
+        "reply": "Thank you for sharing those details. Have you noticed any lumps or swelling in your neck, underarms, or around your belly? \n\nREQUEST TEST: Peripheral_Blood_Smear",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Peripheral_Blood_Smear",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 4,
+        "incoming": "RESULTS: NORMAL READINGS",
+        "reply": "I'm sorry to hear you've been feeling so unwell. Have you had any nosebleeds or noticed any weight loss recently? \n\nREQUEST TEST: Bone_Marrow_Aspiration",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Bone_Marrow_Aspiration",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 5,
+        "incoming": "RESULTS: Predominantly immature cells that are positive for CD10, CD19, and TdT.",
+        "reply": "Based on your symptoms and the specific markers found in your bone marrow, I have identified the cause of your illness. The presence of TdT, CD10, and CD19 positive cells in your marrow confirms this condition.\n\nDIAGNOSIS READY: Acute Lymphoblastic Leukemia",
+        "tool_calls": [],
+        "kind": "diagnosis",
+        "payload": "Acute Lymphoblastic Leukemia",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      }
+    ],
+    "audio": null
+  }
+}
