@@ -415,15 +415,35 @@ def test_wrong_diagnosis_is_incorrect():
     assert case["score"]["correctness"] is False
 
 
-def test_moderator_strictness_is_recorded_not_hidden():
+def test_moderator_decode_is_constrained_to_the_exact_token():
+    """Upstream's rule is a literal test against ``"yes"``, so a grader that answers
+    ``"Yes."`` used to score a CORRECT diagnosis wrong. Upstream could live with that
+    because it pinned one model to one prompt; once the moderator is routed through a
+    different backend it makes the benchmark measure the grader's punctuation. The
+    decode is now constrained (prompt untouched), so ``"Yes."`` canonicalizes — and the
+    normalization is RECORDED, never silent."""
     d = make_doctor([text_reply("DIAGNOSIS READY: Myasthenia gravis")])
     case = run_case(osce(), d, ScriptedLLM({"corrent diagnosis": "Yes."}))
-    # Upstream compares to exactly "yes" — "Yes." scores as WRONG there and here…
-    assert case["score"]["outcome"] == "incorrect"
-    # …but the tolerant read is preserved so the report can show the gap.
-    assert case["score"]["moderator_lenient"] is True
+    assert case["score"]["outcome"] == "correct"
+    assert case["score"]["moderator_normalized"] is True
+    assert case["score"]["moderator_attempts"] == 1
+    assert case["score"]["moderator_unconstrained"] is False
+    # The raw reply is still on the case, and the strict/lenient rules are unchanged —
+    # what moved is the decode, not the grading rule.
+    assert case["score"]["moderator_raw"] == "yes."
     assert moderator_says_yes("yes") and not moderator_says_yes("Yes.")
     assert moderator_says_yes_lenient("Yes.")
+
+
+def test_moderator_that_never_conforms_is_flagged_not_guessed():
+    """A reply the constraint cannot resolve falls back to upstream's strict rule and
+    is flagged, so grader trouble shows up as evidence rather than as a lost point."""
+    d = make_doctor([text_reply("DIAGNOSIS READY: Myasthenia gravis")])
+    case = run_case(osce(), d,
+                    ScriptedLLM({"corrent diagnosis": "I cannot say either way."}))
+    assert case["score"]["outcome"] == "incorrect"
+    assert case["score"]["moderator_unconstrained"] is True
+    assert case["score"]["moderator_attempts"] > 1
 
 
 def test_test_request_is_routed_to_the_measurement_agent():

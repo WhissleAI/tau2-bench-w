@@ -225,6 +225,23 @@ tests.)
 
 ---
 
+## Grading is programmatic — there is no judge LLM here
+
+Unlike the other two health adapters, MedAgentBench needs **no LLM except the agent
+under test**, and therefore has no `--judge-provider` flag. There is nothing to route.
+
+* No patient simulator: the task text is fixed and the agent talks to a FHIR server,
+  not to a person.
+* No LLM-as-a-judge: `grader.py` answers a strict boolean per task by checking the
+  trajectory against constants stated in the task's own `context`/`instruction` (NDC
+  codes, SNOMED/LOINC codes, dosing rules, referral free text). `--refsol` swaps in
+  upstream's official grading module for the number you publish; both are
+  deterministic.
+
+The practical consequence is worth stating plainly: a MedAgentBench number carries **no
+judge-independence caveat at all**, because no model produced it. It needs
+`WHISSLE_API_KEY` and a FHIR server, and it always did.
+
 ## Running it
 
 ```bash

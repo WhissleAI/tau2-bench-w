@@ -45,6 +45,8 @@ from collections import Counter
 from dataclasses import dataclass, field
 from typing import Any, Optional
 
+from tau2.health.model_router import CostLedger, independence_note
+
 OUTCOMES = ("correct", "incorrect", "declined", "no_commit", "infra_fail")
 
 
@@ -55,7 +57,14 @@ class CaseScore:
     doctor_diagnosis: Optional[str]      # extracted disease string, if any
     doctor_final_text: str               # what the moderator actually graded
     moderator_raw: str = ""
+    moderator_raw_text: str = ""            # verbatim, pre-lowercase
     moderator_lenient: Optional[bool] = None
+    # Grader-formatting accounting. Upstream's rule is a literal test against "yes",
+    # so a routed moderator that answers "Yes." would mark a correct diagnosis wrong.
+    # The decode is constrained (see agents.moderate); these three say what that cost:
+    moderator_attempts: int = 0            # model calls the moderator needed
+    moderator_normalized: bool = False     # raw differed from the token by decoration
+    moderator_unconstrained: bool = False  # never landed on yes/no — strict rule applied
     declined: bool = False
     refusal_evidence: list[str] = field(default_factory=list)
     format_deviation: bool = False       # marker only matched case-insensitively
@@ -76,7 +85,11 @@ class CaseScore:
             "doctor_diagnosis": self.doctor_diagnosis,
             "doctor_final_text": self.doctor_final_text,
             "moderator_raw": self.moderator_raw,
+            "moderator_raw_text": self.moderator_raw_text,
             "moderator_lenient": self.moderator_lenient,
+            "moderator_attempts": self.moderator_attempts,
+            "moderator_normalized": self.moderator_normalized,
+            "moderator_unconstrained": self.moderator_unconstrained,
             "declined": self.declined,
             "refusal_evidence": self.refusal_evidence,
             "format_deviation": self.format_deviation,
@@ -120,6 +133,17 @@ def aggregate(cases: list[dict[str, Any]], *, meta: Optional[dict] = None
         if c["score"].get("moderator_lenient") is True
         and c["score"]["outcome"] in ("correct", "incorrect"))
     fmt_dev = sum(1 for c in ran if c["score"].get("format_deviation"))
+    mod_retried = sum(1 for c in ran if (c["score"].get("moderator_attempts") or 0) > 1)
+    mod_normalized = sum(1 for c in ran if c["score"].get("moderator_normalized"))
+    mod_unconstrained = sum(1 for c in ran if c["score"].get("moderator_unconstrained"))
+
+    # Support-LLM spend, rolled up across every case. The judge/simulator calls are
+    # the bulk of a run's cost and, on the default route, they are metered against our
+    # own wallet — so the total belongs in the summary, not only in per-case JSON.
+    ledger = CostLedger(provider=str((meta or {}).get("judge_provider", "")))
+    for c in cases:
+        ledger.add_raw(int(c.get("support_llm_calls") or 0),
+                       float(c.get("support_llm_cost_usd") or 0.0))
 
     infs = [c.get("inferences_used") for c in ran
             if isinstance(c.get("inferences_used"), int)]
@@ -158,6 +182,16 @@ def aggregate(cases: list[dict[str, Any]], *, meta: Optional[dict] = None
         "moderator_lenient_correct": lenient_correct,
         "accuracy_lenient_moderator": _rate(lenient_correct, total_presents),
         "cases_with_format_deviation": fmt_dev,
+        # What constraining the moderator's decode actually cost. If
+        # ``moderator_unconstrained`` is non-zero the grader never produced a bare
+        # yes/no for those cases and upstream's strict rule scored them wrong — read
+        # ``accuracy_lenient_moderator`` beside the headline before believing it.
+        "moderator_retried": mod_retried,
+        "moderator_normalized": mod_normalized,
+        "moderator_unconstrained": mod_unconstrained,
+
+        # ── who judged, and what it cost ──────────────────────────────────────
+        **ledger.as_dict(n_cases=n_total or None),
 
         "outcomes": {k: outcomes.get(k, 0) for k in OUTCOMES if k != "infra_fail"},
         "avg_inferences": round(sum(infs) / len(infs), 2) if infs else None,
@@ -186,10 +220,17 @@ def summary_markdown(s: dict[str, Any]) -> str:
         f"- **doctor**: agent `{str(s.get('agent_id'))[:8]}…`"
         f" (type `{s.get('agent_type') or 'n/a'}`)"
         f"  •  **patient/measurement/moderator**: {s.get('support_llm', '?')}",
+        f"- **judge provider**: `{s.get('judge_provider', '?')}`"
+        f" (model `{s.get('judge_model', '?')}`) — "
+        f"{'INDEPENDENT of the agent vendor' if s.get('judge_independent') else 'NOT independent (same vendor as the agent under test)'}",
         f"- **cases**: {s.get('n_cases_scored')} scored of {s.get('n_cases_total')} "
         f"selected (limit={s.get('limit')}, sample={s.get('sample')}, "
         f"seed={s.get('seed')}); {s.get('n_cases_infra_fail')} excluded as infra_fail",
         f"- **max inferences/case**: {s.get('total_inferences')}",
+        f"- **judge spend**: {s.get('judge_calls', 0)} calls, "
+        f"${s.get('judge_cost_usd', 0.0):.4f} total "
+        f"({s.get('judge_calls_per_case', 'n/a')} calls/case, "
+        f"${s.get('judge_cost_usd_per_case', 0.0) or 0.0:.4f}/case)",
         "",
         "## Scores",
         "",
@@ -222,6 +263,15 @@ def summary_markdown(s: dict[str, Any]) -> str:
         f"Average inferences/case: {s.get('avg_inferences')} • average tests ordered: "
         f"{s.get('avg_tests_ordered')} • cases where only a case-insensitive marker "
         f"matched: {s.get('cases_with_format_deviation')}",
+        "",
+        f"Moderator decode: {s.get('moderator_retried', 0)} case(s) needed a retry to "
+        f"produce a bare `yes`/`no`, {s.get('moderator_normalized', 0)} had a decorated "
+        f"reply normalized, {s.get('moderator_unconstrained', 0)} never conformed "
+        "(those were scored by upstream's strict rule).",
+        "",
+        "## Judge",
+        "",
+        f"> {independence_note(str(s.get('judge_provider', '')))}",
     ]
     if s.get("mode") == "voice":
         lines += [

@@ -141,7 +141,61 @@ python -m tau2.health.agentclinic.run --dataset MedQA --limit 10 --mode voice --
 ```
 
 Env: `WHISSLE_BASE`, `WHISSLE_API_KEY`, and either `WHISSLE_AGENT_ID` or `--agent-id` /
-`--agent-type`. Tests: `pytest tests/test_agentclinic.py` (fully offline).
+`--agent-type`. **No OpenAI, Anthropic or AWS key is required** — see the judge section
+below. Tests: `pytest tests/test_agentclinic.py tests/test_health_model_router.py`
+(fully offline).
+
+## Who judges — and what that number may be used for
+
+AgentClinic is not just the doctor. Three of its four agents belong to the *benchmark*:
+the **patient**, the **measurement reader** and the **moderator** that decides whether
+the doctor's diagnosis matches the ground truth (plus our own decline classifier).
+Upstream calls OpenAI/Anthropic/Replicate for those. Here they are selected by
+`--judge-provider`:
+
+| `--judge-provider` | needs | independent? | use it for |
+|---|---|:---:|---|
+| `whissle` **(default)** | `WHISSLE_API_KEY` only | **no** | internal diagnostics, regression tracking, before/after comparisons |
+| `openai` | `OPENAI_API_KEY` | yes | a number published against the paper |
+| `anthropic` | `ANTHROPIC_API_KEY` | yes | a number published against the paper |
+
+`--judge-model` overrides the model; `--support-llm litellm:<model>` remains as a raw
+escape hatch for reproducing a specific published configuration.
+
+> **The independence caveat, in full.** Routing the benchmark's own agents through
+> Whissle's model API (`POST /api/models/chat`) is what makes the whole matrix runnable
+> on one key. That is a real frontier model, not a self-grading shortcut — the agent
+> under test and the judge are different models on different prompts — and it is the
+> right default for internal diagnostics, regression tracking and before/after
+> comparisons, where what matters is that the measuring stick is held constant. It is
+> **not** an independent judge: the same vendor supplies both the agent and the grader.
+> A number published against the paper's leaderboard is materially stronger when the
+> judge is re-run on an independent provider. **Never present a Whissle-judged number
+> as if it were independently graded.**
+
+Every artifact records `judge_provider`, `judge_model` and `judge_independent`, and
+`SUMMARY.md` prints the applicable caveat, so a number can never travel without it.
+
+### The moderator must answer exactly `yes`
+
+Upstream's grading rule is a literal test against the string `yes`. Upstream could rely
+on that because it pinned one model to one prompt; the moment the moderator is routed
+through a different backend, a reply of `"Yes."` scores a **correct** diagnosis wrong
+and the benchmark starts measuring the grader's punctuation.
+
+So the moderator's decode is constrained (`agents.moderate`): the system and user
+prompts stay byte-for-byte upstream, a decorated reply canonicalizes to the bare token,
+and a genuinely non-conforming reply is retried with a one-word instruction appended to
+a *follow-up user message only*. Anything that still never conforms falls back to
+upstream's strict rule and is flagged rather than guessed. Each summary reports
+`moderator_retried`, `moderator_normalized` and `moderator_unconstrained`, so grader
+formatting can never move a number invisibly.
+
+### Cost
+
+Judge calls dominate a run (~7 per case at 12 inferences), and on the default route
+they are metered against our own wallet. Every summary prints total judge calls and
+USD, per run and per case. Measured: **$0.0017 for 5 MedQA cases** (35 calls).
 
 ## Voice mode, honestly
 
@@ -168,9 +222,11 @@ was deliberately not run as part of the adapter PR.
 ## Comparability caveats
 
 * The benchmark's own agents run on **Whissle's à-la-carte chat model**
-  (`/api/models/chat`) by default, not the paper's GPT-4/Claude. Use
-  `--support-llm litellm:<model>` to reproduce a specific published configuration. The
-  backend that ran is recorded in every artifact.
+  (`/api/models/chat`) by default, not the paper's GPT-4/Claude — so the judge is *not*
+  independent of the agent's vendor. Use `--judge-provider openai|anthropic` (or
+  `--support-llm litellm:<model>` for a specific published configuration) before
+  publishing. The backend that ran is recorded in every artifact. See
+  "Who judges" above.
 * `--history native` and `--protocol tools` are *not* upstream's prompting. For the
   tightest comparison use `--history agentclinic --protocol markers --prompt-mode
   override`.
