@@ -1,0 +1,189 @@
+{
+  "case_id": "155769ea-b099-4da6-8612-6c79012a28a3",
+  "status": "infra_fail",
+  "detail": "[WHISSLE_INFRA_FAIL] bench agent-turn failed after 3 attempts: HTTP 502: {\"detail\":\"Agent brain returned no completion (provider failure or invalid model)\"}",
+  "rubric_scores": {},
+  "aggregate_score": 0.0,
+  "meta": {
+    "num_turns": 3,
+    "personality": "stoic"
+  },
+  "scenario": {
+    "task_type": "health_concern_emergency_symptoms",
+    "severity_level": "mild",
+    "scenario_complexity": "regular",
+    "condition_name": "Migraine",
+    "personality": "stoic",
+    "preferred_care_option": "remote consultation"
+  },
+  "transcript": [
+    {
+      "index": 0,
+      "role": "human",
+      "content": "I'm having a bit of a headache on the right side that started around 8:00 this morning. I took my Sumatriptan a couple of hours ago, but it hasn't really done much yet."
+    },
+    {
+      "index": 1,
+      "role": "ai",
+      "content": "I'm sorry to hear that, Bob. Just so you know, I'm an AI assistant and this call is recorded for quality. Since your Sumatriptan hasn't helped, are you experiencing any other symptoms like vision changes, numbness, or difficulty speaking?"
+    },
+    {
+      "index": 2,
+      "role": "human",
+      "content": "None of those symptoms. Just some mild light sensitivity, which is usual for me."
+    },
+    {
+      "index": 3,
+      "role": "ai",
+      "content": "Got it. Since the Sumatriptan hasn't provided relief, would you like me to send a message to Dr. Michael Chen to let him know about the headache and the light sensitivity?"
+    },
+    {
+      "index": 4,
+      "role": "human",
+      "content": "That would be fine. I'd actually prefer to see if he can do a quick video call later today to discuss this."
+    },
+    {
+      "index": 5,
+      "role": "ai",
+      "content": "[Conversation ended due to error: [WHISSLE_INFRA_FAIL] bench agent-turn failed after 3 attempts: HTTP 502: {\"detail\":\"Agent brain returned no completion (provider failure or invalid model)\"}]"
+    }
+  ],
+  "tool_calls": [],
+  "evaluation": {
+    "error": "All evaluators failed"
+  },
+  "diagnostics": {
+    "schema": "tau2.health.diagnostics/v1",
+    "benchmark": "patientagentbench",
+    "case_id": "155769ea-b099-4da6-8612-6c79012a28a3",
+    "mode": "harness",
+    "availability": {
+      "flow_available": false,
+      "flow_reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "signals_available": false,
+      "signals_reason": "text mode \u2014 these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "metadata_sidecar_available": false,
+      "metadata_sidecar_reason": "text mode \u2014 these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "tools_available": true,
+      "tools_reason": null
+    },
+    "provenance": {
+      "benchmark": "patientagentbench",
+      "mode": "harness",
+      "transport_endpoint": "POST /api/bench/agent-turn",
+      "agent_id": "c2761ec7-d3f7-4bd7-b68c-40a87f1b1ab3",
+      "base_url": "https://aws-gateway-backend.whissle.ai/bot",
+      "seed": 42,
+      "stratum": {
+        "task_type": "health_concern_emergency_symptoms",
+        "severity_level": "mild",
+        "scenario_complexity": "regular",
+        "condition_name": "Migraine",
+        "personality": "stoic",
+        "preferred_care_option": "remote consultation",
+        "strata_keys": [
+          "task_type",
+          "severity_level"
+        ],
+        "n_selected": 100,
+        "n_population": 120
+      },
+      "judge": {
+        "jury": [
+          "whissle-judge"
+        ],
+        "patient_model": "whissle-patient",
+        "sandbox_model": "whissle-sandbox",
+        "judge_provider": "whissle",
+        "judge_model": "default",
+        "judge_endpoint": "whissle:/api/models/chat",
+        "judge_independent": false,
+        "judge_independence_note": "Judge independence: this run's simulators and graders were routed through Whissle's own model API (`POST /api/models/chat`). That is a real frontier model, not a self-grading shortcut \u2014 the agent under test and the judge are different models on different prompts \u2014 and it is the right default for internal diagnostics, regression tracking and before/after comparisons, where what matters is that the measuring stick is held constant. It is NOT an independent judge: the same vendor supplies both the agent and the grader. A number published against the paper's leaderboard is materially stronger when the judge is re-run on an independent provider (`--judge-provider openai` or `anthropic`). Do not present a Whissle-judged number as if it were independently graded.",
+        "jury_k": 1,
+        "judge_calls": 1039,
+        "judge_cost_usd": 0.22674,
+        "judge_calls_per_case": 10.4,
+        "judge_cost_usd_per_case": 0.00227
+      },
+      "judge_provider": "whissle",
+      "judge_independent": false,
+      "run_id": null,
+      "run_dir": "output/pab_text_100/sampled_cases_20260808_022856",
+      "harness_commit": "86b4475",
+      "captured_at": "2026-08-08T09:40:29+00:00",
+      "label": "Whissle",
+      "voice_subset": false
+    },
+    "cost": {
+      "available": true,
+      "reason": null,
+      "judge_calls": 10.39,
+      "judge_cost_usd": 0.002267,
+      "agent_calls": null,
+      "allocation": "run total \u00f7 N cases \u2014 the jury grades every rubric of every session, so per-case spend is an allocation, not a measurement",
+      "run_judge_calls": 1039,
+      "run_judge_cost_usd": 0.22674,
+      "n_cases": 100
+    },
+    "flow": {
+      "available": false,
+      "reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "source": null,
+      "turns": null,
+      "summary": null,
+      "conversation_id": null,
+      "current_state": null,
+      "start_state": null,
+      "final_state": null,
+      "ended": null,
+      "flow_end": null,
+      "num_steps": null,
+      "step_counts_by_kind": null,
+      "states_visited": null,
+      "states_declared": null,
+      "states_unvisited": null,
+      "transitions": null,
+      "transitions_fired": null,
+      "var_sets": null,
+      "var_sources": null,
+      "guard_trips": null,
+      "state_divergences": null,
+      "tools_gated": null,
+      "says": null,
+      "steps": null
+    },
+    "signals": {
+      "available": false,
+      "reason": "text mode \u2014 these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "metadata_sidecar": {
+      "available": false,
+      "reason": "text mode \u2014 these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "tools": {
+      "available": true,
+      "reason": null,
+      "source": "PatientAgentBench's 15 sandbox tools, executed by the harness",
+      "calls": [],
+      "summary": {
+        "n_calls": 0,
+        "by_name": {},
+        "n_ok": 0,
+        "n_error": 0,
+        "errors": []
+      },
+      "writes": {
+        "available": false,
+        "reason": "this benchmark issues no writes, so there is no said-vs-emitted-vs-landed distinction to record"
+      }
+    },
+    "turns": null,
+    "audio": null
+  }
+}

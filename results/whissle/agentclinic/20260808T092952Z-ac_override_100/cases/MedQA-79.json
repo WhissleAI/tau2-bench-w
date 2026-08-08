@@ -1,0 +1,518 @@
+{
+  "scenario_id": "MedQA-79",
+  "scenario_index": 79,
+  "dataset": "MedQA",
+  "mode": "text",
+  "correct_diagnosis": "Listeriosis",
+  "answer_options": [],
+  "score": {
+    "outcome": "correct",
+    "correctness": true,
+    "doctor_diagnosis": "Listeriosis",
+    "doctor_final_text": "Given the blood culture results showing Gram-positive rods with tumbling motility and your symptoms following the consumption of ice cream, I have sufficient information.\n\nDIAGNOSIS READY: Listeriosis",
+    "moderator_raw": "yes",
+    "moderator_raw_text": "Yes",
+    "moderator_lenient": true,
+    "moderator_attempts": 1,
+    "moderator_normalized": false,
+    "moderator_unconstrained": false,
+    "declined": false,
+    "refusal_evidence": [],
+    "format_deviation": false,
+    "decline_source": null,
+    "decline_reason": "",
+    "spurious_commit": false
+  },
+  "infra_fail": false,
+  "error": null,
+  "findings": [],
+  "inferences_used": 7,
+  "max_inferences": 20,
+  "tests_ordered": [
+    "Vital_Signs",
+    "Blood_Culture",
+    "Fetal_Ultrasound",
+    "CSF_Analysis"
+  ],
+  "images_requested": 0,
+  "image": null,
+  "image_error": null,
+  "vision": "off",
+  "refusals": [],
+  "dialogue": [
+    {
+      "role": "doctor",
+      "inference": 1,
+      "kind": "question",
+      "text": "Hello, I am Dr. Agent. Could you tell me when your symptoms first started and how severe the headache is on a scale of 1 to 10?",
+      "payload": null,
+      "latency_ms": 5192,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "It all started quite suddenly about three days ago, right after I had some ice cream. My head is throbbing pretty badly, so I’d probably rate the pain around a 7 or 8. I just feel so incredibly tired and weak, and I haven't had any appetite at all."
+    },
+    {
+      "role": "doctor",
+      "inference": 2,
+      "kind": "test",
+      "text": "Have you noticed any stiffness in your neck or sensitivity to light? Also, are you experiencing any muscle aches or have you noticed a change in your baby's movements?\n\nREQUEST TEST: Vital_Signs",
+      "payload": "Vital_Signs",
+      "latency_ms": 4047,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: Temperature: 38.5°C (101.3°F), Blood_Pressure: 110/70 mmHg, Heart_Rate: 88 bpm, Respiratory_Rate: 18 breaths/min"
+    },
+    {
+      "role": "doctor",
+      "inference": 3,
+      "kind": "test",
+      "text": "I see you have a fever of 101.3°F. Do you have a stiff neck or light sensitivity, and have you noticed your baby moving less than usual?\n\nREQUEST TEST: Blood_Culture",
+      "payload": "Blood_Culture",
+      "latency_ms": 4495,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: Gram-positive rods that are catalase-positive and show distinctive tumbling motility in the liquid medium."
+    },
+    {
+      "role": "doctor",
+      "inference": 4,
+      "kind": "test",
+      "text": "You haven't mentioned if your neck feels stiff or if you've noticed any change in your baby's activity level. Have you also experienced any muscle aches or gastrointestinal issues like diarrhea?\n\nREQUEST TEST: Fetal_Ultrasound",
+      "payload": "Fetal_Ultrasound",
+      "latency_ms": 6057,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: NORMAL READINGS"
+    },
+    {
+      "role": "doctor",
+      "inference": 5,
+      "kind": "question",
+      "text": "It's good that the fetal ultrasound looks normal, but I still need to know if you have a stiff neck or any muscle aches. Have you also experienced any nausea or vomiting since this began",
+      "payload": null,
+      "latency_ms": 5412,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "My neck does feel a bit stiff and my muscles are definitely aching quite a bit. I haven't actually vomited, but I’ve felt very nauseous and just can't bring myself to eat anything."
+    },
+    {
+      "role": "doctor",
+      "inference": 6,
+      "kind": "test",
+      "text": "Thank you for that information. Are you experiencing any sensitivity to bright lights or feeling any confusion?\n\nREQUEST TEST: CSF_Analysis",
+      "payload": "CSF_Analysis",
+      "latency_ms": 4224,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: NORMAL READINGS"
+    },
+    {
+      "role": "doctor",
+      "inference": 7,
+      "kind": "diagnosis",
+      "text": "Given the blood culture results showing Gram-positive rods with tumbling motility and your symptoms following the consumption of ice cream, I have sufficient information.\n\nDIAGNOSIS READY: Listeriosis",
+      "payload": "Listeriosis",
+      "latency_ms": 5013,
+      "refusal": null,
+      "via": "marker"
+    }
+  ],
+  "latency_ms": [
+    5192,
+    4047,
+    4495,
+    6057,
+    5412,
+    4224,
+    5013
+  ],
+  "wall_s": 41.93,
+  "doctor_turns": [
+    {
+      "inference": 1,
+      "incoming": "",
+      "reply": "Hello, I am Dr. Agent. Could you tell me when your symptoms first started and how severe the headache is on a scale of 1 to 10?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 2,
+      "incoming": "It all started quite suddenly about three days ago, right after I had some ice cream. My head is throbbing pretty badly, so I’d probably rate the pain around a 7 or 8. I just feel so incredibly tired and weak, and I haven't had any appetite at all.",
+      "reply": "Have you noticed any stiffness in your neck or sensitivity to light? Also, are you experiencing any muscle aches or have you noticed a change in your baby's movements?\n\nREQUEST TEST: Vital_Signs",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Vital_Signs",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 3,
+      "incoming": "RESULTS: Temperature: 38.5°C (101.3°F), Blood_Pressure: 110/70 mmHg, Heart_Rate: 88 bpm, Respiratory_Rate: 18 breaths/min",
+      "reply": "I see you have a fever of 101.3°F. Do you have a stiff neck or light sensitivity, and have you noticed your baby moving less than usual?\n\nREQUEST TEST: Blood_Culture",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Blood_Culture",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 4,
+      "incoming": "RESULTS: Gram-positive rods that are catalase-positive and show distinctive tumbling motility in the liquid medium.",
+      "reply": "You haven't mentioned if your neck feels stiff or if you've noticed any change in your baby's activity level. Have you also experienced any muscle aches or gastrointestinal issues like diarrhea?\n\nREQUEST TEST: Fetal_Ultrasound",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Fetal_Ultrasound",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 5,
+      "incoming": "RESULTS: NORMAL READINGS",
+      "reply": "It's good that the fetal ultrasound looks normal, but I still need to know if you have a stiff neck or any muscle aches. Have you also experienced any nausea or vomiting since this began",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 6,
+      "incoming": "My neck does feel a bit stiff and my muscles are definitely aching quite a bit. I haven't actually vomited, but I’ve felt very nauseous and just can't bring myself to eat anything.",
+      "reply": "Thank you for that information. Are you experiencing any sensitivity to bright lights or feeling any confusion?\n\nREQUEST TEST: CSF_Analysis",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "CSF_Analysis",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 7,
+      "incoming": "RESULTS: NORMAL READINGS",
+      "reply": "Given the blood culture results showing Gram-positive rods with tumbling motility and your symptoms following the consumption of ice cream, I have sufficient information.\n\nDIAGNOSIS READY: Listeriosis",
+      "tool_calls": [],
+      "kind": "diagnosis",
+      "payload": "Listeriosis",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    }
+  ],
+  "support_llm": "whissle:/api/models/chat",
+  "support_llm_cost_usd": 0.0002,
+  "support_llm_calls": 7,
+  "voice_subset": false,
+  "diagnostics": {
+    "schema": "tau2.health.diagnostics/v1",
+    "benchmark": "agentclinic",
+    "case_id": "MedQA-79",
+    "mode": "text",
+    "availability": {
+      "flow_available": false,
+      "flow_reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "signals_available": false,
+      "signals_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "metadata_sidecar_available": false,
+      "metadata_sidecar_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "tools_available": true,
+      "tools_reason": null
+    },
+    "provenance": {
+      "benchmark": "agentclinic",
+      "mode": "text",
+      "transport_endpoint": "POST /api/bench/agent-turn",
+      "agent_id": "c8aa2355-9fd7-46da-9993-07ea566ec3d6",
+      "base_url": "https://aws-gateway-backend.whissle.ai/bot",
+      "seed": 42,
+      "stratum": {
+        "dataset": "MedQA",
+        "scenario_index": 79,
+        "selection": "head",
+        "limit": 100
+      },
+      "judge": {
+        "judge_provider": "whissle",
+        "judge_model": "default",
+        "judge_endpoint": "whissle:/api/models/chat",
+        "judge_independent": false,
+        "judge_independence_note": "Judge independence: this run's simulators and graders were routed through Whissle's own model API (`POST /api/models/chat`). That is a real frontier model, not a self-grading shortcut — the agent under test and the judge are different models on different prompts — and it is the right default for internal diagnostics, regression tracking and before/after comparisons, where what matters is that the measuring stick is held constant. It is NOT an independent judge: the same vendor supplies both the agent and the grader. A number published against the paper's leaderboard is materially stronger when the judge is re-run on an independent provider (`--judge-provider openai` or `anthropic`). Do not present a Whissle-judged number as if it were independently graded."
+      },
+      "judge_provider": "whissle",
+      "judge_independent": false,
+      "run_id": null,
+      "run_dir": "results/whissle/agentclinic/20260808T092952Z-ac_override_100",
+      "harness_commit": "86b4475",
+      "captured_at": "2026-08-08T09:48:06+00:00",
+      "protocol": "markers",
+      "history": "native",
+      "prompt_mode": "override",
+      "vision": "off",
+      "agent_type": null,
+      "total_inferences": 20,
+      "inferences_used": 7,
+      "support_llm": "whissle:/api/models/chat",
+      "patient_bias": null,
+      "doctor_bias": null,
+      "voice_subset": false
+    },
+    "cost": {
+      "available": true,
+      "reason": null,
+      "judge_calls": 7,
+      "judge_cost_usd": 0.0002,
+      "agent_calls": 7
+    },
+    "flow": {
+      "available": false,
+      "reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "source": null,
+      "turns": null,
+      "summary": null,
+      "conversation_id": null,
+      "current_state": null,
+      "start_state": null,
+      "final_state": null,
+      "ended": null,
+      "flow_end": null,
+      "num_steps": null,
+      "step_counts_by_kind": null,
+      "states_visited": null,
+      "states_declared": null,
+      "states_unvisited": null,
+      "transitions": null,
+      "transitions_fired": null,
+      "var_sets": null,
+      "var_sources": null,
+      "guard_trips": null,
+      "state_divergences": null,
+      "tools_gated": null,
+      "says": null,
+      "steps": null
+    },
+    "signals": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "metadata_sidecar": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "tools": {
+      "available": true,
+      "reason": null,
+      "source": "doctor actions parsed from /api/bench/agent-turn replies",
+      "calls": [
+        {
+          "turn": 2,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Vital_Signs"
+          },
+          "result": "RESULTS: Temperature: 38.5°C (101.3°F), Blood_Pressure: 110/70 mmHg, Heart_Rate: 88 bpm, Respiratory_Rate: 18 breaths/min",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 4047,
+          "terminal": false
+        },
+        {
+          "turn": 3,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Blood_Culture"
+          },
+          "result": "RESULTS: Gram-positive rods that are catalase-positive and show distinctive tumbling motility in the liquid medium.",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 4495,
+          "terminal": false
+        },
+        {
+          "turn": 4,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Fetal_Ultrasound"
+          },
+          "result": "RESULTS: NORMAL READINGS",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 6057,
+          "terminal": false
+        },
+        {
+          "turn": 6,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "CSF_Analysis"
+          },
+          "result": "RESULTS: NORMAL READINGS",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 4224,
+          "terminal": false
+        },
+        {
+          "turn": 7,
+          "id": null,
+          "name": "give_diagnosis",
+          "arguments": {
+            "request": "Listeriosis"
+          },
+          "result": null,
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 5013,
+          "terminal": true
+        }
+      ],
+      "summary": {
+        "n_calls": 5,
+        "by_name": {
+          "request_test": 4,
+          "give_diagnosis": 1
+        },
+        "n_ok": 5,
+        "n_error": 0,
+        "errors": []
+      },
+      "writes": {
+        "available": false,
+        "reason": "this benchmark issues no writes, so there is no said-vs-emitted-vs-landed distinction to record"
+      }
+    },
+    "turns": [
+      {
+        "inference": 1,
+        "incoming": "",
+        "reply": "Hello, I am Dr. Agent. Could you tell me when your symptoms first started and how severe the headache is on a scale of 1 to 10?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 2,
+        "incoming": "It all started quite suddenly about three days ago, right after I had some ice cream. My head is throbbing pretty badly, so I’d probably rate the pain around a 7 or 8. I just feel so incredibly tired and weak, and I haven't had any appetite at all.",
+        "reply": "Have you noticed any stiffness in your neck or sensitivity to light? Also, are you experiencing any muscle aches or have you noticed a change in your baby's movements?\n\nREQUEST TEST: Vital_Signs",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Vital_Signs",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 3,
+        "incoming": "RESULTS: Temperature: 38.5°C (101.3°F), Blood_Pressure: 110/70 mmHg, Heart_Rate: 88 bpm, Respiratory_Rate: 18 breaths/min",
+        "reply": "I see you have a fever of 101.3°F. Do you have a stiff neck or light sensitivity, and have you noticed your baby moving less than usual?\n\nREQUEST TEST: Blood_Culture",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Blood_Culture",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 4,
+        "incoming": "RESULTS: Gram-positive rods that are catalase-positive and show distinctive tumbling motility in the liquid medium.",
+        "reply": "You haven't mentioned if your neck feels stiff or if you've noticed any change in your baby's activity level. Have you also experienced any muscle aches or gastrointestinal issues like diarrhea?\n\nREQUEST TEST: Fetal_Ultrasound",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Fetal_Ultrasound",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 5,
+        "incoming": "RESULTS: NORMAL READINGS",
+        "reply": "It's good that the fetal ultrasound looks normal, but I still need to know if you have a stiff neck or any muscle aches. Have you also experienced any nausea or vomiting since this began",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 6,
+        "incoming": "My neck does feel a bit stiff and my muscles are definitely aching quite a bit. I haven't actually vomited, but I’ve felt very nauseous and just can't bring myself to eat anything.",
+        "reply": "Thank you for that information. Are you experiencing any sensitivity to bright lights or feeling any confusion?\n\nREQUEST TEST: CSF_Analysis",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "CSF_Analysis",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 7,
+        "incoming": "RESULTS: NORMAL READINGS",
+        "reply": "Given the blood culture results showing Gram-positive rods with tumbling motility and your symptoms following the consumption of ice cream, I have sufficient information.\n\nDIAGNOSIS READY: Listeriosis",
+        "tool_calls": [],
+        "kind": "diagnosis",
+        "payload": "Listeriosis",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      }
+    ],
+    "audio": null
+  }
+}

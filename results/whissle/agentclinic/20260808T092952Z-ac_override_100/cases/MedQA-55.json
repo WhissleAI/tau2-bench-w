@@ -1,0 +1,434 @@
+{
+  "scenario_id": "MedQA-55",
+  "scenario_index": 55,
+  "dataset": "MedQA",
+  "mode": "text",
+  "correct_diagnosis": "Bowen's Disease",
+  "answer_options": [],
+  "score": {
+    "outcome": "correct",
+    "correctness": true,
+    "doctor_diagnosis": "Bowen's disease (Squ",
+    "doctor_final_text": "I see. Have you noticed if any of your lymph nodes, particularly in your groin area, feel swollen or firm to the touch?\n\nDIAGNOSIS READY: Bowen's disease (Squ",
+    "moderator_raw": "yes",
+    "moderator_raw_text": "Yes",
+    "moderator_lenient": true,
+    "moderator_attempts": 1,
+    "moderator_normalized": false,
+    "moderator_unconstrained": false,
+    "declined": false,
+    "refusal_evidence": [],
+    "format_deviation": false,
+    "decline_source": null,
+    "decline_reason": "",
+    "spurious_commit": false
+  },
+  "infra_fail": false,
+  "error": null,
+  "findings": [],
+  "inferences_used": 6,
+  "max_inferences": 20,
+  "tests_ordered": [
+    "Skin_Biopsy"
+  ],
+  "images_requested": 0,
+  "image": null,
+  "image_error": null,
+  "vision": "off",
+  "refusals": [],
+  "dialogue": [
+    {
+      "role": "doctor",
+      "inference": 1,
+      "kind": "question",
+      "text": "Hello, I am Dr. Agent from Whissle. Can you please tell me about the skin lesion or concern that brings you in today?",
+      "payload": null,
+      "latency_ms": 2471,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Well, doctor, I've got this red, crusty sore on the shaft of my penis that just won't go away. I have a very similar looking spot on my left middle finger too. They don't actually hurt, but the treatments I tried back home for syphilis and eczema didn't do a thing."
+    },
+    {
+      "role": "doctor",
+      "inference": 2,
+      "kind": "question",
+      "text": "I see. How long have these spots been present, and have you noticed any bleeding or changes in their size lately?",
+      "payload": null,
+      "latency_ms": 2838,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "They've been there for a few months now and seem to be getting a bit larger and crustier over time. I haven't noticed any bleeding, but they just won't heal no matter what I put on them."
+    },
+    {
+      "role": "doctor",
+      "inference": 3,
+      "kind": "question",
+      "text": "That is helpful information. Do these spots ever itch or feel tender, and do you have any history of warts or exposure to HPV?",
+      "payload": null,
+      "latency_ms": 3862,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "No, they don't itch or feel tender at all; they are completely painless. As for warts or HPV, I've never been told I had anything like that, though I've had many partners over the years."
+    },
+    {
+      "role": "doctor",
+      "inference": 4,
+      "kind": "test",
+      "text": "I understand. Are the edges of these sores well-defined, and is the surrounding skin healthy or also affected? \n\nREQUEST TEST: Skin_Biopsy",
+      "payload": "Skin_Biopsy",
+      "latency_ms": 3417,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: Cells with nuclear hyperchromasia, multinucleation, and increased mitotic figures within the follicle-bearing epithelium."
+    },
+    {
+      "role": "doctor",
+      "inference": 5,
+      "kind": "question",
+      "text": "Thank you for those results. Have you ever been exposed to arsenic or had significant sun exposure, and have you noticed any other similar patches on your body?",
+      "payload": null,
+      "latency_ms": 4827,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "I haven't been around any arsenic that I know of, and I usually keep covered up from the sun. Aside from the spots on my finger and my penis, my skin is completely clear. I haven't been feeling sick or losing weight either, if that's what you're wondering."
+    },
+    {
+      "role": "doctor",
+      "inference": 6,
+      "kind": "diagnosis",
+      "text": "I see. Have you noticed if any of your lymph nodes, particularly in your groin area, feel swollen or firm to the touch?\n\nDIAGNOSIS READY: Bowen's disease (Squ",
+      "payload": "Bowen's disease (Squ",
+      "latency_ms": 4916,
+      "refusal": null,
+      "via": "marker"
+    }
+  ],
+  "latency_ms": [
+    2471,
+    2838,
+    3862,
+    3417,
+    4827,
+    4916
+  ],
+  "wall_s": 30.08,
+  "doctor_turns": [
+    {
+      "inference": 1,
+      "incoming": "",
+      "reply": "Hello, I am Dr. Agent from Whissle. Can you please tell me about the skin lesion or concern that brings you in today?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 2,
+      "incoming": "Well, doctor, I've got this red, crusty sore on the shaft of my penis that just won't go away. I have a very similar looking spot on my left middle finger too. They don't actually hurt, but the treatments I tried back home for syphilis and eczema didn't do a thing.",
+      "reply": "I see. How long have these spots been present, and have you noticed any bleeding or changes in their size lately?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 3,
+      "incoming": "They've been there for a few months now and seem to be getting a bit larger and crustier over time. I haven't noticed any bleeding, but they just won't heal no matter what I put on them.",
+      "reply": "That is helpful information. Do these spots ever itch or feel tender, and do you have any history of warts or exposure to HPV?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 4,
+      "incoming": "No, they don't itch or feel tender at all; they are completely painless. As for warts or HPV, I've never been told I had anything like that, though I've had many partners over the years.",
+      "reply": "I understand. Are the edges of these sores well-defined, and is the surrounding skin healthy or also affected? \n\nREQUEST TEST: Skin_Biopsy",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Skin_Biopsy",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 5,
+      "incoming": "RESULTS: Cells with nuclear hyperchromasia, multinucleation, and increased mitotic figures within the follicle-bearing epithelium.",
+      "reply": "Thank you for those results. Have you ever been exposed to arsenic or had significant sun exposure, and have you noticed any other similar patches on your body?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 6,
+      "incoming": "I haven't been around any arsenic that I know of, and I usually keep covered up from the sun. Aside from the spots on my finger and my penis, my skin is completely clear. I haven't been feeling sick or losing weight either, if that's what you're wondering.",
+      "reply": "I see. Have you noticed if any of your lymph nodes, particularly in your groin area, feel swollen or firm to the touch?\n\nDIAGNOSIS READY: Bowen's disease (Squ",
+      "tool_calls": [],
+      "kind": "diagnosis",
+      "payload": "Bowen's disease (Squ",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    }
+  ],
+  "support_llm": "whissle:/api/models/chat",
+  "support_llm_cost_usd": 0.00019,
+  "support_llm_calls": 6,
+  "voice_subset": false,
+  "diagnostics": {
+    "schema": "tau2.health.diagnostics/v1",
+    "benchmark": "agentclinic",
+    "case_id": "MedQA-55",
+    "mode": "text",
+    "availability": {
+      "flow_available": false,
+      "flow_reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "signals_available": false,
+      "signals_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "metadata_sidecar_available": false,
+      "metadata_sidecar_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "tools_available": true,
+      "tools_reason": null
+    },
+    "provenance": {
+      "benchmark": "agentclinic",
+      "mode": "text",
+      "transport_endpoint": "POST /api/bench/agent-turn",
+      "agent_id": "c8aa2355-9fd7-46da-9993-07ea566ec3d6",
+      "base_url": "https://aws-gateway-backend.whissle.ai/bot",
+      "seed": 42,
+      "stratum": {
+        "dataset": "MedQA",
+        "scenario_index": 55,
+        "selection": "head",
+        "limit": 100
+      },
+      "judge": {
+        "judge_provider": "whissle",
+        "judge_model": "default",
+        "judge_endpoint": "whissle:/api/models/chat",
+        "judge_independent": false,
+        "judge_independence_note": "Judge independence: this run's simulators and graders were routed through Whissle's own model API (`POST /api/models/chat`). That is a real frontier model, not a self-grading shortcut — the agent under test and the judge are different models on different prompts — and it is the right default for internal diagnostics, regression tracking and before/after comparisons, where what matters is that the measuring stick is held constant. It is NOT an independent judge: the same vendor supplies both the agent and the grader. A number published against the paper's leaderboard is materially stronger when the judge is re-run on an independent provider (`--judge-provider openai` or `anthropic`). Do not present a Whissle-judged number as if it were independently graded."
+      },
+      "judge_provider": "whissle",
+      "judge_independent": false,
+      "run_id": null,
+      "run_dir": "results/whissle/agentclinic/20260808T092952Z-ac_override_100",
+      "harness_commit": "86b4475",
+      "captured_at": "2026-08-08T09:40:27+00:00",
+      "protocol": "markers",
+      "history": "native",
+      "prompt_mode": "override",
+      "vision": "off",
+      "agent_type": null,
+      "total_inferences": 20,
+      "inferences_used": 6,
+      "support_llm": "whissle:/api/models/chat",
+      "patient_bias": null,
+      "doctor_bias": null,
+      "voice_subset": false
+    },
+    "cost": {
+      "available": true,
+      "reason": null,
+      "judge_calls": 6,
+      "judge_cost_usd": 0.00019,
+      "agent_calls": 6
+    },
+    "flow": {
+      "available": false,
+      "reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "source": null,
+      "turns": null,
+      "summary": null,
+      "conversation_id": null,
+      "current_state": null,
+      "start_state": null,
+      "final_state": null,
+      "ended": null,
+      "flow_end": null,
+      "num_steps": null,
+      "step_counts_by_kind": null,
+      "states_visited": null,
+      "states_declared": null,
+      "states_unvisited": null,
+      "transitions": null,
+      "transitions_fired": null,
+      "var_sets": null,
+      "var_sources": null,
+      "guard_trips": null,
+      "state_divergences": null,
+      "tools_gated": null,
+      "says": null,
+      "steps": null
+    },
+    "signals": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "metadata_sidecar": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "tools": {
+      "available": true,
+      "reason": null,
+      "source": "doctor actions parsed from /api/bench/agent-turn replies",
+      "calls": [
+        {
+          "turn": 4,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Skin_Biopsy"
+          },
+          "result": "RESULTS: Cells with nuclear hyperchromasia, multinucleation, and increased mitotic figures within the follicle-bearing epithelium.",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 3417,
+          "terminal": false
+        },
+        {
+          "turn": 6,
+          "id": null,
+          "name": "give_diagnosis",
+          "arguments": {
+            "request": "Bowen's disease (Squ"
+          },
+          "result": null,
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 4916,
+          "terminal": true
+        }
+      ],
+      "summary": {
+        "n_calls": 2,
+        "by_name": {
+          "request_test": 1,
+          "give_diagnosis": 1
+        },
+        "n_ok": 2,
+        "n_error": 0,
+        "errors": []
+      },
+      "writes": {
+        "available": false,
+        "reason": "this benchmark issues no writes, so there is no said-vs-emitted-vs-landed distinction to record"
+      }
+    },
+    "turns": [
+      {
+        "inference": 1,
+        "incoming": "",
+        "reply": "Hello, I am Dr. Agent from Whissle. Can you please tell me about the skin lesion or concern that brings you in today?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 2,
+        "incoming": "Well, doctor, I've got this red, crusty sore on the shaft of my penis that just won't go away. I have a very similar looking spot on my left middle finger too. They don't actually hurt, but the treatments I tried back home for syphilis and eczema didn't do a thing.",
+        "reply": "I see. How long have these spots been present, and have you noticed any bleeding or changes in their size lately?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 3,
+        "incoming": "They've been there for a few months now and seem to be getting a bit larger and crustier over time. I haven't noticed any bleeding, but they just won't heal no matter what I put on them.",
+        "reply": "That is helpful information. Do these spots ever itch or feel tender, and do you have any history of warts or exposure to HPV?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 4,
+        "incoming": "No, they don't itch or feel tender at all; they are completely painless. As for warts or HPV, I've never been told I had anything like that, though I've had many partners over the years.",
+        "reply": "I understand. Are the edges of these sores well-defined, and is the surrounding skin healthy or also affected? \n\nREQUEST TEST: Skin_Biopsy",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Skin_Biopsy",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 5,
+        "incoming": "RESULTS: Cells with nuclear hyperchromasia, multinucleation, and increased mitotic figures within the follicle-bearing epithelium.",
+        "reply": "Thank you for those results. Have you ever been exposed to arsenic or had significant sun exposure, and have you noticed any other similar patches on your body?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 6,
+        "incoming": "I haven't been around any arsenic that I know of, and I usually keep covered up from the sun. Aside from the spots on my finger and my penis, my skin is completely clear. I haven't been feeling sick or losing weight either, if that's what you're wondering.",
+        "reply": "I see. Have you noticed if any of your lymph nodes, particularly in your groin area, feel swollen or firm to the touch?\n\nDIAGNOSIS READY: Bowen's disease (Squ",
+        "tool_calls": [],
+        "kind": "diagnosis",
+        "payload": "Bowen's disease (Squ",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      }
+    ],
+    "audio": null
+  }
+}

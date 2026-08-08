@@ -12,6 +12,16 @@ clean:
 	rm -rf dist
 	rm -rf build
 
+## Rebuild every benchmark report, the cross-run index and the website export
+.PHONY: reports
+reports:
+	uv run python -m tau2.reporting all
+
+## Audit every report against the honesty rules without writing (CI)
+.PHONY: reports-check
+reports-check:
+	uv run python -m tau2.reporting check
+
 ## Run core tests (requires: uv sync --extra dev)
 .PHONY: test
 test:

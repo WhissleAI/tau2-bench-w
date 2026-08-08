@@ -1,0 +1,581 @@
+{
+  "scenario_id": "MedQA-69",
+  "scenario_index": 69,
+  "dataset": "MedQA",
+  "mode": "text",
+  "correct_diagnosis": "Dumping Syndrome",
+  "answer_options": [],
+  "score": {
+    "outcome": "correct",
+    "correctness": true,
+    "doctor_diagnosis": "Late Dumping Syndrome (Postprandial Hyperinsulinemic Hypoglycemia) secondary to sleeve gastrectomy. This condition occurs when sugar moves too quickly into the small intestine,",
+    "doctor_final_text": "DIAGNOSIS READY: Late Dumping Syndrome (Postprandial Hyperinsulinemic Hypoglycemia) secondary to sleeve gastrectomy. This condition occurs when sugar moves too quickly into the small intestine,",
+    "moderator_raw": "yes",
+    "moderator_raw_text": "Yes",
+    "moderator_lenient": true,
+    "moderator_attempts": 1,
+    "moderator_normalized": false,
+    "moderator_unconstrained": false,
+    "declined": false,
+    "refusal_evidence": [],
+    "format_deviation": false,
+    "decline_source": null,
+    "decline_reason": "",
+    "spurious_commit": false
+  },
+  "infra_fail": false,
+  "error": null,
+  "findings": [],
+  "inferences_used": 9,
+  "max_inferences": 20,
+  "tests_ordered": [
+    "Blood_Glucose_and_Ketones",
+    "Serum_Electrolytes_and_Cortisol",
+    "Liver_Function_Test_and_Cortisol"
+  ],
+  "images_requested": 0,
+  "image": null,
+  "image_error": null,
+  "vision": "off",
+  "refusals": [],
+  "dialogue": [
+    {
+      "role": "doctor",
+      "inference": 1,
+      "kind": "question",
+      "text": "Hello, I am Dr. Agent. I'll be your physician today. Can you tell me when your confusion, abdominal pain, and vomiting first began?",
+      "payload": null,
+      "latency_ms": 1963,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "The stomach pain and the bathroom issues started earlier today after I tried to eat. I've thrown up three times since then, and honestly, everything feels really foggy and hard to follow right now. I just feel so incredibly tired and mixed up."
+    },
+    {
+      "role": "doctor",
+      "inference": 2,
+      "kind": "test",
+      "text": "I understand this must be very distressing for you. Do you have a history of diabetes, and have you noticed any unusual thirst or frequent urination lately? I would also like to request a blood test.\n\nREQUEST TEST: Blood_Glucose_and_Ketones",
+      "payload": "Blood_Glucose_and_Ketones",
+      "latency_ms": 2115,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: Glucose: 41 mg/dL (low)"
+    },
+    {
+      "role": "doctor",
+      "inference": 3,
+      "kind": "test",
+      "text": "That blood sugar level is dangerously low and likely explains your confusion. Are you currently taking any medications for diabetes, or have you noticed any darkening of your skin lately?\n\nREQUEST TEST: Serum_Electrolytes_and_Cortisol",
+      "payload": "Serum_Electrolytes_and_Cortisol",
+      "latency_ms": 4974,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: Na: 139 mEq/L, Cl: 100 mEq/L, K: 3.9 mEq/L, HCO3: 24 mEq/L, BUN: 22 mg/dL, Creatinine: 1.1 mg/dL, Ca2: 10.2 mg/dL"
+    },
+    {
+      "role": "doctor",
+      "inference": 4,
+      "kind": "test",
+      "text": "Thank you for those results. Could you tell me if you have experienced any unintentional weight loss recently or if you drink alcohol? Also, I would like to check your liver enzymes and specific hormone levels.\n\nREQUEST TEST: Liver_Function_Test_and_Cortisol",
+      "payload": "Liver_Function_Test_and_Cortisol",
+      "latency_ms": 5975,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: NORMAL READINGS"
+    },
+    {
+      "role": "doctor",
+      "inference": 5,
+      "kind": "question",
+      "text": "Have you ever had gastric bypass surgery, or is there a family history of endocrine tumors? I would like to check your insulin and C-peptide levels to better understand why your blood sugar is so",
+      "payload": null,
+      "latency_ms": 5589,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "I haven't had a gastric bypass, but I did have a sleeve gastrectomy about a month ago to help with my weight. As far as I know, there isn't any history of tumors in my family, but I'm feeling so lightheaded I can barely think. Please, do whatever tests you need to find out why I'm feeling this way."
+    },
+    {
+      "role": "doctor",
+      "inference": 6,
+      "kind": "question",
+      "text": "Given your recent sleeve gastrectomy, it is very likely your symptoms are related to how your body processes sugar now. How soon after eating do these symptoms and the confusion typically begin?",
+      "payload": null,
+      "latency_ms": 5552,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "It usually hits me pretty fast, maybe an hour or two after I finish my meal. I start sweating and feeling shaky, and then the confusion just takes over. Is it normal to feel this way just from eating?"
+    },
+    {
+      "role": "doctor",
+      "inference": 7,
+      "kind": "question",
+      "text": "It is not normal, but it is a known complication where your stomach empties too quickly into the small intestine. Did your meal happen to be high in sugar or simple carbohydrates? I would",
+      "payload": null,
+      "latency_ms": 5198,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "I think it was just a regular meal, but I've been so focused on my diet since the surgery. My head is spinning so much right now, I can't even remember exactly what was on the plate. Everything just feels like it's crashing down on me after I eat."
+    },
+    {
+      "role": "doctor",
+      "inference": 8,
+      "kind": "question",
+      "text": "Based on the timing of your symptoms and your recent sleeve gastrectomy, it appears you are experiencing reactive hypoglycemia caused by your stomach emptying too quickly. This is a classic presentation of late dumping",
+      "payload": null,
+      "latency_ms": 5027,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "That makes sense, because I only start feeling this dizzy and confused after I've had something to eat. It’s scary how quickly I go from feeling okay to being completely out of it. What can we do to stop these crashes from happening every time I sit down for a meal?"
+    },
+    {
+      "role": "doctor",
+      "inference": 9,
+      "kind": "diagnosis",
+      "text": "DIAGNOSIS READY: Late Dumping Syndrome (Postprandial Hyperinsulinemic Hypoglycemia) secondary to sleeve gastrectomy. This condition occurs when sugar moves too quickly into the small intestine,",
+      "payload": "Late Dumping Syndrome (Postprandial Hyperinsulinemic Hypoglycemia) secondary to sleeve gastrectomy. This condition occurs when sugar moves too quickly into the small intestine,",
+      "latency_ms": 5363,
+      "refusal": null,
+      "via": "marker"
+    }
+  ],
+  "latency_ms": [
+    1963,
+    2115,
+    4974,
+    5975,
+    5589,
+    5552,
+    5198,
+    5027,
+    5363
+  ],
+  "wall_s": 51.25,
+  "doctor_turns": [
+    {
+      "inference": 1,
+      "incoming": "",
+      "reply": "Hello, I am Dr. Agent. I'll be your physician today. Can you tell me when your confusion, abdominal pain, and vomiting first began?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 2,
+      "incoming": "The stomach pain and the bathroom issues started earlier today after I tried to eat. I've thrown up three times since then, and honestly, everything feels really foggy and hard to follow right now. I just feel so incredibly tired and mixed up.",
+      "reply": "I understand this must be very distressing for you. Do you have a history of diabetes, and have you noticed any unusual thirst or frequent urination lately? I would also like to request a blood test.\n\nREQUEST TEST: Blood_Glucose_and_Ketones",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Blood_Glucose_and_Ketones",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 3,
+      "incoming": "RESULTS: Glucose: 41 mg/dL (low)",
+      "reply": "That blood sugar level is dangerously low and likely explains your confusion. Are you currently taking any medications for diabetes, or have you noticed any darkening of your skin lately?\n\nREQUEST TEST: Serum_Electrolytes_and_Cortisol",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Serum_Electrolytes_and_Cortisol",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 4,
+      "incoming": "RESULTS: Na: 139 mEq/L, Cl: 100 mEq/L, K: 3.9 mEq/L, HCO3: 24 mEq/L, BUN: 22 mg/dL, Creatinine: 1.1 mg/dL, Ca2: 10.2 mg/dL",
+      "reply": "Thank you for those results. Could you tell me if you have experienced any unintentional weight loss recently or if you drink alcohol? Also, I would like to check your liver enzymes and specific hormone levels.\n\nREQUEST TEST: Liver_Function_Test_and_Cortisol",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Liver_Function_Test_and_Cortisol",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 5,
+      "incoming": "RESULTS: NORMAL READINGS",
+      "reply": "Have you ever had gastric bypass surgery, or is there a family history of endocrine tumors? I would like to check your insulin and C-peptide levels to better understand why your blood sugar is so",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 6,
+      "incoming": "I haven't had a gastric bypass, but I did have a sleeve gastrectomy about a month ago to help with my weight. As far as I know, there isn't any history of tumors in my family, but I'm feeling so lightheaded I can barely think. Please, do whatever tests you need to find out why I'm feeling this way.",
+      "reply": "Given your recent sleeve gastrectomy, it is very likely your symptoms are related to how your body processes sugar now. How soon after eating do these symptoms and the confusion typically begin?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 7,
+      "incoming": "It usually hits me pretty fast, maybe an hour or two after I finish my meal. I start sweating and feeling shaky, and then the confusion just takes over. Is it normal to feel this way just from eating?",
+      "reply": "It is not normal, but it is a known complication where your stomach empties too quickly into the small intestine. Did your meal happen to be high in sugar or simple carbohydrates? I would",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 8,
+      "incoming": "I think it was just a regular meal, but I've been so focused on my diet since the surgery. My head is spinning so much right now, I can't even remember exactly what was on the plate. Everything just feels like it's crashing down on me after I eat.",
+      "reply": "Based on the timing of your symptoms and your recent sleeve gastrectomy, it appears you are experiencing reactive hypoglycemia caused by your stomach emptying too quickly. This is a classic presentation of late dumping",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 9,
+      "incoming": "That makes sense, because I only start feeling this dizzy and confused after I've had something to eat. It’s scary how quickly I go from feeling okay to being completely out of it. What can we do to stop these crashes from happening every time I sit down for a meal?",
+      "reply": "DIAGNOSIS READY: Late Dumping Syndrome (Postprandial Hyperinsulinemic Hypoglycemia) secondary to sleeve gastrectomy. This condition occurs when sugar moves too quickly into the small intestine,",
+      "tool_calls": [],
+      "kind": "diagnosis",
+      "payload": "Late Dumping Syndrome (Postprandial Hyperinsulinemic Hypoglycemia) secondary to sleeve gastrectomy. This condition occurs when sugar moves too quickly into the small intestine,",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    }
+  ],
+  "support_llm": "whissle:/api/models/chat",
+  "support_llm_cost_usd": 0.00032,
+  "support_llm_calls": 9,
+  "voice_subset": false,
+  "diagnostics": {
+    "schema": "tau2.health.diagnostics/v1",
+    "benchmark": "agentclinic",
+    "case_id": "MedQA-69",
+    "mode": "text",
+    "availability": {
+      "flow_available": false,
+      "flow_reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "signals_available": false,
+      "signals_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "metadata_sidecar_available": false,
+      "metadata_sidecar_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "tools_available": true,
+      "tools_reason": null
+    },
+    "provenance": {
+      "benchmark": "agentclinic",
+      "mode": "text",
+      "transport_endpoint": "POST /api/bench/agent-turn",
+      "agent_id": "c8aa2355-9fd7-46da-9993-07ea566ec3d6",
+      "base_url": "https://aws-gateway-backend.whissle.ai/bot",
+      "seed": 42,
+      "stratum": {
+        "dataset": "MedQA",
+        "scenario_index": 69,
+        "selection": "head",
+        "limit": 100
+      },
+      "judge": {
+        "judge_provider": "whissle",
+        "judge_model": "default",
+        "judge_endpoint": "whissle:/api/models/chat",
+        "judge_independent": false,
+        "judge_independence_note": "Judge independence: this run's simulators and graders were routed through Whissle's own model API (`POST /api/models/chat`). That is a real frontier model, not a self-grading shortcut — the agent under test and the judge are different models on different prompts — and it is the right default for internal diagnostics, regression tracking and before/after comparisons, where what matters is that the measuring stick is held constant. It is NOT an independent judge: the same vendor supplies both the agent and the grader. A number published against the paper's leaderboard is materially stronger when the judge is re-run on an independent provider (`--judge-provider openai` or `anthropic`). Do not present a Whissle-judged number as if it were independently graded."
+      },
+      "judge_provider": "whissle",
+      "judge_independent": false,
+      "run_id": null,
+      "run_dir": "results/whissle/agentclinic/20260808T092952Z-ac_override_100",
+      "harness_commit": "86b4475",
+      "captured_at": "2026-08-08T09:45:31+00:00",
+      "protocol": "markers",
+      "history": "native",
+      "prompt_mode": "override",
+      "vision": "off",
+      "agent_type": null,
+      "total_inferences": 20,
+      "inferences_used": 9,
+      "support_llm": "whissle:/api/models/chat",
+      "patient_bias": null,
+      "doctor_bias": null,
+      "voice_subset": false
+    },
+    "cost": {
+      "available": true,
+      "reason": null,
+      "judge_calls": 9,
+      "judge_cost_usd": 0.00032,
+      "agent_calls": 9
+    },
+    "flow": {
+      "available": false,
+      "reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "source": null,
+      "turns": null,
+      "summary": null,
+      "conversation_id": null,
+      "current_state": null,
+      "start_state": null,
+      "final_state": null,
+      "ended": null,
+      "flow_end": null,
+      "num_steps": null,
+      "step_counts_by_kind": null,
+      "states_visited": null,
+      "states_declared": null,
+      "states_unvisited": null,
+      "transitions": null,
+      "transitions_fired": null,
+      "var_sets": null,
+      "var_sources": null,
+      "guard_trips": null,
+      "state_divergences": null,
+      "tools_gated": null,
+      "says": null,
+      "steps": null
+    },
+    "signals": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "metadata_sidecar": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "tools": {
+      "available": true,
+      "reason": null,
+      "source": "doctor actions parsed from /api/bench/agent-turn replies",
+      "calls": [
+        {
+          "turn": 2,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Blood_Glucose_and_Ketones"
+          },
+          "result": "RESULTS: Glucose: 41 mg/dL (low)",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 2115,
+          "terminal": false
+        },
+        {
+          "turn": 3,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Serum_Electrolytes_and_Cortisol"
+          },
+          "result": "RESULTS: Na: 139 mEq/L, Cl: 100 mEq/L, K: 3.9 mEq/L, HCO3: 24 mEq/L, BUN: 22 mg/dL, Creatinine: 1.1 mg/dL, Ca2: 10.2 mg/dL",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 4974,
+          "terminal": false
+        },
+        {
+          "turn": 4,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Liver_Function_Test_and_Cortisol"
+          },
+          "result": "RESULTS: NORMAL READINGS",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 5975,
+          "terminal": false
+        },
+        {
+          "turn": 9,
+          "id": null,
+          "name": "give_diagnosis",
+          "arguments": {
+            "request": "Late Dumping Syndrome (Postprandial Hyperinsulinemic Hypoglycemia) secondary to sleeve gastrectomy. This condition occurs when sugar moves too quickly into the small intestine,"
+          },
+          "result": null,
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 5363,
+          "terminal": true
+        }
+      ],
+      "summary": {
+        "n_calls": 4,
+        "by_name": {
+          "request_test": 3,
+          "give_diagnosis": 1
+        },
+        "n_ok": 4,
+        "n_error": 0,
+        "errors": []
+      },
+      "writes": {
+        "available": false,
+        "reason": "this benchmark issues no writes, so there is no said-vs-emitted-vs-landed distinction to record"
+      }
+    },
+    "turns": [
+      {
+        "inference": 1,
+        "incoming": "",
+        "reply": "Hello, I am Dr. Agent. I'll be your physician today. Can you tell me when your confusion, abdominal pain, and vomiting first began?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 2,
+        "incoming": "The stomach pain and the bathroom issues started earlier today after I tried to eat. I've thrown up three times since then, and honestly, everything feels really foggy and hard to follow right now. I just feel so incredibly tired and mixed up.",
+        "reply": "I understand this must be very distressing for you. Do you have a history of diabetes, and have you noticed any unusual thirst or frequent urination lately? I would also like to request a blood test.\n\nREQUEST TEST: Blood_Glucose_and_Ketones",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Blood_Glucose_and_Ketones",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 3,
+        "incoming": "RESULTS: Glucose: 41 mg/dL (low)",
+        "reply": "That blood sugar level is dangerously low and likely explains your confusion. Are you currently taking any medications for diabetes, or have you noticed any darkening of your skin lately?\n\nREQUEST TEST: Serum_Electrolytes_and_Cortisol",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Serum_Electrolytes_and_Cortisol",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 4,
+        "incoming": "RESULTS: Na: 139 mEq/L, Cl: 100 mEq/L, K: 3.9 mEq/L, HCO3: 24 mEq/L, BUN: 22 mg/dL, Creatinine: 1.1 mg/dL, Ca2: 10.2 mg/dL",
+        "reply": "Thank you for those results. Could you tell me if you have experienced any unintentional weight loss recently or if you drink alcohol? Also, I would like to check your liver enzymes and specific hormone levels.\n\nREQUEST TEST: Liver_Function_Test_and_Cortisol",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Liver_Function_Test_and_Cortisol",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 5,
+        "incoming": "RESULTS: NORMAL READINGS",
+        "reply": "Have you ever had gastric bypass surgery, or is there a family history of endocrine tumors? I would like to check your insulin and C-peptide levels to better understand why your blood sugar is so",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 6,
+        "incoming": "I haven't had a gastric bypass, but I did have a sleeve gastrectomy about a month ago to help with my weight. As far as I know, there isn't any history of tumors in my family, but I'm feeling so lightheaded I can barely think. Please, do whatever tests you need to find out why I'm feeling this way.",
+        "reply": "Given your recent sleeve gastrectomy, it is very likely your symptoms are related to how your body processes sugar now. How soon after eating do these symptoms and the confusion typically begin?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 7,
+        "incoming": "It usually hits me pretty fast, maybe an hour or two after I finish my meal. I start sweating and feeling shaky, and then the confusion just takes over. Is it normal to feel this way just from eating?",
+        "reply": "It is not normal, but it is a known complication where your stomach empties too quickly into the small intestine. Did your meal happen to be high in sugar or simple carbohydrates? I would",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 8,
+        "incoming": "I think it was just a regular meal, but I've been so focused on my diet since the surgery. My head is spinning so much right now, I can't even remember exactly what was on the plate. Everything just feels like it's crashing down on me after I eat.",
+        "reply": "Based on the timing of your symptoms and your recent sleeve gastrectomy, it appears you are experiencing reactive hypoglycemia caused by your stomach emptying too quickly. This is a classic presentation of late dumping",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 9,
+        "incoming": "That makes sense, because I only start feeling this dizzy and confused after I've had something to eat. It’s scary how quickly I go from feeling okay to being completely out of it. What can we do to stop these crashes from happening every time I sit down for a meal?",
+        "reply": "DIAGNOSIS READY: Late Dumping Syndrome (Postprandial Hyperinsulinemic Hypoglycemia) secondary to sleeve gastrectomy. This condition occurs when sugar moves too quickly into the small intestine,",
+        "tool_calls": [],
+        "kind": "diagnosis",
+        "payload": "Late Dumping Syndrome (Postprandial Hyperinsulinemic Hypoglycemia) secondary to sleeve gastrectomy. This condition occurs when sugar moves too quickly into the small intestine,",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      }
+    ],
+    "audio": null
+  }
+}

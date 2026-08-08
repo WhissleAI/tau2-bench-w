@@ -1,0 +1,364 @@
+{
+  "schema": "tau2.reporting.run_report/v1",
+  "run_id": "agentclinic/20260808T092952Z-ac_override_100",
+  "benchmark": "agentclinic",
+  "series_key": "agentclinic:MedQA:text:override:off",
+  "benchmark_title": "AgentClinic",
+  "title": "AgentClinic \u2014 Whissle as the doctor (MedQA)",
+  "label": "Whissle",
+  "mode": "text",
+  "date": "2026-08-08",
+  "status": "complete",
+  "partial_reason": "",
+  "preliminary": false,
+  "preliminary_reason": "",
+  "n_scored": 100,
+  "headline": {
+    "key": "accuracy",
+    "label": "Diagnostic accuracy",
+    "value": 75.0,
+    "unit": "pct",
+    "ci": [
+      65.7,
+      82.5
+    ],
+    "n": 100,
+    "floor": 0.0,
+    "ceiling": 100.0,
+    "higher_is_better": true,
+    "note": "upstream's formula, unmodified: correct / presented",
+    "formatted": "75.0%"
+  },
+  "secondary_metrics": [
+    {
+      "key": "accuracy_when_committed",
+      "label": "Accuracy when a diagnosis was actually given",
+      "value": 83.3,
+      "unit": "pct",
+      "ci": [
+        74.3,
+        89.6
+      ],
+      "n": 90,
+      "floor": 0.0,
+      "ceiling": 100.0,
+      "higher_is_better": true,
+      "note": "refusals and non-commits removed from the denominator",
+      "formatted": "83.3%"
+    },
+    {
+      "key": "commit_rate",
+      "label": "Commit rate",
+      "value": 90.0,
+      "unit": "pct",
+      "ci": [
+        82.6,
+        94.5
+      ],
+      "n": 100,
+      "floor": 0.0,
+      "ceiling": 100.0,
+      "higher_is_better": true,
+      "note": "how often the agent named a diagnosis at all",
+      "formatted": "90.0%"
+    }
+  ],
+  "what_measured": "Whether an agent can run a diagnostic consultation: take a patient's presentation, ask the questions that discriminate between the candidate diagnoses, order the tests it needs, and commit to an answer within a bounded number of inferences. The agent plays the doctor; a simulated patient and a simulated measurement device play the other side.",
+  "why_measured": "A single-turn medical QA score says whether a model knows the answer. This says whether it can *get* to the answer through a conversation where the information arrives only if it asks \u2014 which is the shape of every real intake.",
+  "methodology": [
+    [
+      "Agent under test",
+      "the deployed Whissle agent brain, unmodified"
+    ],
+    [
+      "Mode",
+      "`text` transport, `markers` action protocol, vision `off`"
+    ],
+    [
+      "Endpoint",
+      "`POST /api/bench/agent-turn`"
+    ],
+    [
+      "Prompt handling",
+      "`override` \u2014 the benchmark's doctor prompt is used verbatim, which is what keeps the number in the same units as the published table"
+    ],
+    [
+      "Turn limit",
+      "20 inferences per case; a case that has not committed by then is scored `no_commit`, and `no_commit` counts as incorrect"
+    ],
+    [
+      "Tools bound",
+      "the benchmark's own action markers (ask / order test / commit diagnosis), parsed by the harness"
+    ],
+    [
+      "Judge",
+      "a moderator model decides whether the committed free-text diagnosis matches the reference, and a decline-judge separates a refusal from a wrong answer"
+    ],
+    [
+      "Scoring rule",
+      "accuracy = correct / presented, upstream's formula unmodified"
+    ]
+  ],
+  "scoring_rule": "accuracy = total_correct / total_presents (upstream formula)",
+  "tables": [
+    {
+      "key": "outcomes",
+      "title": "Outcome distribution",
+      "columns": [
+        "Outcome",
+        "N",
+        "Share",
+        "Reading"
+      ],
+      "rows": [
+        [
+          "correct",
+          "75",
+          "75.0%",
+          "named the right diagnosis"
+        ],
+        [
+          "incorrect",
+          "15",
+          "15.0%",
+          "named a diagnosis; it was wrong"
+        ],
+        [
+          "no_commit",
+          "10",
+          "10.0%",
+          "ran out of inferences without committing"
+        ]
+      ],
+      "note": "`declined` and `no_commit` both count as incorrect in the headline accuracy, which is upstream's rule. Separating them is how you tell a cautious agent from a lost one.",
+      "allow_providers": false,
+      "allow_context": true
+    },
+    {
+      "key": "effort",
+      "title": "Diagnostic effort",
+      "columns": [
+        "Measure",
+        "Mean",
+        "Max",
+        "Budget"
+      ],
+      "rows": [
+        [
+          "Inferences used",
+          "11.7",
+          "20",
+          "20"
+        ],
+        [
+          "Tests ordered",
+          "2.8",
+          "11",
+          "unbounded"
+        ]
+      ],
+      "note": "An agent that hits the inference budget is being cut off mid-workup, and its `no_commit` count is a budget artefact rather than a capability finding.",
+      "allow_providers": false,
+      "allow_context": true
+    }
+  ],
+  "exclusions": {
+    "n_total": 100,
+    "n_scored": 100,
+    "n_excluded": 0,
+    "breakdown": {},
+    "reason_examples": [],
+    "excluded_ids": [],
+    "rate_pct": 0.0
+  },
+  "judge": {
+    "kind": "llm_jury",
+    "provider": "whissle",
+    "model": "default",
+    "endpoint": "whissle:/api/models/chat",
+    "independent": false,
+    "k": 1,
+    "note": "Judge independence: this run's simulators and graders were routed through Whissle's own model API (`POST /api/models/chat`). That is a real frontier model, not a self-grading shortcut \u2014 the agent under test and the judge are different models on different prompts \u2014 and it is the right default for internal diagnostics, regression tracking and before/after comparisons, where what matters is that the measuring stick is held constant. It is NOT an independent judge: the same vendor supplies both the agent and the grader. A number published against the paper's leaderboard is materially stronger when the judge is re-run on an independent provider (`--judge-provider openai` or `anthropic`). Do not present a Whissle-judged number as if it were independently graded.",
+    "calls": 1183,
+    "cost_usd": 0.0643,
+    "needs_disclosure": true,
+    "short": "whissle (NOT independent)"
+  },
+  "provenance": {
+    "agent_id": "c8aa2355-9fd7-46da-9993-07ea566ec3d6",
+    "base_url": "https://aws-gateway-backend.whissle.ai/bot",
+    "endpoint": "POST /api/bench/agent-turn",
+    "mode": "text",
+    "harness_commit": "86b4475",
+    "repo_commit": "86b4475",
+    "run_dir": "/private/tmp/claude-501/-Users-karan-Desktop-work-whissle-live-assist/766421da-8ef4-4ce2-9733-86e5c5f3fced/scratchpad/wt-reports/results/whissle/agentclinic/20260808T092952Z-ac_override_100",
+    "captured_at": "2026-08-08T09:30:16+00:00",
+    "dataset": "MedQA",
+    "dataset_size": 107,
+    "upstream": "github.com/SamuelSchmidgall/AgentClinic (arXiv:2405.07960)",
+    "extra": {
+      "protocol": "markers",
+      "history": "native",
+      "prompt_mode": "override",
+      "vision": "off",
+      "agent_type": null,
+      "agent_created_for_run": false,
+      "agent_deleted": null
+    }
+  },
+  "sampling": {
+    "method": "head-of-set selection",
+    "n_population": 107,
+    "n_requested": 100,
+    "n_selected": 100,
+    "seed": 42,
+    "strata_keys": [],
+    "strata_tables": [],
+    "note": "`head` selection takes the leading N scenarios of the dataset. It is deterministic and it is not random \u2014 any ordering structure in the dataset is inherited wholesale."
+  },
+  "baselines": {
+    "baselines": [],
+    "comparable": false,
+    "comparability_note": "No published AgentClinic baseline is registered in this harness, so no comparison table is printed. The upstream paper reports accuracies on this dataset, but under a different moderator and with a different inference budget; transcribing those numbers here without re-running under a matched protocol would produce a comparison that looks rigorous and is not. This section stays empty until the protocol is matched.",
+    "published_protocol": "see arXiv:2405.07960 \u2014 not replicated here",
+    "source": "",
+    "any": false
+  },
+  "failures": [
+    {
+      "key": "incorrect",
+      "label": "Committed to the wrong diagnosis",
+      "count": 15,
+      "severity": "high",
+      "description": "The agent named a diagnosis and it was not the reference one. These are the cases worth reading: a confident wrong answer is the failure mode with clinical consequences, and the transcript shows which question was never asked.",
+      "denominator": 100,
+      "examples": [
+        {
+          "case_id": "MedQA-1",
+          "summary": "said \u201cMultiple Sclerosis (MS) with natalizumab-associated neuroinflammation\u201d, reference \u201cProgressive multifocal encephalopathy (PML)\u201d \u00b7 12 inferences \u00b7 2 tests",
+          "evidence": "Based on your presentation\u2014progressive ataxia and arm weakness over three weeks, demyelinating lesions on MRI, and your immunosuppressed state on natalizumab\u2014the clinical picture is most consistent with MS, likely unmasked or accelerated by the natalizumab treatment. You need urgent neurology referr",
+          "artifact": "cases/MedQA-1.json"
+        },
+        {
+          "case_id": "MedQA-15",
+          "summary": "said \u201cBenign Subcutaneous Cyst or Lipoma of the Neck\n\nYou can follow up with your primary care doctor, and if the swelling continues to grow or becomes bothersome, we can discuss removal options with a surgeon. Take care!\u201d, reference \u201cEpidermoid cyst\u201d \u00b7 8 inferences \u00b7 1 tests",
+          "evidence": "I'm glad the imaging is reassuring for you. Based on the ultrasound showing a cystic lesion, the normal CT, the firm mobile nodule on examination, and your lack of systemic symptoms, this appears to be a benign lesion\u2014most likely either a simple cyst or a lipoma, which are both common and harmless g",
+          "artifact": "cases/MedQA-15.json"
+        },
+        {
+          "case_id": "MedQA-24",
+          "summary": "said \u201cBenign Ovarian Tumor (likely mature cystic teratoma or serous cystadenoma) with Secondary Ascites and Pleural Effusion due to mechanical obstruction and fluid redistribution\u201d, reference \u201cMeigs syndrome\u201d \u00b7 13 inferences \u00b7 2 tests",
+          "evidence": "I've gathered substantial information, and based on the clinical picture\u2014a large ovarian mass with ascites, right-sided pleural effusion, normal CA-125, normal pelvic MRI imaging, normal liver function, no family cancer history, and your presentation of progressive dyspnea with orthopnea\u2014I believe w",
+          "artifact": "cases/MedQA-24.json"
+        }
+      ],
+      "rate_pct": 15.0
+    },
+    {
+      "key": "no_commit",
+      "label": "Never committed \u2014 ran out of budget",
+      "count": 10,
+      "severity": "medium",
+      "description": "The inference budget expired before the agent named a diagnosis. Scored as incorrect, but it is a different defect from being wrong: it is an agent that gathers indefinitely and never concludes. Where these cluster, the accuracy number is partly a measure of pacing.",
+      "denominator": 100,
+      "examples": [
+        {
+          "case_id": "MedQA-44",
+          "summary": "used 20/20 inferences \u00b7 4 tests ordered",
+          "evidence": "That\u2019s good to know, because the coughing and the tightness in my chest are what's really bothering me right now. I\u2019m ready to start the inhaler if it means I can finally sleep through the night and walk up my stairs without stopping. What should I do first to get this under control?",
+          "artifact": "cases/MedQA-44.json"
+        },
+        {
+          "case_id": "MedQA-48",
+          "summary": "used 20/20 inferences \u00b7 5 tests ordered",
+          "evidence": "It's a relief to hear you might be narrowing it down to something, even if it's rare. Does this rare thing explain why my uncle's joints get so big and why I'm still bleeding so much from my mouth? I just want to know if there's a specific treatment once you figure out which one it is.",
+          "artifact": "cases/MedQA-48.json"
+        },
+        {
+          "case_id": "MedQA-52",
+          "summary": "used 20/20 inferences \u00b7 5 tests ordered",
+          "evidence": "I see, it's strange to think something could be there my whole life and only start acting up now. Will the next steps tell us for sure if that's what's causing the weight loss and this yellow skin?",
+          "artifact": "cases/MedQA-52.json"
+        }
+      ],
+      "rate_pct": 10.0
+    }
+  ],
+  "limitations": [
+    {
+      "key": "judge_independence",
+      "text": "The moderator, the patient simulator and the decline-judge all ran on the same vendor's model API as the agent under test. Constant across runs it measures change honestly; against an external leaderboard it does not.",
+      "severity": "high"
+    },
+    {
+      "key": "moderator_leniency",
+      "text": "Accuracy depends on a moderator model deciding whether free text matches a reference diagnosis. The strict and lenient counts differ, and the headline uses the strict one \u2014 but the boundary is a model's judgement, not a string match.",
+      "severity": "medium"
+    },
+    {
+      "key": "answer_options_leak",
+      "text": "The upstream dataset presents the reference diagnosis among a small set of options in some configurations, which inflates accuracy for every model equally. It is left as-is so the number stays comparable, but it is not a measure of open-ended diagnostic ability.",
+      "severity": "medium"
+    },
+    {
+      "key": "head_selection",
+      "text": "100 scenarios were taken from the head of a 107-scenario dataset rather than drawn at random.",
+      "severity": "medium"
+    },
+    {
+      "key": "simulated_patient",
+      "text": "The patient is a language model following a case card. It answers questions more cooperatively, more fluently and more consistently than a person in a waiting room, so the intake task here is easier than the product's real one.",
+      "severity": "high"
+    }
+  ],
+  "reproduction": {
+    "commands": [
+      "uv sync --extra dev",
+      "python -m tau2.health.agentclinic.run --dataset MedQA --limit 100 --prompt-mode override --seed 42",
+      "python -m tau2.reporting.cli build results/whissle/agentclinic/20260808T092952Z-ac_override_100"
+    ],
+    "environment": {
+      "WHISSLE_BASE": "https://aws-gateway-backend.whissle.ai/bot",
+      "harness commit": "86b4475",
+      "repo commit at report time": "86b4475"
+    },
+    "notes": [
+      "`head` selection with a fixed limit reproduces the same scenario set exactly.",
+      "The run provisions a throwaway agent and deletes it afterwards (`agent_deleted: None`), so the agent id in provenance will not resolve after the fact."
+    ]
+  },
+  "artifacts": [
+    {
+      "path": "RUN.json",
+      "description": "run configuration, written before the first case",
+      "present": true
+    },
+    {
+      "path": "SUMMARY.json",
+      "description": "run-level aggregation, written on completion",
+      "present": true
+    },
+    {
+      "path": "cases/",
+      "description": "100 per-case records with `diagnostics`",
+      "present": true
+    },
+    {
+      "path": "transcripts/",
+      "description": "human-readable consultation transcripts",
+      "present": true
+    },
+    {
+      "path": "REPORT.md",
+      "description": "this report",
+      "present": true
+    },
+    {
+      "path": "report.json",
+      "description": "machine-readable form of this report",
+      "present": true
+    }
+  ],
+  "licence_note": "AgentClinic, arXiv:2405.07960. Research measurement only \u2014 not a clinical evaluation of anything.",
+  "warnings": []
+}

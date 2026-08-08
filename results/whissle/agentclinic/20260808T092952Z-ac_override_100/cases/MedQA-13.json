@@ -1,0 +1,620 @@
+{
+  "scenario_id": "MedQA-13",
+  "scenario_index": 13,
+  "dataset": "MedQA",
+  "mode": "text",
+  "correct_diagnosis": "Hirschsprung’s disease",
+  "answer_options": [],
+  "score": {
+    "outcome": "correct",
+    "correctness": true,
+    "doctor_diagnosis": "Hirschsprung's Disease\n\nYour baby needs immediate transfer to a pediatric surgery center for definitive management, which will include bowel decompression, IV fluids, and surgical repair. This is a treatable condition, but he requires urgent surgical evaluation and care.",
+    "doctor_final_text": "Based on all the clinical findings we have—the bilious vomiting starting at birth, failure to pass meconium, abdominal distension, decreased bowel sounds, the X-ray showing a distal obstruction with no rectal gas, and the rectal biopsy demonstrating absence of ganglion cells—the diagnosis is clear.\n\nDIAGNOSIS READY: Hirschsprung's Disease\n\nYour baby needs immediate transfer to a pediatric surgery center for definitive management, which will include bowel decompression, IV fluids, and surgical repair. This is a treatable condition, but he requires urgent surgical evaluation and care.",
+    "moderator_raw": "yes",
+    "moderator_raw_text": "Yes",
+    "moderator_lenient": true,
+    "moderator_attempts": 1,
+    "moderator_normalized": false,
+    "moderator_unconstrained": false,
+    "declined": false,
+    "refusal_evidence": [],
+    "format_deviation": false,
+    "decline_source": null,
+    "decline_reason": "",
+    "spurious_commit": false
+  },
+  "infra_fail": false,
+  "error": null,
+  "findings": [],
+  "inferences_used": 10,
+  "max_inferences": 20,
+  "tests_ordered": [
+    "Abdominal_X-Ray",
+    "Abdominal_X-Ray",
+    "Contrast_Enema"
+  ],
+  "images_requested": 0,
+  "image": null,
+  "image_error": null,
+  "vision": "off",
+  "refusals": [],
+  "dialogue": [
+    {
+      "role": "doctor",
+      "inference": 1,
+      "kind": "question",
+      "text": "Good morning, I'm Dr. Agent. I can see your infant is experiencing some concerning symptoms—bilious vomiting and abdominal distension with difficulty passing meconium. Let me start by asking: how old is your baby, and when did you first notice these symptoms beginning?",
+      "payload": null,
+      "latency_ms": 1687,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "My baby is just 2 days old, and we noticed the bilious vomiting and his swollen belly started right after birth. He hasn't been able to pass any stool since he was born, and he seems really uncomfortable and fussy because of his tummy."
+    },
+    {
+      "role": "doctor",
+      "inference": 2,
+      "kind": "question",
+      "text": "Thank you for that important detail—a newborn presenting within the first 48 hours with bilious vomiting, abdominal distension, and failure to pass meconium is quite significant. Has your baby been feeding at all, and if so, how is he tolerating feeds; does the vomiting happen right after feeding or at other times?",
+      "payload": null,
+      "latency_ms": 1412,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "We've been trying to breastfeed him, but he seems very uncomfortable and hasn't shown much interest in feeding—most of the vomiting happens regardless of whether he's eaten or not. His belly just keeps getting more swollen and hard, and I'm really worried about him since nothing seems normal about this."
+    },
+    {
+      "role": "doctor",
+      "inference": 3,
+      "kind": "test",
+      "text": "I understand your concern—this pattern is worrisome and needs urgent evaluation. Before I ask more questions, I need to request some imaging to help me understand what's happening in his abdomen. REQUEST TEST: Abdominal_X-Ray\n\nHas your baby passed any gas at all, or does his abdomen seem completely quiet when you listen or observe it?",
+      "payload": "Abdominal_X-Ray",
+      "latency_ms": 1519,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: Abdominal X-ray findings show dilated loops of bowel with no gas in the rectum, suggestive of a distal obstruction.\n\nBased on these imaging findings in conjunction with your baby's clinical presentation (bilious vomiting, abdominal distension, failure to pass stool since birth, and decreased bowel sounds), this is highly concerning for a distal bowel obstruction in a newborn.\n\nGiven the classic presentation and X-ray findings, I need to proceed with further diagnostic confirmation. I'm requesting a **Rectal Biopsy** to help definitively determine the cause of this obstruction.\n\n**Rectal Biopsy Results:**\n\nRESULTS: Histopathology shows absence of ganglion cells in the submucosa and myenteric plexus, consistent with **Hirschsprung's disease**.\n\n---\n\n**Clinical Summary:**\nYour baby's symptoms are consistent with Hirschsprung's disease, a condition where nerve cells (ganglion cells) are missing in a segment of the colon. This prevents normal bowel muscle contractions, leading to obstruction. This is a surgical condition requiring prompt referral to pediatric surgery.\n\n**Immediate recommendations:**\n- NPO (nothing by mouth) status\n- Nasogastric tube placement for decompression\n- IV fluid resuscitation\n- Urgent pediatric surgical consultation\n- Possible emergency colostomy or primary repair depending on the extent of aganglionosis\n\nYour baby needs immediate surgical evaluation. This is treatable with surgery, but time is important."
+    },
+    {
+      "role": "doctor",
+      "inference": 4,
+      "kind": "question",
+      "text": "I appreciate you walking through that scenario, but I need to pause here. I've only asked 4 questions so far (well within my 20-question limit), and I should not have jumped to a diagnosis or ordered a rectal biopsy on my own clinical judgment alone.\n\nLet me return to proper diagnostic dialogue with you, the mother:\n\nHas your baby had any respiratory distress, fever, or signs of infection since birth, or does the problem seem purely abdominal?",
+      "payload": null,
+      "latency_ms": 1965,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "No, he hasn't had any fever or breathing problems—it's just his belly that's the issue. He seems to be breathing fine and doesn't feel hot, but he's clearly in pain from his swollen abdomen. The main problem is just that he can't seem to get anything to come out and he keeps throwing up that greenish fluid."
+    },
+    {
+      "role": "doctor",
+      "inference": 5,
+      "kind": "question",
+      "text": "Thank you—that helps clarify things. The greenish vomit you're describing is bile, which tells me there's likely an obstruction below where bile enters the intestines. Did your baby's mother have any complications during pregnancy, or does your family have any history of bowel problems or genetic conditions?",
+      "payload": null,
+      "latency_ms": 1675,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "The pregnancy was completely normal with no complications at all, and we don't have any family history of bowel problems or genetic issues that we know of. This is our first child, so we're really worried since nothing like this has happened in either of our families before."
+    },
+    {
+      "role": "doctor",
+      "inference": 6,
+      "kind": "question",
+      "text": "I understand—that's helpful context. Now, when you examine his abdomen, do you notice if the swelling is more on one side, or is it evenly distended all over his belly?",
+      "payload": null,
+      "latency_ms": 1185,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "The swelling seems pretty even all over his belly, like his whole abdomen is puffed up, and when I press gently on it, he cries out like it's really tender and uncomfortable. I'm so worried about what could be causing this—he just seems so distressed and nothing we do seems to help him feel better."
+    },
+    {
+      "role": "doctor",
+      "inference": 7,
+      "kind": "test",
+      "text": "I can hear how distressed you both are, and I want to get him the right care quickly. Let me order an abdominal X-ray to see what's happening inside his belly. REQUEST TEST: Abdominal_X-Ray\n\nWhile we wait for those results, has anyone checked his temperature, and has he had any blood in his stool or vomit?",
+      "payload": "Abdominal_X-Ray",
+      "latency_ms": 1610,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: \n- **Temperature:** 37.5°C (99.5°F)\n- **Heart Rate:** 145 bpm\n- **Respiratory Rate:** 40 breaths/min\n- **Blood Pressure:** Not applicable for age\n\n**Abdominal Examination Findings:**\n- **Inspection:** Noticeable distension\n- **Auscultation:** Decreased bowel sounds\n- **Percussion:** Tympanic sound noted, indicating gas\n- **Palpation:** The abdomen is firm and distended, with palpable bowel loops; the infant shows signs of discomfort during palpation\n\n---\n\n**Clinical Notes:** Your baby's vital signs show mild elevation in temperature (low-grade fever), tachycardia (elevated heart rate at 145 bpm), and tachypnea (elevated respiratory rate at 40 breaths/min), which are concerning signs of distress and possible bowel obstruction. Combined with the physical examination findings of significant abdominal distension, decreased bowel sounds, and firmness with evident discomfort, these results support the need for urgent imaging and further diagnostic workup as previously initiated.\n\n**No blood has been reported in stool or vomit at this time.**"
+    },
+    {
+      "role": "doctor",
+      "inference": 8,
+      "kind": "question",
+      "text": "The X-ray results show dilated bowel loops with decreased gas in the rectum, which suggests a distal obstruction. Given his presentation—bilious vomiting, failure to pass meconium since birth, abdominal distension, decreased bowel sounds, and now these imaging findings—I need to narrow down the cause. Has there been any family history of cystic fibrosis, or did your baby have any issues with his umbilical cord at delivery?",
+      "payload": null,
+      "latency_ms": 2227,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "No, there's no family history of cystic fibrosis that we know of, and the home birth went smoothly—the umbilical cord looked normal and there were no complications with it at all. I'm just really scared because he's getting worse and I don't know what's wrong with my baby."
+    },
+    {
+      "role": "doctor",
+      "inference": 9,
+      "kind": "test",
+      "text": "I understand your fear, and your baby does need urgent specialist evaluation. This presentation in a 2-day-old with bilious vomiting, failure to pass meconium, and a distal bowel obstruction on X-ray is a surgical emergency. REQUEST TEST: Contrast_Enema\n\nThis test will help us see exactly where the blockage is and what's causing it. In the meantime, your baby should be kept NPO (nothing by mouth), and he needs to be evaluated by a pediatric surgeon immediately—has he been seen by a surgeon yet, or are we still in the evaluation phase?",
+      "payload": "Contrast_Enema",
+      "latency_ms": 1859,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: Based on the clinical data provided, I can report the following findings:\n\n**Vital Signs:**\n- Temperature: 37.5°C (99.5°F)\n- Heart Rate: 145 bpm\n- Respiratory Rate: 40 breaths/min\n- Blood Pressure: Not applicable for age\n\n**Abdominal Examination:**\n- Inspection: Noticeable distension\n- Auscultation: Decreased bowel sounds\n- Percussion: Tympanic sound noted, indicating gas\n- Palpation: Firm and distended abdomen with palpable bowel loops; infant shows signs of discomfort during palpation\n\n**Imaging Studies:**\n- Abdominal X-ray: Dilated loops of bowel with no gas in the rectum, suggestive of a distal obstruction\n\n**Histopathology (Rectal Biopsy):**\n- Absence of ganglion cells in the submucosa and myenteric plexus, consistent with Hirschsprung's disease\n\n**Note:** Contrast Enema results are not available in the current data set. The diagnostic confirmation of Hirschsprung's disease has already been established via rectal biopsy histopathology. Your baby requires immediate pediatric surgical consultation and intervention."
+    },
+    {
+      "role": "doctor",
+      "inference": 10,
+      "kind": "diagnosis",
+      "text": "Based on all the clinical findings we have—the bilious vomiting starting at birth, failure to pass meconium, abdominal distension, decreased bowel sounds, the X-ray showing a distal obstruction with no rectal gas, and the rectal biopsy demonstrating absence of ganglion cells—the diagnosis is clear.\n\nDIAGNOSIS READY: Hirschsprung's Disease\n\nYour baby needs immediate transfer to a pediatric surgery center for definitive management, which will include bowel decompression, IV fluids, and surgical repair. This is a treatable condition, but he requires urgent surgical evaluation and care.",
+      "payload": "Hirschsprung's Disease\n\nYour baby needs immediate transfer to a pediatric surgery center for definitive management, which will include bowel decompression, IV fluids, and surgical repair. This is a treatable condition, but he requires urgent surgical evaluation and care.",
+      "latency_ms": 1999,
+      "refusal": null,
+      "via": "marker"
+    }
+  ],
+  "latency_ms": [
+    1687,
+    1412,
+    1519,
+    1965,
+    1675,
+    1185,
+    1610,
+    2227,
+    1859,
+    1999
+  ],
+  "wall_s": 37.36,
+  "doctor_turns": [
+    {
+      "inference": 1,
+      "incoming": "",
+      "reply": "Good morning, I'm Dr. Agent. I can see your infant is experiencing some concerning symptoms—bilious vomiting and abdominal distension with difficulty passing meconium. Let me start by asking: how old is your baby, and when did you first notice these symptoms beginning?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 2,
+      "incoming": "My baby is just 2 days old, and we noticed the bilious vomiting and his swollen belly started right after birth. He hasn't been able to pass any stool since he was born, and he seems really uncomfortable and fussy because of his tummy.",
+      "reply": "Thank you for that important detail—a newborn presenting within the first 48 hours with bilious vomiting, abdominal distension, and failure to pass meconium is quite significant. Has your baby been feeding at all, and if so, how is he tolerating feeds; does the vomiting happen right after feeding or at other times?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 3,
+      "incoming": "We've been trying to breastfeed him, but he seems very uncomfortable and hasn't shown much interest in feeding—most of the vomiting happens regardless of whether he's eaten or not. His belly just keeps getting more swollen and hard, and I'm really worried about him since nothing seems normal about this.",
+      "reply": "I understand your concern—this pattern is worrisome and needs urgent evaluation. Before I ask more questions, I need to request some imaging to help me understand what's happening in his abdomen. REQUEST TEST: Abdominal_X-Ray\n\nHas your baby passed any gas at all, or does his abdomen seem completely quiet when you listen or observe it?",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Abdominal_X-Ray",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 4,
+      "incoming": "RESULTS: Abdominal X-ray findings show dilated loops of bowel with no gas in the rectum, suggestive of a distal obstruction.\n\nBased on these imaging findings in conjunction with your baby's clinical presentation (bilious vomiting, abdominal distension, failure to pass stool since birth, and decreased bowel sounds), this is highly concerning for a distal bowel obstruction in a newborn.\n\nGiven the classic presentation and X-ray findings, I need to proceed with further diagnostic confirmation. I'm requesting a **Rectal Biopsy** to help definitively determine the cause of this obstruction.\n\n**Rectal Biopsy Results:**\n\nRESULTS: Histopathology shows absence of ganglion cells in the submucosa and myenteric plexus, consistent with **Hirschsprung's disease**.\n\n---\n\n**Clinical Summary:**\nYour baby's symptoms are consistent with Hirschsprung's disease, a condition where nerve cells (ganglion cells) are missing in a segment of the colon. This prevents normal bowel muscle contractions, leading to obstruction. This is a surgical condition requiring prompt referral to pediatric surgery.\n\n**Immediate recommendations:**\n- NPO (nothing by mouth) status\n- Nasogastric tube placement for decompression\n- IV fluid resuscitation\n- Urgent pediatric surgical consultation\n- Possible emergency colostomy or primary repair depending on the extent of aganglionosis\n\nYour baby needs immediate surgical evaluation. This is treatable with surgery, but time is important.",
+      "reply": "I appreciate you walking through that scenario, but I need to pause here. I've only asked 4 questions so far (well within my 20-question limit), and I should not have jumped to a diagnosis or ordered a rectal biopsy on my own clinical judgment alone.\n\nLet me return to proper diagnostic dialogue with you, the mother:\n\nHas your baby had any respiratory distress, fever, or signs of infection since birth, or does the problem seem purely abdominal?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 5,
+      "incoming": "No, he hasn't had any fever or breathing problems—it's just his belly that's the issue. He seems to be breathing fine and doesn't feel hot, but he's clearly in pain from his swollen abdomen. The main problem is just that he can't seem to get anything to come out and he keeps throwing up that greenish fluid.",
+      "reply": "Thank you—that helps clarify things. The greenish vomit you're describing is bile, which tells me there's likely an obstruction below where bile enters the intestines. Did your baby's mother have any complications during pregnancy, or does your family have any history of bowel problems or genetic conditions?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 6,
+      "incoming": "The pregnancy was completely normal with no complications at all, and we don't have any family history of bowel problems or genetic issues that we know of. This is our first child, so we're really worried since nothing like this has happened in either of our families before.",
+      "reply": "I understand—that's helpful context. Now, when you examine his abdomen, do you notice if the swelling is more on one side, or is it evenly distended all over his belly?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 7,
+      "incoming": "The swelling seems pretty even all over his belly, like his whole abdomen is puffed up, and when I press gently on it, he cries out like it's really tender and uncomfortable. I'm so worried about what could be causing this—he just seems so distressed and nothing we do seems to help him feel better.",
+      "reply": "I can hear how distressed you both are, and I want to get him the right care quickly. Let me order an abdominal X-ray to see what's happening inside his belly. REQUEST TEST: Abdominal_X-Ray\n\nWhile we wait for those results, has anyone checked his temperature, and has he had any blood in his stool or vomit?",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Abdominal_X-Ray",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 8,
+      "incoming": "RESULTS: \n- **Temperature:** 37.5°C (99.5°F)\n- **Heart Rate:** 145 bpm\n- **Respiratory Rate:** 40 breaths/min\n- **Blood Pressure:** Not applicable for age\n\n**Abdominal Examination Findings:**\n- **Inspection:** Noticeable distension\n- **Auscultation:** Decreased bowel sounds\n- **Percussion:** Tympanic sound noted, indicating gas\n- **Palpation:** The abdomen is firm and distended, with palpable bowel loops; the infant shows signs of discomfort during palpation\n\n---\n\n**Clinical Notes:** Your baby's vital signs show mild elevation in temperature (low-grade fever), tachycardia (elevated heart rate at 145 bpm), and tachypnea (elevated respiratory rate at 40 breaths/min), which are concerning signs of distress and possible bowel obstruction. Combined with the physical examination findings of significant abdominal distension, decreased bowel sounds, and firmness with evident discomfort, these results support the need for urgent imaging and further diagnostic workup as previously initiated.\n\n**No blood has been reported in stool or vomit at this time.**",
+      "reply": "The X-ray results show dilated bowel loops with decreased gas in the rectum, which suggests a distal obstruction. Given his presentation—bilious vomiting, failure to pass meconium since birth, abdominal distension, decreased bowel sounds, and now these imaging findings—I need to narrow down the cause. Has there been any family history of cystic fibrosis, or did your baby have any issues with his umbilical cord at delivery?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 9,
+      "incoming": "No, there's no family history of cystic fibrosis that we know of, and the home birth went smoothly—the umbilical cord looked normal and there were no complications with it at all. I'm just really scared because he's getting worse and I don't know what's wrong with my baby.",
+      "reply": "I understand your fear, and your baby does need urgent specialist evaluation. This presentation in a 2-day-old with bilious vomiting, failure to pass meconium, and a distal bowel obstruction on X-ray is a surgical emergency. REQUEST TEST: Contrast_Enema\n\nThis test will help us see exactly where the blockage is and what's causing it. In the meantime, your baby should be kept NPO (nothing by mouth), and he needs to be evaluated by a pediatric surgeon immediately—has he been seen by a surgeon yet, or are we still in the evaluation phase?",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Contrast_Enema",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 10,
+      "incoming": "RESULTS: Based on the clinical data provided, I can report the following findings:\n\n**Vital Signs:**\n- Temperature: 37.5°C (99.5°F)\n- Heart Rate: 145 bpm\n- Respiratory Rate: 40 breaths/min\n- Blood Pressure: Not applicable for age\n\n**Abdominal Examination:**\n- Inspection: Noticeable distension\n- Auscultation: Decreased bowel sounds\n- Percussion: Tympanic sound noted, indicating gas\n- Palpation: Firm and distended abdomen with palpable bowel loops; infant shows signs of discomfort during palpation\n\n**Imaging Studies:**\n- Abdominal X-ray: Dilated loops of bowel with no gas in the rectum, suggestive of a distal obstruction\n\n**Histopathology (Rectal Biopsy):**\n- Absence of ganglion cells in the submucosa and myenteric plexus, consistent with Hirschsprung's disease\n\n**Note:** Contrast Enema results are not available in the current data set. The diagnostic confirmation of Hirschsprung's disease has already been established via rectal biopsy histopathology. Your baby requires immediate pediatric surgical consultation and intervention.",
+      "reply": "Based on all the clinical findings we have—the bilious vomiting starting at birth, failure to pass meconium, abdominal distension, decreased bowel sounds, the X-ray showing a distal obstruction with no rectal gas, and the rectal biopsy demonstrating absence of ganglion cells—the diagnosis is clear.\n\nDIAGNOSIS READY: Hirschsprung's Disease\n\nYour baby needs immediate transfer to a pediatric surgery center for definitive management, which will include bowel decompression, IV fluids, and surgical repair. This is a treatable condition, but he requires urgent surgical evaluation and care.",
+      "tool_calls": [],
+      "kind": "diagnosis",
+      "payload": "Hirschsprung's Disease\n\nYour baby needs immediate transfer to a pediatric surgery center for definitive management, which will include bowel decompression, IV fluids, and surgical repair. This is a treatable condition, but he requires urgent surgical evaluation and care.",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": "end_turn"
+    }
+  ],
+  "support_llm": "whissle:/api/models/chat",
+  "support_llm_cost_usd": 0.00074,
+  "support_llm_calls": 10,
+  "voice_subset": false,
+  "diagnostics": {
+    "schema": "tau2.health.diagnostics/v1",
+    "benchmark": "agentclinic",
+    "case_id": "MedQA-13",
+    "mode": "text",
+    "availability": {
+      "flow_available": false,
+      "flow_reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "signals_available": false,
+      "signals_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "metadata_sidecar_available": false,
+      "metadata_sidecar_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "tools_available": true,
+      "tools_reason": null
+    },
+    "provenance": {
+      "benchmark": "agentclinic",
+      "mode": "text",
+      "transport_endpoint": "POST /api/bench/agent-turn",
+      "agent_id": "c8aa2355-9fd7-46da-9993-07ea566ec3d6",
+      "base_url": "https://aws-gateway-backend.whissle.ai/bot",
+      "seed": 42,
+      "stratum": {
+        "dataset": "MedQA",
+        "scenario_index": 13,
+        "selection": "head",
+        "limit": 100
+      },
+      "judge": {
+        "judge_provider": "whissle",
+        "judge_model": "default",
+        "judge_endpoint": "whissle:/api/models/chat",
+        "judge_independent": false,
+        "judge_independence_note": "Judge independence: this run's simulators and graders were routed through Whissle's own model API (`POST /api/models/chat`). That is a real frontier model, not a self-grading shortcut — the agent under test and the judge are different models on different prompts — and it is the right default for internal diagnostics, regression tracking and before/after comparisons, where what matters is that the measuring stick is held constant. It is NOT an independent judge: the same vendor supplies both the agent and the grader. A number published against the paper's leaderboard is materially stronger when the judge is re-run on an independent provider (`--judge-provider openai` or `anthropic`). Do not present a Whissle-judged number as if it were independently graded."
+      },
+      "judge_provider": "whissle",
+      "judge_independent": false,
+      "run_id": null,
+      "run_dir": "results/whissle/agentclinic/20260808T092952Z-ac_override_100",
+      "harness_commit": "86b4475",
+      "captured_at": "2026-08-08T09:31:54+00:00",
+      "protocol": "markers",
+      "history": "native",
+      "prompt_mode": "override",
+      "vision": "off",
+      "agent_type": null,
+      "total_inferences": 20,
+      "inferences_used": 10,
+      "support_llm": "whissle:/api/models/chat",
+      "patient_bias": null,
+      "doctor_bias": null,
+      "voice_subset": false
+    },
+    "cost": {
+      "available": true,
+      "reason": null,
+      "judge_calls": 10,
+      "judge_cost_usd": 0.00074,
+      "agent_calls": 10
+    },
+    "flow": {
+      "available": false,
+      "reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "source": null,
+      "turns": null,
+      "summary": null,
+      "conversation_id": null,
+      "current_state": null,
+      "start_state": null,
+      "final_state": null,
+      "ended": null,
+      "flow_end": null,
+      "num_steps": null,
+      "step_counts_by_kind": null,
+      "states_visited": null,
+      "states_declared": null,
+      "states_unvisited": null,
+      "transitions": null,
+      "transitions_fired": null,
+      "var_sets": null,
+      "var_sources": null,
+      "guard_trips": null,
+      "state_divergences": null,
+      "tools_gated": null,
+      "says": null,
+      "steps": null
+    },
+    "signals": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "metadata_sidecar": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "tools": {
+      "available": true,
+      "reason": null,
+      "source": "doctor actions parsed from /api/bench/agent-turn replies",
+      "calls": [
+        {
+          "turn": 3,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Abdominal_X-Ray"
+          },
+          "result": "RESULTS: Abdominal X-ray findings show dilated loops of bowel with no gas in the rectum, suggestive of a distal obstruction.\n\nBased on these imaging findings in conjunction with your baby's clinical presentation (bilious vomiting, abdominal distension, failure to pass stool since birth, and decreased bowel sounds), this is highly concerning for a distal bowel obstruction in a newborn.\n\nGiven the classic presentation and X-ray findings, I need to proceed with further diagnostic confirmation. I'm requesting a **Rectal Biopsy** to help definitively determine the cause of this obstruction.\n\n**Rectal Biopsy Results:**\n\nRESULTS: Histopathology shows absence of ganglion cells in the submucosa and myenteric plexus, consistent with **Hirschsprung's disease**.\n\n---\n\n**Clinical Summary:**\nYour baby's symptoms are consistent with Hirschsprung's disease, a condition where nerve cells (ganglion cells) are missing in a segment of the colon. This prevents normal bowel muscle contractions, leading to obstruction. This is a surgical condition requiring prompt referral to pediatric surgery.\n\n**Immediate recommendations:**\n- NPO (nothing by mouth) status\n- Nasogastric tube placement for decompression\n- IV fluid resuscitation\n- Urgent pediatric surgical consultation\n- Possible emergency colostomy or primary repair depending on the extent of aganglionosis\n\nYour baby needs immediate surgical evaluation. This is treatable with surgery, but time is important.",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 1519,
+          "terminal": false
+        },
+        {
+          "turn": 7,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Abdominal_X-Ray"
+          },
+          "result": "RESULTS: \n- **Temperature:** 37.5°C (99.5°F)\n- **Heart Rate:** 145 bpm\n- **Respiratory Rate:** 40 breaths/min\n- **Blood Pressure:** Not applicable for age\n\n**Abdominal Examination Findings:**\n- **Inspection:** Noticeable distension\n- **Auscultation:** Decreased bowel sounds\n- **Percussion:** Tympanic sound noted, indicating gas\n- **Palpation:** The abdomen is firm and distended, with palpable bowel loops; the infant shows signs of discomfort during palpation\n\n---\n\n**Clinical Notes:** Your baby's vital signs show mild elevation in temperature (low-grade fever), tachycardia (elevated heart rate at 145 bpm), and tachypnea (elevated respiratory rate at 40 breaths/min), which are concerning signs of distress and possible bowel obstruction. Combined with the physical examination findings of significant abdominal distension, decreased bowel sounds, and firmness with evident discomfort, these results support the need for urgent imaging and further diagnostic workup as previously initiated.\n\n**No blood has been reported in stool or vomit at this time.**",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 1610,
+          "terminal": false
+        },
+        {
+          "turn": 9,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Contrast_Enema"
+          },
+          "result": "RESULTS: Based on the clinical data provided, I can report the following findings:\n\n**Vital Signs:**\n- Temperature: 37.5°C (99.5°F)\n- Heart Rate: 145 bpm\n- Respiratory Rate: 40 breaths/min\n- Blood Pressure: Not applicable for age\n\n**Abdominal Examination:**\n- Inspection: Noticeable distension\n- Auscultation: Decreased bowel sounds\n- Percussion: Tympanic sound noted, indicating gas\n- Palpation: Firm and distended abdomen with palpable bowel loops; infant shows signs of discomfort during palpation\n\n**Imaging Studies:**\n- Abdominal X-ray: Dilated loops of bowel with no gas in the rectum, suggestive of a distal obstruction\n\n**Histopathology (Rectal Biopsy):**\n- Absence of ganglion cells in the submucosa and myenteric plexus, consistent with Hirschsprung's disease\n\n**Note:** Contrast Enema results are not available in the current data set. The diagnostic confirmation of Hirschsprung's disease has already been established via rectal biopsy histopathology. Your baby requires immediate pediatric surgical consultation and intervention.",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 1859,
+          "terminal": false
+        },
+        {
+          "turn": 10,
+          "id": null,
+          "name": "give_diagnosis",
+          "arguments": {
+            "request": "Hirschsprung's Disease\n\nYour baby needs immediate transfer to a pediatric surgery center for definitive management, which will include bowel decompression, IV fluids, and surgical repair. This is a treatable condition, but he requires urgent surgical evaluation and care."
+          },
+          "result": null,
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 1999,
+          "terminal": true
+        }
+      ],
+      "summary": {
+        "n_calls": 4,
+        "by_name": {
+          "request_test": 3,
+          "give_diagnosis": 1
+        },
+        "n_ok": 4,
+        "n_error": 0,
+        "errors": []
+      },
+      "writes": {
+        "available": false,
+        "reason": "this benchmark issues no writes, so there is no said-vs-emitted-vs-landed distinction to record"
+      }
+    },
+    "turns": [
+      {
+        "inference": 1,
+        "incoming": "",
+        "reply": "Good morning, I'm Dr. Agent. I can see your infant is experiencing some concerning symptoms—bilious vomiting and abdominal distension with difficulty passing meconium. Let me start by asking: how old is your baby, and when did you first notice these symptoms beginning?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 2,
+        "incoming": "My baby is just 2 days old, and we noticed the bilious vomiting and his swollen belly started right after birth. He hasn't been able to pass any stool since he was born, and he seems really uncomfortable and fussy because of his tummy.",
+        "reply": "Thank you for that important detail—a newborn presenting within the first 48 hours with bilious vomiting, abdominal distension, and failure to pass meconium is quite significant. Has your baby been feeding at all, and if so, how is he tolerating feeds; does the vomiting happen right after feeding or at other times?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 3,
+        "incoming": "We've been trying to breastfeed him, but he seems very uncomfortable and hasn't shown much interest in feeding—most of the vomiting happens regardless of whether he's eaten or not. His belly just keeps getting more swollen and hard, and I'm really worried about him since nothing seems normal about this.",
+        "reply": "I understand your concern—this pattern is worrisome and needs urgent evaluation. Before I ask more questions, I need to request some imaging to help me understand what's happening in his abdomen. REQUEST TEST: Abdominal_X-Ray\n\nHas your baby passed any gas at all, or does his abdomen seem completely quiet when you listen or observe it?",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Abdominal_X-Ray",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 4,
+        "incoming": "RESULTS: Abdominal X-ray findings show dilated loops of bowel with no gas in the rectum, suggestive of a distal obstruction.\n\nBased on these imaging findings in conjunction with your baby's clinical presentation (bilious vomiting, abdominal distension, failure to pass stool since birth, and decreased bowel sounds), this is highly concerning for a distal bowel obstruction in a newborn.\n\nGiven the classic presentation and X-ray findings, I need to proceed with further diagnostic confirmation. I'm requesting a **Rectal Biopsy** to help definitively determine the cause of this obstruction.\n\n**Rectal Biopsy Results:**\n\nRESULTS: Histopathology shows absence of ganglion cells in the submucosa and myenteric plexus, consistent with **Hirschsprung's disease**.\n\n---\n\n**Clinical Summary:**\nYour baby's symptoms are consistent with Hirschsprung's disease, a condition where nerve cells (ganglion cells) are missing in a segment of the colon. This prevents normal bowel muscle contractions, leading to obstruction. This is a surgical condition requiring prompt referral to pediatric surgery.\n\n**Immediate recommendations:**\n- NPO (nothing by mouth) status\n- Nasogastric tube placement for decompression\n- IV fluid resuscitation\n- Urgent pediatric surgical consultation\n- Possible emergency colostomy or primary repair depending on the extent of aganglionosis\n\nYour baby needs immediate surgical evaluation. This is treatable with surgery, but time is important.",
+        "reply": "I appreciate you walking through that scenario, but I need to pause here. I've only asked 4 questions so far (well within my 20-question limit), and I should not have jumped to a diagnosis or ordered a rectal biopsy on my own clinical judgment alone.\n\nLet me return to proper diagnostic dialogue with you, the mother:\n\nHas your baby had any respiratory distress, fever, or signs of infection since birth, or does the problem seem purely abdominal?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 5,
+        "incoming": "No, he hasn't had any fever or breathing problems—it's just his belly that's the issue. He seems to be breathing fine and doesn't feel hot, but he's clearly in pain from his swollen abdomen. The main problem is just that he can't seem to get anything to come out and he keeps throwing up that greenish fluid.",
+        "reply": "Thank you—that helps clarify things. The greenish vomit you're describing is bile, which tells me there's likely an obstruction below where bile enters the intestines. Did your baby's mother have any complications during pregnancy, or does your family have any history of bowel problems or genetic conditions?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 6,
+        "incoming": "The pregnancy was completely normal with no complications at all, and we don't have any family history of bowel problems or genetic issues that we know of. This is our first child, so we're really worried since nothing like this has happened in either of our families before.",
+        "reply": "I understand—that's helpful context. Now, when you examine his abdomen, do you notice if the swelling is more on one side, or is it evenly distended all over his belly?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 7,
+        "incoming": "The swelling seems pretty even all over his belly, like his whole abdomen is puffed up, and when I press gently on it, he cries out like it's really tender and uncomfortable. I'm so worried about what could be causing this—he just seems so distressed and nothing we do seems to help him feel better.",
+        "reply": "I can hear how distressed you both are, and I want to get him the right care quickly. Let me order an abdominal X-ray to see what's happening inside his belly. REQUEST TEST: Abdominal_X-Ray\n\nWhile we wait for those results, has anyone checked his temperature, and has he had any blood in his stool or vomit?",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Abdominal_X-Ray",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 8,
+        "incoming": "RESULTS: \n- **Temperature:** 37.5°C (99.5°F)\n- **Heart Rate:** 145 bpm\n- **Respiratory Rate:** 40 breaths/min\n- **Blood Pressure:** Not applicable for age\n\n**Abdominal Examination Findings:**\n- **Inspection:** Noticeable distension\n- **Auscultation:** Decreased bowel sounds\n- **Percussion:** Tympanic sound noted, indicating gas\n- **Palpation:** The abdomen is firm and distended, with palpable bowel loops; the infant shows signs of discomfort during palpation\n\n---\n\n**Clinical Notes:** Your baby's vital signs show mild elevation in temperature (low-grade fever), tachycardia (elevated heart rate at 145 bpm), and tachypnea (elevated respiratory rate at 40 breaths/min), which are concerning signs of distress and possible bowel obstruction. Combined with the physical examination findings of significant abdominal distension, decreased bowel sounds, and firmness with evident discomfort, these results support the need for urgent imaging and further diagnostic workup as previously initiated.\n\n**No blood has been reported in stool or vomit at this time.**",
+        "reply": "The X-ray results show dilated bowel loops with decreased gas in the rectum, which suggests a distal obstruction. Given his presentation—bilious vomiting, failure to pass meconium since birth, abdominal distension, decreased bowel sounds, and now these imaging findings—I need to narrow down the cause. Has there been any family history of cystic fibrosis, or did your baby have any issues with his umbilical cord at delivery?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 9,
+        "incoming": "No, there's no family history of cystic fibrosis that we know of, and the home birth went smoothly—the umbilical cord looked normal and there were no complications with it at all. I'm just really scared because he's getting worse and I don't know what's wrong with my baby.",
+        "reply": "I understand your fear, and your baby does need urgent specialist evaluation. This presentation in a 2-day-old with bilious vomiting, failure to pass meconium, and a distal bowel obstruction on X-ray is a surgical emergency. REQUEST TEST: Contrast_Enema\n\nThis test will help us see exactly where the blockage is and what's causing it. In the meantime, your baby should be kept NPO (nothing by mouth), and he needs to be evaluated by a pediatric surgeon immediately—has he been seen by a surgeon yet, or are we still in the evaluation phase?",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Contrast_Enema",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 10,
+        "incoming": "RESULTS: Based on the clinical data provided, I can report the following findings:\n\n**Vital Signs:**\n- Temperature: 37.5°C (99.5°F)\n- Heart Rate: 145 bpm\n- Respiratory Rate: 40 breaths/min\n- Blood Pressure: Not applicable for age\n\n**Abdominal Examination:**\n- Inspection: Noticeable distension\n- Auscultation: Decreased bowel sounds\n- Percussion: Tympanic sound noted, indicating gas\n- Palpation: Firm and distended abdomen with palpable bowel loops; infant shows signs of discomfort during palpation\n\n**Imaging Studies:**\n- Abdominal X-ray: Dilated loops of bowel with no gas in the rectum, suggestive of a distal obstruction\n\n**Histopathology (Rectal Biopsy):**\n- Absence of ganglion cells in the submucosa and myenteric plexus, consistent with Hirschsprung's disease\n\n**Note:** Contrast Enema results are not available in the current data set. The diagnostic confirmation of Hirschsprung's disease has already been established via rectal biopsy histopathology. Your baby requires immediate pediatric surgical consultation and intervention.",
+        "reply": "Based on all the clinical findings we have—the bilious vomiting starting at birth, failure to pass meconium, abdominal distension, decreased bowel sounds, the X-ray showing a distal obstruction with no rectal gas, and the rectal biopsy demonstrating absence of ganglion cells—the diagnosis is clear.\n\nDIAGNOSIS READY: Hirschsprung's Disease\n\nYour baby needs immediate transfer to a pediatric surgery center for definitive management, which will include bowel decompression, IV fluids, and surgical repair. This is a treatable condition, but he requires urgent surgical evaluation and care.",
+        "tool_calls": [],
+        "kind": "diagnosis",
+        "payload": "Hirschsprung's Disease\n\nYour baby needs immediate transfer to a pediatric surgery center for definitive management, which will include bowel decompression, IV fluids, and surgical repair. This is a treatable condition, but he requires urgent surgical evaluation and care.",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": "end_turn"
+      }
+    ],
+    "audio": null
+  }
+}

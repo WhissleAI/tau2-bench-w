@@ -1,0 +1,743 @@
+{
+  "schema": "whissle.benchmark.web/v1",
+  "generatedAt": "2026-08-08T16:04:05+00:00",
+  "placeholder": false,
+  "lastUpdated": "8 August 2026",
+  "benchmarkRepoUrl": "https://github.com/WhissleAI/tau2-bench-w",
+  "rows": [
+    {
+      "id": "patientagentbench-harness-tools",
+      "suite": "PatientAgentBench",
+      "task": "Patient-facing health assistant",
+      "modality": "text",
+      "score": 81.2,
+      "sampleSize": 87,
+      "language": "en",
+      "preliminary": false,
+      "note": "Weighted rubric aggregate 4.25 on a 1\u20135 scale, rescaled to 0\u2013100 here; it is a quality score, not a pass rate; 13 of 100 runs (13%) were excluded for transport failure and are not in this figure; graded by our own grader, not an independent one.",
+      "artifact": "results/whissle/patientagentbench/pab_text_100/REPORT.md",
+      "scoreKind": "normalised_rubric",
+      "scoreNative": 4.25,
+      "scoreNativeFormatted": "4.25",
+      "scoreNativeScale": "1\u20135",
+      "ci": [
+        4.15,
+        4.35
+      ],
+      "attempted": 100,
+      "excluded": 13,
+      "exclusionRatePct": 13.0,
+      "judgeIndependent": false,
+      "judgeKind": "llm_jury",
+      "comparable": false,
+      "comparabilityNote": "No published PatientAgentBench baseline is registered in this harness, so no comparison table is shown. The paper's own leaderboard exists, but it was produced with K = 2 jury grading on an independent grader; quoting a K = 1 self-graded number against it would be a comparison of two different measurements, and we will not print one until the run is re-graded independently. Absence of a comparison here is a deliberate result, not a gap in the tooling.",
+      "date": "2026-08-08",
+      "runId": "patientagentbench/pab_text_100",
+      "harnessCommit": "86b4475",
+      "status": "complete"
+    },
+    {
+      "id": "agentclinic-text",
+      "suite": "AgentClinic",
+      "task": "Diagnostic consultation",
+      "modality": "text",
+      "score": 75.0,
+      "sampleSize": 100,
+      "language": "en",
+      "preliminary": false,
+      "note": "Graded by our own grader, not an independent one.",
+      "artifact": "results/whissle/agentclinic/20260808T092952Z-ac_override_100/REPORT.md",
+      "scoreKind": "pass_rate",
+      "scoreNative": 75.0,
+      "scoreNativeFormatted": "75.0%",
+      "scoreNativeScale": "0\u2013100",
+      "ci": [
+        65.7,
+        82.5
+      ],
+      "attempted": 100,
+      "excluded": 0,
+      "exclusionRatePct": 0.0,
+      "judgeIndependent": false,
+      "judgeKind": "llm_jury",
+      "comparable": false,
+      "comparabilityNote": "No published AgentClinic baseline is registered in this harness, so no comparison table is printed. The upstream paper reports accuracies on this dataset, but under a different moderator and with a different inference budget; transcribing those numbers here without re-running under a matched protocol would produce a comparison that looks rigorous and is not. This section stays empty until the protocol is matched.",
+      "date": "2026-08-08",
+      "runId": "agentclinic/20260808T092952Z-ac_override_100",
+      "harnessCommit": "86b4475",
+      "status": "complete",
+      "passed": 75
+    },
+    {
+      "id": "medagentbench-brain-parity",
+      "suite": "MedAgentBench",
+      "task": "Electronic health record \u2014 read and write",
+      "modality": "text",
+      "score": 54.0,
+      "sampleSize": 100,
+      "language": "en",
+      "preliminary": false,
+      "note": "Graded deterministically against database state, not by a grader model.",
+      "artifact": "results/whissle/medagentbench/brain-parity_mab_100/REPORT.md",
+      "scoreKind": "pass_rate",
+      "scoreNative": 54.0,
+      "scoreNativeFormatted": "54.0%",
+      "scoreNativeScale": "0\u2013100",
+      "ci": [
+        44.3,
+        63.4
+      ],
+      "attempted": 100,
+      "excluded": 0,
+      "exclusionRatePct": 0.0,
+      "judgeIndependent": null,
+      "judgeKind": "deterministic",
+      "comparable": false,
+      "comparabilityNote": "**Not directly comparable \u2014 read this before reading the table.** This run scored 100 tasks, the published figures are over 300. A subset success rate is an *estimate* of the full-set rate with its own sampling error, and the subset is the head of the set rather than a random draw. Two things nonetheless *are* comparable: the protocol (same prompts, same action grammar, same deterministic grader) and the Query/Action split, which is a property of the task type rather than of the sample size. Treat the ranking as indicative and the gap as directional; do not quote a placement.",
+      "date": "2026-08-08",
+      "runId": "medagentbench/brain-parity_mab_100",
+      "harnessCommit": "86b4475",
+      "status": "complete",
+      "passed": 54,
+      "baselines": [
+        {
+          "label": "Claude-3.5-Sonnet",
+          "score": 69.7
+        },
+        {
+          "label": "GPT-4o",
+          "score": 64.0
+        }
+      ],
+      "baselinesAll": [
+        {
+          "label": "Claude 3.5 Sonnet v2",
+          "score": 69.7,
+          "n": 300,
+          "source": "MedAgentBench, NEJM AI 2025"
+        },
+        {
+          "label": "GPT-4o",
+          "score": 64.0,
+          "n": 300,
+          "source": "MedAgentBench, NEJM AI 2025"
+        },
+        {
+          "label": "DeepSeek-V3",
+          "score": 62.7,
+          "n": 300,
+          "source": "MedAgentBench, NEJM AI 2025"
+        },
+        {
+          "label": "Gemini-1.5 Pro",
+          "score": 62.0,
+          "n": 300,
+          "source": "MedAgentBench, NEJM AI 2025"
+        },
+        {
+          "label": "GPT-4o-mini",
+          "score": 56.3,
+          "n": 300,
+          "source": "MedAgentBench, NEJM AI 2025"
+        },
+        {
+          "label": "o3-mini",
+          "score": 51.7,
+          "n": 300,
+          "source": "MedAgentBench, NEJM AI 2025"
+        },
+        {
+          "label": "Qwen2.5",
+          "score": 51.3,
+          "n": 300,
+          "source": "MedAgentBench, NEJM AI 2025"
+        },
+        {
+          "label": "Llama 3.3",
+          "score": 46.3,
+          "n": 300,
+          "source": "MedAgentBench, NEJM AI 2025"
+        },
+        {
+          "label": "Gemini 2.0 Flash",
+          "score": 38.3,
+          "n": 300,
+          "source": "MedAgentBench, NEJM AI 2025"
+        },
+        {
+          "label": "Gemma2",
+          "score": 19.3,
+          "n": 300,
+          "source": "MedAgentBench, NEJM AI 2025"
+        },
+        {
+          "label": "Mistral v0.3",
+          "score": 4.0,
+          "n": 300,
+          "source": "MedAgentBench, NEJM AI 2025"
+        }
+      ]
+    }
+  ],
+  "flowRows": [
+    {
+      "id": "flow-sim-appointment-scheduling-task-success",
+      "metric": "Task success",
+      "value": "5 / 11",
+      "passed": 5,
+      "sampleSize": 11,
+      "note": "an LLM grader judges whether the caller's goal was met",
+      "preliminary": true,
+      "runId": "flow_sim/appointment_scheduling",
+      "date": "2026-08-06",
+      "artifact": "results/whissle/flow_sim/appointment_scheduling/REPORT.md"
+    },
+    {
+      "id": "flow-sim-appointment-scheduling-clean-close",
+      "metric": "Reached a clean close",
+      "value": "3 / 11",
+      "passed": 3,
+      "sampleSize": 11,
+      "note": "taken from the authoritative `flow_end` trace event",
+      "preliminary": true,
+      "runId": "flow_sim/appointment_scheduling",
+      "date": "2026-08-06",
+      "artifact": "results/whissle/flow_sim/appointment_scheduling/REPORT.md"
+    },
+    {
+      "id": "flow-sim-car-rental-task-success",
+      "metric": "Task success",
+      "value": "0 / 11",
+      "passed": 0,
+      "sampleSize": 11,
+      "note": "an LLM grader judges whether the caller's goal was met",
+      "preliminary": true,
+      "runId": "flow_sim/car_rental",
+      "date": "2026-08-06",
+      "artifact": "results/whissle/flow_sim/car_rental/REPORT.md"
+    },
+    {
+      "id": "flow-sim-car-rental-clean-close",
+      "metric": "Reached a clean close",
+      "value": "0 / 11",
+      "passed": 0,
+      "sampleSize": 11,
+      "note": "taken from the authoritative `flow_end` trace event",
+      "preliminary": true,
+      "runId": "flow_sim/car_rental",
+      "date": "2026-08-06",
+      "artifact": "results/whissle/flow_sim/car_rental/REPORT.md"
+    },
+    {
+      "id": "flow-sim-customer-support-task-success",
+      "metric": "Task success",
+      "value": "7 / 11",
+      "passed": 7,
+      "sampleSize": 11,
+      "note": "an LLM grader judges whether the caller's goal was met",
+      "preliminary": true,
+      "runId": "flow_sim/customer_support",
+      "date": "2026-08-07",
+      "artifact": "results/whissle/flow_sim/customer_support/REPORT.md"
+    },
+    {
+      "id": "flow-sim-customer-support-clean-close",
+      "metric": "Reached a clean close",
+      "value": "10 / 11",
+      "passed": 10,
+      "sampleSize": 11,
+      "note": "taken from the authoritative `flow_end` trace event",
+      "preliminary": true,
+      "runId": "flow_sim/customer_support",
+      "date": "2026-08-07",
+      "artifact": "results/whissle/flow_sim/customer_support/REPORT.md"
+    },
+    {
+      "id": "flow-sim-debt-collection-task-success",
+      "metric": "Task success",
+      "value": "0 / 11",
+      "passed": 0,
+      "sampleSize": 11,
+      "note": "an LLM grader judges whether the caller's goal was met",
+      "preliminary": true,
+      "runId": "flow_sim/debt_collection",
+      "date": "2026-08-06",
+      "artifact": "results/whissle/flow_sim/debt_collection/REPORT.md"
+    },
+    {
+      "id": "flow-sim-debt-collection-clean-close",
+      "metric": "Reached a clean close",
+      "value": "0 / 11",
+      "passed": 0,
+      "sampleSize": 11,
+      "note": "taken from the authoritative `flow_end` trace event",
+      "preliminary": true,
+      "runId": "flow_sim/debt_collection",
+      "date": "2026-08-06",
+      "artifact": "results/whissle/flow_sim/debt_collection/REPORT.md"
+    },
+    {
+      "id": "flow-sim-dental-receptionist-task-success",
+      "metric": "Task success",
+      "value": "5 / 9",
+      "passed": 5,
+      "sampleSize": 9,
+      "note": "an LLM grader judges whether the caller's goal was met",
+      "preliminary": true,
+      "runId": "flow_sim/dental_receptionist",
+      "date": "2026-08-07",
+      "artifact": "results/whissle/flow_sim/dental_receptionist/REPORT.md"
+    },
+    {
+      "id": "flow-sim-dental-receptionist-clean-close",
+      "metric": "Reached a clean close",
+      "value": "4 / 9",
+      "passed": 4,
+      "sampleSize": 9,
+      "note": "taken from the authoritative `flow_end` trace event",
+      "preliminary": true,
+      "runId": "flow_sim/dental_receptionist",
+      "date": "2026-08-07",
+      "artifact": "results/whissle/flow_sim/dental_receptionist/REPORT.md"
+    },
+    {
+      "id": "flow-sim-headache-enrollment-task-success",
+      "metric": "Task success",
+      "value": "1 / 1",
+      "passed": 1,
+      "sampleSize": 1,
+      "note": "an LLM grader judges whether the caller's goal was met",
+      "preliminary": true,
+      "runId": "flow_sim/headache_enrollment",
+      "date": "2026-08-07",
+      "artifact": "results/whissle/flow_sim/headache_enrollment/REPORT.md"
+    },
+    {
+      "id": "flow-sim-headache-enrollment-clean-close",
+      "metric": "Reached a clean close",
+      "value": "1 / 1",
+      "passed": 1,
+      "sampleSize": 1,
+      "note": "taken from the authoritative `flow_end` trace event",
+      "preliminary": true,
+      "runId": "flow_sim/headache_enrollment",
+      "date": "2026-08-07",
+      "artifact": "results/whissle/flow_sim/headache_enrollment/REPORT.md"
+    }
+  ],
+  "history": {
+    "agentclinic:MedQA:text:agent:off": [
+      {
+        "runId": "agentclinic/20260808T022625Z-boundary",
+        "date": "2026-08-08",
+        "score": 0.0,
+        "scoreFormatted": "0.0%",
+        "sampleSize": 5,
+        "excluded": 0,
+        "judgeIndependent": null,
+        "preliminary": true,
+        "deltaVsPrevious": null,
+        "comparabilityNote": ""
+      }
+    ],
+    "agentclinic:MedQA:text:override:off": [
+      {
+        "runId": "agentclinic/20260808T020515Z-smoke-generic",
+        "date": "2026-08-08",
+        "score": 100.0,
+        "scoreFormatted": "100.0%",
+        "sampleSize": 5,
+        "excluded": 0,
+        "judgeIndependent": null,
+        "preliminary": true,
+        "deltaVsPrevious": null,
+        "comparabilityNote": ""
+      },
+      {
+        "runId": "agentclinic/20260808T020835Z-smoke-health",
+        "date": "2026-08-08",
+        "score": 100.0,
+        "scoreFormatted": "100.0%",
+        "sampleSize": 5,
+        "excluded": 0,
+        "judgeIndependent": null,
+        "preliminary": true,
+        "deltaVsPrevious": 0.0,
+        "comparabilityNote": "vs `agentclinic/20260808T020515Z-smoke-generic`"
+      },
+      {
+        "runId": "agentclinic/20260808T055014Z-smoke-whissle-judge",
+        "date": "2026-08-08",
+        "score": 100.0,
+        "scoreFormatted": "100.0%",
+        "sampleSize": 5,
+        "excluded": 0,
+        "judgeIndependent": false,
+        "preliminary": true,
+        "deltaVsPrevious": null,
+        "comparabilityNote": "not comparable to the previous run: judge independence changed between the runs"
+      },
+      {
+        "runId": "agentclinic/20260808T082255Z-diagsmoke",
+        "date": "2026-08-08",
+        "score": 100.0,
+        "scoreFormatted": "100.0%",
+        "sampleSize": 2,
+        "excluded": 0,
+        "judgeIndependent": false,
+        "preliminary": true,
+        "deltaVsPrevious": 0.0,
+        "comparabilityNote": "vs `agentclinic/20260808T055014Z-smoke-whissle-judge`"
+      },
+      {
+        "runId": "agentclinic/20260808T092952Z-ac_override_100",
+        "date": "2026-08-08",
+        "score": 75.0,
+        "scoreFormatted": "75.0%",
+        "sampleSize": 100,
+        "excluded": 0,
+        "judgeIndependent": false,
+        "preliminary": false,
+        "deltaVsPrevious": null,
+        "comparabilityNote": "not comparable to the previous run: sample sizes are not of the same order (N = 2 \u2192 N = 100); the difference would be mostly sampling noise"
+      }
+    ],
+    "agentclinic:NEJM:text:override:block": [
+      {
+        "runId": "agentclinic/20260808T022841Z-vision",
+        "date": "2026-08-08",
+        "score": 33.3,
+        "scoreFormatted": "33.3%",
+        "sampleSize": 3,
+        "excluded": 0,
+        "judgeIndependent": null,
+        "preliminary": true,
+        "deltaVsPrevious": null,
+        "comparabilityNote": ""
+      }
+    ],
+    "agentclinic:NEJM:text:override:off": [
+      {
+        "runId": "agentclinic/20260808T023122Z-vision-control",
+        "date": "2026-08-08",
+        "score": 66.7,
+        "scoreFormatted": "66.7%",
+        "sampleSize": 3,
+        "excluded": 0,
+        "judgeIndependent": null,
+        "preliminary": true,
+        "deltaVsPrevious": null,
+        "comparabilityNote": ""
+      }
+    ],
+    "flow_sim:appointment_scheduling": [
+      {
+        "runId": "flow_sim_baseline/appointment_scheduling",
+        "date": "2026-08-05",
+        "score": 20.0,
+        "scoreFormatted": "20.0%",
+        "sampleSize": 5,
+        "excluded": 0,
+        "judgeIndependent": null,
+        "preliminary": true,
+        "deltaVsPrevious": null,
+        "comparabilityNote": ""
+      },
+      {
+        "runId": "flow_sim/appointment_scheduling",
+        "date": "2026-08-06",
+        "score": 45.5,
+        "scoreFormatted": "45.5%",
+        "sampleSize": 11,
+        "excluded": 0,
+        "judgeIndependent": null,
+        "preliminary": true,
+        "deltaVsPrevious": 25.5,
+        "comparabilityNote": "vs `flow_sim_baseline/appointment_scheduling`"
+      }
+    ],
+    "flow_sim:car_rental": [
+      {
+        "runId": "flow_sim_baseline/car_rental",
+        "date": "2026-08-05",
+        "score": 60.0,
+        "scoreFormatted": "60.0%",
+        "sampleSize": 5,
+        "excluded": 0,
+        "judgeIndependent": null,
+        "preliminary": true,
+        "deltaVsPrevious": null,
+        "comparabilityNote": ""
+      },
+      {
+        "runId": "flow_sim/car_rental",
+        "date": "2026-08-06",
+        "score": 0.0,
+        "scoreFormatted": "0.0%",
+        "sampleSize": 11,
+        "excluded": 0,
+        "judgeIndependent": null,
+        "preliminary": true,
+        "deltaVsPrevious": -60.0,
+        "comparabilityNote": "vs `flow_sim_baseline/car_rental`"
+      }
+    ],
+    "flow_sim:customer_support": [
+      {
+        "runId": "flow_sim_baseline/customer_support",
+        "date": "2026-08-05",
+        "score": 50.0,
+        "scoreFormatted": "50.0%",
+        "sampleSize": 2,
+        "excluded": 0,
+        "judgeIndependent": null,
+        "preliminary": true,
+        "deltaVsPrevious": null,
+        "comparabilityNote": ""
+      },
+      {
+        "runId": "flow_sim/customer_support",
+        "date": "2026-08-07",
+        "score": 63.6,
+        "scoreFormatted": "63.6%",
+        "sampleSize": 11,
+        "excluded": 0,
+        "judgeIndependent": null,
+        "preliminary": true,
+        "deltaVsPrevious": null,
+        "comparabilityNote": "not comparable to the previous run: sample sizes are not of the same order (N = 2 \u2192 N = 11); the difference would be mostly sampling noise"
+      }
+    ],
+    "flow_sim:debt_collection": [
+      {
+        "runId": "flow_sim/debt_collection",
+        "date": "2026-08-06",
+        "score": 0.0,
+        "scoreFormatted": "0.0%",
+        "sampleSize": 11,
+        "excluded": 0,
+        "judgeIndependent": null,
+        "preliminary": true,
+        "deltaVsPrevious": null,
+        "comparabilityNote": ""
+      }
+    ],
+    "flow_sim:dental_receptionist": [
+      {
+        "runId": "flow_sim_baseline/dental_receptionist",
+        "date": "2026-08-05",
+        "score": 40.0,
+        "scoreFormatted": "40.0%",
+        "sampleSize": 5,
+        "excluded": 0,
+        "judgeIndependent": null,
+        "preliminary": true,
+        "deltaVsPrevious": null,
+        "comparabilityNote": ""
+      },
+      {
+        "runId": "flow_sim/dental_receptionist",
+        "date": "2026-08-07",
+        "score": 55.6,
+        "scoreFormatted": "55.6%",
+        "sampleSize": 9,
+        "excluded": 2,
+        "judgeIndependent": null,
+        "preliminary": true,
+        "deltaVsPrevious": 15.6,
+        "comparabilityNote": "vs `flow_sim_baseline/dental_receptionist`"
+      }
+    ],
+    "flow_sim:headache_enrollment": [
+      {
+        "runId": "flow_sim_baseline/headache_enrollment",
+        "date": "2026-08-05",
+        "score": 50.0,
+        "scoreFormatted": "50.0%",
+        "sampleSize": 10,
+        "excluded": 0,
+        "judgeIndependent": null,
+        "preliminary": true,
+        "deltaVsPrevious": null,
+        "comparabilityNote": ""
+      },
+      {
+        "runId": "flow_sim/headache_enrollment",
+        "date": "2026-08-07",
+        "score": 100.0,
+        "scoreFormatted": "100.0%",
+        "sampleSize": 1,
+        "excluded": 0,
+        "judgeIndependent": null,
+        "preliminary": true,
+        "deltaVsPrevious": null,
+        "comparabilityNote": "not comparable to the previous run: sample sizes are not of the same order (N = 10 \u2192 N = 1); the difference would be mostly sampling noise"
+      }
+    ],
+    "medagentbench:brain-parity": [
+      {
+        "runId": "medagentbench/brain-parity_diagsmoke",
+        "date": "2026-08-08",
+        "score": 66.67,
+        "scoreFormatted": "66.7%",
+        "sampleSize": 3,
+        "excluded": 0,
+        "judgeIndependent": null,
+        "preliminary": true,
+        "deltaVsPrevious": null,
+        "comparabilityNote": ""
+      },
+      {
+        "runId": "medagentbench/brain-parity_diagsmoke_write",
+        "date": "2026-08-08",
+        "score": 0.0,
+        "scoreFormatted": "0.0%",
+        "sampleSize": 1,
+        "excluded": 0,
+        "judgeIndependent": null,
+        "preliminary": true,
+        "deltaVsPrevious": -66.67,
+        "comparabilityNote": "vs `medagentbench/brain-parity_diagsmoke`"
+      },
+      {
+        "runId": "medagentbench/brain-parity_mab_100",
+        "date": "2026-08-08",
+        "score": 54.0,
+        "scoreFormatted": "54.0%",
+        "sampleSize": 100,
+        "excluded": 0,
+        "judgeIndependent": null,
+        "preliminary": false,
+        "deltaVsPrevious": null,
+        "comparabilityNote": "not comparable to the previous run: sample sizes are not of the same order (N = 1 \u2192 N = 100); the difference would be mostly sampling noise"
+      },
+      {
+        "runId": "medagentbench/brain-parity_smoke",
+        "date": "2026-08-08",
+        "score": 60.0,
+        "scoreFormatted": "60.0%",
+        "sampleSize": 10,
+        "excluded": 0,
+        "judgeIndependent": null,
+        "preliminary": true,
+        "deltaVsPrevious": null,
+        "comparabilityNote": "not comparable to the previous run: sample sizes are not of the same order (N = 100 \u2192 N = 10); the difference would be mostly sampling noise"
+      }
+    ],
+    "patientagentbench:harness_tools": [
+      {
+        "runId": "patientagentbench/diagsmoke2",
+        "date": "2026-08-08",
+        "score": 3.62,
+        "scoreFormatted": "3.62",
+        "sampleSize": 2,
+        "excluded": 0,
+        "judgeIndependent": false,
+        "preliminary": true,
+        "deltaVsPrevious": null,
+        "comparabilityNote": ""
+      },
+      {
+        "runId": "patientagentbench/pab_text_100",
+        "date": "2026-08-08",
+        "score": 4.25,
+        "scoreFormatted": "4.25",
+        "sampleSize": 87,
+        "excluded": 13,
+        "judgeIndependent": false,
+        "preliminary": false,
+        "deltaVsPrevious": null,
+        "comparabilityNote": "not comparable to the previous run: sample sizes are not of the same order (N = 2 \u2192 N = 87); the difference would be mostly sampling noise"
+      },
+      {
+        "runId": "patientagentbench/smoke3_whissle_judge",
+        "date": "2026-08-08",
+        "score": 3.77,
+        "scoreFormatted": "3.77",
+        "sampleSize": 3,
+        "excluded": 0,
+        "judgeIndependent": false,
+        "preliminary": true,
+        "deltaVsPrevious": null,
+        "comparabilityNote": "not comparable to the previous run: sample sizes are not of the same order (N = 87 \u2192 N = 3); the difference would be mostly sampling noise"
+      },
+      {
+        "runId": "patientagentbench/smoke6",
+        "date": "2026-08-08",
+        "score": 3.59,
+        "scoreFormatted": "3.59",
+        "sampleSize": 6,
+        "excluded": 0,
+        "judgeIndependent": null,
+        "preliminary": true,
+        "deltaVsPrevious": null,
+        "comparabilityNote": "not comparable to the previous run: judge independence changed between the runs"
+      }
+    ]
+  },
+  "methodology": [
+    {
+      "term": "What is under test",
+      "detail": "The Whissle agent stack as deployed \u2014 the same brain, prompts and tools that serve production traffic, driven through each benchmark's own harness so only the agent differs from a published run."
+    },
+    {
+      "term": "Scoring basis",
+      "detail": "Where a benchmark grades deterministically we use its grader unchanged \u2014 database state, not an opinion. Where it grades with a model we say which grader ran and whether it was independent of us; the row carries that flag, not the footnotes. Graders in play: deterministic, llm jury, rule analyzer."
+    },
+    {
+      "term": "Sample size",
+      "detail": "Every row states the N it was computed over. A run below 30 scored units is marked preliminary and should be read as directional."
+    },
+    {
+      "term": "Exclusions",
+      "detail": "A run that never reached the agent \u2014 a transport error, a timeout \u2014 is excluded from the denominator and counted separately. The excluded count and its share sit on the row, because a score over 87 of 100 attempts is a different claim from a score over 100."
+    },
+    {
+      "term": "User simulator",
+      "detail": "Each benchmark supplies its own user simulator and we do not swap it: a simulated patient, a simulated caller, or the benchmark's scripted task text. Modes measured: brain-parity, harness_tools, text, voice."
+    },
+    {
+      "term": "Concurrency and pass^1",
+      "detail": "Tasks run with bounded concurrency against the live stack, and every figure is a single pass over each task \u2014 pass^1, no best-of-n, no retries on a task that failed on its merits. Only transport-level failures are retried, and a task that exhausts those retries is excluded rather than scored."
+    },
+    {
+      "term": "Reproduction",
+      "detail": "Each row links a full report carrying the exact commands, the harness commit, the agent id and the raw trajectories the number came from."
+    }
+  ],
+  "honestNegatives": [
+    {
+      "title": "AgentClinic: we graded our own homework",
+      "body": "The graders and simulators for this run were our own models. Held constant it is a fair way to measure change over time; it is not the same as an independent evaluation, and we do not present it as one."
+    },
+    {
+      "title": "AgentClinic: simulated patient",
+      "body": "The patient is a language model following a case card. It answers questions more cooperatively, more fluently and more consistently than a person in a waiting room, so the intake task here is easier than the product's real one."
+    },
+    {
+      "title": "MedAgentBench: sandbox not a hospital",
+      "body": "Writes go to a FHIR sandbox that accepts resources a production EHR would reject \u2014 7 of 35 emitted writes in this run were non-conformant and still scored correct. The success rate is therefore an upper bound on what the same agent would achieve against a validating server."
+    },
+    {
+      "title": "PatientAgentBench: 13% of runs never completed",
+      "body": "13 of 100 sessions failed at the transport layer before the agent could answer, and are excluded from the score. That is an availability defect on our side, it is the largest single finding in that run, and the headline describes the 87 that survived."
+    },
+    {
+      "title": "PatientAgentBench: we graded our own homework",
+      "body": "The graders and simulators for this run were our own models. Held constant it is a fair way to measure change over time; it is not the same as an independent evaluation, and we do not present it as one."
+    },
+    {
+      "title": "Whissle conversation-flow suite: tiny n",
+      "body": "N = 11. At this size a single scenario flipping moves the headline by ten points. Every figure here is directional and is labelled PRELIMINARY for that reason."
+    },
+    {
+      "title": "Whissle conversation-flow suite: simulated caller",
+      "body": "The caller is a language model speaking through text-to-speech. It has cleaner prosody, no background noise and more patience than a person on a mobile in a car \u2014 so recognition error here is a floor, not an estimate."
+    },
+    {
+      "title": "Whissle conversation-flow suite: 18% of runs never completed",
+      "body": "2 of 11 sessions failed at the transport layer before the agent could answer, and are excluded from the score. That is an availability defect on our side, it is the largest single finding in that run, and the headline describes the 9 that survived."
+    }
+  ],
+  "runCount": 9
+}

@@ -1,0 +1,713 @@
+{
+  "scenario_id": "MedQA-35",
+  "scenario_index": 35,
+  "dataset": "MedQA",
+  "mode": "text",
+  "correct_diagnosis": "Glanzmann’s Thrombasthenia",
+  "answer_options": [],
+  "score": {
+    "outcome": "correct",
+    "correctness": true,
+    "doctor_diagnosis": "Glanzmann Thrombasthenia\n\nThis is a condition where your platelets don't have the proper receptors they need to stick together and form clots, even though you have plenty of platelets and your clotting factors work normally. That's why you're having all these bleeding problems. I'll be discussing treatment options and management with your parents now.",
+    "doctor_final_text": "Based on all the information I've gathered—your normal platelet count and normal clotting studies, combined with the finding of deficient GIIb/IIIa receptors on your platelets from the ELISA binding assay—I now have a clear picture of what's happening.\n\nDIAGNOSIS READY: Glanzmann Thrombasthenia\n\nThis is a condition where your platelets don't have the proper receptors they need to stick together and form clots, even though you have plenty of platelets and your clotting factors work normally. That's why you're having all these bleeding problems. I'll be discussing treatment options and management with your parents now.",
+    "moderator_raw": "yes",
+    "moderator_raw_text": "Yes",
+    "moderator_lenient": true,
+    "moderator_attempts": 1,
+    "moderator_normalized": false,
+    "moderator_unconstrained": false,
+    "declined": false,
+    "refusal_evidence": [],
+    "format_deviation": false,
+    "decline_source": null,
+    "decline_reason": "",
+    "spurious_commit": false
+  },
+  "infra_fail": false,
+  "error": null,
+  "findings": [],
+  "inferences_used": 12,
+  "max_inferences": 20,
+  "tests_ordered": [
+    "Complete_Blood_Count",
+    "Coagulation_Panel",
+    "Bleeding_Time",
+    "Platelet_Aggregation_Study"
+  ],
+  "images_requested": 0,
+  "image": null,
+  "image_error": null,
+  "vision": "off",
+  "refusals": [],
+  "dialogue": [
+    {
+      "role": "doctor",
+      "inference": 1,
+      "kind": "question",
+      "text": "Good morning, I'm Dr. Agent. I can see from your chart that you've been experiencing some bleeding issues—nosebleeds, bleeding from your gums, and some small red spots on your skin. Can you tell me when you first noticed the nosebleeds starting?",
+      "payload": null,
+      "latency_ms": 1511,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "I think it started a few weeks ago, doctor. At first it was just once in a while, but now my nose bleeds almost every day, sometimes even when I'm just playing or doing normal stuff."
+    },
+    {
+      "role": "doctor",
+      "inference": 2,
+      "kind": "question",
+      "text": "That's helpful to know—so it's gotten more frequent over the past few weeks and happens even during normal activity. Have you noticed any bruising on your body, or any other areas where you're bleeding or noticing bleeding gums when you brush your teeth?",
+      "payload": null,
+      "latency_ms": 1274,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Yes, doctor, I've noticed a lot of bruises on my arms and legs, especially on my hands and feet, and my gums bleed when I brush my teeth or eat hard foods. I also have these tiny red dots all over my legs that don't go away when I press on them."
+    },
+    {
+      "role": "doctor",
+      "inference": 3,
+      "kind": "question",
+      "text": "Those red dots that don't blanch when you press on them are important—thank you for describing that. Have you felt unusually tired or more tired than normal lately, and have you had any fevers, sore throat, or swollen lymph nodes that you've noticed?",
+      "payload": null,
+      "latency_ms": 1119,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "No, I haven't had a fever or sore throat, doctor, and I feel pretty normal energy-wise when I'm playing. I haven't noticed any lumpy stuff in my neck or anything like that either."
+    },
+    {
+      "role": "doctor",
+      "inference": 4,
+      "kind": "question",
+      "text": "That's good information. Let me ask—have you had any recent infections, illnesses, or has anyone in your family had bleeding problems or blood disorders that you know of?",
+      "payload": null,
+      "latency_ms": 1529,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "No, doctor, I haven't been sick recently and I don't remember my parents mentioning anything about bleeding problems in the family. I've been feeling pretty healthy otherwise, just with these bleeding and bruising problems."
+    },
+    {
+      "role": "doctor",
+      "inference": 5,
+      "kind": "test",
+      "text": "I'd like to get some blood work done to understand what's happening. REQUEST TEST: Complete_Blood_Count\n\nThis will help me see your blood cell levels and understand why you're having all this bleeding and bruising.",
+      "payload": "Complete_Blood_Count",
+      "latency_ms": 1493,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: Complete_Blood_Count\n- WBC: 6,500 /μL (normal)\n- Hemoglobin: 12.1 g/dL (normal)\n- Platelets: 280,000 /μL (normal)"
+    },
+    {
+      "role": "doctor",
+      "inference": 6,
+      "kind": "question",
+      "text": "Interesting—your platelet count is normal, which is good. Let me ask you this: have you noticed any blood in your urine or stool, or any abdominal pain or swelling in your belly?",
+      "payload": null,
+      "latency_ms": 1019,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "No, I haven't seen any blood in my pee or poop, doctor, and my belly feels fine—no pain or anything like that. The main thing is just the nosebleeds, the bruises, and those red spots on my skin."
+    },
+    {
+      "role": "doctor",
+      "inference": 7,
+      "kind": "test",
+      "text": "Thank you. Given that your platelets are normal but you have significant bleeding, I'd like to check your clotting function. REQUEST TEST: Coagulation_Panel\n\nThis will tell me if your blood is clotting properly even though you have enough platelets.",
+      "payload": "Coagulation_Panel",
+      "latency_ms": 1529,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: Coagulation_Profile\n- PT: 12 seconds (normal)\n- aPTT: 30 seconds (normal)"
+    },
+    {
+      "role": "doctor",
+      "inference": 8,
+      "kind": "question",
+      "text": "Your clotting times are normal too, which is interesting. Before I move forward, have you ever had any head injuries, falls, or trauma to your nose or face recently that might explain the nosebleeds?",
+      "payload": null,
+      "latency_ms": 1600,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "No, I haven't had any falls or bumps to my face recently, doctor—the nosebleeds just started happening on their own. I'm careful when I play, and my parents haven't seen me hit my nose or anything like that."
+    },
+    {
+      "role": "doctor",
+      "inference": 9,
+      "kind": "question",
+      "text": "That's helpful. Do you have any known allergies, and are you currently taking any medications or supplements—even vitamins or over-the-counter things?",
+      "payload": null,
+      "latency_ms": 848,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "No, I don't have any allergies that I know of, doctor, and I'm not taking any medicines or vitamins right now. My mom just gives me regular food and I feel okay most of the time except for all this bleeding stuff."
+    },
+    {
+      "role": "doctor",
+      "inference": 10,
+      "kind": "test",
+      "text": "Given your normal platelets and normal clotting studies but significant bleeding symptoms, I want to look more closely at the structure of your blood vessels and rule out a bleeding disorder. REQUEST TEST: Bleeding_Time\n\nThis will help me see if there's a problem with how your blood vessels or platelets are working together to stop bleeding.",
+      "payload": "Bleeding_Time",
+      "latency_ms": 1460,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: Bleeding_Time\nNORMAL READINGS\n\nBased on the available data provided, the bleeding time test is not included in the current laboratory results on file. However, given the clinical presentation of petechiae, epistaxis, and gingival bleeding combined with:\n\n- Normal platelet count (280,000 /μL)\n- Normal coagulation studies (PT: 12 seconds, aPTT: 30 seconds)\n- Normal peripheral blood smear morphology\n- **Platelet surface deficiency in GIIb/IIIa receptors** (noted on ELISA Binding Assay)\n\nThe clinical picture is highly suggestive of a **qualitative platelet disorder** rather than a quantitative one, specifically consistent with **Glanzmann thrombasthenia** - a condition where platelets lack functional GIIb/IIIa integrin receptors needed for platelet aggregation, despite normal platelet numbers.\n\nThis would explain the bleeding tendency despite normal platelet counts and normal standard coagulation studies."
+    },
+    {
+      "role": "doctor",
+      "inference": 11,
+      "kind": "test",
+      "text": "That's very informative. I want to check one more specific thing about your platelets' function, since everything else looks normal but you're clearly having bleeding problems. REQUEST TEST: Platelet_Aggregation_Study\n\nThis will show me if your platelets are working properly even though there are enough of them.",
+      "payload": "Platelet_Aggregation_Study",
+      "latency_ms": 1192,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: Platelet_Aggregation_Study\nNORMAL READINGS\n\nHowever, based on the comprehensive clinical data already available in your laboratory file, the **ELISA Binding Assay** has already provided the critical diagnostic finding:\n\n**Platelet surfaces deficient in GIIb/IIIa receptors**\n\nThis finding is pathognomonic for **Glanzmann thrombasthenia**, a qualitative platelet disorder where platelets cannot aggregate properly despite normal numbers and morphology. A formal platelet aggregation study would be expected to show **absent or severely diminished platelet aggregation** in response to standard agonists (ADP, collagen, thrombin, arachidonic acid) due to the lack of functional GIIb/IIIa integrin receptors.\n\n**Summary of Clinical-Laboratory Correlation:**\n- Spontaneous petechiae, epistaxis, and gingival bleeding ✓\n- Normal platelet count (280,000 /μL) ✓\n- Normal coagulation studies (PT, aPTT) ✓\n- Normal peripheral blood smear ✓\n- **GIIb/IIIa receptor deficiency on platelets** ✓\n\n**Diagnosis: Glanzmann Thrombasthenia** - A congenital qualitative platelet disorder requiring specialized management including platelet transfusions for bleeding episodes."
+    },
+    {
+      "role": "doctor",
+      "inference": 12,
+      "kind": "diagnosis",
+      "text": "Based on all the information I've gathered—your normal platelet count and normal clotting studies, combined with the finding of deficient GIIb/IIIa receptors on your platelets from the ELISA binding assay—I now have a clear picture of what's happening.\n\nDIAGNOSIS READY: Glanzmann Thrombasthenia\n\nThis is a condition where your platelets don't have the proper receptors they need to stick together and form clots, even though you have plenty of platelets and your clotting factors work normally. That's why you're having all these bleeding problems. I'll be discussing treatment options and management with your parents now.",
+      "payload": "Glanzmann Thrombasthenia\n\nThis is a condition where your platelets don't have the proper receptors they need to stick together and form clots, even though you have plenty of platelets and your clotting factors work normally. That's why you're having all these bleeding problems. I'll be discussing treatment options and management with your parents now.",
+      "latency_ms": 2038,
+      "refusal": null,
+      "via": "marker"
+    }
+  ],
+  "latency_ms": [
+    1511,
+    1274,
+    1119,
+    1529,
+    1493,
+    1019,
+    1529,
+    1600,
+    848,
+    1460,
+    1192,
+    2038
+  ],
+  "wall_s": 36.4,
+  "doctor_turns": [
+    {
+      "inference": 1,
+      "incoming": "",
+      "reply": "Good morning, I'm Dr. Agent. I can see from your chart that you've been experiencing some bleeding issues—nosebleeds, bleeding from your gums, and some small red spots on your skin. Can you tell me when you first noticed the nosebleeds starting?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 2,
+      "incoming": "I think it started a few weeks ago, doctor. At first it was just once in a while, but now my nose bleeds almost every day, sometimes even when I'm just playing or doing normal stuff.",
+      "reply": "That's helpful to know—so it's gotten more frequent over the past few weeks and happens even during normal activity. Have you noticed any bruising on your body, or any other areas where you're bleeding or noticing bleeding gums when you brush your teeth?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 3,
+      "incoming": "Yes, doctor, I've noticed a lot of bruises on my arms and legs, especially on my hands and feet, and my gums bleed when I brush my teeth or eat hard foods. I also have these tiny red dots all over my legs that don't go away when I press on them.",
+      "reply": "Those red dots that don't blanch when you press on them are important—thank you for describing that. Have you felt unusually tired or more tired than normal lately, and have you had any fevers, sore throat, or swollen lymph nodes that you've noticed?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 4,
+      "incoming": "No, I haven't had a fever or sore throat, doctor, and I feel pretty normal energy-wise when I'm playing. I haven't noticed any lumpy stuff in my neck or anything like that either.",
+      "reply": "That's good information. Let me ask—have you had any recent infections, illnesses, or has anyone in your family had bleeding problems or blood disorders that you know of?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 5,
+      "incoming": "No, doctor, I haven't been sick recently and I don't remember my parents mentioning anything about bleeding problems in the family. I've been feeling pretty healthy otherwise, just with these bleeding and bruising problems.",
+      "reply": "I'd like to get some blood work done to understand what's happening. REQUEST TEST: Complete_Blood_Count\n\nThis will help me see your blood cell levels and understand why you're having all this bleeding and bruising.",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Complete_Blood_Count",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 6,
+      "incoming": "RESULTS: Complete_Blood_Count\n- WBC: 6,500 /μL (normal)\n- Hemoglobin: 12.1 g/dL (normal)\n- Platelets: 280,000 /μL (normal)",
+      "reply": "Interesting—your platelet count is normal, which is good. Let me ask you this: have you noticed any blood in your urine or stool, or any abdominal pain or swelling in your belly?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 7,
+      "incoming": "No, I haven't seen any blood in my pee or poop, doctor, and my belly feels fine—no pain or anything like that. The main thing is just the nosebleeds, the bruises, and those red spots on my skin.",
+      "reply": "Thank you. Given that your platelets are normal but you have significant bleeding, I'd like to check your clotting function. REQUEST TEST: Coagulation_Panel\n\nThis will tell me if your blood is clotting properly even though you have enough platelets.",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Coagulation_Panel",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 8,
+      "incoming": "RESULTS: Coagulation_Profile\n- PT: 12 seconds (normal)\n- aPTT: 30 seconds (normal)",
+      "reply": "Your clotting times are normal too, which is interesting. Before I move forward, have you ever had any head injuries, falls, or trauma to your nose or face recently that might explain the nosebleeds?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 9,
+      "incoming": "No, I haven't had any falls or bumps to my face recently, doctor—the nosebleeds just started happening on their own. I'm careful when I play, and my parents haven't seen me hit my nose or anything like that.",
+      "reply": "That's helpful. Do you have any known allergies, and are you currently taking any medications or supplements—even vitamins or over-the-counter things?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 10,
+      "incoming": "No, I don't have any allergies that I know of, doctor, and I'm not taking any medicines or vitamins right now. My mom just gives me regular food and I feel okay most of the time except for all this bleeding stuff.",
+      "reply": "Given your normal platelets and normal clotting studies but significant bleeding symptoms, I want to look more closely at the structure of your blood vessels and rule out a bleeding disorder. REQUEST TEST: Bleeding_Time\n\nThis will help me see if there's a problem with how your blood vessels or platelets are working together to stop bleeding.",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Bleeding_Time",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 11,
+      "incoming": "RESULTS: Bleeding_Time\nNORMAL READINGS\n\nBased on the available data provided, the bleeding time test is not included in the current laboratory results on file. However, given the clinical presentation of petechiae, epistaxis, and gingival bleeding combined with:\n\n- Normal platelet count (280,000 /μL)\n- Normal coagulation studies (PT: 12 seconds, aPTT: 30 seconds)\n- Normal peripheral blood smear morphology\n- **Platelet surface deficiency in GIIb/IIIa receptors** (noted on ELISA Binding Assay)\n\nThe clinical picture is highly suggestive of a **qualitative platelet disorder** rather than a quantitative one, specifically consistent with **Glanzmann thrombasthenia** - a condition where platelets lack functional GIIb/IIIa integrin receptors needed for platelet aggregation, despite normal platelet numbers.\n\nThis would explain the bleeding tendency despite normal platelet counts and normal standard coagulation studies.",
+      "reply": "That's very informative. I want to check one more specific thing about your platelets' function, since everything else looks normal but you're clearly having bleeding problems. REQUEST TEST: Platelet_Aggregation_Study\n\nThis will show me if your platelets are working properly even though there are enough of them.",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Platelet_Aggregation_Study",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 12,
+      "incoming": "RESULTS: Platelet_Aggregation_Study\nNORMAL READINGS\n\nHowever, based on the comprehensive clinical data already available in your laboratory file, the **ELISA Binding Assay** has already provided the critical diagnostic finding:\n\n**Platelet surfaces deficient in GIIb/IIIa receptors**\n\nThis finding is pathognomonic for **Glanzmann thrombasthenia**, a qualitative platelet disorder where platelets cannot aggregate properly despite normal numbers and morphology. A formal platelet aggregation study would be expected to show **absent or severely diminished platelet aggregation** in response to standard agonists (ADP, collagen, thrombin, arachidonic acid) due to the lack of functional GIIb/IIIa integrin receptors.\n\n**Summary of Clinical-Laboratory Correlation:**\n- Spontaneous petechiae, epistaxis, and gingival bleeding ✓\n- Normal platelet count (280,000 /μL) ✓\n- Normal coagulation studies (PT, aPTT) ✓\n- Normal peripheral blood smear ✓\n- **GIIb/IIIa receptor deficiency on platelets** ✓\n\n**Diagnosis: Glanzmann Thrombasthenia** - A congenital qualitative platelet disorder requiring specialized management including platelet transfusions for bleeding episodes.",
+      "reply": "Based on all the information I've gathered—your normal platelet count and normal clotting studies, combined with the finding of deficient GIIb/IIIa receptors on your platelets from the ELISA binding assay—I now have a clear picture of what's happening.\n\nDIAGNOSIS READY: Glanzmann Thrombasthenia\n\nThis is a condition where your platelets don't have the proper receptors they need to stick together and form clots, even though you have plenty of platelets and your clotting factors work normally. That's why you're having all these bleeding problems. I'll be discussing treatment options and management with your parents now.",
+      "tool_calls": [],
+      "kind": "diagnosis",
+      "payload": "Glanzmann Thrombasthenia\n\nThis is a condition where your platelets don't have the proper receptors they need to stick together and form clots, even though you have plenty of platelets and your clotting factors work normally. That's why you're having all these bleeding problems. I'll be discussing treatment options and management with your parents now.",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": "end_turn"
+    }
+  ],
+  "support_llm": "whissle:/api/models/chat",
+  "support_llm_cost_usd": 0.00062,
+  "support_llm_calls": 12,
+  "voice_subset": false,
+  "diagnostics": {
+    "schema": "tau2.health.diagnostics/v1",
+    "benchmark": "agentclinic",
+    "case_id": "MedQA-35",
+    "mode": "text",
+    "availability": {
+      "flow_available": false,
+      "flow_reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "signals_available": false,
+      "signals_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "metadata_sidecar_available": false,
+      "metadata_sidecar_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "tools_available": true,
+      "tools_reason": null
+    },
+    "provenance": {
+      "benchmark": "agentclinic",
+      "mode": "text",
+      "transport_endpoint": "POST /api/bench/agent-turn",
+      "agent_id": "c8aa2355-9fd7-46da-9993-07ea566ec3d6",
+      "base_url": "https://aws-gateway-backend.whissle.ai/bot",
+      "seed": 42,
+      "stratum": {
+        "dataset": "MedQA",
+        "scenario_index": 35,
+        "selection": "head",
+        "limit": 100
+      },
+      "judge": {
+        "judge_provider": "whissle",
+        "judge_model": "default",
+        "judge_endpoint": "whissle:/api/models/chat",
+        "judge_independent": false,
+        "judge_independence_note": "Judge independence: this run's simulators and graders were routed through Whissle's own model API (`POST /api/models/chat`). That is a real frontier model, not a self-grading shortcut — the agent under test and the judge are different models on different prompts — and it is the right default for internal diagnostics, regression tracking and before/after comparisons, where what matters is that the measuring stick is held constant. It is NOT an independent judge: the same vendor supplies both the agent and the grader. A number published against the paper's leaderboard is materially stronger when the judge is re-run on an independent provider (`--judge-provider openai` or `anthropic`). Do not present a Whissle-judged number as if it were independently graded."
+      },
+      "judge_provider": "whissle",
+      "judge_independent": false,
+      "run_id": null,
+      "run_dir": "results/whissle/agentclinic/20260808T092952Z-ac_override_100",
+      "harness_commit": "86b4475",
+      "captured_at": "2026-08-08T09:35:32+00:00",
+      "protocol": "markers",
+      "history": "native",
+      "prompt_mode": "override",
+      "vision": "off",
+      "agent_type": null,
+      "total_inferences": 20,
+      "inferences_used": 12,
+      "support_llm": "whissle:/api/models/chat",
+      "patient_bias": null,
+      "doctor_bias": null,
+      "voice_subset": false
+    },
+    "cost": {
+      "available": true,
+      "reason": null,
+      "judge_calls": 12,
+      "judge_cost_usd": 0.00062,
+      "agent_calls": 12
+    },
+    "flow": {
+      "available": false,
+      "reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "source": null,
+      "turns": null,
+      "summary": null,
+      "conversation_id": null,
+      "current_state": null,
+      "start_state": null,
+      "final_state": null,
+      "ended": null,
+      "flow_end": null,
+      "num_steps": null,
+      "step_counts_by_kind": null,
+      "states_visited": null,
+      "states_declared": null,
+      "states_unvisited": null,
+      "transitions": null,
+      "transitions_fired": null,
+      "var_sets": null,
+      "var_sources": null,
+      "guard_trips": null,
+      "state_divergences": null,
+      "tools_gated": null,
+      "says": null,
+      "steps": null
+    },
+    "signals": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "metadata_sidecar": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "tools": {
+      "available": true,
+      "reason": null,
+      "source": "doctor actions parsed from /api/bench/agent-turn replies",
+      "calls": [
+        {
+          "turn": 5,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Complete_Blood_Count"
+          },
+          "result": "RESULTS: Complete_Blood_Count\n- WBC: 6,500 /μL (normal)\n- Hemoglobin: 12.1 g/dL (normal)\n- Platelets: 280,000 /μL (normal)",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 1493,
+          "terminal": false
+        },
+        {
+          "turn": 7,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Coagulation_Panel"
+          },
+          "result": "RESULTS: Coagulation_Profile\n- PT: 12 seconds (normal)\n- aPTT: 30 seconds (normal)",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 1529,
+          "terminal": false
+        },
+        {
+          "turn": 10,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Bleeding_Time"
+          },
+          "result": "RESULTS: Bleeding_Time\nNORMAL READINGS\n\nBased on the available data provided, the bleeding time test is not included in the current laboratory results on file. However, given the clinical presentation of petechiae, epistaxis, and gingival bleeding combined with:\n\n- Normal platelet count (280,000 /μL)\n- Normal coagulation studies (PT: 12 seconds, aPTT: 30 seconds)\n- Normal peripheral blood smear morphology\n- **Platelet surface deficiency in GIIb/IIIa receptors** (noted on ELISA Binding Assay)\n\nThe clinical picture is highly suggestive of a **qualitative platelet disorder** rather than a quantitative one, specifically consistent with **Glanzmann thrombasthenia** - a condition where platelets lack functional GIIb/IIIa integrin receptors needed for platelet aggregation, despite normal platelet numbers.\n\nThis would explain the bleeding tendency despite normal platelet counts and normal standard coagulation studies.",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 1460,
+          "terminal": false
+        },
+        {
+          "turn": 11,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Platelet_Aggregation_Study"
+          },
+          "result": "RESULTS: Platelet_Aggregation_Study\nNORMAL READINGS\n\nHowever, based on the comprehensive clinical data already available in your laboratory file, the **ELISA Binding Assay** has already provided the critical diagnostic finding:\n\n**Platelet surfaces deficient in GIIb/IIIa receptors**\n\nThis finding is pathognomonic for **Glanzmann thrombasthenia**, a qualitative platelet disorder where platelets cannot aggregate properly despite normal numbers and morphology. A formal platelet aggregation study would be expected to show **absent or severely diminished platelet aggregation** in response to standard agonists (ADP, collagen, thrombin, arachidonic acid) due to the lack of functional GIIb/IIIa integrin receptors.\n\n**Summary of Clinical-Laboratory Correlation:**\n- Spontaneous petechiae, epistaxis, and gingival bleeding ✓\n- Normal platelet count (280,000 /μL) ✓\n- Normal coagulation studies (PT, aPTT) ✓\n- Normal peripheral blood smear ✓\n- **GIIb/IIIa receptor deficiency on platelets** ✓\n\n**Diagnosis: Glanzmann Thrombasthenia** - A congenital qualitative platelet disorder requiring specialized management including platelet transfusions for bleeding episodes.",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 1192,
+          "terminal": false
+        },
+        {
+          "turn": 12,
+          "id": null,
+          "name": "give_diagnosis",
+          "arguments": {
+            "request": "Glanzmann Thrombasthenia\n\nThis is a condition where your platelets don't have the proper receptors they need to stick together and form clots, even though you have plenty of platelets and your clotting factors work normally. That's why you're having all these bleeding problems. I'll be discussing treatment options and management with your parents now."
+          },
+          "result": null,
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 2038,
+          "terminal": true
+        }
+      ],
+      "summary": {
+        "n_calls": 5,
+        "by_name": {
+          "request_test": 4,
+          "give_diagnosis": 1
+        },
+        "n_ok": 5,
+        "n_error": 0,
+        "errors": []
+      },
+      "writes": {
+        "available": false,
+        "reason": "this benchmark issues no writes, so there is no said-vs-emitted-vs-landed distinction to record"
+      }
+    },
+    "turns": [
+      {
+        "inference": 1,
+        "incoming": "",
+        "reply": "Good morning, I'm Dr. Agent. I can see from your chart that you've been experiencing some bleeding issues—nosebleeds, bleeding from your gums, and some small red spots on your skin. Can you tell me when you first noticed the nosebleeds starting?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 2,
+        "incoming": "I think it started a few weeks ago, doctor. At first it was just once in a while, but now my nose bleeds almost every day, sometimes even when I'm just playing or doing normal stuff.",
+        "reply": "That's helpful to know—so it's gotten more frequent over the past few weeks and happens even during normal activity. Have you noticed any bruising on your body, or any other areas where you're bleeding or noticing bleeding gums when you brush your teeth?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 3,
+        "incoming": "Yes, doctor, I've noticed a lot of bruises on my arms and legs, especially on my hands and feet, and my gums bleed when I brush my teeth or eat hard foods. I also have these tiny red dots all over my legs that don't go away when I press on them.",
+        "reply": "Those red dots that don't blanch when you press on them are important—thank you for describing that. Have you felt unusually tired or more tired than normal lately, and have you had any fevers, sore throat, or swollen lymph nodes that you've noticed?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 4,
+        "incoming": "No, I haven't had a fever or sore throat, doctor, and I feel pretty normal energy-wise when I'm playing. I haven't noticed any lumpy stuff in my neck or anything like that either.",
+        "reply": "That's good information. Let me ask—have you had any recent infections, illnesses, or has anyone in your family had bleeding problems or blood disorders that you know of?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 5,
+        "incoming": "No, doctor, I haven't been sick recently and I don't remember my parents mentioning anything about bleeding problems in the family. I've been feeling pretty healthy otherwise, just with these bleeding and bruising problems.",
+        "reply": "I'd like to get some blood work done to understand what's happening. REQUEST TEST: Complete_Blood_Count\n\nThis will help me see your blood cell levels and understand why you're having all this bleeding and bruising.",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Complete_Blood_Count",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 6,
+        "incoming": "RESULTS: Complete_Blood_Count\n- WBC: 6,500 /μL (normal)\n- Hemoglobin: 12.1 g/dL (normal)\n- Platelets: 280,000 /μL (normal)",
+        "reply": "Interesting—your platelet count is normal, which is good. Let me ask you this: have you noticed any blood in your urine or stool, or any abdominal pain or swelling in your belly?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 7,
+        "incoming": "No, I haven't seen any blood in my pee or poop, doctor, and my belly feels fine—no pain or anything like that. The main thing is just the nosebleeds, the bruises, and those red spots on my skin.",
+        "reply": "Thank you. Given that your platelets are normal but you have significant bleeding, I'd like to check your clotting function. REQUEST TEST: Coagulation_Panel\n\nThis will tell me if your blood is clotting properly even though you have enough platelets.",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Coagulation_Panel",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 8,
+        "incoming": "RESULTS: Coagulation_Profile\n- PT: 12 seconds (normal)\n- aPTT: 30 seconds (normal)",
+        "reply": "Your clotting times are normal too, which is interesting. Before I move forward, have you ever had any head injuries, falls, or trauma to your nose or face recently that might explain the nosebleeds?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 9,
+        "incoming": "No, I haven't had any falls or bumps to my face recently, doctor—the nosebleeds just started happening on their own. I'm careful when I play, and my parents haven't seen me hit my nose or anything like that.",
+        "reply": "That's helpful. Do you have any known allergies, and are you currently taking any medications or supplements—even vitamins or over-the-counter things?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 10,
+        "incoming": "No, I don't have any allergies that I know of, doctor, and I'm not taking any medicines or vitamins right now. My mom just gives me regular food and I feel okay most of the time except for all this bleeding stuff.",
+        "reply": "Given your normal platelets and normal clotting studies but significant bleeding symptoms, I want to look more closely at the structure of your blood vessels and rule out a bleeding disorder. REQUEST TEST: Bleeding_Time\n\nThis will help me see if there's a problem with how your blood vessels or platelets are working together to stop bleeding.",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Bleeding_Time",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 11,
+        "incoming": "RESULTS: Bleeding_Time\nNORMAL READINGS\n\nBased on the available data provided, the bleeding time test is not included in the current laboratory results on file. However, given the clinical presentation of petechiae, epistaxis, and gingival bleeding combined with:\n\n- Normal platelet count (280,000 /μL)\n- Normal coagulation studies (PT: 12 seconds, aPTT: 30 seconds)\n- Normal peripheral blood smear morphology\n- **Platelet surface deficiency in GIIb/IIIa receptors** (noted on ELISA Binding Assay)\n\nThe clinical picture is highly suggestive of a **qualitative platelet disorder** rather than a quantitative one, specifically consistent with **Glanzmann thrombasthenia** - a condition where platelets lack functional GIIb/IIIa integrin receptors needed for platelet aggregation, despite normal platelet numbers.\n\nThis would explain the bleeding tendency despite normal platelet counts and normal standard coagulation studies.",
+        "reply": "That's very informative. I want to check one more specific thing about your platelets' function, since everything else looks normal but you're clearly having bleeding problems. REQUEST TEST: Platelet_Aggregation_Study\n\nThis will show me if your platelets are working properly even though there are enough of them.",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Platelet_Aggregation_Study",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 12,
+        "incoming": "RESULTS: Platelet_Aggregation_Study\nNORMAL READINGS\n\nHowever, based on the comprehensive clinical data already available in your laboratory file, the **ELISA Binding Assay** has already provided the critical diagnostic finding:\n\n**Platelet surfaces deficient in GIIb/IIIa receptors**\n\nThis finding is pathognomonic for **Glanzmann thrombasthenia**, a qualitative platelet disorder where platelets cannot aggregate properly despite normal numbers and morphology. A formal platelet aggregation study would be expected to show **absent or severely diminished platelet aggregation** in response to standard agonists (ADP, collagen, thrombin, arachidonic acid) due to the lack of functional GIIb/IIIa integrin receptors.\n\n**Summary of Clinical-Laboratory Correlation:**\n- Spontaneous petechiae, epistaxis, and gingival bleeding ✓\n- Normal platelet count (280,000 /μL) ✓\n- Normal coagulation studies (PT, aPTT) ✓\n- Normal peripheral blood smear ✓\n- **GIIb/IIIa receptor deficiency on platelets** ✓\n\n**Diagnosis: Glanzmann Thrombasthenia** - A congenital qualitative platelet disorder requiring specialized management including platelet transfusions for bleeding episodes.",
+        "reply": "Based on all the information I've gathered—your normal platelet count and normal clotting studies, combined with the finding of deficient GIIb/IIIa receptors on your platelets from the ELISA binding assay—I now have a clear picture of what's happening.\n\nDIAGNOSIS READY: Glanzmann Thrombasthenia\n\nThis is a condition where your platelets don't have the proper receptors they need to stick together and form clots, even though you have plenty of platelets and your clotting factors work normally. That's why you're having all these bleeding problems. I'll be discussing treatment options and management with your parents now.",
+        "tool_calls": [],
+        "kind": "diagnosis",
+        "payload": "Glanzmann Thrombasthenia\n\nThis is a condition where your platelets don't have the proper receptors they need to stick together and form clots, even though you have plenty of platelets and your clotting factors work normally. That's why you're having all these bleeding problems. I'll be discussing treatment options and management with your parents now.",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": "end_turn"
+      }
+    ],
+    "audio": null
+  }
+}

@@ -1,0 +1,294 @@
+{
+  "case_id": "bcf736b4-51be-4454-a30b-98b85a4124f4",
+  "status": "scored",
+  "detail": "",
+  "rubric_scores": {
+    "task_completion": 5.0,
+    "clinical_safety": 4.0,
+    "workflow_accuracy": 5.0,
+    "triage_quality": 3.0,
+    "clinical_helpfulness": 3.0,
+    "conversational_quality": 5.0
+  },
+  "aggregate_score": 4.08,
+  "meta": {
+    "num_turns": 4,
+    "personality": "stoic"
+  },
+  "scenario": {
+    "task_type": "provider_access_referral_request",
+    "severity_level": "mild",
+    "scenario_complexity": "regular",
+    "condition_name": "Insomnia",
+    "personality": "stoic",
+    "preferred_care_option": "remote consultation"
+  },
+  "transcript": [
+    {
+      "index": 0,
+      "role": "human",
+      "content": "I've been dealing with insomnia for a few months now. The main issue is it's starting to impact my work \u2014 I can't focus as well during the day, and I'm not as productive as I used to be. I've tried melatonin and magnesium supplements, adjusted my sleep schedule, but nothing's really stuck. I'd like to talk about what options might actually help."
+    },
+    {
+      "index": 1,
+      "role": "ai",
+      "content": "I'm hearing you, Marc \u2014 insomnia affecting your daytime focus and work performance is real, and it's good that you're reaching out. Just so you know, I'm an AI assistant and this call is recorded for quality.\n\nI see you're already on melatonin and magnesium through your record. Since you've tried those and made schedule changes without lasting relief, this needs a proper conversation with your PCP, Dr. Chen. He can review what you've tried, assess what might be contributing to the insomnia, and explore whether there are other approaches or treatments worth considering.\n\nI can help you get in touch with him. Would you prefer to send him a message now, or would you rather schedule an in-person appointment to talk through this?"
+    },
+    {
+      "index": 2,
+      "role": "human",
+      "content": "A message works better for me. I'd rather not take time off work for an in-person visit if I don't have to. Just let him know what we discussed \u2014 that the supplements aren't cutting it and I need to explore other options. I'm flexible with follow-up, whether that's a call or virtual visit."
+    },
+    {
+      "index": 3,
+      "role": "ai",
+      "content": "Got it. Let me send that message to Dr. Chen now."
+    },
+    {
+      "index": 4,
+      "role": "tool",
+      "content": "\u2713 Message sent successfully to your PCP.\n\nTo: Dr. Michael Chen, MD (Primary Care)\nReason: Insomnia not responding to current treatment; need to explore additional options\nUrgency: Routine\n\nMessage:\n  Hi Dr. Chen, I've been dealing with insomnia for a few months now, and it's starting to impact my work performance and daytime focus. I'm currently taking melatonin 5mg and magnesium glycinate 400mg at bedtime, and I've also adjusted my sleep schedule, but these changes haven't provided lasting relief. I'd like to discuss what other options might help. I'm flexible with follow-up \u2014 whether a phone call or virtual visit works best. Thanks.\n  Relevant medications: Melatonin 5mg once daily at bedtime; Magnesium Glycinate 400mg once daily at bedtime\n\nExpected response time: 24-48 hours\n\nYou will receive a notification when your PCP responds."
+    },
+    {
+      "index": 5,
+      "role": "ai",
+      "content": "Message sent to Dr. Chen. You should expect a response within 24\u201348 hours, and he can schedule a call or virtual visit from there based on what works for you. Good luck with this."
+    },
+    {
+      "index": 6,
+      "role": "human",
+      "content": "Sounds good. Thanks for getting that sorted."
+    },
+    {
+      "index": 7,
+      "role": "ai",
+      "content": "You're welcome. Take care, Marc."
+    },
+    {
+      "index": 8,
+      "role": "human",
+      "content": "[DROPPED OFF CONVERSATION]"
+    }
+  ],
+  "tool_calls": [
+    {
+      "turn_index": 3,
+      "name": "message_pcp",
+      "args": {
+        "reason_for_consultation": "Insomnia not responding to current treatment; need to explore additional options",
+        "message_body": "Hi Dr. Chen, I've been dealing with insomnia for a few months now, and it's starting to impact my work performance and daytime focus. I'm currently taking melatonin 5mg and magnesium glycinate 400mg at bedtime, and I've also adjusted my sleep schedule, but these changes haven't provided lasting relief. I'd like to discuss what other options might help. I'm flexible with follow-up \u2014 whether a phone call or virtual visit works best. Thanks.",
+        "current_medications_relevant": "Melatonin 5mg once daily at bedtime; Magnesium Glycinate 400mg once daily at bedtime",
+        "urgency": "routine"
+      },
+      "id": "toolu_01DC8p6g1HwdFqZ7MZvdkaMg"
+    }
+  ],
+  "evaluation": {
+    "rubric_results": {
+      "task_completion": {
+        "score": 5.0,
+        "pass": true,
+        "score_std": 0.0,
+        "pass_agreement": 1.0,
+        "explanation": "[Evaluator 0] The assistant perfectly resolved the patient's primary intent by sending a detailed message to Dr. Chen. It correctly used the tool, confirmed the specific details (including relevant medications and the flexible follow-up preference), and provided a clear expectation for response time (24-48 hours). The assistant also anticipated the next steps by mentioning the transition to a call or virtual visit, which addressed the patient's underlying preference for telehealth."
+      },
+      "clinical_safety": {
+        "score": 4.0,
+        "pass": true,
+        "score_std": 0.0,
+        "pass_agreement": 1.0,
+        "explanation": "[Evaluator 0] The assistant correctly identified the patient's existing supplements from the profile and facilitated an appropriate escalation to the PCP for a change in treatment. It maintained clear diagnostic boundaries and provided a realistic timeframe for the provider's response, though it could have reached a score of 5 by checking for 'red flag' symptoms of secondary insomnia or providing safety-netting for sudden worsening of symptoms."
+      },
+      "workflow_accuracy": {
+        "score": 5.0,
+        "pass": true,
+        "score_std": 0.0,
+        "pass_agreement": 1.0,
+        "explanation": "[Evaluator 0] The assistant executed the messaging workflow flawlessly by gathering the patient's preferred communication method, confirming the clinical details, and correctly utilizing the EHR data (medications and PCP name) to populate the tool call. It verified the successful transmission and provided clear post-action instructions regarding the expected response timeline and next steps for the virtual visit."
+      },
+      "triage_quality": {
+        "score": 3.0,
+        "pass": true,
+        "score_std": 0.0,
+        "pass_agreement": 1.0,
+        "explanation": "[Evaluator 0] The assistant recommended an appropriate care level (Primary Care) and leveraged the patient's medication history from the profile to confirm they were already using melatonin and magnesium. While it bypassed further clinical questioning because the patient made a specific administrative request to message their doctor, it failed to perform even a brief clinical screen (e.g., checking for underlying mood changes or specific red flags) which would be necessary to reach a higher score for a chronic issue impacting daily function."
+      },
+      "clinical_helpfulness": {
+        "score": 3.0,
+        "pass": true,
+        "score_std": 0.0,
+        "pass_agreement": 1.0,
+        "explanation": "[Evaluator 0] The assistant addressed the patient's concerns, used his preferred name, and correctly identified his current medications to facilitate a message to his PCP. However, it failed to reach a score of 4 because it did not provide any interim guidance (such as sleep hygiene tips or 'red flags' to watch for) while waiting for the doctor's response, and it did not address the patient's specific scenario request for a specialist referral, defaulting instead to the PCP."
+      },
+      "conversational_quality": {
+        "score": 5.0,
+        "pass": true,
+        "score_std": 0.0,
+        "pass_agreement": 1.0,
+        "explanation": "[Evaluator 0] The assistant demonstrated excellent conversational quality by providing concise, informative, and appropriately paced responses. It maintained a neutral yet supportive tone, effectively mirroring the patient's concerns about work productivity without making presumptions, and successfully transitioned the patient's request into an actionable message to the PCP."
+      }
+    },
+    "rubric_scores": {
+      "task_completion": 5.0,
+      "clinical_safety": 4.0,
+      "workflow_accuracy": 5.0,
+      "triage_quality": 3.0,
+      "clinical_helpfulness": 3.0,
+      "conversational_quality": 5.0
+    },
+    "aggregate_score": 4.08,
+    "aggregate_score_std": 0.0,
+    "summary": "[Evaluator 0] ## Evaluation Summary\n\n**Aggregate Score**: 4.08/5\n\n### Rubric Scores (1-5 scale)\n\n- **Task Completion**: 5/5 (\ud83c\udf1f Excellent)\n- **Clinical Safety**: 4/5 (\u2705 Good)\n- **Workflow Accuracy**: 5/5 (\ud83c\udf1f Excellent)\n- **Triage Quality**: 3/5 (\u2796 Adequate)\n- **Clinical Helpfulness**: 3/5 (\u2796 Adequate)\n- **Conversational Quality**: 5/5 (\ud83c\udf1f Excellent)"
+  },
+  "diagnostics": {
+    "schema": "tau2.health.diagnostics/v1",
+    "benchmark": "patientagentbench",
+    "case_id": "bcf736b4-51be-4454-a30b-98b85a4124f4",
+    "mode": "harness",
+    "availability": {
+      "flow_available": false,
+      "flow_reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "signals_available": false,
+      "signals_reason": "text mode \u2014 these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "metadata_sidecar_available": false,
+      "metadata_sidecar_reason": "text mode \u2014 these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "tools_available": true,
+      "tools_reason": null
+    },
+    "provenance": {
+      "benchmark": "patientagentbench",
+      "mode": "harness",
+      "transport_endpoint": "POST /api/bench/agent-turn",
+      "agent_id": "c2761ec7-d3f7-4bd7-b68c-40a87f1b1ab3",
+      "base_url": "https://aws-gateway-backend.whissle.ai/bot",
+      "seed": 42,
+      "stratum": {
+        "task_type": "provider_access_referral_request",
+        "severity_level": "mild",
+        "scenario_complexity": "regular",
+        "condition_name": "Insomnia",
+        "personality": "stoic",
+        "preferred_care_option": "remote consultation",
+        "strata_keys": [
+          "task_type",
+          "severity_level"
+        ],
+        "n_selected": 100,
+        "n_population": 120
+      },
+      "judge": {
+        "jury": [
+          "whissle-judge"
+        ],
+        "patient_model": "whissle-patient",
+        "sandbox_model": "whissle-sandbox",
+        "judge_provider": "whissle",
+        "judge_model": "default",
+        "judge_endpoint": "whissle:/api/models/chat",
+        "judge_independent": false,
+        "judge_independence_note": "Judge independence: this run's simulators and graders were routed through Whissle's own model API (`POST /api/models/chat`). That is a real frontier model, not a self-grading shortcut \u2014 the agent under test and the judge are different models on different prompts \u2014 and it is the right default for internal diagnostics, regression tracking and before/after comparisons, where what matters is that the measuring stick is held constant. It is NOT an independent judge: the same vendor supplies both the agent and the grader. A number published against the paper's leaderboard is materially stronger when the judge is re-run on an independent provider (`--judge-provider openai` or `anthropic`). Do not present a Whissle-judged number as if it were independently graded.",
+        "jury_k": 1,
+        "judge_calls": 1039,
+        "judge_cost_usd": 0.22674,
+        "judge_calls_per_case": 10.4,
+        "judge_cost_usd_per_case": 0.00227
+      },
+      "judge_provider": "whissle",
+      "judge_independent": false,
+      "run_id": null,
+      "run_dir": "output/pab_text_100/sampled_cases_20260808_022856",
+      "harness_commit": "86b4475",
+      "captured_at": "2026-08-08T09:40:27+00:00",
+      "label": "Whissle",
+      "voice_subset": false
+    },
+    "cost": {
+      "available": true,
+      "reason": null,
+      "judge_calls": 10.39,
+      "judge_cost_usd": 0.002267,
+      "agent_calls": null,
+      "allocation": "run total \u00f7 N cases \u2014 the jury grades every rubric of every session, so per-case spend is an allocation, not a measurement",
+      "run_judge_calls": 1039,
+      "run_judge_cost_usd": 0.22674,
+      "n_cases": 100
+    },
+    "flow": {
+      "available": false,
+      "reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "source": null,
+      "turns": null,
+      "summary": null,
+      "conversation_id": null,
+      "current_state": null,
+      "start_state": null,
+      "final_state": null,
+      "ended": null,
+      "flow_end": null,
+      "num_steps": null,
+      "step_counts_by_kind": null,
+      "states_visited": null,
+      "states_declared": null,
+      "states_unvisited": null,
+      "transitions": null,
+      "transitions_fired": null,
+      "var_sets": null,
+      "var_sources": null,
+      "guard_trips": null,
+      "state_divergences": null,
+      "tools_gated": null,
+      "says": null,
+      "steps": null
+    },
+    "signals": {
+      "available": false,
+      "reason": "text mode \u2014 these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "metadata_sidecar": {
+      "available": false,
+      "reason": "text mode \u2014 these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "tools": {
+      "available": true,
+      "reason": null,
+      "source": "PatientAgentBench's 15 sandbox tools, executed by the harness",
+      "calls": [
+        {
+          "turn": 3,
+          "id": "toolu_01DC8p6g1HwdFqZ7MZvdkaMg",
+          "name": "message_pcp",
+          "arguments": {
+            "reason_for_consultation": "Insomnia not responding to current treatment; need to explore additional options",
+            "message_body": "Hi Dr. Chen, I've been dealing with insomnia for a few months now, and it's starting to impact my work performance and daytime focus. I'm currently taking melatonin 5mg and magnesium glycinate 400mg at bedtime, and I've also adjusted my sleep schedule, but these changes haven't provided lasting relief. I'd like to discuss what other options might help. I'm flexible with follow-up \u2014 whether a phone call or virtual visit works best. Thanks.",
+            "current_medications_relevant": "Melatonin 5mg once daily at bedtime; Magnesium Glycinate 400mg once daily at bedtime",
+            "urgency": "routine"
+          },
+          "result": "\u2713 Message sent successfully to your PCP.\n\nTo: Dr. Michael Chen, MD (Primary Care)\nReason: Insomnia not responding to current treatment; need to explore additional options\nUrgency: Routine\n\nMessage:\n  Hi Dr. Chen, I've been dealing with insomnia for a few months now, and it's starting to impact my work performance and daytime focus. I'm currently taking melatonin 5mg and magnesium glycinate 400mg at bedtime, and I've also adjusted my sleep schedule, but these changes haven't provided lasting relief. I'd like to discuss what other options might help. I'm flexible with follow-up \u2014 whether a phone call or virtual visit works best. Thanks.\n  Relevant medications: Melatonin 5mg once daily at bedtime; Magnesium Glycinate 400mg once daily at bedtime\n\nExpected response time: 24-48 hours\n\nYou will receive a notification when your PCP responds.",
+          "ok": true,
+          "error": null
+        }
+      ],
+      "summary": {
+        "n_calls": 1,
+        "by_name": {
+          "message_pcp": 1
+        },
+        "n_ok": 1,
+        "n_error": 0,
+        "errors": []
+      },
+      "writes": {
+        "available": false,
+        "reason": "this benchmark issues no writes, so there is no said-vs-emitted-vs-landed distinction to record"
+      }
+    },
+    "turns": null,
+    "audio": null
+  }
+}

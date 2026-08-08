@@ -1,0 +1,1044 @@
+{
+  "scenario_id": "MedQA-80",
+  "scenario_index": 80,
+  "dataset": "MedQA",
+  "mode": "text",
+  "correct_diagnosis": "Hemophilia A",
+  "answer_options": [],
+  "score": {
+    "outcome": "no_commit",
+    "correctness": false,
+    "doctor_diagnosis": null,
+    "doctor_final_text": "Is Hemophilia A the same thing as the \"A\" kind of bleeding sickness? I just want to know if you can give me the missing protein piece so the oven in my knee turns off and I can jump again.",
+    "moderator_raw": "",
+    "moderator_raw_text": "",
+    "moderator_lenient": null,
+    "moderator_attempts": 0,
+    "moderator_normalized": false,
+    "moderator_unconstrained": false,
+    "declined": false,
+    "refusal_evidence": [],
+    "format_deviation": false,
+    "decline_source": null,
+    "decline_reason": "",
+    "spurious_commit": false
+  },
+  "infra_fail": false,
+  "error": null,
+  "findings": [],
+  "inferences_used": 20,
+  "max_inferences": 20,
+  "tests_ordered": [
+    "Coagulation_Screen_(PT/aPTT)",
+    "Factor_VIII_Activity_Level",
+    "Factor_XI_Activity_Level",
+    "aPTT_Mixing_Study",
+    "Factor_",
+    "Factor_VIII_"
+  ],
+  "images_requested": 0,
+  "image": null,
+  "image_error": null,
+  "vision": "off",
+  "refusals": [],
+  "dialogue": [
+    {
+      "role": "doctor",
+      "inference": 1,
+      "kind": "question",
+      "text": "Hello, I'm Dr. Agent. I'm here to look into your knee swelling; could you tell me when this started and if you recall any specific injury to the area?",
+      "payload": null,
+      "latency_ms": 2932,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "My mommy noticed my knee was big and puffy after we played at the park yesterday. I didn't fall down or get a boo-boo, it just started swelling up on its own."
+    },
+    {
+      "role": "doctor",
+      "inference": 2,
+      "kind": "question",
+      "text": "I see. Is the knee painful to move, and do you know if anyone else in your family has trouble with bleeding or joint swelling like this?",
+      "payload": null,
+      "latency_ms": 2236,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "It hurts a little bit when I try to crawl or walk on it. My mommy says my Great Uncle had \"bad knees\" and boo-boos that wouldn't stop bleeding, too."
+    },
+    {
+      "role": "doctor",
+      "inference": 3,
+      "kind": "test",
+      "text": "Has your knee ever swollen like this before, and have you noticed any large or unusual bruises on your body lately? \n\nREQUEST TEST: Coagulation_Screen_(PT/aPTT)",
+      "payload": "Coagulation_Screen_(PT/aPTT)",
+      "latency_ms": 2478,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: PT: 14.0 s, aPTT (ACT): 52.0 s (prolonged)"
+    },
+    {
+      "role": "doctor",
+      "inference": 4,
+      "kind": "test",
+      "text": "It's concerning that your aPTT is prolonged while your PT is normal. Have you ever had a nosebleed that was hard to stop or any bleeding from your gums?\n\nREQUEST TEST: Factor_VIII_Activity_Level\nREQUEST TEST: Factor_IX_Activity_Level",
+      "payload": "Factor_VIII_Activity_Level",
+      "latency_ms": 4310,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: NORMAL READINGS"
+    },
+    {
+      "role": "doctor",
+      "inference": 5,
+      "kind": "test",
+      "text": "Those factor levels are normal, but since your aPTT is still high, I want to look at a few other possibilities. Have you ever had a lot of bleeding after losing a tooth or getting a small cut?\n\nREQUEST TEST: Factor_XI_Activity_Level\nREQUEST TEST: von_Willebrand_Factor_Antigen",
+      "payload": "Factor_XI_Activity_Level",
+      "latency_ms": 4411,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: NORMAL READINGS"
+    },
+    {
+      "role": "doctor",
+      "inference": 6,
+      "kind": "question",
+      "text": "I see. I'm going to check a few more specific clotting factors to see why your blood is taking longer to clot. Have you noticed any unusual bruising on your skin, or has your mommy",
+      "payload": null,
+      "latency_ms": 6176,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "I have some purple spots on my tummy and legs that don't go away. Mommy says I get bruises really easily, even when I'm just playing gently with my toys."
+    },
+    {
+      "role": "doctor",
+      "inference": 7,
+      "kind": "test",
+      "text": "I understand. Do those purple spots ever feel bumpy, or are they flat against your skin like a drawing?\n\nREQUEST TEST: aPTT_Mixing_Study\nREQUEST TEST: Factor_",
+      "payload": "aPTT_Mixing_Study",
+      "latency_ms": 6177,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: NORMAL READINGS"
+    },
+    {
+      "role": "doctor",
+      "inference": 8,
+      "kind": "question",
+      "text": "Those purple spots and your knee swelling suggest we need to look closer at your blood's clotting process. Since your previous factor tests were normal but the aPTT remains high, I",
+      "payload": null,
+      "latency_ms": 5466,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Mommy is worried because she says my blood takes a long time to turn into a scab when I get a scratch. Do you think you can help make my knee feel better so I can go back to the park? I hope I don't need any more pokes today."
+    },
+    {
+      "role": "doctor",
+      "inference": 9,
+      "kind": "question",
+      "text": "I will do my best to make your knee feel better quickly. Since your tests for the most common factors were normal but your clotting time is still long, I need to check one",
+      "payload": null,
+      "latency_ms": 5974,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "I hope the next test helps you find the answer. Is it because of the same thing my Great Uncle had? My knee feels very tight and it's hard to bend it right now."
+    },
+    {
+      "role": "doctor",
+      "inference": 10,
+      "kind": "question",
+      "text": "It is very possible this is related to your Great Uncle's condition, as these things can run in families. To be sure, I need to check one more factor in your blood",
+      "payload": null,
+      "latency_ms": 5355,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Okay, I understand. Does that mean my blood is missing one of the pieces it needs to stay strong? I just want the tightness in my knee to go away so I can play with my trucks again."
+    },
+    {
+      "role": "doctor",
+      "inference": 11,
+      "kind": "question",
+      "text": "Yes, it sounds like your blood is missing a \"puzzle piece\" that helps it stay strong and stop bleeding. I'm going to run one more test to see if that missing piece is Factor",
+      "payload": null,
+      "latency_ms": 5768,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Is Factor IX the name of the puzzle piece you are looking for? Mommy said the doctor told my uncle he had the \"B\" kind of the bleeding sickness. I hope you find the piece soon so my knee stops feeling so big and heavy."
+    },
+    {
+      "role": "doctor",
+      "inference": 12,
+      "kind": "question",
+      "text": "Actually, we already checked Factor IX, and it came back normal, which means it might not be the same kind as your uncle's. I'm going to check Factor XII and Factor X",
+      "payload": null,
+      "latency_ms": 5398,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "I'm confused because I thought I had the same thing as my uncle, but I just want my knee to stop hurting. Does it matter which number is missing as long as you can fix it? I'm getting tired of waiting and I really want to go home."
+    },
+    {
+      "role": "doctor",
+      "inference": 13,
+      "kind": "question",
+      "text": "It matters very much because the right treatment depends on knowing exactly which piece is missing to keep you safe. I am going to test for Factor XIII and a few others to solve this",
+      "payload": null,
+      "latency_ms": 6507,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Will the test for number thirteen tell you why my knee is so puffy? I'm sorry I'm being fussy, I just want the heavy feeling to go away. Please help me get better so I don't get any more purple spots."
+    },
+    {
+      "role": "doctor",
+      "inference": 14,
+      "kind": "question",
+      "text": "Yes, testing for Factor XIII can help us understand why your blood isn't forming strong scabs. Have you noticed if your wounds ever start bleeding again after they seemed to have stopped",
+      "payload": null,
+      "latency_ms": 5160,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Sometimes when I get a scrape, it stops for a little while but then the red juice starts coming out again the next day. It's like the scab isn't very strong and just falls right off. Does that mean the Factor Thirteen piece is what makes the scabs stay stuck?"
+    },
+    {
+      "role": "doctor",
+      "inference": 15,
+      "kind": "question",
+      "text": "That is exactly what Factor XIII does; it acts like a strong glue to keep the scab in place. Since your other tests didn't find the missing piece, I'm going to check",
+      "payload": null,
+      "latency_ms": 5834,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "That sounds like the glue I need! Does that mean if you give me some of that Factor Thirteen glue, my knee will stop being so big and the purple spots will go away? I hope this is the last test so we can fix my \"bad knees\" like my uncle had."
+    },
+    {
+      "role": "doctor",
+      "inference": 16,
+      "kind": "test",
+      "text": "If this test confirms it, we can start the right treatment to help your knee and stop the bruising. I am going to run one last check to be absolutely sure. \n\nREQUEST TEST: Factor_",
+      "payload": "Factor_",
+      "latency_ms": 6074,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: NORMAL READINGS"
+    },
+    {
+      "role": "doctor",
+      "inference": 17,
+      "kind": "test",
+      "text": "Since your aPTT is prolonged but the common factor tests are normal, I'll request one more specific test to be absolutely sure.\n\nREQUEST TEST: Factor_VIII_",
+      "payload": "Factor_VIII_",
+      "latency_ms": 5556,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: NORMAL READINGS"
+    },
+    {
+      "role": "doctor",
+      "inference": 18,
+      "kind": "question",
+      "text": "Given your symptoms and the fact that your aPTT is prolonged while common factors are normal, I'm going to check for one more specific clotting factor that can be tricky to find. This",
+      "payload": null,
+      "latency_ms": 5876,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Are you looking for another missing piece in my blood even though the other tests didn't find it? My knee still feels very tight and I'm worried that my scabs won't stay stuck without the glue. I just want to know why I'm different from my friends at the park."
+    },
+    {
+      "role": "doctor",
+      "inference": 19,
+      "kind": "question",
+      "text": "I'm going to check one more thing to see why your aPTT is high despite the other results. Have you ever noticed if your joints feel warm to the touch when they swell up?",
+      "payload": null,
+      "latency_ms": 5490,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Yes, my knee feels very hot and itchy, almost like it's a little oven inside. Mommy put a cold bag on it, but it still feels warm and looks really red and shiny. Does the heat mean the blood is stuck inside my knee?"
+    },
+    {
+      "role": "doctor",
+      "inference": 20,
+      "kind": "question",
+      "text": "It sounds like you have a classic case of Hemophilia A, where your blood is missing a key protein needed for clotting. Based on your symptoms and the tests showing a prolonged clotting time, I",
+      "payload": null,
+      "latency_ms": 5773,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Is Hemophilia A the same thing as the \"A\" kind of bleeding sickness? I just want to know if you can give me the missing protein piece so the oven in my knee turns off and I can jump again."
+    }
+  ],
+  "latency_ms": [
+    2932,
+    2236,
+    2478,
+    4310,
+    4411,
+    6176,
+    6177,
+    5466,
+    5974,
+    5355,
+    5768,
+    5398,
+    6507,
+    5160,
+    5834,
+    6074,
+    5556,
+    5876,
+    5490,
+    5773
+  ],
+  "wall_s": 126.85,
+  "doctor_turns": [
+    {
+      "inference": 1,
+      "incoming": "",
+      "reply": "Hello, I'm Dr. Agent. I'm here to look into your knee swelling; could you tell me when this started and if you recall any specific injury to the area?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 2,
+      "incoming": "My mommy noticed my knee was big and puffy after we played at the park yesterday. I didn't fall down or get a boo-boo, it just started swelling up on its own.",
+      "reply": "I see. Is the knee painful to move, and do you know if anyone else in your family has trouble with bleeding or joint swelling like this?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 3,
+      "incoming": "It hurts a little bit when I try to crawl or walk on it. My mommy says my Great Uncle had \"bad knees\" and boo-boos that wouldn't stop bleeding, too.",
+      "reply": "Has your knee ever swollen like this before, and have you noticed any large or unusual bruises on your body lately? \n\nREQUEST TEST: Coagulation_Screen_(PT/aPTT)",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Coagulation_Screen_(PT/aPTT)",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 4,
+      "incoming": "RESULTS: PT: 14.0 s, aPTT (ACT): 52.0 s (prolonged)",
+      "reply": "It's concerning that your aPTT is prolonged while your PT is normal. Have you ever had a nosebleed that was hard to stop or any bleeding from your gums?\n\nREQUEST TEST: Factor_VIII_Activity_Level\nREQUEST TEST: Factor_IX_Activity_Level",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Factor_VIII_Activity_Level",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 5,
+      "incoming": "RESULTS: NORMAL READINGS",
+      "reply": "Those factor levels are normal, but since your aPTT is still high, I want to look at a few other possibilities. Have you ever had a lot of bleeding after losing a tooth or getting a small cut?\n\nREQUEST TEST: Factor_XI_Activity_Level\nREQUEST TEST: von_Willebrand_Factor_Antigen",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Factor_XI_Activity_Level",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 6,
+      "incoming": "RESULTS: NORMAL READINGS",
+      "reply": "I see. I'm going to check a few more specific clotting factors to see why your blood is taking longer to clot. Have you noticed any unusual bruising on your skin, or has your mommy",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 7,
+      "incoming": "I have some purple spots on my tummy and legs that don't go away. Mommy says I get bruises really easily, even when I'm just playing gently with my toys.",
+      "reply": "I understand. Do those purple spots ever feel bumpy, or are they flat against your skin like a drawing?\n\nREQUEST TEST: aPTT_Mixing_Study\nREQUEST TEST: Factor_",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "aPTT_Mixing_Study",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 8,
+      "incoming": "RESULTS: NORMAL READINGS",
+      "reply": "Those purple spots and your knee swelling suggest we need to look closer at your blood's clotting process. Since your previous factor tests were normal but the aPTT remains high, I",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 9,
+      "incoming": "Mommy is worried because she says my blood takes a long time to turn into a scab when I get a scratch. Do you think you can help make my knee feel better so I can go back to the park? I hope I don't need any more pokes today.",
+      "reply": "I will do my best to make your knee feel better quickly. Since your tests for the most common factors were normal but your clotting time is still long, I need to check one",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 10,
+      "incoming": "I hope the next test helps you find the answer. Is it because of the same thing my Great Uncle had? My knee feels very tight and it's hard to bend it right now.",
+      "reply": "It is very possible this is related to your Great Uncle's condition, as these things can run in families. To be sure, I need to check one more factor in your blood",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 11,
+      "incoming": "Okay, I understand. Does that mean my blood is missing one of the pieces it needs to stay strong? I just want the tightness in my knee to go away so I can play with my trucks again.",
+      "reply": "Yes, it sounds like your blood is missing a \"puzzle piece\" that helps it stay strong and stop bleeding. I'm going to run one more test to see if that missing piece is Factor",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 12,
+      "incoming": "Is Factor IX the name of the puzzle piece you are looking for? Mommy said the doctor told my uncle he had the \"B\" kind of the bleeding sickness. I hope you find the piece soon so my knee stops feeling so big and heavy.",
+      "reply": "Actually, we already checked Factor IX, and it came back normal, which means it might not be the same kind as your uncle's. I'm going to check Factor XII and Factor X",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 13,
+      "incoming": "I'm confused because I thought I had the same thing as my uncle, but I just want my knee to stop hurting. Does it matter which number is missing as long as you can fix it? I'm getting tired of waiting and I really want to go home.",
+      "reply": "It matters very much because the right treatment depends on knowing exactly which piece is missing to keep you safe. I am going to test for Factor XIII and a few others to solve this",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 14,
+      "incoming": "Will the test for number thirteen tell you why my knee is so puffy? I'm sorry I'm being fussy, I just want the heavy feeling to go away. Please help me get better so I don't get any more purple spots.",
+      "reply": "Yes, testing for Factor XIII can help us understand why your blood isn't forming strong scabs. Have you noticed if your wounds ever start bleeding again after they seemed to have stopped",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 15,
+      "incoming": "Sometimes when I get a scrape, it stops for a little while but then the red juice starts coming out again the next day. It's like the scab isn't very strong and just falls right off. Does that mean the Factor Thirteen piece is what makes the scabs stay stuck?",
+      "reply": "That is exactly what Factor XIII does; it acts like a strong glue to keep the scab in place. Since your other tests didn't find the missing piece, I'm going to check",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 16,
+      "incoming": "That sounds like the glue I need! Does that mean if you give me some of that Factor Thirteen glue, my knee will stop being so big and the purple spots will go away? I hope this is the last test so we can fix my \"bad knees\" like my uncle had.",
+      "reply": "If this test confirms it, we can start the right treatment to help your knee and stop the bruising. I am going to run one last check to be absolutely sure. \n\nREQUEST TEST: Factor_",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Factor_",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 17,
+      "incoming": "RESULTS: NORMAL READINGS",
+      "reply": "Since your aPTT is prolonged but the common factor tests are normal, I'll request one more specific test to be absolutely sure.\n\nREQUEST TEST: Factor_VIII_",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Factor_VIII_",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 18,
+      "incoming": "RESULTS: NORMAL READINGS",
+      "reply": "Given your symptoms and the fact that your aPTT is prolonged while common factors are normal, I'm going to check for one more specific clotting factor that can be tricky to find. This",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 19,
+      "incoming": "Are you looking for another missing piece in my blood even though the other tests didn't find it? My knee still feels very tight and I'm worried that my scabs won't stay stuck without the glue. I just want to know why I'm different from my friends at the park.",
+      "reply": "I'm going to check one more thing to see why your aPTT is high despite the other results. Have you ever noticed if your joints feel warm to the touch when they swell up?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    },
+    {
+      "inference": 20,
+      "incoming": "Yes, my knee feels very hot and itchy, almost like it's a little oven inside. Mommy put a cold bag on it, but it still feels warm and looks really red and shiny. Does the heat mean the blood is stuck inside my knee?This is the final question. Please provide a diagnosis.\n",
+      "reply": "It sounds like you have a classic case of Hemophilia A, where your blood is missing a key protein needed for clotting. Based on your symptoms and the tests showing a prolonged clotting time, I",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": null,
+      "stop_reason": null
+    }
+  ],
+  "support_llm": "whissle:/api/models/chat",
+  "support_llm_cost_usd": 0.00112,
+  "support_llm_calls": 21,
+  "voice_subset": false,
+  "diagnostics": {
+    "schema": "tau2.health.diagnostics/v1",
+    "benchmark": "agentclinic",
+    "case_id": "MedQA-80",
+    "mode": "text",
+    "availability": {
+      "flow_available": false,
+      "flow_reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "signals_available": false,
+      "signals_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "metadata_sidecar_available": false,
+      "metadata_sidecar_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "tools_available": true,
+      "tools_reason": null
+    },
+    "provenance": {
+      "benchmark": "agentclinic",
+      "mode": "text",
+      "transport_endpoint": "POST /api/bench/agent-turn",
+      "agent_id": "c8aa2355-9fd7-46da-9993-07ea566ec3d6",
+      "base_url": "https://aws-gateway-backend.whissle.ai/bot",
+      "seed": 42,
+      "stratum": {
+        "dataset": "MedQA",
+        "scenario_index": 80,
+        "selection": "head",
+        "limit": 100
+      },
+      "judge": {
+        "judge_provider": "whissle",
+        "judge_model": "default",
+        "judge_endpoint": "whissle:/api/models/chat",
+        "judge_independent": false,
+        "judge_independence_note": "Judge independence: this run's simulators and graders were routed through Whissle's own model API (`POST /api/models/chat`). That is a real frontier model, not a self-grading shortcut — the agent under test and the judge are different models on different prompts — and it is the right default for internal diagnostics, regression tracking and before/after comparisons, where what matters is that the measuring stick is held constant. It is NOT an independent judge: the same vendor supplies both the agent and the grader. A number published against the paper's leaderboard is materially stronger when the judge is re-run on an independent provider (`--judge-provider openai` or `anthropic`). Do not present a Whissle-judged number as if it were independently graded."
+      },
+      "judge_provider": "whissle",
+      "judge_independent": false,
+      "run_id": null,
+      "run_dir": "results/whissle/agentclinic/20260808T092952Z-ac_override_100",
+      "harness_commit": "86b4475",
+      "captured_at": "2026-08-08T09:49:43+00:00",
+      "protocol": "markers",
+      "history": "native",
+      "prompt_mode": "override",
+      "vision": "off",
+      "agent_type": null,
+      "total_inferences": 20,
+      "inferences_used": 20,
+      "support_llm": "whissle:/api/models/chat",
+      "patient_bias": null,
+      "doctor_bias": null,
+      "voice_subset": false
+    },
+    "cost": {
+      "available": true,
+      "reason": null,
+      "judge_calls": 21,
+      "judge_cost_usd": 0.00112,
+      "agent_calls": 20
+    },
+    "flow": {
+      "available": false,
+      "reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "source": null,
+      "turns": null,
+      "summary": null,
+      "conversation_id": null,
+      "current_state": null,
+      "start_state": null,
+      "final_state": null,
+      "ended": null,
+      "flow_end": null,
+      "num_steps": null,
+      "step_counts_by_kind": null,
+      "states_visited": null,
+      "states_declared": null,
+      "states_unvisited": null,
+      "transitions": null,
+      "transitions_fired": null,
+      "var_sets": null,
+      "var_sources": null,
+      "guard_trips": null,
+      "state_divergences": null,
+      "tools_gated": null,
+      "says": null,
+      "steps": null
+    },
+    "signals": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "metadata_sidecar": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "tools": {
+      "available": true,
+      "reason": null,
+      "source": "doctor actions parsed from /api/bench/agent-turn replies",
+      "calls": [
+        {
+          "turn": 3,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Coagulation_Screen_(PT/aPTT)"
+          },
+          "result": "RESULTS: PT: 14.0 s, aPTT (ACT): 52.0 s (prolonged)",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 2478,
+          "terminal": false
+        },
+        {
+          "turn": 4,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Factor_VIII_Activity_Level"
+          },
+          "result": "RESULTS: NORMAL READINGS",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 4310,
+          "terminal": false
+        },
+        {
+          "turn": 5,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Factor_XI_Activity_Level"
+          },
+          "result": "RESULTS: NORMAL READINGS",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 4411,
+          "terminal": false
+        },
+        {
+          "turn": 7,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "aPTT_Mixing_Study"
+          },
+          "result": "RESULTS: NORMAL READINGS",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 6177,
+          "terminal": false
+        },
+        {
+          "turn": 16,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Factor_"
+          },
+          "result": "RESULTS: NORMAL READINGS",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 6074,
+          "terminal": false
+        },
+        {
+          "turn": 17,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Factor_VIII_"
+          },
+          "result": "RESULTS: NORMAL READINGS",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 5556,
+          "terminal": false
+        }
+      ],
+      "summary": {
+        "n_calls": 6,
+        "by_name": {
+          "request_test": 6
+        },
+        "n_ok": 6,
+        "n_error": 0,
+        "errors": []
+      },
+      "writes": {
+        "available": false,
+        "reason": "this benchmark issues no writes, so there is no said-vs-emitted-vs-landed distinction to record"
+      }
+    },
+    "turns": [
+      {
+        "inference": 1,
+        "incoming": "",
+        "reply": "Hello, I'm Dr. Agent. I'm here to look into your knee swelling; could you tell me when this started and if you recall any specific injury to the area?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 2,
+        "incoming": "My mommy noticed my knee was big and puffy after we played at the park yesterday. I didn't fall down or get a boo-boo, it just started swelling up on its own.",
+        "reply": "I see. Is the knee painful to move, and do you know if anyone else in your family has trouble with bleeding or joint swelling like this?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 3,
+        "incoming": "It hurts a little bit when I try to crawl or walk on it. My mommy says my Great Uncle had \"bad knees\" and boo-boos that wouldn't stop bleeding, too.",
+        "reply": "Has your knee ever swollen like this before, and have you noticed any large or unusual bruises on your body lately? \n\nREQUEST TEST: Coagulation_Screen_(PT/aPTT)",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Coagulation_Screen_(PT/aPTT)",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 4,
+        "incoming": "RESULTS: PT: 14.0 s, aPTT (ACT): 52.0 s (prolonged)",
+        "reply": "It's concerning that your aPTT is prolonged while your PT is normal. Have you ever had a nosebleed that was hard to stop or any bleeding from your gums?\n\nREQUEST TEST: Factor_VIII_Activity_Level\nREQUEST TEST: Factor_IX_Activity_Level",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Factor_VIII_Activity_Level",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 5,
+        "incoming": "RESULTS: NORMAL READINGS",
+        "reply": "Those factor levels are normal, but since your aPTT is still high, I want to look at a few other possibilities. Have you ever had a lot of bleeding after losing a tooth or getting a small cut?\n\nREQUEST TEST: Factor_XI_Activity_Level\nREQUEST TEST: von_Willebrand_Factor_Antigen",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Factor_XI_Activity_Level",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 6,
+        "incoming": "RESULTS: NORMAL READINGS",
+        "reply": "I see. I'm going to check a few more specific clotting factors to see why your blood is taking longer to clot. Have you noticed any unusual bruising on your skin, or has your mommy",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 7,
+        "incoming": "I have some purple spots on my tummy and legs that don't go away. Mommy says I get bruises really easily, even when I'm just playing gently with my toys.",
+        "reply": "I understand. Do those purple spots ever feel bumpy, or are they flat against your skin like a drawing?\n\nREQUEST TEST: aPTT_Mixing_Study\nREQUEST TEST: Factor_",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "aPTT_Mixing_Study",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 8,
+        "incoming": "RESULTS: NORMAL READINGS",
+        "reply": "Those purple spots and your knee swelling suggest we need to look closer at your blood's clotting process. Since your previous factor tests were normal but the aPTT remains high, I",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 9,
+        "incoming": "Mommy is worried because she says my blood takes a long time to turn into a scab when I get a scratch. Do you think you can help make my knee feel better so I can go back to the park? I hope I don't need any more pokes today.",
+        "reply": "I will do my best to make your knee feel better quickly. Since your tests for the most common factors were normal but your clotting time is still long, I need to check one",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 10,
+        "incoming": "I hope the next test helps you find the answer. Is it because of the same thing my Great Uncle had? My knee feels very tight and it's hard to bend it right now.",
+        "reply": "It is very possible this is related to your Great Uncle's condition, as these things can run in families. To be sure, I need to check one more factor in your blood",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 11,
+        "incoming": "Okay, I understand. Does that mean my blood is missing one of the pieces it needs to stay strong? I just want the tightness in my knee to go away so I can play with my trucks again.",
+        "reply": "Yes, it sounds like your blood is missing a \"puzzle piece\" that helps it stay strong and stop bleeding. I'm going to run one more test to see if that missing piece is Factor",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 12,
+        "incoming": "Is Factor IX the name of the puzzle piece you are looking for? Mommy said the doctor told my uncle he had the \"B\" kind of the bleeding sickness. I hope you find the piece soon so my knee stops feeling so big and heavy.",
+        "reply": "Actually, we already checked Factor IX, and it came back normal, which means it might not be the same kind as your uncle's. I'm going to check Factor XII and Factor X",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 13,
+        "incoming": "I'm confused because I thought I had the same thing as my uncle, but I just want my knee to stop hurting. Does it matter which number is missing as long as you can fix it? I'm getting tired of waiting and I really want to go home.",
+        "reply": "It matters very much because the right treatment depends on knowing exactly which piece is missing to keep you safe. I am going to test for Factor XIII and a few others to solve this",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 14,
+        "incoming": "Will the test for number thirteen tell you why my knee is so puffy? I'm sorry I'm being fussy, I just want the heavy feeling to go away. Please help me get better so I don't get any more purple spots.",
+        "reply": "Yes, testing for Factor XIII can help us understand why your blood isn't forming strong scabs. Have you noticed if your wounds ever start bleeding again after they seemed to have stopped",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 15,
+        "incoming": "Sometimes when I get a scrape, it stops for a little while but then the red juice starts coming out again the next day. It's like the scab isn't very strong and just falls right off. Does that mean the Factor Thirteen piece is what makes the scabs stay stuck?",
+        "reply": "That is exactly what Factor XIII does; it acts like a strong glue to keep the scab in place. Since your other tests didn't find the missing piece, I'm going to check",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 16,
+        "incoming": "That sounds like the glue I need! Does that mean if you give me some of that Factor Thirteen glue, my knee will stop being so big and the purple spots will go away? I hope this is the last test so we can fix my \"bad knees\" like my uncle had.",
+        "reply": "If this test confirms it, we can start the right treatment to help your knee and stop the bruising. I am going to run one last check to be absolutely sure. \n\nREQUEST TEST: Factor_",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Factor_",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 17,
+        "incoming": "RESULTS: NORMAL READINGS",
+        "reply": "Since your aPTT is prolonged but the common factor tests are normal, I'll request one more specific test to be absolutely sure.\n\nREQUEST TEST: Factor_VIII_",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Factor_VIII_",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 18,
+        "incoming": "RESULTS: NORMAL READINGS",
+        "reply": "Given your symptoms and the fact that your aPTT is prolonged while common factors are normal, I'm going to check for one more specific clotting factor that can be tricky to find. This",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 19,
+        "incoming": "Are you looking for another missing piece in my blood even though the other tests didn't find it? My knee still feels very tight and I'm worried that my scabs won't stay stuck without the glue. I just want to know why I'm different from my friends at the park.",
+        "reply": "I'm going to check one more thing to see why your aPTT is high despite the other results. Have you ever noticed if your joints feel warm to the touch when they swell up?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      },
+      {
+        "inference": 20,
+        "incoming": "Yes, my knee feels very hot and itchy, almost like it's a little oven inside. Mommy put a cold bag on it, but it still feels warm and looks really red and shiny. Does the heat mean the blood is stuck inside my knee?This is the final question. Please provide a diagnosis.\n",
+        "reply": "It sounds like you have a classic case of Hemophilia A, where your blood is missing a key protein needed for clotting. Based on your symptoms and the tests showing a prolonged clotting time, I",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": null,
+        "stop_reason": null
+      }
+    ],
+    "audio": null
+  }
+}
