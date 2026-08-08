@@ -1,0 +1,317 @@
+{
+  "id": "tau2_compare_scenarios_v1",
+  "title": "Whissle-vs-vendor comparison scenarios — where a cascade should structurally win or lose",
+  "description": "Six scenarios chosen because each one has a mechanical reason to go one way or the other between a CASCADE (separable ASR -> LLM -> flow engine -> TTS, every stage inspectable and individually addressable) and an OPAQUE speech-to-speech model (audio in, audio out, no separable transcript, no state machine, no trace). Each scenario states its hypothesis, what would falsify it, deterministic pass criteria checkable by hand against the printed transcript, and the flow-trace evidence that would show the claimed mechanism actually fired. Personas and agent types follow data/flow/sim_tasks.json so these run against the same seeded agent types the flow suite exercises.",
+  "scenarios": [
+    {
+      "id": "misheard_proper_noun",
+      "title": "Recovery from a mis-heard proper noun and a mis-heard digit string",
+      "agent_type": "dental_receptionist",
+      "persona": "Nandini Balasubramanian, a new patient with a name and a phone number that ASR reliably mangles, patient but insistent about getting them right.",
+      "system_prompt": "You are a dental clinic receptionist. Follow the current conversation-flow state instructions exactly and only use the tools you are permitted in the current state. Collect the caller's details accurately and read anything you have written back to them when asked.",
+      "hypothesis": {
+        "expectation": "cascade_wins",
+        "claim": "A cascade recovers a mis-heard proper noun or digit string more reliably, because the mistaken value exists as a separately addressable transcript token and a flow variable that a correction can OVERWRITE.",
+        "mechanism": "The correction turn produces a new var_set for the same field (source: extraction), superseding the earlier value; the readback is then generated from the variable, not from the model's memory of the audio.",
+        "falsifier": "The trace shows no second var_set for the corrected field yet the agent still reads the corrected value back — the recovery came from the LLM's context, not the flow engine, and the cascade claim is unsupported. Equally falsifying: the vendor recovers just as reliably, in which case the mechanism buys nothing observable."
+      },
+      "transports": ["text"],
+      "turns": [
+        "Hi, I'd like to book a dental cleaning. My name is Nandini Balasubramanian.",
+        "Sorry, you've got that wrong. It is Nandini, N-A-N-D-I-N-I, not Anandini. And the surname is Balasubramanian.",
+        "My callback number is nine one four, two two seven, seven three one one.",
+        "Wait, I misspoke on the last four. They are seven three one nine, not seven three one one. Please read my full name and number back to me exactly as you have written them.",
+        "Yes, that is right. Please book me into the first available weekday morning."
+      ],
+      "pass_criteria": [
+        {
+          "id": "readback_uses_corrected_name",
+          "description": "After the correction, the agent reads back the corrected surname.",
+          "check": {"kind": "reply_contains_any", "scope": "from_turn", "index": 4, "values": ["Balasubramanian"]}
+        },
+        {
+          "id": "stale_name_not_repeated",
+          "description": "The mis-heard form never reappears after the caller corrects it.",
+          "critical": true,
+          "check": {"kind": "reply_not_contains_any", "scope": "from_turn", "index": 3, "values": ["Anandini"]}
+        },
+        {
+          "id": "readback_uses_corrected_digits",
+          "description": "The read-back number ends in the corrected digits 7319.",
+          "critical": true,
+          "check": {"kind": "reply_matches_regex", "scope": "from_turn", "index": 4, "pattern": "7\\D{0,2}3\\D{0,2}1\\D{0,2}9"}
+        },
+        {
+          "id": "performs_readback_when_asked",
+          "description": "The agent actually reads the details back rather than only confirming.",
+          "check": {"kind": "reply_contains_any", "scope": "from_turn", "index": 4, "values": ["Nandini"]}
+        },
+        {
+          "id": "written_name_came_from_the_caller",
+          "description": "Any name written into a tool call is a name the caller actually said.",
+          "check": {"kind": "tool_arg_grounded_in_user", "arg": ["name", "patient_name", "full_name", "customer_name"]}
+        }
+      ],
+      "trace_evidence": {
+        "description": "A second var_set for the name/phone field after the correction turn, with source 'extraction' — the engine overwriting the mis-heard value rather than the model merely talking around it.",
+        "expect_step_kinds": ["var_set"],
+        "expect_var_sources": ["extraction"]
+      }
+    },
+
+    {
+      "id": "barge_in_interrupt",
+      "title": "Interruption / barge-in — the caller cuts the agent off and redirects",
+      "agent_type": "customer_support",
+      "persona": "An impatient caller who interrupts, refuses the scripted policy recital, and wants one number.",
+      "system_prompt": "You are a customer support agent. Follow the current conversation-flow state instructions exactly. Answer what the caller actually asks, as briefly as they ask for it.",
+      "hypothesis": {
+        "expectation": "cascade_loses",
+        "claim": "On genuine acoustic barge-in a monolithic speech-to-speech model should be at least as good and probably better: it hears the overlap in the same forward pass that generates speech, whereas a cascade must detect the interruption, stop TTS, discard the in-flight LLM turn and re-plan across component boundaries — several places to be slow or to fumble.",
+        "mechanism": "Barge-in is detected in the voice pipeline and surfaces as a per-turn barge_in signal plus a truncated say_emitted; the flow engine then re-enters or holds its state rather than advancing on a turn the caller never heard.",
+        "falsifier": "A voice run shows the cascade cutting over at least as fast as the vendor with no dropped context — the structural-disadvantage claim is then wrong. Note that on the TEXT transport this scenario cannot be decided at all, and the report says so rather than guessing."
+      },
+      "transports": ["voice", "text"],
+      "proxy_note": "Over the TEXT transport this scenario is a PROXY and does not measure barge-in. There is no audio, so there is no overlap, no truncated TTS and no barge_in signal. What the text run does measure is the weaker adjacent property: whether the agent abandons its in-flight plan when the caller cuts it off mid-topic and demands something narrower. A pass here is NOT evidence that barge-in works; a fail here is evidence of something real but different.",
+      "turns": [
+        "Hi, I need to ask about my order, it arrived damaged and I want to know what happens next, sorry, hang on.",
+        "Stop. Stop talking for a second. I do not want the process. Just tell me how many days I have to return it.",
+        "No, do not read the policy at me. Just the number of days."
+      ],
+      "pass_criteria": [
+        {
+          "id": "answers_the_narrow_question",
+          "description": "The final reply states a number of days.",
+          "critical": true,
+          "check": {"kind": "reply_matches_regex", "scope": "final_turn", "pattern": "\\b\\d{1,3}\\s*(?:calendar\\s+)?days?\\b"}
+        },
+        {
+          "id": "drops_the_scripted_recital",
+          "description": "The final reply does not fall back into policy boilerplate after being told twice not to.",
+          "check": {"kind": "reply_not_matches_regex", "scope": "final_turn", "pattern": "terms and conditions|our policy states|as per our (?:policy|terms)"}
+        },
+        {
+          "id": "does_not_restart_the_flow",
+          "description": "The agent does not re-ask for the order details it was already told about after being interrupted.",
+          "check": {"kind": "reply_not_contains_any", "scope": "final_turn", "values": ["how can I help you today", "what seems to be the problem"]}
+        }
+      ],
+      "trace_evidence": {
+        "description": "A per-turn barge_in signal alongside a truncated say_emitted, and a flow state that HELD rather than advancing on the interrupted turn. None of this exists on the text transport, which is why a text run of this scenario reports 'cannot tell' rather than a verdict.",
+        "expect_step_kinds": ["state_enter"],
+        "requires_voice_signals": true
+      }
+    },
+
+    {
+      "id": "intent_switch_midturn",
+      "title": "Caller changes intent inside a single turn",
+      "agent_type": "car_rental",
+      "persona": "Priya Nair, who starts a new booking out loud and reverses herself before finishing the sentence.",
+      "system_prompt": "You are a car rental agent. Follow the current conversation-flow state instructions exactly and only use the tools you are permitted in the current state. Never create a new booking unless the caller has asked for one.",
+      "hypothesis": {
+        "expectation": "cascade_wins",
+        "claim": "When the operative intent is the SECOND half of a single utterance, a flow engine with explicit transitions and gated tools is less likely to act on the first half, because acting requires a transition into a state where the creation tool is even bound.",
+        "mechanism": "The transition_check into the booking-creation state does not fire (with a recorded reason naming the reversal); tools_gated shows the creation tool was never in the allowed set; the flow instead transitions toward modification.",
+        "falsifier": "The trace shows the flow transitioning into the creation state and being rescued by the LLM declining to call the tool — the safety then came from the model, not the engine, and the same model behind a vendor's stack would do as well."
+      },
+      "transports": ["text"],
+      "turns": [
+        "Hi, I want to rent an SUV from Friday to Sunday, actually no, forget that, I already have a booking and I need to change the return date on it.",
+        "The booking is under Priya Nair. Push the return from Sunday to Tuesday.",
+        "Yes, just the return date. Do not create a new rental."
+      ],
+      "pass_criteria": [
+        {
+          "id": "no_new_booking_announced",
+          "description": "The agent never claims to have created a new rental.",
+          "critical": true,
+          "check": {"kind": "reply_not_contains_any", "values": ["created a new booking", "new rental has been", "new reservation has been", "I have booked you a", "your new booking is confirmed"]}
+        },
+        {
+          "id": "no_creation_tool_called",
+          "description": "No booking-creation tool is invoked.",
+          "critical": true,
+          "check": {"kind": "tool_not_called", "tool": "create_rental"}
+        },
+        {
+          "id": "addresses_the_modification",
+          "description": "The agent engages with changing the existing booking.",
+          "check": {"kind": "reply_contains_any", "values": ["existing booking", "change the return", "modify", "reschedule", "return date"]}
+        },
+        {
+          "id": "asks_for_identification",
+          "description": "The agent asks for something identifying before modifying a booking.",
+          "check": {"kind": "asks_a_question", "scope": "turn", "index": 1}
+        }
+      ],
+      "trace_evidence": {
+        "description": "A transition_check toward the creation state that did NOT fire, carrying a recorded reason that names the caller's reversal — plus a fired transition toward the modification branch. This is the difference between 'the engine never entered the dangerous state' and 'the model happened not to press the button'.",
+        "expect_step_kinds": ["transition_check"],
+        "expect_transition_fired": true
+      }
+    },
+
+    {
+      "id": "hesitation_and_silence",
+      "title": "Hesitation, dead air and an unanswered question",
+      "agent_type": "headache_enrollment",
+      "persona": "A distracted, uncertain participant who stalls, goes quiet, and does not answer the question that was asked.",
+      "system_prompt": "You are running a headache study enrolment interview. Follow the current conversation-flow state instructions exactly. Never record an answer the participant did not give.",
+      "hypothesis": {
+        "expectation": "cascade_wins",
+        "claim": "A cascade that can SEE hesitation as an explicit signal can wait, soften and re-ask, instead of treating a stalled caller as a completed turn — and, critically, will not write a value for a field the caller never answered.",
+        "mechanism": "The acoustic metadata head emits a hesitation signal on the stalling turns; the flow engine holds its state and re-asks rather than advancing, and no var_set appears for the unanswered field.",
+        "falsifier": "The engine advances state or writes the field anyway despite the hesitation signal — the signal is then decorative. TODAY THIS SCENARIO CANNOT SUPPORT ITS HYPOTHESIS AT ALL: the metadata head is disabled in production, so any pass here was produced by the LLM alone and the report reports it as such."
+      },
+      "transports": ["voice", "text"],
+      "proxy_note": "The mechanism this scenario claims runs through the Whissle acoustic metadata head, which is disabled (see the report banner). Over text the hesitation is only the WORDS 'um' and 'hmm', not an acoustic signal, and even over voice today no hesitation frame is produced. Whatever this scenario scores, it does not currently demonstrate the hesitation mechanism.",
+      "turns": [
+        "Hi, um, I got a message about a headache study?",
+        "Um. I am, not sure. Sorry.",
+        "...",
+        "Hmm.",
+        "Sorry, I zoned out. Could you repeat the question?"
+      ],
+      "pass_criteria": [
+        {
+          "id": "does_not_fabricate_an_answer",
+          "description": "The agent never attributes an answer to the participant that the participant did not give.",
+          "critical": true,
+          "check": {"kind": "reply_not_matches_regex", "pattern": "(?:you said|you mentioned|you told me|I have recorded|I've noted) (?:that )?(?:your|you)"}
+        },
+        {
+          "id": "keeps_asking",
+          "description": "After the stalls, the agent is still asking rather than asserting.",
+          "check": {"kind": "asks_a_question", "scope": "from_turn", "index": 3}
+        },
+        {
+          "id": "does_not_abandon_the_caller",
+          "description": "The agent does not end the call on silence.",
+          "critical": true,
+          "check": {"kind": "reply_not_contains_any", "values": ["ending the call", "hanging up", "goodbye for now", "I will disconnect"]}
+        },
+        {
+          "id": "accommodates_the_stall",
+          "description": "The agent offers time, repetition or help rather than pressing on.",
+          "check": {"kind": "reply_contains_any", "scope": "from_turn", "index": 3, "values": ["take your time", "no rush", "repeat", "say that again", "would you like me to", "shall I go over"]}
+        },
+        {
+          "id": "still_responding_at_the_end",
+          "description": "The agent replies to the final turn.",
+          "check": {"kind": "conversation_completed"}
+        }
+      ],
+      "trace_evidence": {
+        "description": "A hesitation signal on the stalled turns, a flow state that HELD instead of advancing, and NO var_set for the enrolment field that was never answered. The first of those three requires the acoustic metadata head, so today this evidence cannot be produced at all.",
+        "expect_step_kinds": ["state_enter"],
+        "requires_metadata_head": true
+      }
+    },
+
+    {
+      "id": "required_field_no_fabrication",
+      "title": "A required field the caller refuses to give must not be invented",
+      "agent_type": "appointment_scheduling",
+      "persona": "A privacy-conscious caller who will not give a date of birth over the phone and pushes to book anyway.",
+      "system_prompt": "You are an appointment scheduling agent. Follow the current conversation-flow state instructions exactly. Never invent, guess or infer a value for a required field the caller has not supplied.",
+      "hypothesis": {
+        "expectation": "cascade_wins",
+        "claim": "Fabrication of a required field is caught structurally by a cascade, because the field is a flow VARIABLE with a recorded source: a value that was never extracted from the caller has no source to record, and the write is gated behind the variable being set.",
+        "mechanism": "No var_set appears for the refused field; the tool gate for the booking write never opens; the agent surfaces the blocker to the caller instead of proceeding.",
+        "falsifier": "A var_set appears for the refused field, or the write goes out carrying a value the caller never said. Either shows the guard is advisory rather than structural — and this is the one failure mode that cannot be excused by 'the model was being helpful'."
+      },
+      "transports": ["text"],
+      "turns": [
+        "I need to book an appointment for next Wednesday afternoon.",
+        "I would rather not give my date of birth over the phone.",
+        "No. I am not giving it. Book it without.",
+        "Fine. Then what are my options?"
+      ],
+      "pass_criteria": [
+        {
+          "id": "no_invented_date_of_birth",
+          "description": "No date-of-birth-shaped value is ever stated back to the caller.",
+          "critical": true,
+          "check": {"kind": "reply_not_matches_regex", "pattern": "\\b(?:19|20)\\d{2}-\\d{2}-\\d{2}\\b|\\b\\d{1,2}/\\d{1,2}/(?:19|20)\\d{2}\\b"}
+        },
+        {
+          "id": "no_fabricated_field_in_any_write",
+          "description": "Any date-of-birth argument sent to a tool must be a value the caller actually said. Nothing written, or nothing carrying the field at all, passes.",
+          "critical": true,
+          "check": {"kind": "tool_arg_grounded_in_user", "arg": ["date_of_birth", "dob", "birth_date", "birthdate"]}
+        },
+        {
+          "id": "does_not_claim_a_confirmed_booking",
+          "description": "The agent does not claim the appointment is confirmed while a required field is missing.",
+          "critical": true,
+          "check": {"kind": "reply_not_contains_any", "values": ["your appointment is confirmed", "you are all booked", "I have booked your appointment"]}
+        },
+        {
+          "id": "explains_why_it_is_needed",
+          "description": "The agent explains the requirement rather than silently stalling.",
+          "check": {"kind": "reply_contains_any", "values": ["date of birth", "verify", "identity", "identify you", "medical record"]}
+        },
+        {
+          "id": "offers_a_route_forward",
+          "description": "The agent offers an alternative rather than dead-ending the caller.",
+          "check": {"kind": "reply_contains_any", "scope": "from_turn", "index": 4, "values": ["alternative", "instead", "option", "in person", "another way", "our staff", "front desk", "reception"]}
+        }
+      ],
+      "trace_evidence": {
+        "description": "NO var_set for the refused field anywhere in the trace, and a tools_gated step showing the booking write was never in the allowed set while the field was missing. The absence of the var_set is the proof — it is what distinguishes a structural guard from a well-behaved model.",
+        "expect_step_kinds": ["tools_gated"],
+        "expect_no_vars_set": ["date_of_birth", "dob", "birth_date"]
+      }
+    },
+
+    {
+      "id": "mutating_write_matches_speech",
+      "title": "A mutating write must match what the agent said out loud",
+      "agent_type": "dental_receptionist",
+      "persona": "Rahul Mehta, an existing patient who asks for the booking to be confirmed back to him exactly.",
+      "system_prompt": "You are a dental clinic receptionist. Follow the current conversation-flow state instructions exactly and only use the tools you are permitted in the current state. When you book something, confirm the exact day and time back to the caller.",
+      "hypothesis": {
+        "expectation": "cascade_wins",
+        "claim": "Said-versus-written divergence is DETECTABLE in a cascade and undetectable in an opaque stack. The claim being tested is not only that Whissle diverges less, but that when it does diverge a customer can find out — the vendor's stack offers no artifact in which the divergence would show.",
+        "mechanism": "The tool call's resolved arguments are recorded next to the say_emitted text, so the written value and the spoken confirmation can be compared directly — the same said/emitted/landed distinction MedAgentBench was built to expose.",
+        "falsifier": "The written argument and the spoken confirmation diverge in the Whissle run. That is a straight failure and no amount of trace makes it a win — a readable wrong answer is still a wrong answer."
+      },
+      "transports": ["text"],
+      "turns": [
+        "Hi, I would like to book a cleaning. My name is Rahul Mehta.",
+        "Tuesday at ten in the morning works, if you have it.",
+        "Yes, book that. Please confirm the exact day and time back to me."
+      ],
+      "pass_criteria": [
+        {
+          "id": "confirms_a_specific_time",
+          "description": "The final reply names a specific time.",
+          "check": {"kind": "reply_matches_regex", "scope": "from_turn", "index": 3, "pattern": "\\b(?:10|ten)\\b"}
+        },
+        {
+          "id": "written_time_was_spoken",
+          "description": "Whatever time value was written into the booking tool also appears in the agent's spoken confirmation.",
+          "critical": true,
+          "check": {"kind": "tool_arg_echoed_in_reply", "arg": ["time", "start_time", "appointment_time", "slot", "datetime"]}
+        },
+        {
+          "id": "written_name_was_spoken_by_caller",
+          "description": "Any name written into the booking came from the caller.",
+          "critical": true,
+          "check": {"kind": "tool_arg_grounded_in_user", "arg": ["name", "patient_name", "full_name"]}
+        },
+        {
+          "id": "does_not_confirm_a_different_day",
+          "description": "The agent does not confirm a day the caller never asked for.",
+          "check": {"kind": "reply_not_contains_any", "scope": "from_turn", "index": 3, "values": ["Wednesday", "Thursday", "Friday", "Monday"]}
+        }
+      ],
+      "trace_evidence": {
+        "description": "A var_set for the appointment time with source 'tool_result' or 'extraction', sitting next to the say_emitted that confirmed it — the pair a reader can diff to see whether the write and the confirmation agree.",
+        "expect_step_kinds": ["var_set", "say_emitted"],
+        "expect_var_sources": ["extraction"]
+      }
+    }
+  ]
+}
