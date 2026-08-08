@@ -1,9 +1,9 @@
 {
   "schema": "tau2.ablation.metadata/v1",
-  "run_id": "pilot",
+  "run_id": "ablation_AB_v1",
   "benchmark": "metadata_ablation",
-  "started_at": "2026-08-08T20:26:00.916772+00:00",
-  "finished_at": "2026-08-08T20:28:37.363943+00:00",
+  "started_at": "2026-08-08T20:51:04.037760+00:00",
+  "finished_at": "2026-08-08T21:05:59.239055+00:00",
   "corpus": {
     "version": "metadata_ablation_v1",
     "seed": 20260808,
@@ -31,8 +31,8 @@
       "intent": 30,
       "emotion": 30
     },
-    "digest_of_run": "7409487e9aa4f848",
-    "n_run": 4
+    "digest_of_run": "3d8d5831954e2a71",
+    "n_run": 100
   },
   "decoding": {
     "agent_id": "f36d75fb-b245-4e2f-9fe1-a240c9eb3db7",
@@ -70,109 +70,333 @@
     "A",
     "B"
   ],
-  "n_total": 4,
-  "n_comparable": 0,
-  "n_excluded": 4,
-  "exclusions": [
-    {
-      "case_id": "ent_001",
-      "reason": "turn_failed: A: agent-turn failed after 4 attempts: HTTP 503: {\"detail\":\"No model provider is currently usable (credit, key or quota problem on our side). This is not a problem with your request. Providers tried — claude: provider_down (HTTP 400: {\\\"type\\\":\\\"err"
-    },
-    {
-      "case_id": "ent_002",
-      "reason": "turn_failed: A: agent-turn failed after 4 attempts: HTTP 503: {\"detail\":\"No model provider is currently usable (credit, key or quota problem on our side). This is not a problem with your request. Providers tried — claude: provider_down (HTTP 400: {\\\"type\\\":\\\"err"
-    },
-    {
-      "case_id": "ent_003",
-      "reason": "turn_failed: A: agent-turn failed after 4 attempts: HTTP 503: {\"detail\":\"No model provider is currently usable (credit, key or quota problem on our side). This is not a problem with your request. Providers tried — claude: provider_down (HTTP 400: {\\\"type\\\":\\\"err"
-    },
-    {
-      "case_id": "ent_004",
-      "reason": "turn_failed: A: agent-turn failed after 4 attempts: HTTP 503: {\"detail\":\"No model provider is currently usable (credit, key or quota problem on our side). This is not a problem with your request. Providers tried — claude: provider_down (HTTP 400: {\\\"type\\\":\\\"err"
-    }
-  ],
+  "n_total": 100,
+  "n_comparable": 100,
+  "n_excluded": 0,
+  "exclusions": [],
   "metadata_head": {
     "preflight": {
-      "probes": 6,
-      "metadata_hits": 6,
-      "availability": 1.0,
-      "latencies_s": [
-        4.5,
-        4.2,
-        4.1,
-        4.1,
-        4.1,
-        4.1
-      ],
+      "satisfied_by_cache": true,
+      "cache_coverage": 1.0,
       "serving": true,
-      "note": "Availability below 1.0 is the production behaviour of /api/models/transcribe: the whissle-large metadata head is called in parallel and fails open on timeout, so the `metadata` key is simply absent. The ablation retries per case to obtain it."
+      "note": "Every case already has a real metadata sidecar cached from an earlier perception pass, so arm B carries genuine substrate on every case. The head was not probed live for this run; the substrate it uses is the head's own output, recorded when it answered."
     },
-    "first_attempt_availability": 1.0,
+    "first_attempt_availability": 0.99,
     "note": "First-attempt availability is what an ordinary caller of /api/models/transcribe experiences. The suite retries to obtain the metadata; the retries change nothing about the audio or transcript."
   },
   "asr_cascade": {
-    "digit_slots": 5,
-    "digit_recoverable": 4,
+    "digit_slots": 50,
+    "digit_recoverable": 40,
     "digit_error_rate": 0.2,
-    "proper_noun_slots": 4,
-    "proper_noun_recoverable": 4,
-    "proper_noun_error_rate": 0.0,
+    "proper_noun_slots": 40,
+    "proper_noun_recoverable": 29,
+    "proper_noun_error_rate": 0.275,
     "note": "A property of the ear, measured once, identical for both arms. It bounds what any entity consumption could achieve: a value the ear never heard cannot be filled correctly downstream."
   },
-  "replies_changed_by_metadata": 0,
-  "per_arm": {},
+  "replies_changed_by_metadata": 99,
+  "per_arm": {
+    "A": {
+      "label": "A — metadata off",
+      "metadata_mode": "off",
+      "exploratory": false,
+      "n": 100,
+      "served_models": [
+        "claude-sonnet-5"
+      ],
+      "route_accuracy": 0.85,
+      "fabrication_rate": 0.0,
+      "mean_latency_ms": 3782,
+      "total_cost_usd": 0.68778,
+      "cost_per_case_usd": 0.0068778,
+      "mean_input_tokens": 1728.7,
+      "mean_output_tokens": 112.8
+    },
+    "B": {
+      "label": "B — metadata present (cascade output, production format)",
+      "metadata_mode": "production",
+      "exploratory": false,
+      "n": 100,
+      "served_models": [
+        "claude-sonnet-5"
+      ],
+      "route_accuracy": 0.85,
+      "fabrication_rate": 0.0,
+      "mean_latency_ms": 3758,
+      "total_cost_usd": 0.692706,
+      "cost_per_case_usd": 0.00692706,
+      "mean_input_tokens": 1774.0,
+      "mean_output_tokens": 107.0
+    }
+  },
   "paired": {
-    "n_metrics": 2,
+    "n_metrics": 10,
     "gains": [],
     "regressions": [],
-    "null": [],
-    "underpowered": [],
+    "null": [
+      "routing_correct (all slices)",
+      "routing_correct (entity)",
+      "routing_correct (intent)",
+      "routing_correct (emotion)",
+      "slot_accuracy (entity slice)",
+      "digit_slot_accuracy",
+      "proper_noun_slot_accuracy",
+      "fabricated_value_in_payload",
+      "acknowledged_affect (emotion slice)"
+    ],
+    "underpowered": [
+      "latency_ms"
+    ],
     "results": [
       {
         "metric": "routing_correct (all slices)",
-        "n_pairs": 0,
+        "n_pairs": 100,
         "b_only": 0,
         "a_only": 0,
-        "both": 0,
-        "neither": 0,
-        "rate_a": null,
-        "rate_b": null,
+        "both": 85,
+        "neither": 15,
+        "rate_a": 0.85,
+        "rate_b": 0.85,
         "mean_a": null,
         "mean_b": null,
-        "delta": null,
-        "ci": null,
+        "delta": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ],
         "p_value": 1.0,
         "test": "exact McNemar (binomial)",
-        "mde": null,
-        "verdict": "not measured",
+        "mde": 0.028,
+        "verdict": "no measurable effect",
         "note": "",
         "detail": {
           "discordant": 0
         }
       },
       {
-        "metric": "latency_ms",
-        "n_pairs": 0,
+        "metric": "routing_correct (entity)",
+        "n_pairs": 40,
+        "b_only": 0,
+        "a_only": 0,
+        "both": 34,
+        "neither": 6,
+        "rate_a": 0.85,
+        "rate_b": 0.85,
+        "mean_a": null,
+        "mean_b": null,
+        "delta": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ],
+        "p_value": 1.0,
+        "test": "exact McNemar (binomial)",
+        "mde": 0.07,
+        "verdict": "no measurable effect",
+        "note": "",
+        "detail": {
+          "discordant": 0
+        }
+      },
+      {
+        "metric": "routing_correct (intent)",
+        "n_pairs": 30,
+        "b_only": 0,
+        "a_only": 0,
+        "both": 26,
+        "neither": 4,
+        "rate_a": 0.8666666666666667,
+        "rate_b": 0.8666666666666667,
+        "mean_a": null,
+        "mean_b": null,
+        "delta": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ],
+        "p_value": 1.0,
+        "test": "exact McNemar (binomial)",
+        "mde": 0.0934,
+        "verdict": "no measurable effect",
+        "note": "",
+        "detail": {
+          "discordant": 0
+        }
+      },
+      {
+        "metric": "routing_correct (emotion)",
+        "n_pairs": 30,
+        "b_only": 0,
+        "a_only": 0,
+        "both": 25,
+        "neither": 5,
+        "rate_a": 0.8333333333333334,
+        "rate_b": 0.8333333333333334,
+        "mean_a": null,
+        "mean_b": null,
+        "delta": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ],
+        "p_value": 1.0,
+        "test": "exact McNemar (binomial)",
+        "mde": 0.0934,
+        "verdict": "no measurable effect",
+        "note": "",
+        "detail": {
+          "discordant": 0
+        }
+      },
+      {
+        "metric": "slot_accuracy (entity slice)",
+        "n_pairs": 40,
         "b_only": 0,
         "a_only": 0,
         "both": 0,
         "neither": 0,
         "rate_a": null,
         "rate_b": null,
-        "mean_a": null,
-        "mean_b": null,
-        "delta": null,
+        "mean_a": 0.9083333333333334,
+        "mean_b": 0.9083333333333334,
+        "delta": 0.0,
         "ci": [
           0.0,
           0.0
         ],
         "p_value": 1.0,
         "test": "Wilcoxon signed-rank",
-        "mde": null,
-        "verdict": "not measured",
+        "mde": 0.0,
+        "verdict": "no measurable effect",
         "note": "every pair was identical — the arms produced the same value on every case",
         "detail": {
           "n_nonzero": 0
+        }
+      },
+      {
+        "metric": "digit_slot_accuracy",
+        "n_pairs": 40,
+        "b_only": 0,
+        "a_only": 0,
+        "both": 0,
+        "neither": 0,
+        "rate_a": null,
+        "rate_b": null,
+        "mean_a": 1.0,
+        "mean_b": 1.0,
+        "delta": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ],
+        "p_value": 1.0,
+        "test": "Wilcoxon signed-rank",
+        "mde": 0.0,
+        "verdict": "no measurable effect",
+        "note": "every pair was identical — the arms produced the same value on every case",
+        "detail": {
+          "n_nonzero": 0
+        }
+      },
+      {
+        "metric": "proper_noun_slot_accuracy",
+        "n_pairs": 40,
+        "b_only": 0,
+        "a_only": 0,
+        "both": 0,
+        "neither": 0,
+        "rate_a": null,
+        "rate_b": null,
+        "mean_a": 0.725,
+        "mean_b": 0.725,
+        "delta": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ],
+        "p_value": 1.0,
+        "test": "Wilcoxon signed-rank",
+        "mde": 0.0,
+        "verdict": "no measurable effect",
+        "note": "every pair was identical — the arms produced the same value on every case",
+        "detail": {
+          "n_nonzero": 0
+        }
+      },
+      {
+        "metric": "fabricated_value_in_payload",
+        "n_pairs": 100,
+        "b_only": 0,
+        "a_only": 0,
+        "both": 0,
+        "neither": 100,
+        "rate_a": 0.0,
+        "rate_b": 0.0,
+        "mean_a": null,
+        "mean_b": null,
+        "delta": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ],
+        "p_value": 1.0,
+        "test": "exact McNemar (binomial)",
+        "mde": 0.028,
+        "verdict": "no measurable effect",
+        "note": "",
+        "detail": {
+          "discordant": 0
+        }
+      },
+      {
+        "metric": "acknowledged_affect (emotion slice)",
+        "n_pairs": 30,
+        "b_only": 1,
+        "a_only": 0,
+        "both": 19,
+        "neither": 10,
+        "rate_a": 0.6333333333333333,
+        "rate_b": 0.6666666666666666,
+        "mean_a": null,
+        "mean_b": null,
+        "delta": 0.033333333333333326,
+        "ci": [
+          0.0,
+          0.1
+        ],
+        "p_value": 1.0,
+        "test": "exact McNemar (binomial)",
+        "mde": 0.0934,
+        "verdict": "no measurable effect",
+        "note": "",
+        "detail": {
+          "discordant": 1
+        }
+      },
+      {
+        "metric": "latency_ms",
+        "n_pairs": 100,
+        "b_only": 0,
+        "a_only": 0,
+        "both": 0,
+        "neither": 0,
+        "rate_a": null,
+        "rate_b": null,
+        "mean_a": 3781.97,
+        "mean_b": 3758.48,
+        "delta": -23.48999999999978,
+        "ci": [
+          -221.8,
+          194.09
+        ],
+        "p_value": 0.23014890602725346,
+        "test": "Wilcoxon signed-rank",
+        "mde": 303.6628,
+        "verdict": "underpowered",
+        "note": "",
+        "detail": {
+          "n_nonzero": 100,
+          "w_plus": 2175.5,
+          "w_minus": 2874.5
         }
       }
     ]
@@ -302,5 +526,6 @@
       "verified": true
     },
     "headline": "Of 8 cascade channels, 2 (emotion, intent) reach the model at all; the rest are produced and discarded. On the live voice path none of them reach it, because the head that produces them is not running there."
-  }
+  },
+  "regraded_at": "2026-08-08T21:05:58.495663+00:00"
 }

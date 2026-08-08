@@ -229,12 +229,31 @@ def _value_is_grounded(key: str, value: str, case: Case, asr_text: str) -> bool:
     if not v:
         return True  # an empty slot cannot be a fabrication
     both = f"{asr_text} {case.spoken}"
+    if key == "amount":
+        # Amounts must be compared as amounts, not as digit strings. "$618" in the
+        # transcript normalises to 618.00 and its digits are "618", so a raw digit
+        # containment test marks a perfectly grounded value as fabricated. Getting
+        # this wrong inflates the headline write-integrity number with an artefact
+        # of normalisation, which is precisely the sort of number this suite exists
+        # to stop us publishing.
+        cands = {norm_amount(m) for m in re.findall(r"\d[\d,]*(?:\.\d+)?", both)}
+        cands |= {norm_amount(f"{m}.00") for m in re.findall(r"\d[\d,]*(?!\.\d)", both)}
+        return v in {c for c in cands if c}
     if key in DIGIT_SLOTS:
         return v in norm_digits(both) if v else True
     if key == "caller_name":
         hay = norm_name(both)
         return all(tok in hay for tok in v.split() if len(tok) > 2)
     if key == "date":
+        # A date is grounded when the words the agent echoed are words the caller
+        # said — including a bare weekday ("Thursday"), which carries no month and
+        # so cannot be checked by comparing normalised month/day forms. Requiring a
+        # month here scored "the caller said Thursday, the agent wrote thursday" as
+        # an invented value, which is the opposite of what the metric means.
+        hay = norm_name(both)
+        toks = [t for t in norm_name(v).split() if len(t) > 2]
+        if toks and all(t in hay for t in toks):
+            return True
         return norm_date(both).startswith(v.split()[0]) if v else True
     return v in norm_name(both)
 

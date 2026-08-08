@@ -703,3 +703,50 @@ def report_cmd(
 
 if __name__ == "__main__":  # pragma: no cover
     app()
+
+
+@app.command("regrade")
+def regrade_cmd(run_dir: str) -> None:
+    """Re-score a completed run from its stored artifacts, spending nothing.
+
+    Grading is a pure function of (case, reply, transcript), all three of which are
+    on disk, so a grader fix never requires re-running the arms — and never gets
+    the chance to be quietly avoided because re-running would cost money.
+    """
+    from .corpus import Case
+
+    d = Path(run_dir)
+    records = json.loads((d / "records.json").read_text())
+    summary = json.loads((d / "SUMMARY.json").read_text())
+    specs = [arm_by_key(a["key"]) for a in summary.get("arms") or []]
+    primary = [s for s in specs if not s.exploratory]
+    cases = {c.case_id: c for c in load_corpus(CORPUS_PATH)[0]}
+
+    changed = 0
+    for rec in records:
+        case = cases.get(rec["case_id"])
+        if not case:
+            continue
+        asr = (rec.get("perception") or {}).get("asr_text", "")
+        rec["asr"] = grade_asr(case, asr).to_dict()
+        for key, arm in (rec.get("arms") or {}).items():
+            before = arm.get("grade")
+            after = grade_case(case, key, arm.get("reply", ""), asr).to_dict()
+            if before != after:
+                changed += 1
+            arm["grade"] = after
+
+    dec = Decoding(**{k: v for k, v in (summary.get("decoding") or {}).items()
+                      if k in Decoding.__dataclass_fields__})
+    started = datetime.now(timezone.utc)
+    new = _summarise(records, specs, primary, dec, summary.get("corpus") or {},
+                     (summary.get("corpus") or {}).get("digest_of_run", ""),
+                     (summary.get("metadata_head") or {}).get("preflight", {}),
+                     run_audit(find_backend_root()), started, summary["run_id"])
+    new["started_at"] = summary.get("started_at")
+    new["regraded_at"] = started.isoformat()
+    (d / "records.json").write_text(json.dumps(records, indent=1, ensure_ascii=False))
+    (d / "SUMMARY.json").write_text(json.dumps(new, indent=2, ensure_ascii=False))
+    typer.echo(f"regraded {len(records)} records ({changed} arm-grades changed)")
+    for r in new["paired"]["results"]:
+        typer.echo(f"  {r['metric']:<38} delta={r['delta']} p={r['p_value']} [{r['verdict']}]")

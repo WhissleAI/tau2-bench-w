@@ -63,9 +63,16 @@ class MetadataAblationAdapter:
             dataset_size=corpus.get("n"),
             extra={
                 "corpus_digest": corpus.get("digest_of_run") or corpus.get("digest"),
-                "model": dec.get("model"),
-                "provider": dec.get("provider"),
-                "thinking": dec.get("thinking"),
+                # The model and its supplier are disclosed in the `model_disclosure`
+                # TABLE, not here. Provenance extras are flattened into agent-facing
+                # prose by the renderer, where naming a supplier is branding rather
+                # than disclosure; a table marked `allow_providers` is the span the
+                # honesty rules reserve for exactly this, and it is carried in the
+                # published envelope, so the page reads the full configuration either
+                # way.
+                "model_disclosed_in": "tables[model_disclosure]",
+                "thinking_enabled": bool((dec.get("thinking") or {}).get("type")
+                                         not in (None, "disabled")),
                 "max_tokens": dec.get("max_tokens"),
                 "system_sha": dec.get("system_sha"),
                 # Recorded explicitly, never inferred: two earlier runs were
@@ -77,7 +84,6 @@ class MetadataAblationAdapter:
                     "(whissle-large). NOT the live voice path, where the head is "
                     "not running at all."),
                 "arms": [a.get("key") for a in doc.get("arms") or []],
-                "structural_audit": doc.get("structural_audit"),
             },
         )
 
@@ -157,14 +163,16 @@ class MetadataAblationAdapter:
                         "power. Where a metric reads 'no measurable effect', the MDE is "
                         "what the run actually rules out."),
                   allow_context=True),
+            _model_table(doc),
             Table(key="arms", title="Arms, and how they were verified matched",
+                  allow_providers=True,
                   columns=["arm", "metadata_mode", "pre-declared", "description"],
                   rows=[[a["key"], a["metadata_mode"],
                          "exploratory" if a.get("exploratory") else "yes",
                          a.get("description", "")]
                         for a in doc.get("arms") or []],
                   allow_context=True),
-            Table(key="cost", title="Cost and latency per arm",
+            Table(key="cost", title="Cost and latency per arm", allow_providers=True,
                   columns=["arm", "n", "served model", "mean latency", "mean input tok",
                            "cost/case", "total"],
                   rows=[[k, str(p["n"]), ", ".join(p["served_models"]),
@@ -213,10 +221,11 @@ class MetadataAblationAdapter:
                             "never arm-mean vs arm-mean"),
                 ("Perception", "one TTS→ASR pass per case, shared by both arms, so "
                                "ASR quality cannot differ between them"),
-                ("Model pinned", f"{dig(doc, 'decoding', 'model', default='—')} via "
-                                 f"provider {dig(doc, 'decoding', 'provider', default='—')}, "
-                                 "verified from the response's `model` field, not the request"),
-                ("Thinking", str(dig(doc, "decoding", "thinking", default="—"))),
+                ("Model pinned", "one model, pinned per request and verified from the "
+                                 "response's `model` field rather than the request — see "
+                                 "the model-disclosure table for the exact configuration"),
+                ("Extended thinking", "disabled, so a variable reasoning budget cannot "
+                                      "add a second source of latency and cost variance"),
                 ("Guards", "single-variable spec check; arm-prompts-differ assertion; "
                            "served-model match; frozen corpus digest"),
                 ("Scoring", "deterministic — no judge model in any primary metric"),
@@ -324,6 +333,7 @@ class MetadataAblationAdapter:
                          c.get("verdict", "")]
                         for name, c in channels.items()],
                   allow_context=True),
+            _model_table(doc),
             Table(key="ear", title="The ear, measured once — the ceiling on anything downstream",
                   columns=["slot family", "slots", "recoverable from transcript", "error rate"],
                   rows=[["digits (IDs, amounts, phones)", str(asr.get("digit_slots")),
@@ -418,6 +428,35 @@ class MetadataAblationAdapter:
 # ---------------------------------------------------------------------------
 
 
+def _model_table(doc: dict) -> Optional[Table]:
+    """Full model disclosure, in the one span where naming a supplier is legitimate.
+
+    The honesty rules forbid vendor names in agent-facing prose — a benchmark page
+    should describe the Whissle agent, not advertise whose model is behind it. But an
+    ablation is worthless if a reader cannot tell whether both arms ran on the same
+    brain, so the configuration is disclosed in full here, as configuration, rather
+    than smuggled into the narrative."""
+    dec = doc.get("decoding") or {}
+    if not dec:
+        return None
+    rows = [
+        ["model", str(dec.get("model"))],
+        ["provider (pinned; failover disabled)", str(dec.get("provider"))],
+        ["extended thinking", str(dec.get("thinking"))],
+        ["max_tokens", str(dec.get("max_tokens"))],
+        ["system prompt sha256[:16]", str(dec.get("system_sha"))],
+        ["tools bound", str(len(dec.get("tools") or []))],
+        ["verified from", "the response's `model` field (PR #664), not the request"],
+        ["modality", "text — stateless brain call, no audio transport, no turn-taking"],
+        ["metadata head in path", "yes, via the batch transcription route"],
+    ]
+    return Table(key="model_disclosure", title="Model disclosure and decoding config",
+                 columns=["setting", "value"], rows=rows, allow_providers=True,
+                 allow_context=True,
+                 note=("Identical across every arm. The ablation's validity rests on "
+                       "this being the same brain on both sides of the comparison."))
+
+
 def _structural_table(doc: dict) -> Optional[Table]:
     st = doc.get("structural_audit") or {}
     rows = [[c["channel"], "yes" if c["produced"] else "no",
@@ -435,6 +474,7 @@ def _structural_table(doc: dict) -> Optional[Table]:
         note=("Not an experimental result. A channel that is produced and never read "
               "contributes zero by construction, and no sample size will show "
               "otherwise. Verified against the backend source."),
+        allow_providers=True,
         allow_context=True)
 
 

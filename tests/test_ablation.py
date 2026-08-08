@@ -350,3 +350,36 @@ def test_off_majority_accuracy_is_reported_beside_the_baseline():
     assert ch["majority_class_baseline"] == pytest.approx(0.9)
     assert ch["accuracy_off_majority"] == pytest.approx(1.0)
     assert ch["n_off_majority"] == 2
+
+
+def test_amount_grounding_compares_amounts_not_digit_strings():
+    """'$618' in the transcript normalises to 618.00, whose digit string is '618'.
+    A raw digit-containment test scored that perfectly grounded value as
+    fabricated and inflated the headline write-integrity number by 10 points."""
+    case = C.Case(case_id="t", slice="entity",
+                  spoken="I was charged six hundred and eighteen dollars.",
+                  gold_route="billing_question", gold_slots={"amount": "618.00"})
+    g = G.grade_case(case, "A", json.dumps(
+        {"route": "billing_question", "slots": {"amount": "618"}, "reply": ""}),
+        "I was charged $618.")
+    assert g.fabricated_slots == []
+    bad = G.grade_case(case, "A", json.dumps(
+        {"route": "billing_question", "slots": {"amount": "7200.00"}, "reply": ""}),
+        "I was charged $618.")
+    assert bad.fabricated is True
+
+
+def test_a_bare_weekday_the_caller_said_is_grounded():
+    """A weekday carries no month, so comparing normalised month/day forms scored
+    'the caller said Thursday, the agent wrote thursday' as an invented value."""
+    case = C.Case(case_id="t", slice="intent",
+                  spoken="I don't think I can make Thursday.",
+                  gold_route="reschedule_appointment", gold_slots={})
+    g = G.grade_case(case, "A", json.dumps(
+        {"route": "reschedule_appointment", "slots": {"date": "thursday"},
+         "reply": ""}), "I don't think I'm gonna be able to make Thursday.")
+    assert g.fabricated_slots == []
+    bad = G.grade_case(case, "A", json.dumps(
+        {"route": "reschedule_appointment", "slots": {"date": "saturday"},
+         "reply": ""}), "I don't think I'm gonna be able to make Thursday.")
+    assert bad.fabricated is True
