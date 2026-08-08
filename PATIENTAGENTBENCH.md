@@ -285,8 +285,25 @@ results/whissle/patientagentbench/<run>/
   REPORT.md        # paper Table-4-shaped table, per-dimension CIs, exclusions, sampling
   summary.json     # the same, machine-readable
   cases/<id>.json  # transcript, tool calls, rubric scores, classification
+                   #   + `diagnostics`: the shared forensic envelope
+  voice/           # the --voice-subset slice, as its own run (scored separately)
   voice_audio/     # duplex WAVs (voice runs)
 ```
+
+Each case file carries a `diagnostics` block in the shape every health benchmark
+emits — tool forensics with resolved arguments and results, per-case provenance
+(agent, judge + independence, seed, stratum) and cost, and explicit
+availability markers for the flow trace and voice signals. In `--mode harness` /
+`--mode native` the transport is `POST /api/bench/agent-turn`, a stateless brain
+call that runs no flow engine and mints no conversation, so those sections read
+`available: false` **with a reason and `null` payloads** — never zeros that could be
+misread as measurements. `--mode voice` (or a `--voice-subset` slice) is the mode
+where the per-turn hesitation / shadow / speculative / emotion / intent signals
+actually exist, and there they are captured. See **[HEALTH_DIAGNOSTICS.md](HEALTH_DIAGNOSTICS.md)**.
+
+`--voice-subset N` re-runs the head N of the seeded sample through the real voice
+pipeline as a separate PatientAgentBench run under `<output-dir>/<name>/voice/`:
+scale from the text pass, deep signals from the slice, never averaged together.
 
 Scoring reproduces `eval/aggregator.py` exactly: per-evaluator weighted aggregate
 first (`sum(w*s)/8.3`), then the mean across jurors; pass is score >= 3.

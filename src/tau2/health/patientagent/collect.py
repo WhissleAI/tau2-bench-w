@@ -18,8 +18,10 @@ from __future__ import annotations
 
 import json
 import os
+from dataclasses import dataclass
 from typing import Any, Optional
 
+from tau2.health.patientagent import diagnostics as case_diagnostics
 from tau2.health.patientagent.report import write_case_artifact
 from tau2.health.patientagent.scoring import (
     INFRA_MARKER,
@@ -76,10 +78,17 @@ def extract_transcript(conversation: Any) -> tuple[list[dict[str, Any]], list[di
             )
         entry = {"index": index, "role": role, "content": content}
         meta = message.get("response_metadata") or {}
-        # Voice runs carry per-turn latency/channel on the message metadata.
+        # Voice runs carry per-turn latency/channel AND the per-turn signal +
+        # metadata frames on the message metadata — the only path by which a live
+        # spoken turn's diagnostics reach a persisted artifact, since the benchmark
+        # harness owns the loop and hands us nothing else.
         if isinstance(meta, dict) and meta.get("channel") == "voice":
             entry["voice"] = {
-                k: meta.get(k) for k in ("latency_ms", "bot_audio_bytes", "boundary", "kind")
+                k: meta.get(k)
+                for k in ("turn", "latency_ms", "bot_audio_bytes", "boundary", "kind",
+                          "room", "conversation_id", "signals", "user_metadata",
+                          "hesitant_input", "current_state", "flow_steps")
+                if k in meta
             }
         transcript.append(entry)
 
@@ -96,17 +105,52 @@ def extract_transcript(conversation: Any) -> tuple[list[dict[str, Any]], list[di
     return transcript, tool_calls
 
 
+@dataclass
+class DiagnosticsContext:
+    """Everything a per-case diagnostic envelope needs that only the RUN knows.
+
+    Gathered once and copied onto every case so a case file is self-describing: the
+    mode (and therefore which signals can exist at all), the judge and whether it
+    was independent, the seed and stratification, the agent and base URL, and the
+    run's judge spend to allocate. ``None`` here means the caller is re-reporting an
+    old run that predates this record — the envelope then says so rather than
+    inventing values."""
+
+    mode: str = "harness"
+    judge: Optional[dict[str, Any]] = None
+    sampling: Optional[dict[str, Any]] = None
+    provenance: Optional[dict[str, Any]] = None
+    run_dir: Optional[str] = None
+    n_cases: int = 1
+    # Fetching the flow trace costs an HTTP call per case; only voice runs can have
+    # one, so it is opt-in and off by default for a 100-case text run.
+    fetch_flow_trace: bool = False
+
+    def trace_client(self):
+        if not self.fetch_flow_trace:
+            return None
+        from tau2.health.diagnostics import TraceClient
+
+        return TraceClient()
+
+
 def collect_outcomes(
     experiment_dir: str,
     *,
     artifact_dir: Optional[str] = None,
     case_metadata: Optional[dict[str, dict[str, Any]]] = None,
+    diagnostics: Optional[DiagnosticsContext] = None,
 ) -> list[SessionOutcome]:
     """Classify every case in one experiment directory, writing per-case artifacts.
 
     Cases present in ``conversations.json`` but missing from ``evaluations.json``
     still produce an outcome, so a crashed grading pass shows up as an exclusion
     rather than shrinking N invisibly.
+
+    ``diagnostics`` carries the run-level facts each case's diagnostic envelope
+    needs (mode, judge, seed/strata, agent, spend). Omitted, the artifacts are
+    written exactly as before — a re-report of an old run does not gain fabricated
+    provenance.
     """
     conversations = _read_json(os.path.join(experiment_dir, "conversations.json"), [])
     evaluations = _read_json(os.path.join(experiment_dir, "evaluations.json"), [])
@@ -142,6 +186,23 @@ def collect_outcomes(
 
         if artifact_dir:
             transcript, tool_calls = extract_transcript(record.get("conversation"))
+            scenario = (case_metadata or {}).get(
+                case_id, {"scenario": record.get("scenario")})
+            envelope = None
+            if diagnostics is not None:
+                envelope = case_diagnostics.build(
+                    case_id=case_id,
+                    mode=diagnostics.mode,
+                    transcript=transcript,
+                    raw_tool_calls=tool_calls,
+                    scenario=scenario,
+                    judge=diagnostics.judge,
+                    sampling=diagnostics.sampling,
+                    provenance_extra=diagnostics.provenance,
+                    run_dir=diagnostics.run_dir,
+                    n_cases=diagnostics.n_cases,
+                    trace_client=diagnostics.trace_client(),
+                )
             write_case_artifact(
                 artifact_dir,
                 case_id,
@@ -149,7 +210,8 @@ def collect_outcomes(
                 transcript=transcript,
                 tool_calls=tool_calls,
                 evaluation=evaluation,
-                scenario=(case_metadata or {}).get(case_id, {"scenario": record.get("scenario")}),
+                scenario=scenario,
+                diagnostics=envelope,
             )
     return outcomes
 

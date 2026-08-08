@@ -14,12 +14,15 @@ import json
 import sys
 import traceback
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from dataclasses import replace
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Optional
 
 from dotenv import load_dotenv
 
+from tau2.health import diagnostics
+from tau2.health.agentclinic import diagnostics as case_diag
 from tau2.health.agentclinic.dataset import (
     DATASETS,
     IMAGE_DATASETS,
@@ -38,6 +41,7 @@ from tau2.health.agentclinic.runner import (
     write_case,
 )
 from tau2.health.agentclinic.scoring import aggregate, summary_markdown
+from tau2.health.diagnostics import attach as diag_attach
 from tau2.health.agentclinic.vision import OFF, VISION_MODES
 from tau2.health.model_router import (
     DEFAULT_JUDGE_MODELS,
@@ -113,6 +117,15 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--tag", default="", help="suffix for the run directory")
     p.add_argument("--audio", action="store_true",
                    help="voice mode: write per-case duplex WAV evidence")
+    p.add_argument("--voice-subset", type=int, default=0, metavar="N",
+                   help="after the text pass, RE-RUN N of the same cases through the "
+                        "real voice pipeline, into <out>/voice/. Scale and depth at "
+                        "once: 100 text cases give the score, a handful of voice "
+                        "cases give the per-turn signals (hesitation, shadow, "
+                        "emotion/intent, barge-in, latency) that only exist over "
+                        "audio. The slice is the seeded head of the sampled set, so "
+                        "it is reproducible; voice cases are scored and reported "
+                        "SEPARATELY and never averaged into the text number.")
     return p
 
 
@@ -124,9 +137,13 @@ def _percentile(xs: list[int], q: float) -> Optional[int]:
 
 
 def _run_one(scenario: Scenario, args: argparse.Namespace, cfg: DoctorConfig,
-             out: Path) -> dict[str, Any]:
+             out: Path, meta: Optional[dict[str, Any]] = None) -> dict[str, Any]:
     """One case, end to end, never raising: an unexpected exception is recorded on
-    the case (and shows up in the report) rather than killing the run."""
+    the case (and shows up in the report) rather than killing the run.
+
+    ``meta`` is the run-level provenance block; it is copied down onto the case's
+    ``diagnostics`` envelope so a case file lifted out of the run directory still
+    says which agent, which judge, which seed and which stratum produced it."""
     support = make_judge_llm(args.support_llm or args.judge_provider,
                              args.judge_model)
     image, image_error = (None, None)
@@ -187,11 +204,90 @@ def _run_one(scenario: Scenario, args: argparse.Namespace, cfg: DoctorConfig,
     # run summary sums them — judge calls are the bulk of what a run costs and, on the
     # default route, they bill our own wallet.
     case["support_llm_calls"] = int(getattr(support, "calls", 0))
+    case.setdefault("voice_subset", bool(getattr(args, "_is_voice_subset", False)))
+    # The shared diagnostic envelope (tau2.health.diagnostics): flow trace where one
+    # exists, per-turn voice signals where the transport produces them, explicit
+    # unavailability where it does not, tool forensics, per-case provenance + cost.
+    diag_attach(case, case_diag.build(
+        case,
+        meta={**(meta or {}), "mode": args.mode},
+        run_dir=str(out),
+        trace_client=diagnostics.TraceClient(base=cfg.base, api_key=cfg.api_key),
+    ))
     write_case(out, case)
     (out / "transcripts").mkdir(parents=True, exist_ok=True)
     (out / "transcripts" / f"{scenario.id}.txt").write_text(
         render_transcript(case), encoding="utf-8")
     return case
+
+
+def voice_subset(chosen: list[Scenario], n: int) -> list[Scenario]:
+    """The deterministic head of the already-sampled set.
+
+    ``chosen`` is itself the output of the seeded ``select(...)``, so taking its
+    first N is reproducible for a given ``--seed``/``--sample`` without adding a
+    second, independently-seeded draw that nobody could reconstruct."""
+    return list(chosen[:max(0, n)])
+
+
+def _run_voice_subset(chosen: list[Scenario], args: argparse.Namespace,
+                      cfg: DoctorConfig, out: Path,
+                      meta: dict[str, Any]) -> list[dict[str, Any]]:
+    """Re-drive a slice of a TEXT run through the real voice pipeline.
+
+    Why a slice and not a mode: a 100-case run needs the text channel (parallel,
+    cheap, deterministic) to produce a score anyone can stand behind, but the
+    per-turn signals that make a failure explainable — hesitation, shadow/eager
+    reply activity, speculative tools, emotion/intent, barge-in, real spoken
+    latency — exist ONLY over audio. Running a handful of the same cases over voice
+    buys the deep signals without paying for 100 live calls.
+
+    The two populations are kept apart on disk (``<out>/voice/``) and in the
+    reports (``SUMMARY.voice.json``). They are different measurements — a voice
+    number carries ASR and TTS error the text number does not — and averaging them
+    would be the exact dishonesty the split exists to prevent."""
+    n = int(getattr(args, "voice_subset", 0) or 0)
+    if n <= 0:
+        return []
+    if args.mode == "voice":
+        print("note: --voice-subset is a no-op in --mode voice (the whole run is "
+              "already voice)", file=sys.stderr)
+        return []
+    if args.vision != OFF:
+        print("note: --voice-subset skipped — voice carries no image channel and this "
+              f"run is --vision {args.vision}", file=sys.stderr)
+        return []
+
+    slice_ = voice_subset(chosen, n)
+    vout = out / "voice"
+    vout.mkdir(parents=True, exist_ok=True)
+    # A clone of the run's arguments with ONLY the transport changed, so the voice
+    # slice is the same cases, the same budgets and the same judges.
+    vargs = argparse.Namespace(**vars(args))
+    vargs.mode = "voice"
+    vargs.protocol = "tools"
+    vargs.vision = OFF
+    vargs.doctor_image_request = False
+    vargs.concurrency = 1
+    vargs._is_voice_subset = True
+    vcfg = replace(cfg, protocol="tools", vision=OFF, img_request=False)
+    vmeta = {**meta, "mode": "voice", "protocol": "tools", "vision": OFF,
+             "voice_subset_of": str(out), "voice_subset_n": len(slice_)}
+
+    print(f"agentclinic: voice subset — re-running {len(slice_)} case(s) over the "
+          f"real voice pipeline → {vout}", file=sys.stderr)
+    out_cases: list[dict[str, Any]] = []
+    for s in slice_:
+        try:
+            c = _run_one(s, vargs, vcfg, vout, vmeta)
+        except Exception as e:  # noqa: BLE001 — the voice slice never sinks the run
+            print(f"  voice subset {s.id}: FAILED {type(e).__name__}: {e}",
+                  file=sys.stderr)
+            continue
+        out_cases.append(c)
+        print(f"  [voice {len(out_cases)}/{len(slice_)}] {c['scenario_id']}: "
+              f"{c['score']['outcome']}", file=sys.stderr)
+    return out_cases
 
 
 def main(argv: Optional[list[str]] = None) -> int:
@@ -270,10 +366,11 @@ def main(argv: Optional[list[str]] = None) -> int:
           f" → {out}", file=sys.stderr)
 
     cases: list[dict[str, Any]] = []
+    voice_cases: list[dict[str, Any]] = []
     try:
         if args.concurrency > 1:
             with ThreadPoolExecutor(max_workers=args.concurrency) as ex:
-                futs = {ex.submit(_run_one, s, args, cfg, out): s for s in chosen}
+                futs = {ex.submit(_run_one, s, args, cfg, out, meta): s for s in chosen}
                 for f in as_completed(futs):
                     c = f.result()
                     cases.append(c)
@@ -281,10 +378,11 @@ def main(argv: Optional[list[str]] = None) -> int:
                           f"{c['score']['outcome']}", file=sys.stderr)
         else:
             for s in chosen:
-                c = _run_one(s, args, cfg, out)
+                c = _run_one(s, args, cfg, out, meta)
                 cases.append(c)
                 print(f"  [{len(cases)}/{len(chosen)}] {c['scenario_id']}: "
                       f"{c['score']['outcome']}", file=sys.stderr)
+        voice_cases = _run_voice_subset(chosen, args, cfg, out, meta)
     finally:
         if provisioned.created:
             ok = teardown_agent(provisioned)
@@ -303,6 +401,26 @@ def main(argv: Optional[list[str]] = None) -> int:
         json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8")
     (out / "SUMMARY.md").write_text(summary_markdown(summary), encoding="utf-8")
     print(summary_markdown(summary))
+
+    # The voice slice is summarized SEPARATELY. Same cases, different transport,
+    # different error surface — one table, two rows, never one average.
+    if voice_cases:
+        voice_cases.sort(key=lambda c: c.get("scenario_index", 0))
+        vlat = [t.get("latency_ms") for c in voice_cases
+                for t in ((c.get("voice") or {}).get("turns") or [])
+                if isinstance(t.get("latency_ms"), int)]
+        vsummary = aggregate(voice_cases, meta={
+            **meta, "mode": "voice", "protocol": "tools", "vision": OFF,
+            "voice_subset_of": str(out), "voice_subset_n": len(voice_cases),
+            "latency_p50_ms": _percentile(vlat, 0.5),
+            "latency_p90_ms": _percentile(vlat, 0.9)})
+        (out / "SUMMARY.voice.json").write_text(
+            json.dumps(vsummary, ensure_ascii=False, indent=2), encoding="utf-8")
+        (out / "SUMMARY.voice.md").write_text(
+            summary_markdown(vsummary), encoding="utf-8")
+        print(f"\nvoice subset ({len(voice_cases)} case(s), scored separately):\n")
+        print(summary_markdown(vsummary))
+
     print(f"artifacts: {out}", file=sys.stderr)
     return 0
 

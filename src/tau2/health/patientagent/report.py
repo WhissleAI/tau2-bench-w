@@ -20,6 +20,7 @@ import json
 import os
 from typing import Any, Optional
 
+from tau2.health.diagnostics import attach as diag_attach
 from tau2.health.patientagent.scoring import (
     INFRA_FAIL,
     RUBRIC_ORDER,
@@ -54,8 +55,14 @@ def write_case_artifact(
     tool_calls: list[dict[str, Any]],
     evaluation: Optional[dict[str, Any]] = None,
     scenario: Optional[dict[str, Any]] = None,
+    diagnostics: Optional[dict[str, Any]] = None,
 ) -> str:
-    """Write one scenario's full evidence. Returns the path."""
+    """Write one scenario's full evidence. Returns the path.
+
+    ``diagnostics`` is the shared ``tau2.health.diagnostics`` envelope — flow trace,
+    per-turn voice signals, metadata sidecar, tool forensics, per-case provenance
+    and cost, each stamped available or explicitly unavailable-with-a-reason. It is
+    added as one extra key so every existing reader of this file is unaffected."""
     os.makedirs(directory, exist_ok=True)
     # Case ids can carry path separators; keep the filename flat.
     safe = str(case_id).replace(os.sep, "_").replace("/", "_")
@@ -72,6 +79,8 @@ def write_case_artifact(
         "tool_calls": tool_calls,
         "evaluation": evaluation or {},
     }
+    if diagnostics is not None:
+        diag_attach(payload, diagnostics)
     with open(path, "w", encoding="utf-8") as handle:
         json.dump(payload, handle, indent=2, default=str)
     return path

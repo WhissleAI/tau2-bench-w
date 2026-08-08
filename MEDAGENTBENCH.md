@@ -305,6 +305,32 @@ Per-run under `results/whissle/medagentbench/<mode>_<name>/`:
 * `tasks/<task_id>.json` — full prompt, messages, every action + observation,
   the resulting FHIR write records (payload, created id, read-back, conformance
   issues), grade with expected-vs-got, and findings
+* …plus a `diagnostics` block on every task record, in the shape all three health
+  benchmarks share (**[HEALTH_DIAGNOSTICS.md](HEALTH_DIAGNOSTICS.md)**), so one
+  reader works across them
+
+### The `diagnostics` block
+
+`tools.calls` normalizes every `GET`/`POST` with its **resolved** URL and JSON body
+and the observation it got back, `ok`/`error` included. `tools.writes` lifts the
+said-vs-emitted-vs-landed split out of the integrity report and adds a
+plain-language `verdict` — `SAID but never EMITTED`, `EMITTED but NOT ACCEPTED`,
+`EMITTED and LANDED` — so the headline failure this suite exists to catch cannot
+flatten into "tools called: 0". `provenance` copies the run's agent, base URL,
+grader, system mode and write-check mode onto each case, with the category as its
+stratum.
+
+Two sections are deliberately marked unavailable rather than zeroed. Every round is
+a `POST /api/bench/agent-turn` — a stateless brain call that runs no flow engine and
+mints no conversation — so there is **no flow trace**; and nothing here is spoken, so
+there are **no voice signals**. Both carry `available: false`, a reason, and `null`
+payloads. Likewise `cost` reports `judge_cost_usd: null`, not `$0.00`: grading here
+is programmatic and no judge LLM is called at all.
+
+**No `--voice-subset` flag.** MedAgentBench's actions are structured `GET`/`POST`
+strings executed by the harness; there is no spoken surface to drive, and inventing
+one would produce a number that measures nothing. The other two adapters have the
+flag because they have real dialogue.
 
 ### Infrastructure failures
 
