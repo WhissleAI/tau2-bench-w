@@ -1,0 +1,531 @@
+{
+  "schema": "tau2.ablation.metadata/v1",
+  "run_id": "ablation_AB_v1",
+  "benchmark": "metadata_ablation",
+  "started_at": "2026-08-08T20:51:04.037760+00:00",
+  "finished_at": "2026-08-08T21:05:59.239055+00:00",
+  "corpus": {
+    "version": "metadata_ablation_v1",
+    "seed": 20260808,
+    "digest": "3d8d5831954e2a71",
+    "routes": [
+      "book_appointment",
+      "reschedule_appointment",
+      "cancel_appointment",
+      "billing_question",
+      "update_contact_details",
+      "prescription_refill",
+      "escalate_to_human",
+      "other"
+    ],
+    "slot_keys": [
+      "caller_name",
+      "member_id",
+      "date",
+      "amount",
+      "phone"
+    ],
+    "n": 100,
+    "slices": {
+      "entity": 40,
+      "intent": 30,
+      "emotion": 30
+    },
+    "digest_of_run": "3d8d5831954e2a71",
+    "n_run": 100
+  },
+  "decoding": {
+    "agent_id": "f36d75fb-b245-4e2f-9fe1-a240c9eb3db7",
+    "model": "claude-sonnet-5",
+    "provider": "claude",
+    "max_tokens": 400,
+    "thinking": {
+      "type": "disabled"
+    },
+    "system": "You are the intake brain for a voice agent at Northgate Health. You receive one caller turn at a time.\n\nReply with EXACTLY ONE JSON object and nothing else — no prose, no code fence:\n{\"route\": \"<route>\", \"slots\": {\"<key>\": \"<value>\", ...}, \"reply\": \"<one or two sentences you would say back>\"}\n\nroute must be exactly one of: book_appointment, reschedule_appointment, cancel_appointment, billing_question, update_contact_details, prescription_refill, escalate_to_human, other\nslots keys may only be: caller_name, member_id, date, amount, phone\n\nRules for slots:\n- Include a slot ONLY if the caller actually said its value in this call.\n- Never guess, never complete a partial value, never carry a value over from your own general knowledge. An omitted slot is always better than an invented one.\n- member_id, phone: digits only, no spaces or punctuation.\n- amount: a plain decimal number, no currency symbol (e.g. 142.50).\n- date: lowercase month name and day number (e.g. march 14).\n- caller_name: exactly as the caller gave it.\n",
+    "tools": [],
+    "system_sha": "e7e9a8f6dbc97131"
+  },
+  "arms": [
+    {
+      "key": "A",
+      "label": "A — metadata off",
+      "metadata_mode": "off",
+      "description": "The brain sees the ASR transcript and nothing else. This is also, exactly, what the live voice path does today: production STT routes to AssemblyAI/Sarvam/Deepgram, none of which emit a metadata head.",
+      "exploratory": false,
+      "channel_accuracy": null,
+      "noise_seed": 20260808
+    },
+    {
+      "key": "B",
+      "label": "B — metadata present (cascade output, production format)",
+      "metadata_mode": "production",
+      "description": "The transcript, preceded by the real whissle-large metadata head's output for the same audio, rendered by production's own formatter. NOT a reconstruction of the signal — the signal itself, obtained from the batch path, which is the only place the head is currently reachable.",
+      "exploratory": false,
+      "channel_accuracy": null,
+      "noise_seed": 20260808
+    }
+  ],
+  "primary_comparison": [
+    "A",
+    "B"
+  ],
+  "n_total": 100,
+  "n_comparable": 100,
+  "n_excluded": 0,
+  "exclusions": [],
+  "metadata_head": {
+    "preflight": {
+      "satisfied_by_cache": true,
+      "cache_coverage": 1.0,
+      "serving": true,
+      "note": "Every case already has a real metadata sidecar cached from an earlier perception pass, so arm B carries genuine substrate on every case. The head was not probed live for this run; the substrate it uses is the head's own output, recorded when it answered."
+    },
+    "first_attempt_availability": 0.99,
+    "note": "First-attempt availability is what an ordinary caller of /api/models/transcribe experiences. The suite retries to obtain the metadata; the retries change nothing about the audio or transcript."
+  },
+  "asr_cascade": {
+    "digit_slots": 50,
+    "digit_recoverable": 40,
+    "digit_error_rate": 0.2,
+    "proper_noun_slots": 40,
+    "proper_noun_recoverable": 29,
+    "proper_noun_error_rate": 0.275,
+    "note": "A property of the ear, measured once, identical for both arms. It bounds what any entity consumption could achieve: a value the ear never heard cannot be filled correctly downstream."
+  },
+  "replies_changed_by_metadata": 99,
+  "per_arm": {
+    "A": {
+      "label": "A — metadata off",
+      "metadata_mode": "off",
+      "exploratory": false,
+      "n": 100,
+      "served_models": [
+        "claude-sonnet-5"
+      ],
+      "route_accuracy": 0.85,
+      "fabrication_rate": 0.0,
+      "mean_latency_ms": 3782,
+      "total_cost_usd": 0.68778,
+      "cost_per_case_usd": 0.0068778,
+      "mean_input_tokens": 1728.7,
+      "mean_output_tokens": 112.8
+    },
+    "B": {
+      "label": "B — metadata present (cascade output, production format)",
+      "metadata_mode": "production",
+      "exploratory": false,
+      "n": 100,
+      "served_models": [
+        "claude-sonnet-5"
+      ],
+      "route_accuracy": 0.85,
+      "fabrication_rate": 0.0,
+      "mean_latency_ms": 3758,
+      "total_cost_usd": 0.692706,
+      "cost_per_case_usd": 0.00692706,
+      "mean_input_tokens": 1774.0,
+      "mean_output_tokens": 107.0
+    }
+  },
+  "paired": {
+    "n_metrics": 10,
+    "gains": [],
+    "regressions": [],
+    "null": [
+      "routing_correct (all slices)",
+      "routing_correct (entity)",
+      "routing_correct (intent)",
+      "routing_correct (emotion)",
+      "slot_accuracy (entity slice)",
+      "digit_slot_accuracy",
+      "proper_noun_slot_accuracy",
+      "fabricated_value_in_payload",
+      "acknowledged_affect (emotion slice)"
+    ],
+    "underpowered": [
+      "latency_ms"
+    ],
+    "results": [
+      {
+        "metric": "routing_correct (all slices)",
+        "n_pairs": 100,
+        "b_only": 0,
+        "a_only": 0,
+        "both": 85,
+        "neither": 15,
+        "rate_a": 0.85,
+        "rate_b": 0.85,
+        "mean_a": null,
+        "mean_b": null,
+        "delta": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ],
+        "p_value": 1.0,
+        "test": "exact McNemar (binomial)",
+        "mde": 0.028,
+        "verdict": "no measurable effect",
+        "note": "",
+        "detail": {
+          "discordant": 0
+        }
+      },
+      {
+        "metric": "routing_correct (entity)",
+        "n_pairs": 40,
+        "b_only": 0,
+        "a_only": 0,
+        "both": 34,
+        "neither": 6,
+        "rate_a": 0.85,
+        "rate_b": 0.85,
+        "mean_a": null,
+        "mean_b": null,
+        "delta": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ],
+        "p_value": 1.0,
+        "test": "exact McNemar (binomial)",
+        "mde": 0.07,
+        "verdict": "no measurable effect",
+        "note": "",
+        "detail": {
+          "discordant": 0
+        }
+      },
+      {
+        "metric": "routing_correct (intent)",
+        "n_pairs": 30,
+        "b_only": 0,
+        "a_only": 0,
+        "both": 26,
+        "neither": 4,
+        "rate_a": 0.8666666666666667,
+        "rate_b": 0.8666666666666667,
+        "mean_a": null,
+        "mean_b": null,
+        "delta": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ],
+        "p_value": 1.0,
+        "test": "exact McNemar (binomial)",
+        "mde": 0.0934,
+        "verdict": "no measurable effect",
+        "note": "",
+        "detail": {
+          "discordant": 0
+        }
+      },
+      {
+        "metric": "routing_correct (emotion)",
+        "n_pairs": 30,
+        "b_only": 0,
+        "a_only": 0,
+        "both": 25,
+        "neither": 5,
+        "rate_a": 0.8333333333333334,
+        "rate_b": 0.8333333333333334,
+        "mean_a": null,
+        "mean_b": null,
+        "delta": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ],
+        "p_value": 1.0,
+        "test": "exact McNemar (binomial)",
+        "mde": 0.0934,
+        "verdict": "no measurable effect",
+        "note": "",
+        "detail": {
+          "discordant": 0
+        }
+      },
+      {
+        "metric": "slot_accuracy (entity slice)",
+        "n_pairs": 40,
+        "b_only": 0,
+        "a_only": 0,
+        "both": 0,
+        "neither": 0,
+        "rate_a": null,
+        "rate_b": null,
+        "mean_a": 0.9083333333333334,
+        "mean_b": 0.9083333333333334,
+        "delta": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ],
+        "p_value": 1.0,
+        "test": "Wilcoxon signed-rank",
+        "mde": 0.0,
+        "verdict": "no measurable effect",
+        "note": "every pair was identical — the arms produced the same value on every case",
+        "detail": {
+          "n_nonzero": 0
+        }
+      },
+      {
+        "metric": "digit_slot_accuracy",
+        "n_pairs": 40,
+        "b_only": 0,
+        "a_only": 0,
+        "both": 0,
+        "neither": 0,
+        "rate_a": null,
+        "rate_b": null,
+        "mean_a": 1.0,
+        "mean_b": 1.0,
+        "delta": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ],
+        "p_value": 1.0,
+        "test": "Wilcoxon signed-rank",
+        "mde": 0.0,
+        "verdict": "no measurable effect",
+        "note": "every pair was identical — the arms produced the same value on every case",
+        "detail": {
+          "n_nonzero": 0
+        }
+      },
+      {
+        "metric": "proper_noun_slot_accuracy",
+        "n_pairs": 40,
+        "b_only": 0,
+        "a_only": 0,
+        "both": 0,
+        "neither": 0,
+        "rate_a": null,
+        "rate_b": null,
+        "mean_a": 0.725,
+        "mean_b": 0.725,
+        "delta": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ],
+        "p_value": 1.0,
+        "test": "Wilcoxon signed-rank",
+        "mde": 0.0,
+        "verdict": "no measurable effect",
+        "note": "every pair was identical — the arms produced the same value on every case",
+        "detail": {
+          "n_nonzero": 0
+        }
+      },
+      {
+        "metric": "fabricated_value_in_payload",
+        "n_pairs": 100,
+        "b_only": 0,
+        "a_only": 0,
+        "both": 0,
+        "neither": 100,
+        "rate_a": 0.0,
+        "rate_b": 0.0,
+        "mean_a": null,
+        "mean_b": null,
+        "delta": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ],
+        "p_value": 1.0,
+        "test": "exact McNemar (binomial)",
+        "mde": 0.028,
+        "verdict": "no measurable effect",
+        "note": "",
+        "detail": {
+          "discordant": 0
+        }
+      },
+      {
+        "metric": "acknowledged_affect (emotion slice)",
+        "n_pairs": 30,
+        "b_only": 1,
+        "a_only": 0,
+        "both": 19,
+        "neither": 10,
+        "rate_a": 0.6333333333333333,
+        "rate_b": 0.6666666666666666,
+        "mean_a": null,
+        "mean_b": null,
+        "delta": 0.033333333333333326,
+        "ci": [
+          0.0,
+          0.1
+        ],
+        "p_value": 1.0,
+        "test": "exact McNemar (binomial)",
+        "mde": 0.0934,
+        "verdict": "no measurable effect",
+        "note": "",
+        "detail": {
+          "discordant": 1
+        }
+      },
+      {
+        "metric": "latency_ms",
+        "n_pairs": 100,
+        "b_only": 0,
+        "a_only": 0,
+        "both": 0,
+        "neither": 0,
+        "rate_a": null,
+        "rate_b": null,
+        "mean_a": 3781.97,
+        "mean_b": 3758.48,
+        "delta": -23.48999999999978,
+        "ci": [
+          -221.8,
+          194.09
+        ],
+        "p_value": 0.23014890602725346,
+        "test": "Wilcoxon signed-rank",
+        "mde": 303.6628,
+        "verdict": "underpowered",
+        "note": "",
+        "detail": {
+          "n_nonzero": 100,
+          "w_plus": 2175.5,
+          "w_minus": 2874.5
+        }
+      }
+    ]
+  },
+  "structural_audit": {
+    "backend_root": "/Users/karan/Desktop/work/whissle/live_assist/whissle_gateway_backend",
+    "channels": [
+      {
+        "channel": "emotion",
+        "produced": true,
+        "reaches_prompt": true,
+        "reaches_flow": false,
+        "serving_live_path": null,
+        "evidence": [
+          "pipecat-bot/bot/services_build.py:227",
+          "pipecat-bot/services/metadata_processor.py:28"
+        ],
+        "verified": true,
+        "summary": "Produced by the whissle-large metadata head; injected into the prompt inside the [User speech analysis: …] developer message. Reaches the model — but only when the head is serving, which on the live voice path it is not."
+      },
+      {
+        "channel": "intent",
+        "produced": true,
+        "reaches_prompt": true,
+        "reaches_flow": false,
+        "serving_live_path": null,
+        "evidence": [
+          "pipecat-bot/bot/services_build.py:227",
+          "pipecat-bot/services/flow/expr.py:125"
+        ],
+        "verified": true,
+        "summary": "Produced and injected alongside emotion. NOT read by the flow engine: transitions are decided by expression evaluation and an LLM condition judge, never by the ASR intent head."
+      },
+      {
+        "channel": "entity",
+        "produced": true,
+        "reaches_prompt": false,
+        "reaches_flow": false,
+        "serving_live_path": null,
+        "evidence": [
+          "pipecat-bot/services/whissle_stt.py:102",
+          "pipecat-bot/services/flow/collector.py:258"
+        ],
+        "verified": true,
+        "summary": "Requested from the ASR as a metadata tag and then dropped: `entity` is not in _METADATA_FIELDS, so it never reaches the prompt, and nothing in services/flow/ reads it, so it never reaches a slot. Slots are filled by a separate LLM extraction pass over the transcript (flow/collector.py), which is text-only. The entity channel currently contributes nothing to anything."
+      },
+      {
+        "channel": "age",
+        "produced": true,
+        "reaches_prompt": false,
+        "reaches_flow": false,
+        "serving_live_path": null,
+        "evidence": [
+          "pipecat-bot/bot/services_build.py:227"
+        ],
+        "verified": true,
+        "summary": "Produced by the same head and never injected — not in _METADATA_FIELDS."
+      },
+      {
+        "channel": "gender",
+        "produced": true,
+        "reaches_prompt": false,
+        "reaches_flow": false,
+        "serving_live_path": null,
+        "evidence": [
+          "pipecat-bot/bot/services_build.py:227"
+        ],
+        "verified": true,
+        "summary": "Produced by the same head and never injected — not in _METADATA_FIELDS."
+      },
+      {
+        "channel": "hesitation",
+        "produced": true,
+        "reaches_prompt": false,
+        "reaches_flow": false,
+        "serving_live_path": null,
+        "evidence": [
+          "pipecat-bot/services/hesitation.py:130"
+        ],
+        "verified": true,
+        "summary": "Computed from the metadata probability timeline and emitted to the client only. Phase 1 is produce-and-record: it is never placed in the prompt, so it cannot change a reply. It also depends on the same head, so with the head off it computes over an empty timeline."
+      },
+      {
+        "channel": "shadow",
+        "produced": true,
+        "reaches_prompt": false,
+        "reaches_flow": false,
+        "serving_live_path": null,
+        "evidence": [
+          "pipecat-bot/services/shadow_llm.py:16"
+        ],
+        "verified": true,
+        "summary": "Shadow draft / predicted tools sit behind SHADOW_LLM and SHADOW_LLM_DRAFT, both defaulting off."
+      },
+      {
+        "channel": "speculation",
+        "produced": true,
+        "reaches_prompt": false,
+        "reaches_flow": false,
+        "serving_live_path": null,
+        "evidence": [
+          "pipecat-bot/services/speculative_tools.py:129"
+        ],
+        "verified": true,
+        "summary": "Speculative tool pre-warm sits behind SPECULATIVE_TOOLS, defaulting off."
+      }
+    ],
+    "channels_reaching_the_prompt": [
+      "emotion",
+      "intent"
+    ],
+    "channels_produced_and_discarded": [
+      "entity",
+      "age",
+      "gender",
+      "hesitation",
+      "shadow",
+      "speculation"
+    ],
+    "live_voice_path": {
+      "claim": "On the live voice path the metadata head is not running. Production STT is routed to AssemblyAI (English/Hinglish), Sarvam (Indian languages) or Deepgram; none of them emit a metadata head. The whissle-large sidecar that would supply one is gated behind WHISSLE_STT_TRANSPORT=grpc plus WHISSLE_GRPC_TARGET. Consequence: for live calls, arm B and arm A are the same prompt, and the metadata layer's contribution to production today is structurally zero — independent of any experiment.",
+      "evidence": [
+        "pipecat-bot/bot/services_build.py:706",
+        "pipecat-bot/services/whissle_metadata_sidecar.py:89"
+      ],
+      "batch_path_note": "The BATCH path is different and is why this ablation can run at all: /api/models/transcribe calls whissle_batch_metadata in parallel with the external transcription, and that head IS serving in production. It is fail-open, so a timeout simply omits the `metadata` key.",
+      "verified": true
+    },
+    "headline": "Of 8 cascade channels, 2 (emotion, intent) reach the model at all; the rest are produced and discarded. On the live voice path none of them reach it, because the head that produces them is not running there."
+  },
+  "regraded_at": "2026-08-08T21:05:58.495663+00:00"
+}

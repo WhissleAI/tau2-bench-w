@@ -1,0 +1,367 @@
+{
+  "schema": "tau2.reporting.run_report/v1",
+  "run_id": "ablation/substrate_v1",
+  "benchmark": "metadata_ablation",
+  "series_key": "metadata_ablation:substrate",
+  "benchmark_title": "Metadata ablation \u2014 what the cascade layer contributes",
+  "title": "Is there information in the metadata probability substrate?",
+  "label": "Whissle",
+  "mode": "text",
+  "date": "2026-08-08",
+  "status": "complete",
+  "partial_reason": "",
+  "preliminary": false,
+  "preliminary_reason": "",
+  "n_scored": 100,
+  "headline": {
+    "key": "emotion_accuracy_off_majority",
+    "label": "Emotion head accuracy on cases that are not the majority class",
+    "value": 40.0,
+    "unit": "pct",
+    "ci": null,
+    "n": 25,
+    "floor": 0.0,
+    "ceiling": 100.0,
+    "higher_is_better": true,
+    "note": "Overall accuracy on this corpus is dominated by the neutral base rate; this is the number a consumer that acts on the channel actually depends on.",
+    "formatted": "40.0%"
+  },
+  "secondary_metrics": [
+    {
+      "key": "emotion_mi",
+      "label": "emotion: mutual information vs gold",
+      "value": 0.4,
+      "unit": "score",
+      "ci": null,
+      "n": 100,
+      "floor": 0.0,
+      "ceiling": null,
+      "higher_is_better": true,
+      "note": "bias floor 0.1731 bits at n=100; verdict: informative",
+      "formatted": "0.40"
+    },
+    {
+      "key": "emotion_acc",
+      "label": "emotion: top-1 accuracy",
+      "value": 78.0,
+      "unit": "pct",
+      "ci": null,
+      "n": 100,
+      "floor": 0.0,
+      "ceiling": 100.0,
+      "higher_is_better": true,
+      "note": "majority-class baseline 75%",
+      "formatted": "78.0%"
+    },
+    {
+      "key": "intent_mi",
+      "label": "intent: mutual information vs gold",
+      "value": 0.64,
+      "unit": "score",
+      "ci": null,
+      "n": 100,
+      "floor": 0.0,
+      "ceiling": null,
+      "higher_is_better": true,
+      "note": "bias floor 0.404 bits at n=100; verdict: informative",
+      "formatted": "0.64"
+    },
+    {
+      "key": "intent_acc",
+      "label": "intent: top-1 accuracy",
+      "value": 59.0,
+      "unit": "pct",
+      "ci": null,
+      "n": 100,
+      "floor": 0.0,
+      "ceiling": 100.0,
+      "higher_is_better": true,
+      "note": "majority-class baseline 18%",
+      "formatted": "59.0%"
+    }
+  ],
+  "what_measured": "The whissle-large metadata head's probability substrate \u2014 emotion probs, intent probs and the per-interim probability timeline \u2014 against pre-declared gold labels, upstream of every consumer and without the LLM.",
+  "why_measured": "A consumer cannot extract value from a channel that does not discriminate, however well the consumer is written. This is the precondition for the whole programme, and it is cheap to answer.",
+  "methodology": [
+    [
+      "Source",
+      "/api/models/transcribe \u2014 external transcription plus the whissle-large metadata head in parallel"
+    ],
+    [
+      "Authoritative bar",
+      "top-1 accuracy against gold, beside the majority-class baseline it has to beat"
+    ],
+    [
+      "Predictive bar",
+      "mutual information in bits, beside its small-sample bias floor"
+    ],
+    [
+      "Modality",
+      "text/batch audio \u2014 the head reached via the BATCH path, which is serving; the live voice path runs without it"
+    ]
+  ],
+  "scoring_rule": "Head labels are mapped onto the corpus's gold label space through a documented mapping; a head label counts as correct if it is in the gold label's accepted set.",
+  "tables": [
+    {
+      "key": "channels",
+      "title": "Per-channel informativeness",
+      "columns": [
+        "channel",
+        "top-1 acc",
+        "majority baseline",
+        "acc off majority",
+        "MI (bits)",
+        "MI bias floor",
+        "modal label",
+        "verdict"
+      ],
+      "rows": [
+        [
+          "emotion",
+          "78.0%",
+          "75.0%",
+          "40.0% (n=25)",
+          "0.4014",
+          "0.1731",
+          "neutral @ 79.0%",
+          "informative"
+        ],
+        [
+          "intent",
+          "59.0%",
+          "18.0%",
+          "50.0% (n=82)",
+          "0.6432",
+          "0.4040",
+          "inform @ 56.0%",
+          "informative"
+        ]
+      ],
+      "note": "",
+      "allow_providers": false,
+      "allow_context": true
+    },
+    {
+      "key": "ear",
+      "title": "The ear, measured once \u2014 the ceiling on anything downstream",
+      "columns": [
+        "slot family",
+        "slots",
+        "recoverable from transcript",
+        "error rate"
+      ],
+      "rows": [
+        [
+          "digits (IDs, amounts, phones)",
+          "50",
+          "40",
+          "20.0%"
+        ],
+        [
+          "proper nouns (caller names)",
+          "40",
+          "29",
+          "27.5%"
+        ]
+      ],
+      "note": "A value the ear never heard cannot be recovered downstream, however the metadata is consumed.",
+      "allow_providers": false,
+      "allow_context": true
+    },
+    {
+      "key": "structural",
+      "title": "Which cascade channels reach the brain at all",
+      "columns": [
+        "channel",
+        "produced",
+        "reaches the prompt",
+        "reaches the flow engine",
+        "evidence (file:line)"
+      ],
+      "rows": [
+        [
+          "emotion",
+          "yes",
+          "YES",
+          "no",
+          "pipecat-bot/bot/services_build.py:227; pipecat-bot/services/metadata_processor.py:28"
+        ],
+        [
+          "intent",
+          "yes",
+          "YES",
+          "no",
+          "pipecat-bot/bot/services_build.py:227; pipecat-bot/services/flow/expr.py:125"
+        ],
+        [
+          "entity",
+          "yes",
+          "no",
+          "no",
+          "pipecat-bot/services/whissle_stt.py:102; pipecat-bot/services/flow/collector.py:258"
+        ],
+        [
+          "age",
+          "yes",
+          "no",
+          "no",
+          "pipecat-bot/bot/services_build.py:227"
+        ],
+        [
+          "gender",
+          "yes",
+          "no",
+          "no",
+          "pipecat-bot/bot/services_build.py:227"
+        ],
+        [
+          "hesitation",
+          "yes",
+          "no",
+          "no",
+          "pipecat-bot/services/hesitation.py:130"
+        ],
+        [
+          "shadow",
+          "yes",
+          "no",
+          "no",
+          "pipecat-bot/services/shadow_llm.py:16"
+        ],
+        [
+          "speculation",
+          "yes",
+          "no",
+          "no",
+          "pipecat-bot/services/speculative_tools.py:129"
+        ]
+      ],
+      "note": "Not an experimental result. A channel that is produced and never read contributes zero by construction, and no sample size will show otherwise. Verified against the backend source.",
+      "allow_providers": true,
+      "allow_context": true
+    }
+  ],
+  "exclusions": {
+    "n_total": 100,
+    "n_scored": 100,
+    "n_excluded": 0,
+    "breakdown": {},
+    "reason_examples": [],
+    "excluded_ids": [],
+    "rate_pct": 0.0
+  },
+  "judge": {
+    "kind": "deterministic",
+    "provider": null,
+    "model": null,
+    "endpoint": null,
+    "independent": null,
+    "k": null,
+    "note": "labels compared against a frozen gold set",
+    "calls": null,
+    "cost_usd": null,
+    "needs_disclosure": false,
+    "short": "deterministic grader (no judge model)"
+  },
+  "provenance": {
+    "agent_id": null,
+    "base_url": null,
+    "endpoint": "POST /api/bench/agent-turn",
+    "mode": "text",
+    "harness_commit": null,
+    "repo_commit": "dc810ac",
+    "run_dir": "/private/tmp/claude-501/-Users-karan-Desktop-work-whissle-live-assist/766421da-8ef4-4ce2-9733-86e5c5f3fced/scratchpad/wt-ablation/results/whissle/ablation/substrate_v1",
+    "captured_at": "2026-08-08T21:01:06.787849+00:00",
+    "dataset": "metadata_ablation_v1",
+    "dataset_size": 100,
+    "upstream": null,
+    "extra": {
+      "corpus_digest": "3d8d5831954e2a71",
+      "model_disclosed_in": "tables[model_disclosure]",
+      "thinking_enabled": false,
+      "max_tokens": null,
+      "system_sha": null,
+      "modality": "text",
+      "metadata_head_in_path": true,
+      "metadata_head_path": "batch \u2014 /api/models/transcribe \u2192 whissle_batch_metadata (whissle-large). NOT the live voice path, where the head is not running at all.",
+      "arms": []
+    }
+  },
+  "sampling": {
+    "method": "pre-declared frozen corpus, full enumeration",
+    "n_population": 100,
+    "n_requested": null,
+    "n_selected": 100,
+    "seed": 20260808,
+    "strata_keys": [
+      "slice"
+    ],
+    "strata_tables": [],
+    "note": ""
+  },
+  "baselines": {
+    "baselines": [
+      {
+        "name": "Majority-class predictor (always answer the modal label)",
+        "values": {
+          "overall": 75.0
+        },
+        "source": "this run's own corpus base rate",
+        "source_url": "",
+        "protocol": "the trivial baseline any channel must beat to be useful",
+        "n": null
+      }
+    ],
+    "comparable": true,
+    "comparability_note": "Same corpus, same labels, by construction.",
+    "published_protocol": "",
+    "source": "",
+    "any": true
+  },
+  "failures": [],
+  "sample_cases": [],
+  "limitations": [
+    {
+      "key": "synthetic_speech",
+      "text": "Measured on TTS-synthesised speech. Synthetic audio is affectively flat, so the emotion channel is being asked to read an affect the audio does not carry: a degenerate result here bounds what the channel can do on THIS substrate and is NOT an estimate of its accuracy on real callers. The intent, age/gender and timeline channels do not depend on affective prosody in the same way and are less compromised by it.",
+      "severity": "high"
+    },
+    {
+      "key": "affect_slice_confound",
+      "text": "Affect and utterance type are confounded: neutral cases are dominated by the long entity-slice utterances and affective cases by the short emotion-slice ones. Any corpus-wide separation on a duration-sensitive timeline feature is a length artefact, and the within-slice control has only 5 neutral cases. The timeline features are reported as NOT CLEANLY MEASURED; the fix is length-matched neutral utterances in the emotion slice.",
+      "severity": "high"
+    },
+    {
+      "key": "mi_bias",
+      "text": "Mutual information is positively biased at this sample size; the bias floor is printed beside every estimate and a value below it is reported as no information rather than a small one.",
+      "severity": "medium"
+    }
+  ],
+  "reproduction": {
+    "commands": [
+      "uv run python -m tau2.ablation freeze",
+      "uv run python -m tau2.ablation substrate --run-name substrate_v1"
+    ],
+    "environment": {},
+    "notes": []
+  },
+  "artifacts": [
+    {
+      "path": "SUMMARY.json",
+      "description": "the machine-readable result",
+      "present": true
+    },
+    {
+      "path": "REPORT.md",
+      "description": "the rendered report",
+      "present": true
+    },
+    {
+      "path": "records.json",
+      "description": "per-case perception + head output",
+      "present": true
+    }
+  ],
+  "licence_note": "",
+  "warnings": []
+}

@@ -1,0 +1,664 @@
+{
+  "schema": "tau2.reporting.run_report/v1",
+  "run_id": "ablation/ablation_AB_v1",
+  "benchmark": "metadata_ablation",
+  "series_key": "metadata_ablation:text:AB",
+  "benchmark_title": "Metadata ablation \u2014 what the cascade layer contributes",
+  "title": "What the metadata layer contributes, measured against itself",
+  "label": "Whissle",
+  "mode": "text",
+  "date": "2026-08-08",
+  "status": "complete",
+  "partial_reason": "",
+  "preliminary": false,
+  "preliminary_reason": "",
+  "n_scored": 100,
+  "headline": {
+    "key": "metadata_delta_routing",
+    "label": "Routing accuracy: metadata on \u2212 metadata off (paired)",
+    "value": 0.0,
+    "unit": "pct",
+    "ci": [
+      0.0,
+      0.0
+    ],
+    "n": 100,
+    "floor": -100.0,
+    "ceiling": 100.0,
+    "higher_is_better": true,
+    "note": "A paired difference, not a pass rate. Positive means the metadata block helped; the CI is a percentile bootstrap over case pairs.",
+    "formatted": "0.0%"
+  },
+  "secondary_metrics": [
+    {
+      "key": "routing_correct__entity",
+      "label": "routing_correct (entity)",
+      "value": 0.0,
+      "unit": "pct",
+      "ci": [
+        0.0,
+        0.0
+      ],
+      "n": 40,
+      "floor": -100.0,
+      "ceiling": 100.0,
+      "higher_is_better": true,
+      "note": "exact McNemar (binomial); p=1.0; verdict: no measurable effect",
+      "formatted": "0.0%"
+    },
+    {
+      "key": "routing_correct__intent",
+      "label": "routing_correct (intent)",
+      "value": 0.0,
+      "unit": "pct",
+      "ci": [
+        0.0,
+        0.0
+      ],
+      "n": 30,
+      "floor": -100.0,
+      "ceiling": 100.0,
+      "higher_is_better": true,
+      "note": "exact McNemar (binomial); p=1.0; verdict: no measurable effect",
+      "formatted": "0.0%"
+    },
+    {
+      "key": "routing_correct__emotion",
+      "label": "routing_correct (emotion)",
+      "value": 0.0,
+      "unit": "pct",
+      "ci": [
+        0.0,
+        0.0
+      ],
+      "n": 30,
+      "floor": -100.0,
+      "ceiling": 100.0,
+      "higher_is_better": true,
+      "note": "exact McNemar (binomial); p=1.0; verdict: no measurable effect",
+      "formatted": "0.0%"
+    },
+    {
+      "key": "slot_accuracy__entity_slice",
+      "label": "slot_accuracy (entity slice)",
+      "value": 0.0,
+      "unit": "pct",
+      "ci": [
+        0.0,
+        0.0
+      ],
+      "n": 40,
+      "floor": -100.0,
+      "ceiling": 100.0,
+      "higher_is_better": true,
+      "note": "Wilcoxon signed-rank; p=1.0; verdict: no measurable effect",
+      "formatted": "0.0%"
+    },
+    {
+      "key": "digit_slot_accuracy",
+      "label": "digit_slot_accuracy",
+      "value": 0.0,
+      "unit": "pct",
+      "ci": [
+        0.0,
+        0.0
+      ],
+      "n": 40,
+      "floor": -100.0,
+      "ceiling": 100.0,
+      "higher_is_better": true,
+      "note": "Wilcoxon signed-rank; p=1.0; verdict: no measurable effect",
+      "formatted": "0.0%"
+    },
+    {
+      "key": "proper_noun_slot_accuracy",
+      "label": "proper_noun_slot_accuracy",
+      "value": 0.0,
+      "unit": "pct",
+      "ci": [
+        0.0,
+        0.0
+      ],
+      "n": 40,
+      "floor": -100.0,
+      "ceiling": 100.0,
+      "higher_is_better": true,
+      "note": "Wilcoxon signed-rank; p=1.0; verdict: no measurable effect",
+      "formatted": "0.0%"
+    },
+    {
+      "key": "fabricated_value_in_payload",
+      "label": "fabricated_value_in_payload",
+      "value": 0.0,
+      "unit": "pct",
+      "ci": [
+        0.0,
+        0.0
+      ],
+      "n": 100,
+      "floor": -100.0,
+      "ceiling": 100.0,
+      "higher_is_better": false,
+      "note": "exact McNemar (binomial); p=1.0; verdict: no measurable effect",
+      "formatted": "0.0%"
+    },
+    {
+      "key": "acknowledged_affect__emotion_slice",
+      "label": "acknowledged_affect (emotion slice)",
+      "value": 3.33,
+      "unit": "pct",
+      "ci": [
+        0.0,
+        10.0
+      ],
+      "n": 30,
+      "floor": -100.0,
+      "ceiling": 100.0,
+      "higher_is_better": true,
+      "note": "exact McNemar (binomial); p=1.0; verdict: no measurable effect",
+      "formatted": "3.3%"
+    },
+    {
+      "key": "latency_ms",
+      "label": "latency_ms",
+      "value": -2349.0,
+      "unit": "pct",
+      "ci": [
+        -22180.0,
+        19409.0
+      ],
+      "n": 100,
+      "floor": -100.0,
+      "ceiling": 100.0,
+      "higher_is_better": true,
+      "note": "Wilcoxon signed-rank; p=0.23014890602725346; verdict: underpowered",
+      "formatted": "-2349.0%"
+    }
+  ],
+  "what_measured": "The paired contribution of the whissle-large metadata block to a single caller turn, holding the transcript, task, model, prompt, tools and decoding identical across arms.",
+  "why_measured": "The cascaded architecture \u2014 own ASR, per-utterance emotion/intent metadata, flow engine, TTS \u2014 is the product's central claim, and no existing benchmark separates it from the LLM. Every number we had conflated the two.",
+  "methodology": [
+    [
+      "Arms",
+      "A = transcript only; B = transcript preceded by the real metadata block in production's own format"
+    ],
+    [
+      "Pairing",
+      "identical cases, interleaved per case; per-case deltas, never arm-mean vs arm-mean"
+    ],
+    [
+      "Perception",
+      "one TTS\u2192ASR pass per case, shared by both arms, so ASR quality cannot differ between them"
+    ],
+    [
+      "Model pinned",
+      "one model, pinned per request and verified from the response's `model` field rather than the request \u2014 see the model-disclosure table for the exact configuration"
+    ],
+    [
+      "Extended thinking",
+      "disabled, so a variable reasoning budget cannot add a second source of latency and cost variance"
+    ],
+    [
+      "Guards",
+      "single-variable spec check; arm-prompts-differ assertion; served-model match; frozen corpus digest"
+    ],
+    [
+      "Scoring",
+      "deterministic \u2014 no judge model in any primary metric"
+    ],
+    [
+      "Modality",
+      "text (stateless brain call). The metadata head was in the path via the BATCH transcription route, not the live voice path, where it is not running."
+    ]
+  ],
+  "scoring_rule": "Route accuracy is exact match against a pre-declared gold label. Slot accuracy is exact match after documented normalisation. A slot is fabricated when its value is recoverable from neither the transcript the agent saw nor the gold spoken text \u2014 so an ASR error is scored as a transcription failure, not as invention.",
+  "tables": [
+    {
+      "key": "paired",
+      "title": "Paired results, per channel",
+      "columns": [
+        "metric",
+        "arm A",
+        "arm B",
+        "\u0394",
+        "95% CI",
+        "p",
+        "MDE",
+        "verdict"
+      ],
+      "rows": [
+        [
+          "routing_correct (all slices)",
+          "85.0%",
+          "85.0%",
+          "0.0000",
+          "[+0.0000, +0.0000]",
+          "1.0000",
+          "0.0280",
+          "no measurable effect"
+        ],
+        [
+          "routing_correct (entity)",
+          "85.0%",
+          "85.0%",
+          "0.0000",
+          "[+0.0000, +0.0000]",
+          "1.0000",
+          "0.0700",
+          "no measurable effect"
+        ],
+        [
+          "routing_correct (intent)",
+          "86.7%",
+          "86.7%",
+          "0.0000",
+          "[+0.0000, +0.0000]",
+          "1.0000",
+          "0.0934",
+          "no measurable effect"
+        ],
+        [
+          "routing_correct (emotion)",
+          "83.3%",
+          "83.3%",
+          "0.0000",
+          "[+0.0000, +0.0000]",
+          "1.0000",
+          "0.0934",
+          "no measurable effect"
+        ],
+        [
+          "slot_accuracy (entity slice)",
+          "0.91",
+          "0.91",
+          "0.0000",
+          "[+0.0000, +0.0000]",
+          "1.0000",
+          "0.0000",
+          "no measurable effect"
+        ],
+        [
+          "digit_slot_accuracy",
+          "1.00",
+          "1.00",
+          "0.0000",
+          "[+0.0000, +0.0000]",
+          "1.0000",
+          "0.0000",
+          "no measurable effect"
+        ],
+        [
+          "proper_noun_slot_accuracy",
+          "0.72",
+          "0.72",
+          "0.0000",
+          "[+0.0000, +0.0000]",
+          "1.0000",
+          "0.0000",
+          "no measurable effect"
+        ],
+        [
+          "fabricated_value_in_payload",
+          "0.0%",
+          "0.0%",
+          "0.0000",
+          "[+0.0000, +0.0000]",
+          "1.0000",
+          "0.0280",
+          "no measurable effect"
+        ],
+        [
+          "acknowledged_affect (emotion slice)",
+          "63.3%",
+          "66.7%",
+          "0.0333",
+          "[+0.0000, +0.1000]",
+          "1.0000",
+          "0.0934",
+          "no measurable effect"
+        ],
+        [
+          "latency_ms",
+          "3781.97",
+          "3758.48",
+          "-23.4900",
+          "[-221.8000, +194.0900]",
+          "0.2301",
+          "303.6628",
+          "underpowered"
+        ]
+      ],
+      "note": "MDE is the smallest true effect this run could detect at 80% power. Where a metric reads 'no measurable effect', the MDE is what the run actually rules out.",
+      "allow_providers": false,
+      "allow_context": true
+    },
+    {
+      "key": "model_disclosure",
+      "title": "Model disclosure and decoding config",
+      "columns": [
+        "setting",
+        "value"
+      ],
+      "rows": [
+        [
+          "model",
+          "claude-sonnet-5"
+        ],
+        [
+          "provider (pinned; failover disabled)",
+          "claude"
+        ],
+        [
+          "extended thinking",
+          "{'type': 'disabled'}"
+        ],
+        [
+          "max_tokens",
+          "400"
+        ],
+        [
+          "system prompt sha256[:16]",
+          "e7e9a8f6dbc97131"
+        ],
+        [
+          "tools bound",
+          "0"
+        ],
+        [
+          "verified from",
+          "the response's `model` field (PR #664), not the request"
+        ],
+        [
+          "modality",
+          "text \u2014 stateless brain call, no audio transport, no turn-taking"
+        ],
+        [
+          "metadata head in path",
+          "yes, via the batch transcription route"
+        ]
+      ],
+      "note": "Identical across every arm. The ablation's validity rests on this being the same brain on both sides of the comparison.",
+      "allow_providers": true,
+      "allow_context": true
+    },
+    {
+      "key": "arms",
+      "title": "Arms, and how they were verified matched",
+      "columns": [
+        "arm",
+        "metadata_mode",
+        "pre-declared",
+        "description"
+      ],
+      "rows": [
+        [
+          "A",
+          "off",
+          "yes",
+          "The brain sees the ASR transcript and nothing else. This is also, exactly, what the live voice path does today: production STT routes to AssemblyAI/Sarvam/Deepgram, none of which emit a metadata head."
+        ],
+        [
+          "B",
+          "production",
+          "yes",
+          "The transcript, preceded by the real whissle-large metadata head's output for the same audio, rendered by production's own formatter. NOT a reconstruction of the signal \u2014 the signal itself, obtained from the batch path, which is the only place the head is currently reachable."
+        ]
+      ],
+      "note": "",
+      "allow_providers": true,
+      "allow_context": true
+    },
+    {
+      "key": "cost",
+      "title": "Cost and latency per arm",
+      "columns": [
+        "arm",
+        "n",
+        "served model",
+        "mean latency",
+        "mean input tok",
+        "cost/case",
+        "total"
+      ],
+      "rows": [
+        [
+          "A",
+          "100",
+          "claude-sonnet-5",
+          "3782 ms",
+          "1728.7",
+          "$0.0068778",
+          "$0.68778"
+        ],
+        [
+          "B",
+          "100",
+          "claude-sonnet-5",
+          "3758 ms",
+          "1774.0",
+          "$0.00692706",
+          "$0.692706"
+        ]
+      ],
+      "note": "",
+      "allow_providers": true,
+      "allow_context": true
+    },
+    {
+      "key": "structural",
+      "title": "Which cascade channels reach the brain at all",
+      "columns": [
+        "channel",
+        "produced",
+        "reaches the prompt",
+        "reaches the flow engine",
+        "evidence (file:line)"
+      ],
+      "rows": [
+        [
+          "emotion",
+          "yes",
+          "YES",
+          "no",
+          "pipecat-bot/bot/services_build.py:227; pipecat-bot/services/metadata_processor.py:28"
+        ],
+        [
+          "intent",
+          "yes",
+          "YES",
+          "no",
+          "pipecat-bot/bot/services_build.py:227; pipecat-bot/services/flow/expr.py:125"
+        ],
+        [
+          "entity",
+          "yes",
+          "no",
+          "no",
+          "pipecat-bot/services/whissle_stt.py:102; pipecat-bot/services/flow/collector.py:258"
+        ],
+        [
+          "age",
+          "yes",
+          "no",
+          "no",
+          "pipecat-bot/bot/services_build.py:227"
+        ],
+        [
+          "gender",
+          "yes",
+          "no",
+          "no",
+          "pipecat-bot/bot/services_build.py:227"
+        ],
+        [
+          "hesitation",
+          "yes",
+          "no",
+          "no",
+          "pipecat-bot/services/hesitation.py:130"
+        ],
+        [
+          "shadow",
+          "yes",
+          "no",
+          "no",
+          "pipecat-bot/services/shadow_llm.py:16"
+        ],
+        [
+          "speculation",
+          "yes",
+          "no",
+          "no",
+          "pipecat-bot/services/speculative_tools.py:129"
+        ]
+      ],
+      "note": "Not an experimental result. A channel that is produced and never read contributes zero by construction, and no sample size will show otherwise. Verified against the backend source.",
+      "allow_providers": true,
+      "allow_context": true
+    }
+  ],
+  "exclusions": {
+    "n_total": 100,
+    "n_scored": 100,
+    "n_excluded": 0,
+    "breakdown": {},
+    "reason_examples": [],
+    "excluded_ids": [],
+    "rate_pct": 0.0
+  },
+  "judge": {
+    "kind": "deterministic",
+    "provider": null,
+    "model": null,
+    "endpoint": null,
+    "independent": null,
+    "k": null,
+    "note": "every primary metric is a string comparison against a gold value fixed before the run",
+    "calls": null,
+    "cost_usd": null,
+    "needs_disclosure": false,
+    "short": "deterministic grader (no judge model)"
+  },
+  "provenance": {
+    "agent_id": "f36d75fb-b245-4e2f-9fe1-a240c9eb3db7",
+    "base_url": null,
+    "endpoint": "POST /api/bench/agent-turn",
+    "mode": "text",
+    "harness_commit": null,
+    "repo_commit": "dc810ac",
+    "run_dir": "/private/tmp/claude-501/-Users-karan-Desktop-work-whissle-live-assist/766421da-8ef4-4ce2-9733-86e5c5f3fced/scratchpad/wt-ablation/results/whissle/ablation/ablation_AB_v1",
+    "captured_at": "2026-08-08T21:05:59.239055+00:00",
+    "dataset": "metadata_ablation_v1",
+    "dataset_size": 100,
+    "upstream": null,
+    "extra": {
+      "corpus_digest": "3d8d5831954e2a71",
+      "model_disclosed_in": "tables[model_disclosure]",
+      "thinking_enabled": false,
+      "max_tokens": 400,
+      "system_sha": "e7e9a8f6dbc97131",
+      "modality": "text",
+      "metadata_head_in_path": true,
+      "metadata_head_path": "batch \u2014 /api/models/transcribe \u2192 whissle_batch_metadata (whissle-large). NOT the live voice path, where the head is not running at all.",
+      "arms": [
+        "A",
+        "B"
+      ]
+    }
+  },
+  "sampling": {
+    "method": "pre-declared frozen corpus, full enumeration",
+    "n_population": 100,
+    "n_requested": 100,
+    "n_selected": 100,
+    "seed": 20260808,
+    "strata_keys": [
+      "slice"
+    ],
+    "strata_tables": [],
+    "note": "No sampling: the corpus is enumerated in full and its digest is recorded, so a subset cannot be selected after seeing results."
+  },
+  "baselines": {
+    "baselines": [
+      {
+        "name": "Arm A \u2014 the same system with the metadata block removed",
+        "values": {
+          "overall": 0.0
+        },
+        "source": "this run; the paired within-subject control",
+        "source_url": "",
+        "protocol": "identical cases, model, prompt and transcript",
+        "n": null
+      }
+    ],
+    "comparable": true,
+    "comparability_note": "The comparator is the system itself without the variable \u2014 the only baseline an ablation can honestly have.",
+    "published_protocol": "",
+    "source": "",
+    "any": true
+  },
+  "failures": [],
+  "sample_cases": [],
+  "limitations": [
+    {
+      "key": "synthetic_speech",
+      "text": "Measured on TTS-synthesised speech, which is affectively flat. The emotion channel is being asked to read an affect the audio does not carry, so results on it bound what it can do on this substrate and are not an estimate of its behaviour on real callers.",
+      "severity": "high"
+    },
+    {
+      "key": "injection_fidelity",
+      "text": "Production injects the metadata block as a separate developer-role context message. /api/bench/agent-turn accepts only user/assistant roles, so the block is delivered as the first line of the same user turn \u2014 identical characters, identical position, different role tag.",
+      "severity": "medium"
+    },
+    {
+      "key": "predictive_consumers_unmeasured",
+      "text": "Eager-reply hit and false-fire rate, shadow commit-vs-discard, hesitation quality and turn-taking timing are not observable through a stateless brain call, and the head that feeds them is not running on the live voice path. Not measured \u2014 not zero.",
+      "severity": "high"
+    },
+    {
+      "key": "single_turn",
+      "text": "One caller turn per case, chosen so turn-to-turn variance cannot swamp a per-turn signal \u2014 at the cost of missing effects that only accumulate over a conversation.",
+      "severity": "medium"
+    }
+  ],
+  "reproduction": {
+    "commands": [
+      "uv run python -m tau2.ablation freeze",
+      "uv run python -m tau2.ablation preflight",
+      "uv run python -m tau2.ablation run --arms A,B --run-name ablation_AB_v1",
+      "uv run python -m tau2.ablation report results/whissle/ablation/ablation_AB_v1"
+    ],
+    "environment": {
+      "WHISSLE_BASE": "https://aws-gateway-backend.whissle.ai/bot",
+      "WHISSLE_API_KEY": "wsk_\u2026",
+      "WHISSLE_AGENT_ID": "<neutral bench agent>"
+    },
+    "notes": [
+      "Arm C (entity consumption) is skipped: its consumers ship gated off and the batch metadata path requests no entity tags, so there is no entity output to consume through this seam."
+    ]
+  },
+  "artifacts": [
+    {
+      "path": "SUMMARY.json",
+      "description": "the machine-readable result",
+      "present": true
+    },
+    {
+      "path": "REPORT.md",
+      "description": "the rendered report",
+      "present": true
+    },
+    {
+      "path": "records.json",
+      "description": "per-case records including both arms' prompts",
+      "present": true
+    },
+    {
+      "path": "cases",
+      "description": "per-case tau2.health.diagnostics/v1 envelopes",
+      "present": true
+    }
+  ],
+  "licence_note": "",
+  "warnings": []
+}
