@@ -360,6 +360,13 @@ def test_clinic_tool_calls_pair_actions_with_their_results():
     assert test_call["result"] == "WBC 12.1"
     # A plain question is not a tool call and must not inflate the count.
     assert env["tools"]["summary"]["n_calls"] == 2
+    # give_diagnosis is TERMINAL — no result comes back and that is not an error.
+    # Marking it failed would manufacture one failed call on every case that
+    # reached a diagnosis, i.e. on every good run.
+    diagnosis = env["tools"]["calls"][1]
+    assert diagnosis["terminal"] is True
+    assert diagnosis["ok"] is True and diagnosis["error"] is None
+    assert env["tools"]["summary"]["n_error"] == 0
 
 
 def test_clinic_voice_subset_slice_is_the_seeded_head():

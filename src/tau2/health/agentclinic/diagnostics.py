@@ -65,15 +65,21 @@ def tool_calls_from_dialogue(dialogue: list[dict[str, Any]]) -> list[dict[str, A
             if follow.get("role") in ("measurement", "system"):
                 result = follow.get("text")
                 break
+        # `give_diagnosis` is TERMINAL — it ends the case and no result comes back.
+        # Scoring its missing result as an error would manufacture one failed tool
+        # call on every case that reached a diagnosis, i.e. on every good run.
+        terminal = kind == "diagnosis"
         out.append(diag.tool_call(
             name,
             arguments={"request": row.get("payload") or row.get("text")},
             result=result,
-            ok=result is not None,
-            error=None if result is not None else "no result was returned to the doctor",
+            ok=True if terminal else result is not None,
+            error=(None if (terminal or result is not None)
+                   else "no result was returned to the doctor"),
             turn=row.get("inference"),
             via=row.get("via"),
             latency_ms=row.get("latency_ms"),
+            terminal=terminal,
         ))
     return out
 
