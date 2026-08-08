@@ -1,0 +1,494 @@
+{
+  "scenario_id": "MedQA-22",
+  "scenario_index": 22,
+  "dataset": "MedQA",
+  "mode": "text",
+  "correct_diagnosis": "Malignant melanoma",
+  "answer_options": [],
+  "score": {
+    "outcome": "correct",
+    "correctness": true,
+    "doctor_diagnosis": "Malignant Melanoma",
+    "doctor_final_text": "I have reviewed your biopsy results, and they indicate a diagnosis of malignant melanoma. We will need to refer you to a specialist immediately to discuss your treatment options. I will help coordinate this care for you.\n\nDIAGNOSIS READY: Malignant Melanoma",
+    "moderator_raw": "yes",
+    "moderator_raw_text": "Yes",
+    "moderator_lenient": true,
+    "moderator_attempts": 1,
+    "moderator_normalized": false,
+    "moderator_unconstrained": false,
+    "declined": false,
+    "refusal_evidence": [],
+    "format_deviation": false,
+    "decline_source": null,
+    "decline_reason": "",
+    "spurious_commit": false
+  },
+  "infra_fail": false,
+  "error": null,
+  "findings": [],
+  "inferences_used": 6,
+  "max_inferences": 20,
+  "tests_ordered": [
+    "Biopsy"
+  ],
+  "images_requested": 0,
+  "image": null,
+  "image_error": null,
+  "vision": "off",
+  "refusals": [],
+  "dialogue": [
+    {
+      "role": "doctor",
+      "inference": 1,
+      "kind": "question",
+      "text": "Hello, I am Dr. Agent. Just so you know, I'm an AI assistant and this call is recorded for quality. Can you tell me when you first noticed this chest lesion, and whether it has changed in size, shape, or color?",
+      "payload": null,
+      "latency_ms": 3412,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Hello, Doctor. I first noticed this spot on my chest about 2 months ago. I think it's gotten bigger since then, but I'm not entirely sure about any color changes. It just seems more noticeable to me now than when I first saw it."
+    },
+    {
+      "role": "doctor",
+      "inference": 2,
+      "kind": "question",
+      "text": "Thank you for sharing that. Does the lesion itch, hurt, or bleed, or have you noticed any other symptoms associated with it?",
+      "payload": null,
+      "latency_ms": 1968,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "No, it doesn't itch or hurt at all. I haven't noticed any bleeding either. It's just there, you know? Doesn't really bother me except that I've been wondering what it is."
+    },
+    {
+      "role": "doctor",
+      "inference": 3,
+      "kind": "question",
+      "text": "That is helpful to know. Could you describe what the spot looks like? For example, is it raised or flat, and what color is it?",
+      "payload": null,
+      "latency_ms": 2499,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "It's kind of raised, I'd say, not completely flat. As for the color, it looks sort of brownish or maybe a bit darker than my regular skin tone. Nothing too dramatic, but definitely noticeable when I look at it."
+    },
+    {
+      "role": "doctor",
+      "inference": 4,
+      "kind": "question",
+      "text": "Thank you for that description. Are the edges of this spot smooth and regular, or do they look jagged and uneven?",
+      "payload": null,
+      "latency_ms": 3273,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "The edges look a bit irregular, I'd say. Not perfectly smooth or round - kind of uneven. That's actually one of the things that made me think I should get it checked out."
+    },
+    {
+      "role": "doctor",
+      "inference": 5,
+      "kind": "test",
+      "text": "Thank you for sharing that; irregular borders are indeed important to pay attention to. To better understand what we are dealing with, I would like to order a biopsy of the lesion. \n\nREQUEST TEST: Biopsy",
+      "payload": "Biopsy",
+      "latency_ms": 4087,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: \n\n**Skin Biopsy - Histopathology Findings:**\n\nAtypical melanocytes that infiltrate the epidermis and dermis, confirming the diagnosis of malignant melanoma."
+    },
+    {
+      "role": "doctor",
+      "inference": 6,
+      "kind": "diagnosis",
+      "text": "I have reviewed your biopsy results, and they indicate a diagnosis of malignant melanoma. We will need to refer you to a specialist immediately to discuss your treatment options. I will help coordinate this care for you.\n\nDIAGNOSIS READY: Malignant Melanoma",
+      "payload": "Malignant Melanoma",
+      "latency_ms": 3255,
+      "refusal": null,
+      "via": "marker"
+    }
+  ],
+  "latency_ms": [
+    3412,
+    1968,
+    2499,
+    3273,
+    4087,
+    3255
+  ],
+  "wall_s": 31.71,
+  "doctor_turns": [
+    {
+      "inference": 1,
+      "incoming": "",
+      "reply": "Hello, I am Dr. Agent. Just so you know, I'm an AI assistant and this call is recorded for quality. Can you tell me when you first noticed this chest lesion, and whether it has changed in size, shape, or color?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 3939,
+        "output_tokens": 434,
+        "thinking_tokens": 382,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    },
+    {
+      "inference": 2,
+      "incoming": "Hello, Doctor. I first noticed this spot on my chest about 2 months ago. I think it's gotten bigger since then, but I'm not entirely sure about any color changes. It just seems more noticeable to me now than when I first saw it.",
+      "reply": "Thank you for sharing that. Does the lesion itch, hurt, or bleed, or have you noticed any other symptoms associated with it?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4047,
+        "output_tokens": 265,
+        "thinking_tokens": 238,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    },
+    {
+      "inference": 3,
+      "incoming": "No, it doesn't itch or hurt at all. I haven't noticed any bleeding either. It's just there, you know? Doesn't really bother me except that I've been wondering what it is.",
+      "reply": "That is helpful to know. Could you describe what the spot looks like? For example, is it raised or flat, and what color is it?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4123,
+        "output_tokens": 397,
+        "thinking_tokens": 367,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    },
+    {
+      "inference": 4,
+      "incoming": "It's kind of raised, I'd say, not completely flat. As for the color, it looks sort of brownish or maybe a bit darker than my regular skin tone. Nothing too dramatic, but definitely noticeable when I look at it.",
+      "reply": "Thank you for that description. Are the edges of this spot smooth and regular, or do they look jagged and uneven?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4205,
+        "output_tokens": 574,
+        "thinking_tokens": 551,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    },
+    {
+      "inference": 5,
+      "incoming": "The edges look a bit irregular, I'd say. Not perfectly smooth or round - kind of uneven. That's actually one of the things that made me think I should get it checked out.",
+      "reply": "Thank you for sharing that; irregular borders are indeed important to pay attention to. To better understand what we are dealing with, I would like to order a biopsy of the lesion. \n\nREQUEST TEST: Biopsy",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Biopsy",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4272,
+        "output_tokens": 864,
+        "thinking_tokens": 821,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    },
+    {
+      "inference": 6,
+      "incoming": "RESULTS: \n\n**Skin Biopsy - Histopathology Findings:**\n\nAtypical melanocytes that infiltrate the epidermis and dermis, confirming the diagnosis of malignant melanoma.",
+      "reply": "I have reviewed your biopsy results, and they indicate a diagnosis of malignant melanoma. We will need to refer you to a specialist immediately to discuss your treatment options. I will help coordinate this care for you.\n\nDIAGNOSIS READY: Malignant Melanoma",
+      "tool_calls": [],
+      "kind": "diagnosis",
+      "payload": "Malignant Melanoma",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4350,
+        "output_tokens": 652,
+        "thinking_tokens": 600,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    }
+  ],
+  "support_llm": "anthropic:claude-sonnet-4-5",
+  "support_llm_cost_usd": 0.01233,
+  "support_llm_calls": 6,
+  "voice_subset": false,
+  "diagnostics": {
+    "schema": "tau2.health.diagnostics/v1",
+    "benchmark": "agentclinic",
+    "case_id": "MedQA-22",
+    "mode": "text",
+    "availability": {
+      "flow_available": false,
+      "flow_reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "signals_available": false,
+      "signals_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "metadata_sidecar_available": false,
+      "metadata_sidecar_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "tools_available": true,
+      "tools_reason": null
+    },
+    "provenance": {
+      "benchmark": "agentclinic",
+      "mode": "text",
+      "transport_endpoint": "POST /api/bench/agent-turn",
+      "agent_id": "c2761ec7-d3f7-4bd7-b68c-40a87f1b1ab3",
+      "base_url": "https://aws-gateway-backend.whissle.ai/bot",
+      "seed": 42,
+      "stratum": {
+        "dataset": "MedQA",
+        "scenario_index": 22,
+        "selection": "head",
+        "limit": 25
+      },
+      "judge": {
+        "judge_provider": "anthropic",
+        "judge_model": "claude-sonnet-4-5",
+        "judge_endpoint": "anthropic:claude-sonnet-4-5",
+        "judge_independent": true,
+        "judge_independence_note": "Judge independence: this run's simulators and graders were routed through an external provider, independent of the agent under test. This is the stronger footing for a published comparison against the paper's numbers."
+      },
+      "judge_provider": "anthropic",
+      "judge_independent": true,
+      "run_id": null,
+      "run_dir": "results/whissle/agentclinic/20260808T193252Z-sweep25_g35f",
+      "harness_commit": "86b4475",
+      "captured_at": "2026-08-08T19:38:01+00:00",
+      "protocol": "markers",
+      "history": "agentclinic",
+      "prompt_mode": "override",
+      "vision": "off",
+      "agent_type": null,
+      "total_inferences": 20,
+      "inferences_used": 6,
+      "support_llm": "anthropic:claude-sonnet-4-5",
+      "patient_bias": null,
+      "doctor_bias": null,
+      "voice_subset": false
+    },
+    "cost": {
+      "available": true,
+      "reason": null,
+      "judge_calls": 6,
+      "judge_cost_usd": 0.01233,
+      "agent_calls": 6
+    },
+    "flow": {
+      "available": false,
+      "reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "source": null,
+      "turns": null,
+      "summary": null,
+      "conversation_id": null,
+      "current_state": null,
+      "start_state": null,
+      "final_state": null,
+      "ended": null,
+      "flow_end": null,
+      "num_steps": null,
+      "step_counts_by_kind": null,
+      "states_visited": null,
+      "states_declared": null,
+      "states_unvisited": null,
+      "transitions": null,
+      "transitions_fired": null,
+      "var_sets": null,
+      "var_sources": null,
+      "guard_trips": null,
+      "state_divergences": null,
+      "tools_gated": null,
+      "says": null,
+      "steps": null
+    },
+    "signals": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "metadata_sidecar": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "tools": {
+      "available": true,
+      "reason": null,
+      "source": "doctor actions parsed from /api/bench/agent-turn replies",
+      "calls": [
+        {
+          "turn": 5,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Biopsy"
+          },
+          "result": "RESULTS: \n\n**Skin Biopsy - Histopathology Findings:**\n\nAtypical melanocytes that infiltrate the epidermis and dermis, confirming the diagnosis of malignant melanoma.",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 4087,
+          "terminal": false
+        },
+        {
+          "turn": 6,
+          "id": null,
+          "name": "give_diagnosis",
+          "arguments": {
+            "request": "Malignant Melanoma"
+          },
+          "result": null,
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 3255,
+          "terminal": true
+        }
+      ],
+      "summary": {
+        "n_calls": 2,
+        "by_name": {
+          "request_test": 1,
+          "give_diagnosis": 1
+        },
+        "n_ok": 2,
+        "n_error": 0,
+        "errors": []
+      },
+      "writes": {
+        "available": false,
+        "reason": "this benchmark issues no writes, so there is no said-vs-emitted-vs-landed distinction to record"
+      }
+    },
+    "turns": [
+      {
+        "inference": 1,
+        "incoming": "",
+        "reply": "Hello, I am Dr. Agent. Just so you know, I'm an AI assistant and this call is recorded for quality. Can you tell me when you first noticed this chest lesion, and whether it has changed in size, shape, or color?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 3939,
+          "output_tokens": 434,
+          "thinking_tokens": 382,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      },
+      {
+        "inference": 2,
+        "incoming": "Hello, Doctor. I first noticed this spot on my chest about 2 months ago. I think it's gotten bigger since then, but I'm not entirely sure about any color changes. It just seems more noticeable to me now than when I first saw it.",
+        "reply": "Thank you for sharing that. Does the lesion itch, hurt, or bleed, or have you noticed any other symptoms associated with it?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4047,
+          "output_tokens": 265,
+          "thinking_tokens": 238,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      },
+      {
+        "inference": 3,
+        "incoming": "No, it doesn't itch or hurt at all. I haven't noticed any bleeding either. It's just there, you know? Doesn't really bother me except that I've been wondering what it is.",
+        "reply": "That is helpful to know. Could you describe what the spot looks like? For example, is it raised or flat, and what color is it?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4123,
+          "output_tokens": 397,
+          "thinking_tokens": 367,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      },
+      {
+        "inference": 4,
+        "incoming": "It's kind of raised, I'd say, not completely flat. As for the color, it looks sort of brownish or maybe a bit darker than my regular skin tone. Nothing too dramatic, but definitely noticeable when I look at it.",
+        "reply": "Thank you for that description. Are the edges of this spot smooth and regular, or do they look jagged and uneven?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4205,
+          "output_tokens": 574,
+          "thinking_tokens": 551,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      },
+      {
+        "inference": 5,
+        "incoming": "The edges look a bit irregular, I'd say. Not perfectly smooth or round - kind of uneven. That's actually one of the things that made me think I should get it checked out.",
+        "reply": "Thank you for sharing that; irregular borders are indeed important to pay attention to. To better understand what we are dealing with, I would like to order a biopsy of the lesion. \n\nREQUEST TEST: Biopsy",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Biopsy",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4272,
+          "output_tokens": 864,
+          "thinking_tokens": 821,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      },
+      {
+        "inference": 6,
+        "incoming": "RESULTS: \n\n**Skin Biopsy - Histopathology Findings:**\n\nAtypical melanocytes that infiltrate the epidermis and dermis, confirming the diagnosis of malignant melanoma.",
+        "reply": "I have reviewed your biopsy results, and they indicate a diagnosis of malignant melanoma. We will need to refer you to a specialist immediately to discuss your treatment options. I will help coordinate this care for you.\n\nDIAGNOSIS READY: Malignant Melanoma",
+        "tool_calls": [],
+        "kind": "diagnosis",
+        "payload": "Malignant Melanoma",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4350,
+          "output_tokens": 652,
+          "thinking_tokens": 600,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      }
+    ],
+    "audio": null
+  }
+}

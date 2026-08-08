@@ -1,0 +1,347 @@
+{
+  "scenario_id": "MedQA-18",
+  "scenario_index": 18,
+  "dataset": "MedQA",
+  "mode": "text",
+  "correct_diagnosis": "Uterine rupture",
+  "answer_options": [],
+  "score": {
+    "outcome": "correct",
+    "correctness": true,
+    "doctor_diagnosis": "Uter",
+    "doctor_final_text": "Have you ever had a previous Cesarean section or any other surgery on your uterus? Your symptoms and ultrasound findings indicate a very serious condition.\n\nDIAGNOSIS READY: Uter",
+    "moderator_raw": "yes",
+    "moderator_raw_text": "Yes",
+    "moderator_lenient": true,
+    "moderator_attempts": 1,
+    "moderator_normalized": false,
+    "moderator_unconstrained": false,
+    "declined": false,
+    "refusal_evidence": [],
+    "format_deviation": false,
+    "decline_source": null,
+    "decline_reason": "",
+    "spurious_commit": false
+  },
+  "infra_fail": false,
+  "error": null,
+  "findings": [],
+  "inferences_used": 3,
+  "max_inferences": 20,
+  "tests_ordered": [
+    "Physical_Examination\""
+  ],
+  "images_requested": 0,
+  "image": null,
+  "image_error": null,
+  "vision": "off",
+  "refusals": [],
+  "dialogue": [
+    {
+      "role": "doctor",
+      "inference": 1,
+      "kind": "question",
+      "text": "Hello, I'm Dr. Agent, an AI assistant, and this call is recorded. How many weeks pregnant are you, and can you describe the severity of the pain and bleeding you're experiencing?",
+      "payload": null,
+      "latency_ms": 2675,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "I'm 38 weeks pregnant. The bleeding started about an hour ago and it's been pretty heavy. The pain in my abdomen is really severe - it's constant and doesn't come and go like contractions did."
+    },
+    {
+      "role": "doctor",
+      "inference": 2,
+      "kind": "test",
+      "text": "\"Is the blood dark or bright red, and have you noticed a decrease in your baby's movements? REQUEST TEST: Physical_Examination\"\n\n    Wait, I should check the",
+      "payload": "Physical_Examination\"",
+      "latency_ms": 5461,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS:\n\n**Physical Examination Findings:**\n\n**Vital Signs:**\n- Pulse: 110/min (elevated)\n- Blood Pressure: 90/60 mm Hg (low)\n- Respiratory Rate: 17/min\n\n**Abdominal Examination:**\n- Inspection: Mild distension\n- Auscultation: Decreased bowel sounds\n- Percussion: Tympanic sound predominating\n- Palpation: Diffuse abdominal tenderness without rebound or guarding\n\n**Obstetric Examination:**\n- Fetal Heart Rate Monitoring: Shows recurrent variable decelerations\n- Uterine Examination: No contractions felt at the time of examination\n\n**Laboratory Results:**\n- Hemoglobin: 10.2 g/dL (decreased)\n- Platelets: 200,000 /μL\n- PT: 11 seconds\n- aPTT: 30 seconds\n\n**Imaging - Ultrasound Abdomen and Pelvis:**\n- Findings suggestive of disruption in the uterine wall"
+    },
+    {
+      "role": "doctor",
+      "inference": 3,
+      "kind": "diagnosis",
+      "text": "Have you ever had a previous Cesarean section or any other surgery on your uterus? Your symptoms and ultrasound findings indicate a very serious condition.\n\nDIAGNOSIS READY: Uter",
+      "payload": "Uter",
+      "latency_ms": 5466,
+      "refusal": null,
+      "via": "marker"
+    }
+  ],
+  "latency_ms": [
+    2675,
+    5461,
+    5466
+  ],
+  "wall_s": 22.76,
+  "doctor_turns": [
+    {
+      "inference": 1,
+      "incoming": "",
+      "reply": "Hello, I'm Dr. Agent, an AI assistant, and this call is recorded. How many weeks pregnant are you, and can you describe the severity of the pain and bleeding you're experiencing?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 3941,
+        "output_tokens": 445,
+        "thinking_tokens": 403,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    },
+    {
+      "inference": 2,
+      "incoming": "I'm 38 weeks pregnant. The bleeding started about an hour ago and it's been pretty heavy. The pain in my abdomen is really severe - it's constant and doesn't come and go like contractions did.",
+      "reply": "\"Is the blood dark or bright red, and have you noticed a decrease in your baby's movements? REQUEST TEST: Physical_Examination\"\n\n    Wait, I should check the",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Physical_Examination\"",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4032,
+        "output_tokens": 1020,
+        "thinking_tokens": 983,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "MAX_TOKENS"
+    },
+    {
+      "inference": 3,
+      "incoming": "RESULTS:\n\n**Physical Examination Findings:**\n\n**Vital Signs:**\n- Pulse: 110/min (elevated)\n- Blood Pressure: 90/60 mm Hg (low)\n- Respiratory Rate: 17/min\n\n**Abdominal Examination:**\n- Inspection: Mild distension\n- Auscultation: Decreased bowel sounds\n- Percussion: Tympanic sound predominating\n- Palpation: Diffuse abdominal tenderness without rebound or guarding\n\n**Obstetric Examination:**\n- Fetal Heart Rate Monitoring: Shows recurrent variable decelerations\n- Uterine Examination: No contractions felt at the time of examination\n\n**Laboratory Results:**\n- Hemoglobin: 10.2 g/dL (decreased)\n- Platelets: 200,000 /μL\n- PT: 11 seconds\n- aPTT: 30 seconds\n\n**Imaging - Ultrasound Abdomen and Pelvis:**\n- Findings suggestive of disruption in the uterine wall",
+      "reply": "Have you ever had a previous Cesarean section or any other surgery on your uterus? Your symptoms and ultrasound findings indicate a very serious condition.\n\nDIAGNOSIS READY: Uter",
+      "tool_calls": [],
+      "kind": "diagnosis",
+      "payload": "Uter",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4282,
+        "output_tokens": 1020,
+        "thinking_tokens": 983,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "MAX_TOKENS"
+    }
+  ],
+  "support_llm": "anthropic:claude-sonnet-4-5",
+  "support_llm_cost_usd": 0.00768,
+  "support_llm_calls": 3,
+  "voice_subset": false,
+  "diagnostics": {
+    "schema": "tau2.health.diagnostics/v1",
+    "benchmark": "agentclinic",
+    "case_id": "MedQA-18",
+    "mode": "text",
+    "availability": {
+      "flow_available": false,
+      "flow_reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "signals_available": false,
+      "signals_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "metadata_sidecar_available": false,
+      "metadata_sidecar_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "tools_available": true,
+      "tools_reason": null
+    },
+    "provenance": {
+      "benchmark": "agentclinic",
+      "mode": "text",
+      "transport_endpoint": "POST /api/bench/agent-turn",
+      "agent_id": "c2761ec7-d3f7-4bd7-b68c-40a87f1b1ab3",
+      "base_url": "https://aws-gateway-backend.whissle.ai/bot",
+      "seed": 42,
+      "stratum": {
+        "dataset": "MedQA",
+        "scenario_index": 18,
+        "selection": "head",
+        "limit": 25
+      },
+      "judge": {
+        "judge_provider": "anthropic",
+        "judge_model": "claude-sonnet-4-5",
+        "judge_endpoint": "anthropic:claude-sonnet-4-5",
+        "judge_independent": true,
+        "judge_independence_note": "Judge independence: this run's simulators and graders were routed through an external provider, independent of the agent under test. This is the stronger footing for a published comparison against the paper's numbers."
+      },
+      "judge_provider": "anthropic",
+      "judge_independent": true,
+      "run_id": null,
+      "run_dir": "results/whissle/agentclinic/20260808T194241Z-sweep25_g3fp",
+      "harness_commit": "86b4475",
+      "captured_at": "2026-08-08T19:49:30+00:00",
+      "protocol": "markers",
+      "history": "agentclinic",
+      "prompt_mode": "override",
+      "vision": "off",
+      "agent_type": null,
+      "total_inferences": 20,
+      "inferences_used": 3,
+      "support_llm": "anthropic:claude-sonnet-4-5",
+      "patient_bias": null,
+      "doctor_bias": null,
+      "voice_subset": false
+    },
+    "cost": {
+      "available": true,
+      "reason": null,
+      "judge_calls": 3,
+      "judge_cost_usd": 0.00768,
+      "agent_calls": 3
+    },
+    "flow": {
+      "available": false,
+      "reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "source": null,
+      "turns": null,
+      "summary": null,
+      "conversation_id": null,
+      "current_state": null,
+      "start_state": null,
+      "final_state": null,
+      "ended": null,
+      "flow_end": null,
+      "num_steps": null,
+      "step_counts_by_kind": null,
+      "states_visited": null,
+      "states_declared": null,
+      "states_unvisited": null,
+      "transitions": null,
+      "transitions_fired": null,
+      "var_sets": null,
+      "var_sources": null,
+      "guard_trips": null,
+      "state_divergences": null,
+      "tools_gated": null,
+      "says": null,
+      "steps": null
+    },
+    "signals": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "metadata_sidecar": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "tools": {
+      "available": true,
+      "reason": null,
+      "source": "doctor actions parsed from /api/bench/agent-turn replies",
+      "calls": [
+        {
+          "turn": 2,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Physical_Examination\""
+          },
+          "result": "RESULTS:\n\n**Physical Examination Findings:**\n\n**Vital Signs:**\n- Pulse: 110/min (elevated)\n- Blood Pressure: 90/60 mm Hg (low)\n- Respiratory Rate: 17/min\n\n**Abdominal Examination:**\n- Inspection: Mild distension\n- Auscultation: Decreased bowel sounds\n- Percussion: Tympanic sound predominating\n- Palpation: Diffuse abdominal tenderness without rebound or guarding\n\n**Obstetric Examination:**\n- Fetal Heart Rate Monitoring: Shows recurrent variable decelerations\n- Uterine Examination: No contractions felt at the time of examination\n\n**Laboratory Results:**\n- Hemoglobin: 10.2 g/dL (decreased)\n- Platelets: 200,000 /μL\n- PT: 11 seconds\n- aPTT: 30 seconds\n\n**Imaging - Ultrasound Abdomen and Pelvis:**\n- Findings suggestive of disruption in the uterine wall",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 5461,
+          "terminal": false
+        },
+        {
+          "turn": 3,
+          "id": null,
+          "name": "give_diagnosis",
+          "arguments": {
+            "request": "Uter"
+          },
+          "result": null,
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 5466,
+          "terminal": true
+        }
+      ],
+      "summary": {
+        "n_calls": 2,
+        "by_name": {
+          "request_test": 1,
+          "give_diagnosis": 1
+        },
+        "n_ok": 2,
+        "n_error": 0,
+        "errors": []
+      },
+      "writes": {
+        "available": false,
+        "reason": "this benchmark issues no writes, so there is no said-vs-emitted-vs-landed distinction to record"
+      }
+    },
+    "turns": [
+      {
+        "inference": 1,
+        "incoming": "",
+        "reply": "Hello, I'm Dr. Agent, an AI assistant, and this call is recorded. How many weeks pregnant are you, and can you describe the severity of the pain and bleeding you're experiencing?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 3941,
+          "output_tokens": 445,
+          "thinking_tokens": 403,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      },
+      {
+        "inference": 2,
+        "incoming": "I'm 38 weeks pregnant. The bleeding started about an hour ago and it's been pretty heavy. The pain in my abdomen is really severe - it's constant and doesn't come and go like contractions did.",
+        "reply": "\"Is the blood dark or bright red, and have you noticed a decrease in your baby's movements? REQUEST TEST: Physical_Examination\"\n\n    Wait, I should check the",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Physical_Examination\"",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4032,
+          "output_tokens": 1020,
+          "thinking_tokens": 983,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "MAX_TOKENS"
+      },
+      {
+        "inference": 3,
+        "incoming": "RESULTS:\n\n**Physical Examination Findings:**\n\n**Vital Signs:**\n- Pulse: 110/min (elevated)\n- Blood Pressure: 90/60 mm Hg (low)\n- Respiratory Rate: 17/min\n\n**Abdominal Examination:**\n- Inspection: Mild distension\n- Auscultation: Decreased bowel sounds\n- Percussion: Tympanic sound predominating\n- Palpation: Diffuse abdominal tenderness without rebound or guarding\n\n**Obstetric Examination:**\n- Fetal Heart Rate Monitoring: Shows recurrent variable decelerations\n- Uterine Examination: No contractions felt at the time of examination\n\n**Laboratory Results:**\n- Hemoglobin: 10.2 g/dL (decreased)\n- Platelets: 200,000 /μL\n- PT: 11 seconds\n- aPTT: 30 seconds\n\n**Imaging - Ultrasound Abdomen and Pelvis:**\n- Findings suggestive of disruption in the uterine wall",
+        "reply": "Have you ever had a previous Cesarean section or any other surgery on your uterus? Your symptoms and ultrasound findings indicate a very serious condition.\n\nDIAGNOSIS READY: Uter",
+        "tool_calls": [],
+        "kind": "diagnosis",
+        "payload": "Uter",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4282,
+          "output_tokens": 1020,
+          "thinking_tokens": 983,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "MAX_TOKENS"
+      }
+    ],
+    "audio": null
+  }
+}

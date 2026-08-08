@@ -1,0 +1,617 @@
+{
+  "scenario_id": "MedQA-13",
+  "scenario_index": 13,
+  "dataset": "MedQA",
+  "mode": "text",
+  "correct_diagnosis": "Hirschsprung’s disease",
+  "answer_options": [],
+  "score": {
+    "outcome": "correct",
+    "correctness": true,
+    "doctor_diagnosis": "Hirschsprung's disease (congenital aganglionic megacolon)",
+    "doctor_final_text": "The biopsy shows absent ganglion cells in his bowel wall, which explains why nothing is passing through — this is Hirschsprung's disease, and pediatric surgery needs to see him now.\n\nDIAGNOSIS READY: Hirschsprung's disease (congenital aganglionic megacolon)",
+    "moderator_raw": "yes",
+    "moderator_raw_text": "Yes",
+    "moderator_lenient": true,
+    "moderator_attempts": 1,
+    "moderator_normalized": false,
+    "moderator_unconstrained": false,
+    "declined": false,
+    "refusal_evidence": [],
+    "format_deviation": false,
+    "decline_source": null,
+    "decline_reason": "",
+    "spurious_commit": false
+  },
+  "infra_fail": false,
+  "error": null,
+  "findings": [],
+  "inferences_used": 6,
+  "max_inferences": 20,
+  "tests_ordered": [
+    "Abdominal_X-Ray (supine and upright) and Upper_GI_Contrast_Study",
+    "Contrast_Enema (water-soluble) and Rectal_Suction_Biopsy"
+  ],
+  "images_requested": 0,
+  "image": null,
+  "image_error": null,
+  "vision": "off",
+  "refusals": [],
+  "dialogue": [
+    {
+      "role": "doctor",
+      "inference": 1,
+      "kind": "question",
+      "text": "Hello, I'm Dr. Agent — I understand your baby has been vomiting green fluid and hasn't passed stool. How old is your baby, and when did the vomiting start?",
+      "payload": null,
+      "latency_ms": 4041,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "My baby is 2 days old, and the vomiting started yesterday. The fluid coming up has been green, and it's really worrying me because he still hasn't had a bowel movement since he was born."
+    },
+    {
+      "role": "doctor",
+      "inference": 2,
+      "kind": "question",
+      "text": "This is urgent — bilious vomiting in a newborn is a surgical emergency, so he needs to be seen right away while we work this up. Was the pregnancy complicated by excess amniotic fluid (polyhydramnios), and is there any family history of cystic fibrosis or bowel problems?",
+      "payload": null,
+      "latency_ms": 4204,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "No, the pregnancy was normal as far as I know — I didn't have any issues with too much fluid or anything like that. And there's no family history of cystic fibrosis or bowel problems that I'm aware of."
+    },
+    {
+      "role": "doctor",
+      "inference": 3,
+      "kind": "test",
+      "text": "Thank you — his belly looks distended, so let me get imaging right away to see where the blockage is.\n\nREQUEST TEST: Abdominal_X-Ray (supine and upright) and Upper_GI_Contrast_Study",
+      "payload": "Abdominal_X-Ray (supine and upright) and Upper_GI_Contrast_Study",
+      "latency_ms": 5675,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS:\n\n**Abdominal X-ray:**\n- Dilated loops of bowel with no gas in the rectum, suggestive of a distal obstruction.\n\n**Upper GI Contrast Study:**\nNORMAL READINGS"
+    },
+    {
+      "role": "doctor",
+      "inference": 4,
+      "kind": "question",
+      "text": "The upper GI is normal, so the blockage is lower down — has anyone examined his bottom to confirm he has a normal anal opening, and did any stool or gas come out after a rectal exam?",
+      "payload": null,
+      "latency_ms": 5450,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "I don't think anyone has done that kind of exam yet. He definitely has an opening there from what I can see, but no stool or gas has come out at all since he was born."
+    },
+    {
+      "role": "doctor",
+      "inference": 5,
+      "kind": "test",
+      "text": "Was your pregnancy complicated by diabetes, or were you given magnesium sulfate during labor?\n\nREQUEST TEST: Contrast_Enema (water-soluble) and Rectal_Suction_Biopsy",
+      "payload": "Contrast_Enema (water-soluble) and Rectal_Suction_Biopsy",
+      "latency_ms": 3146,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS:\n\n**Contrast Enema (water-soluble):**\nNORMAL READINGS\n\n**Rectal Suction Biopsy:**\n- **Histopathology:** Absence of ganglion cells in the submucosa and myenteric plexus, consistent with Hirschsprung's disease."
+    },
+    {
+      "role": "doctor",
+      "inference": 6,
+      "kind": "diagnosis",
+      "text": "The biopsy shows absent ganglion cells in his bowel wall, which explains why nothing is passing through — this is Hirschsprung's disease, and pediatric surgery needs to see him now.\n\nDIAGNOSIS READY: Hirschsprung's disease (congenital aganglionic megacolon)",
+      "payload": "Hirschsprung's disease (congenital aganglionic megacolon)",
+      "latency_ms": 2968,
+      "refusal": null,
+      "via": "marker"
+    }
+  ],
+  "latency_ms": [
+    4041,
+    4204,
+    5675,
+    5450,
+    3146,
+    2968
+  ],
+  "wall_s": 36.91,
+  "doctor_turns": [
+    {
+      "inference": 1,
+      "incoming": "",
+      "reply": "Hello, I'm Dr. Agent — I understand your baby has been vomiting green fluid and hasn't passed stool. How old is your baby, and when did the vomiting start?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 5731,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 187,
+        "output_tokens_details": {
+          "thinking_tokens": 127
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 2,
+      "incoming": "My baby is 2 days old, and the vomiting started yesterday. The fluid coming up has been green, and it's really worrying me because he still hasn't had a bowel movement since he was born.",
+      "reply": "This is urgent — bilious vomiting in a newborn is a surgical emergency, so he needs to be seen right away while we work this up. Was the pregnancy complicated by excess amniotic fluid (polyhydramnios), and is there any family history of cystic fibrosis or bowel problems?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 5850,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 222,
+        "output_tokens_details": {
+          "thinking_tokens": 125
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 3,
+      "incoming": "No, the pregnancy was normal as far as I know — I didn't have any issues with too much fluid or anything like that. And there's no family history of cystic fibrosis or bowel problems that I'm aware of.",
+      "reply": "Thank you — his belly looks distended, so let me get imaging right away to see where the blockage is.\n\nREQUEST TEST: Abdominal_X-Ray (supine and upright) and Upper_GI_Contrast_Study",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Abdominal_X-Ray (supine and upright) and Upper_GI_Contrast_Study",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 6013,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 133,
+        "output_tokens_details": {
+          "thinking_tokens": 57
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 4,
+      "incoming": "RESULTS:\n\n**Abdominal X-ray:**\n- Dilated loops of bowel with no gas in the rectum, suggestive of a distal obstruction.\n\n**Upper GI Contrast Study:**\nNORMAL READINGS",
+      "reply": "The upper GI is normal, so the blockage is lower down — has anyone examined his bottom to confirm he has a normal anal opening, and did any stool or gas come out after a rectal exam?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 6168,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 212,
+        "output_tokens_details": {
+          "thinking_tokens": 149
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 5,
+      "incoming": "I don't think anyone has done that kind of exam yet. He definitely has an opening there from what I can see, but no stool or gas has come out at all since he was born.",
+      "reply": "Was your pregnancy complicated by diabetes, or were you given magnesium sulfate during labor?\n\nREQUEST TEST: Contrast_Enema (water-soluble) and Rectal_Suction_Biopsy",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Contrast_Enema (water-soluble) and Rectal_Suction_Biopsy",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 6281,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 184,
+        "output_tokens_details": {
+          "thinking_tokens": 109
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 6,
+      "incoming": "RESULTS:\n\n**Contrast Enema (water-soluble):**\nNORMAL READINGS\n\n**Rectal Suction Biopsy:**\n- **Histopathology:** Absence of ganglion cells in the submucosa and myenteric plexus, consistent with Hirschsprung's disease.",
+      "reply": "The biopsy shows absent ganglion cells in his bowel wall, which explains why nothing is passing through — this is Hirschsprung's disease, and pediatric surgery needs to see him now.\n\nDIAGNOSIS READY: Hirschsprung's disease (congenital aganglionic megacolon)",
+      "tool_calls": [],
+      "kind": "diagnosis",
+      "payload": "Hirschsprung's disease (congenital aganglionic megacolon)",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 6455,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 113,
+        "output_tokens_details": {
+          "thinking_tokens": 11
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    }
+  ],
+  "support_llm": "anthropic:claude-sonnet-4-5",
+  "support_llm_cost_usd": 0.01261,
+  "support_llm_calls": 6,
+  "voice_subset": false,
+  "diagnostics": {
+    "schema": "tau2.health.diagnostics/v1",
+    "benchmark": "agentclinic",
+    "case_id": "MedQA-13",
+    "mode": "text",
+    "availability": {
+      "flow_available": false,
+      "flow_reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "signals_available": false,
+      "signals_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "metadata_sidecar_available": false,
+      "metadata_sidecar_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "tools_available": true,
+      "tools_reason": null
+    },
+    "provenance": {
+      "benchmark": "agentclinic",
+      "mode": "text",
+      "transport_endpoint": "POST /api/bench/agent-turn",
+      "agent_id": "c2761ec7-d3f7-4bd7-b68c-40a87f1b1ab3",
+      "base_url": "https://aws-gateway-backend.whissle.ai/bot",
+      "seed": 42,
+      "stratum": {
+        "dataset": "MedQA",
+        "scenario_index": 13,
+        "selection": "head",
+        "limit": 25
+      },
+      "judge": {
+        "judge_provider": "anthropic",
+        "judge_model": "claude-sonnet-4-5",
+        "judge_endpoint": "anthropic:claude-sonnet-4-5",
+        "judge_independent": true,
+        "judge_independence_note": "Judge independence: this run's simulators and graders were routed through an external provider, independent of the agent under test. This is the stronger footing for a published comparison against the paper's numbers."
+      },
+      "judge_provider": "anthropic",
+      "judge_independent": true,
+      "run_id": null,
+      "run_dir": "results/whissle/agentclinic/20260808T192035Z-sweep25_opus5",
+      "harness_commit": "86b4475",
+      "captured_at": "2026-08-08T19:23:32+00:00",
+      "protocol": "markers",
+      "history": "agentclinic",
+      "prompt_mode": "override",
+      "vision": "off",
+      "agent_type": null,
+      "total_inferences": 20,
+      "inferences_used": 6,
+      "support_llm": "anthropic:claude-sonnet-4-5",
+      "patient_bias": null,
+      "doctor_bias": null,
+      "voice_subset": false
+    },
+    "cost": {
+      "available": true,
+      "reason": null,
+      "judge_calls": 6,
+      "judge_cost_usd": 0.01261,
+      "agent_calls": 6
+    },
+    "flow": {
+      "available": false,
+      "reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "source": null,
+      "turns": null,
+      "summary": null,
+      "conversation_id": null,
+      "current_state": null,
+      "start_state": null,
+      "final_state": null,
+      "ended": null,
+      "flow_end": null,
+      "num_steps": null,
+      "step_counts_by_kind": null,
+      "states_visited": null,
+      "states_declared": null,
+      "states_unvisited": null,
+      "transitions": null,
+      "transitions_fired": null,
+      "var_sets": null,
+      "var_sources": null,
+      "guard_trips": null,
+      "state_divergences": null,
+      "tools_gated": null,
+      "says": null,
+      "steps": null
+    },
+    "signals": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "metadata_sidecar": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "tools": {
+      "available": true,
+      "reason": null,
+      "source": "doctor actions parsed from /api/bench/agent-turn replies",
+      "calls": [
+        {
+          "turn": 3,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Abdominal_X-Ray (supine and upright) and Upper_GI_Contrast_Study"
+          },
+          "result": "RESULTS:\n\n**Abdominal X-ray:**\n- Dilated loops of bowel with no gas in the rectum, suggestive of a distal obstruction.\n\n**Upper GI Contrast Study:**\nNORMAL READINGS",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 5675,
+          "terminal": false
+        },
+        {
+          "turn": 5,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Contrast_Enema (water-soluble) and Rectal_Suction_Biopsy"
+          },
+          "result": "RESULTS:\n\n**Contrast Enema (water-soluble):**\nNORMAL READINGS\n\n**Rectal Suction Biopsy:**\n- **Histopathology:** Absence of ganglion cells in the submucosa and myenteric plexus, consistent with Hirschsprung's disease.",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 3146,
+          "terminal": false
+        },
+        {
+          "turn": 6,
+          "id": null,
+          "name": "give_diagnosis",
+          "arguments": {
+            "request": "Hirschsprung's disease (congenital aganglionic megacolon)"
+          },
+          "result": null,
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 2968,
+          "terminal": true
+        }
+      ],
+      "summary": {
+        "n_calls": 3,
+        "by_name": {
+          "request_test": 2,
+          "give_diagnosis": 1
+        },
+        "n_ok": 3,
+        "n_error": 0,
+        "errors": []
+      },
+      "writes": {
+        "available": false,
+        "reason": "this benchmark issues no writes, so there is no said-vs-emitted-vs-landed distinction to record"
+      }
+    },
+    "turns": [
+      {
+        "inference": 1,
+        "incoming": "",
+        "reply": "Hello, I'm Dr. Agent — I understand your baby has been vomiting green fluid and hasn't passed stool. How old is your baby, and when did the vomiting start?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 5731,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 187,
+          "output_tokens_details": {
+            "thinking_tokens": 127
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 2,
+        "incoming": "My baby is 2 days old, and the vomiting started yesterday. The fluid coming up has been green, and it's really worrying me because he still hasn't had a bowel movement since he was born.",
+        "reply": "This is urgent — bilious vomiting in a newborn is a surgical emergency, so he needs to be seen right away while we work this up. Was the pregnancy complicated by excess amniotic fluid (polyhydramnios), and is there any family history of cystic fibrosis or bowel problems?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 5850,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 222,
+          "output_tokens_details": {
+            "thinking_tokens": 125
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 3,
+        "incoming": "No, the pregnancy was normal as far as I know — I didn't have any issues with too much fluid or anything like that. And there's no family history of cystic fibrosis or bowel problems that I'm aware of.",
+        "reply": "Thank you — his belly looks distended, so let me get imaging right away to see where the blockage is.\n\nREQUEST TEST: Abdominal_X-Ray (supine and upright) and Upper_GI_Contrast_Study",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Abdominal_X-Ray (supine and upright) and Upper_GI_Contrast_Study",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 6013,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 133,
+          "output_tokens_details": {
+            "thinking_tokens": 57
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 4,
+        "incoming": "RESULTS:\n\n**Abdominal X-ray:**\n- Dilated loops of bowel with no gas in the rectum, suggestive of a distal obstruction.\n\n**Upper GI Contrast Study:**\nNORMAL READINGS",
+        "reply": "The upper GI is normal, so the blockage is lower down — has anyone examined his bottom to confirm he has a normal anal opening, and did any stool or gas come out after a rectal exam?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 6168,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 212,
+          "output_tokens_details": {
+            "thinking_tokens": 149
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 5,
+        "incoming": "I don't think anyone has done that kind of exam yet. He definitely has an opening there from what I can see, but no stool or gas has come out at all since he was born.",
+        "reply": "Was your pregnancy complicated by diabetes, or were you given magnesium sulfate during labor?\n\nREQUEST TEST: Contrast_Enema (water-soluble) and Rectal_Suction_Biopsy",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Contrast_Enema (water-soluble) and Rectal_Suction_Biopsy",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 6281,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 184,
+          "output_tokens_details": {
+            "thinking_tokens": 109
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 6,
+        "incoming": "RESULTS:\n\n**Contrast Enema (water-soluble):**\nNORMAL READINGS\n\n**Rectal Suction Biopsy:**\n- **Histopathology:** Absence of ganglion cells in the submucosa and myenteric plexus, consistent with Hirschsprung's disease.",
+        "reply": "The biopsy shows absent ganglion cells in his bowel wall, which explains why nothing is passing through — this is Hirschsprung's disease, and pediatric surgery needs to see him now.\n\nDIAGNOSIS READY: Hirschsprung's disease (congenital aganglionic megacolon)",
+        "tool_calls": [],
+        "kind": "diagnosis",
+        "payload": "Hirschsprung's disease (congenital aganglionic megacolon)",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 6455,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 113,
+          "output_tokens_details": {
+            "thinking_tokens": 11
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      }
+    ],
+    "audio": null
+  }
+}

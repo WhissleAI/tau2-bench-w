@@ -1,0 +1,684 @@
+{
+  "scenario_id": "MedQA-11",
+  "scenario_index": 11,
+  "dataset": "MedQA",
+  "mode": "text",
+  "correct_diagnosis": "Complex partial seizure",
+  "answer_options": [],
+  "score": {
+    "outcome": "correct",
+    "correctness": true,
+    "doctor_diagnosis": "Temporal lobe epilepsy — focal seizures with impaired awareness (complex partial seizures) originating from the right temporal lobe",
+    "doctor_final_text": "The MRI is reassuring — there's no tumor, scar tissue, or other structural cause behind your seizures. Combined with your muddy taste aura, staring episodes with facial grimacing, hand automatisms, post-episode confusion, and the EEG showing right temporal lobe epileptiform activity, I'm confident in the diagnosis.\n\nDIAGNOSIS READY: Temporal lobe epilepsy — focal seizures with impaired awareness (complex partial seizures) originating from the right temporal lobe",
+    "moderator_raw": "yes",
+    "moderator_raw_text": "Yes",
+    "moderator_lenient": true,
+    "moderator_attempts": 1,
+    "moderator_normalized": false,
+    "moderator_unconstrained": false,
+    "declined": false,
+    "refusal_evidence": [],
+    "format_deviation": false,
+    "decline_source": null,
+    "decline_reason": "",
+    "spurious_commit": false
+  },
+  "infra_fail": false,
+  "error": null,
+  "findings": [],
+  "inferences_used": 7,
+  "max_inferences": 20,
+  "tests_ordered": [
+    "EEG",
+    "MRI_Brain"
+  ],
+  "images_requested": 0,
+  "image": null,
+  "image_error": null,
+  "vision": "off",
+  "refusals": [],
+  "dialogue": [
+    {
+      "role": "doctor",
+      "inference": 1,
+      "kind": "question",
+      "text": "Hello, I'm Dr. Agent. I understand you've been having episodes where you become unresponsive with facial grimacing. Can you describe what happens during one of these episodes, and how long they typically last?",
+      "payload": null,
+      "latency_ms": 5295,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Well, I don't really remember what happens during them - my mom and brother have told me about it. They say I stare and make faces, and it lasts maybe 3 or 4 minutes, but I don't know what's going on when it happens."
+    },
+    {
+      "role": "doctor",
+      "inference": 2,
+      "kind": "question",
+      "text": "Thank you for sharing that. Before these episodes begin, do you ever notice any warning signs — like a strange feeling in your stomach, an unusual smell or taste, déjà vu, or a sense of fear? And afterward, do you feel confused, tired, or take a while to get back to normal?",
+      "payload": null,
+      "latency_ms": 6777,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Yes, actually! Right before it happens, I get this weird muddy taste in my mouth - it's really gross. And after the episodes, I feel really tired and confused, like I just woke up from a deep sleep."
+    },
+    {
+      "role": "doctor",
+      "inference": 3,
+      "kind": "question",
+      "text": "That muddy taste before an episode is very helpful to know. Can you tell me how often these episodes happen, when they first started, and whether you've ever had one with shaking, falling, or losing control of your bladder?",
+      "payload": null,
+      "latency_ms": 4398,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "They started about a month ago, and I've had maybe four or five of them since then. I haven't fallen down or had any shaking, and I didn't wet myself or anything like that."
+    },
+    {
+      "role": "doctor",
+      "inference": 4,
+      "kind": "question",
+      "text": "Thank you. Have you ever had a head injury, serious infection like meningitis, high fevers as a child, or does anyone in your family have a history of seizures? Also, during the episodes, do your family say you do anything with your hands or mouth — like lip-smacking, chewing, or fumbling movements?",
+      "payload": null,
+      "latency_ms": 4477,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "No, I've never had a bad head injury or anything like that, and I don't think anyone in my family has seizures. But my brother did say that during one episode when I woke up, I was making hand gestures - like moving my hands around - but I don't remember doing that at all."
+    },
+    {
+      "role": "doctor",
+      "inference": 5,
+      "kind": "test",
+      "text": "Thank you — those hand movements sound like automatisms, which along with the muddy taste aura and post-episode confusion point toward seizures starting in the temporal lobe. I'd like to run some tests to confirm this.\n\nREQUEST TEST: EEG",
+      "payload": "EEG",
+      "latency_ms": 6414,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: \n\n**Electroencephalogram (EEG)**\n\n**Findings:** Interictal spikes and sharp waves localized to the temporal lobes, more prominent on the right side.\n\n---\n\nThis EEG shows epileptiform activity in the temporal regions, particularly on the right side, which is consistent with temporal lobe epilepsy. These findings, combined with your clinical presentation (gustatory aura, staring episodes, automatisms, and post-ictal confusion), support the diagnosis of focal seizures with impaired awareness originating from the temporal lobe."
+    },
+    {
+      "role": "doctor",
+      "inference": 6,
+      "kind": "test",
+      "text": "The EEG confirms epileptiform activity in your right temporal lobe, which fits perfectly with your muddy taste aura, staring episodes, hand automatisms, and post-episode confusion. Let me get one more test to check for any structural cause.\n\nREQUEST TEST: MRI_Brain",
+      "payload": "MRI_Brain",
+      "latency_ms": 6286,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS:\n\n**MRI Brain**\n\n**Findings:** No evidence of mass lesions, infarctions, or structural abnormalities.\n\n---\n\nThe MRI shows no tumors, strokes, scarring, or other structural problems in the brain that could be causing your seizures. This is reassuring and suggests your temporal lobe epilepsy is likely idiopathic (without an identifiable structural cause)."
+    },
+    {
+      "role": "doctor",
+      "inference": 7,
+      "kind": "diagnosis",
+      "text": "The MRI is reassuring — there's no tumor, scar tissue, or other structural cause behind your seizures. Combined with your muddy taste aura, staring episodes with facial grimacing, hand automatisms, post-episode confusion, and the EEG showing right temporal lobe epileptiform activity, I'm confident in the diagnosis.\n\nDIAGNOSIS READY: Temporal lobe epilepsy — focal seizures with impaired awareness (complex partial seizures) originating from the right temporal lobe",
+      "payload": "Temporal lobe epilepsy — focal seizures with impaired awareness (complex partial seizures) originating from the right temporal lobe",
+      "latency_ms": 6838,
+      "refusal": null,
+      "via": "marker"
+    }
+  ],
+  "latency_ms": [
+    5295,
+    6777,
+    4398,
+    4477,
+    6414,
+    6286,
+    6838
+  ],
+  "wall_s": 59.35,
+  "doctor_turns": [
+    {
+      "inference": 1,
+      "incoming": "",
+      "reply": "Hello, I'm Dr. Agent. I understand you've been having episodes where you become unresponsive with facial grimacing. Can you describe what happens during one of these episodes, and how long they typically last?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 5722,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 130,
+        "output_tokens_details": {
+          "thinking_tokens": 63
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 2,
+      "incoming": "Well, I don't really remember what happens during them - my mom and brother have told me about it. They say I stare and make faces, and it lasts maybe 3 or 4 minutes, but I don't know what's going on when it happens.",
+      "reply": "Thank you for sharing that. Before these episodes begin, do you ever notice any warning signs — like a strange feeling in your stomach, an unusual smell or taste, déjà vu, or a sense of fear? And afterward, do you feel confused, tired, or take a while to get back to normal?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 5858,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 194,
+        "output_tokens_details": {
+          "thinking_tokens": 98
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 3,
+      "incoming": "Yes, actually! Right before it happens, I get this weird muddy taste in my mouth - it's really gross. And after the episodes, I feel really tired and confused, like I just woke up from a deep sleep.",
+      "reply": "That muddy taste before an episode is very helpful to know. Can you tell me how often these episodes happen, when they first started, and whether you've ever had one with shaking, falling, or losing control of your bladder?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 6021,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 136,
+        "output_tokens_details": {
+          "thinking_tokens": 69
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 4,
+      "incoming": "They started about a month ago, and I've had maybe four or five of them since then. I haven't fallen down or had any shaking, and I didn't wet myself or anything like that.",
+      "reply": "Thank you. Have you ever had a head injury, serious infection like meningitis, high fevers as a child, or does anyone in your family have a history of seizures? Also, during the episodes, do your family say you do anything with your hands or mouth — like lip-smacking, chewing, or fumbling movements?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 6141,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 183,
+        "output_tokens_details": {
+          "thinking_tokens": 85
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 5,
+      "incoming": "No, I've never had a bad head injury or anything like that, and I don't think anyone in my family has seizures. But my brother did say that during one episode when I woke up, I was making hand gestures - like moving my hands around - but I don't remember doing that at all.",
+      "reply": "Thank you — those hand movements sound like automatisms, which along with the muddy taste aura and post-episode confusion point toward seizures starting in the temporal lobe. I'd like to run some tests to confirm this.\n\nREQUEST TEST: EEG",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "EEG",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 6319,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 195,
+        "output_tokens_details": {
+          "thinking_tokens": 111
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 6,
+      "incoming": "RESULTS: \n\n**Electroencephalogram (EEG)**\n\n**Findings:** Interictal spikes and sharp waves localized to the temporal lobes, more prominent on the right side.\n\n---\n\nThis EEG shows epileptiform activity in the temporal regions, particularly on the right side, which is consistent with temporal lobe epilepsy. These findings, combined with your clinical presentation (gustatory aura, staring episodes, automatisms, and post-ictal confusion), support the diagnosis of focal seizures with impaired awareness originating from the temporal lobe.",
+      "reply": "The EEG confirms epileptiform activity in your right temporal lobe, which fits perfectly with your muddy taste aura, staring episodes, hand automatisms, and post-episode confusion. Let me get one more test to check for any structural cause.\n\nREQUEST TEST: MRI_Brain",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "MRI_Brain",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 6590,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 231,
+        "output_tokens_details": {
+          "thinking_tokens": 133
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 7,
+      "incoming": "RESULTS:\n\n**MRI Brain**\n\n**Findings:** No evidence of mass lesions, infarctions, or structural abnormalities.\n\n---\n\nThe MRI shows no tumors, strokes, scarring, or other structural problems in the brain that could be causing your seizures. This is reassuring and suggests your temporal lobe epilepsy is likely idiopathic (without an identifiable structural cause).",
+      "reply": "The MRI is reassuring — there's no tumor, scar tissue, or other structural cause behind your seizures. Combined with your muddy taste aura, staring episodes with facial grimacing, hand automatisms, post-episode confusion, and the EEG showing right temporal lobe epileptiform activity, I'm confident in the diagnosis.\n\nDIAGNOSIS READY: Temporal lobe epilepsy — focal seizures with impaired awareness (complex partial seizures) originating from the right temporal lobe",
+      "tool_calls": [],
+      "kind": "diagnosis",
+      "payload": "Temporal lobe epilepsy — focal seizures with impaired awareness (complex partial seizures) originating from the right temporal lobe",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 6819,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 207,
+        "output_tokens_details": {
+          "thinking_tokens": 35
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    }
+  ],
+  "support_llm": "anthropic:claude-sonnet-4-5",
+  "support_llm_cost_usd": 0.01992,
+  "support_llm_calls": 7,
+  "voice_subset": false,
+  "diagnostics": {
+    "schema": "tau2.health.diagnostics/v1",
+    "benchmark": "agentclinic",
+    "case_id": "MedQA-11",
+    "mode": "text",
+    "availability": {
+      "flow_available": false,
+      "flow_reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "signals_available": false,
+      "signals_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "metadata_sidecar_available": false,
+      "metadata_sidecar_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "tools_available": true,
+      "tools_reason": null
+    },
+    "provenance": {
+      "benchmark": "agentclinic",
+      "mode": "text",
+      "transport_endpoint": "POST /api/bench/agent-turn",
+      "agent_id": "c2761ec7-d3f7-4bd7-b68c-40a87f1b1ab3",
+      "base_url": "https://aws-gateway-backend.whissle.ai/bot",
+      "seed": 42,
+      "stratum": {
+        "dataset": "MedQA",
+        "scenario_index": 11,
+        "selection": "head",
+        "limit": 25
+      },
+      "judge": {
+        "judge_provider": "anthropic",
+        "judge_model": "claude-sonnet-4-5",
+        "judge_endpoint": "anthropic:claude-sonnet-4-5",
+        "judge_independent": true,
+        "judge_independence_note": "Judge independence: this run's simulators and graders were routed through an external provider, independent of the agent under test. This is the stronger footing for a published comparison against the paper's numbers."
+      },
+      "judge_provider": "anthropic",
+      "judge_independent": true,
+      "run_id": null,
+      "run_dir": "results/whissle/agentclinic/20260808T192627Z-sweep25_fable5",
+      "harness_commit": "86b4475",
+      "captured_at": "2026-08-08T19:29:21+00:00",
+      "protocol": "markers",
+      "history": "agentclinic",
+      "prompt_mode": "override",
+      "vision": "off",
+      "agent_type": null,
+      "total_inferences": 20,
+      "inferences_used": 7,
+      "support_llm": "anthropic:claude-sonnet-4-5",
+      "patient_bias": null,
+      "doctor_bias": null,
+      "voice_subset": false
+    },
+    "cost": {
+      "available": true,
+      "reason": null,
+      "judge_calls": 7,
+      "judge_cost_usd": 0.01992,
+      "agent_calls": 7
+    },
+    "flow": {
+      "available": false,
+      "reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "source": null,
+      "turns": null,
+      "summary": null,
+      "conversation_id": null,
+      "current_state": null,
+      "start_state": null,
+      "final_state": null,
+      "ended": null,
+      "flow_end": null,
+      "num_steps": null,
+      "step_counts_by_kind": null,
+      "states_visited": null,
+      "states_declared": null,
+      "states_unvisited": null,
+      "transitions": null,
+      "transitions_fired": null,
+      "var_sets": null,
+      "var_sources": null,
+      "guard_trips": null,
+      "state_divergences": null,
+      "tools_gated": null,
+      "says": null,
+      "steps": null
+    },
+    "signals": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "metadata_sidecar": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "tools": {
+      "available": true,
+      "reason": null,
+      "source": "doctor actions parsed from /api/bench/agent-turn replies",
+      "calls": [
+        {
+          "turn": 5,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "EEG"
+          },
+          "result": "RESULTS: \n\n**Electroencephalogram (EEG)**\n\n**Findings:** Interictal spikes and sharp waves localized to the temporal lobes, more prominent on the right side.\n\n---\n\nThis EEG shows epileptiform activity in the temporal regions, particularly on the right side, which is consistent with temporal lobe epilepsy. These findings, combined with your clinical presentation (gustatory aura, staring episodes, automatisms, and post-ictal confusion), support the diagnosis of focal seizures with impaired awareness originating from the temporal lobe.",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 6414,
+          "terminal": false
+        },
+        {
+          "turn": 6,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "MRI_Brain"
+          },
+          "result": "RESULTS:\n\n**MRI Brain**\n\n**Findings:** No evidence of mass lesions, infarctions, or structural abnormalities.\n\n---\n\nThe MRI shows no tumors, strokes, scarring, or other structural problems in the brain that could be causing your seizures. This is reassuring and suggests your temporal lobe epilepsy is likely idiopathic (without an identifiable structural cause).",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 6286,
+          "terminal": false
+        },
+        {
+          "turn": 7,
+          "id": null,
+          "name": "give_diagnosis",
+          "arguments": {
+            "request": "Temporal lobe epilepsy — focal seizures with impaired awareness (complex partial seizures) originating from the right temporal lobe"
+          },
+          "result": null,
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 6838,
+          "terminal": true
+        }
+      ],
+      "summary": {
+        "n_calls": 3,
+        "by_name": {
+          "request_test": 2,
+          "give_diagnosis": 1
+        },
+        "n_ok": 3,
+        "n_error": 0,
+        "errors": []
+      },
+      "writes": {
+        "available": false,
+        "reason": "this benchmark issues no writes, so there is no said-vs-emitted-vs-landed distinction to record"
+      }
+    },
+    "turns": [
+      {
+        "inference": 1,
+        "incoming": "",
+        "reply": "Hello, I'm Dr. Agent. I understand you've been having episodes where you become unresponsive with facial grimacing. Can you describe what happens during one of these episodes, and how long they typically last?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 5722,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 130,
+          "output_tokens_details": {
+            "thinking_tokens": 63
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 2,
+        "incoming": "Well, I don't really remember what happens during them - my mom and brother have told me about it. They say I stare and make faces, and it lasts maybe 3 or 4 minutes, but I don't know what's going on when it happens.",
+        "reply": "Thank you for sharing that. Before these episodes begin, do you ever notice any warning signs — like a strange feeling in your stomach, an unusual smell or taste, déjà vu, or a sense of fear? And afterward, do you feel confused, tired, or take a while to get back to normal?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 5858,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 194,
+          "output_tokens_details": {
+            "thinking_tokens": 98
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 3,
+        "incoming": "Yes, actually! Right before it happens, I get this weird muddy taste in my mouth - it's really gross. And after the episodes, I feel really tired and confused, like I just woke up from a deep sleep.",
+        "reply": "That muddy taste before an episode is very helpful to know. Can you tell me how often these episodes happen, when they first started, and whether you've ever had one with shaking, falling, or losing control of your bladder?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 6021,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 136,
+          "output_tokens_details": {
+            "thinking_tokens": 69
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 4,
+        "incoming": "They started about a month ago, and I've had maybe four or five of them since then. I haven't fallen down or had any shaking, and I didn't wet myself or anything like that.",
+        "reply": "Thank you. Have you ever had a head injury, serious infection like meningitis, high fevers as a child, or does anyone in your family have a history of seizures? Also, during the episodes, do your family say you do anything with your hands or mouth — like lip-smacking, chewing, or fumbling movements?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 6141,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 183,
+          "output_tokens_details": {
+            "thinking_tokens": 85
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 5,
+        "incoming": "No, I've never had a bad head injury or anything like that, and I don't think anyone in my family has seizures. But my brother did say that during one episode when I woke up, I was making hand gestures - like moving my hands around - but I don't remember doing that at all.",
+        "reply": "Thank you — those hand movements sound like automatisms, which along with the muddy taste aura and post-episode confusion point toward seizures starting in the temporal lobe. I'd like to run some tests to confirm this.\n\nREQUEST TEST: EEG",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "EEG",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 6319,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 195,
+          "output_tokens_details": {
+            "thinking_tokens": 111
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 6,
+        "incoming": "RESULTS: \n\n**Electroencephalogram (EEG)**\n\n**Findings:** Interictal spikes and sharp waves localized to the temporal lobes, more prominent on the right side.\n\n---\n\nThis EEG shows epileptiform activity in the temporal regions, particularly on the right side, which is consistent with temporal lobe epilepsy. These findings, combined with your clinical presentation (gustatory aura, staring episodes, automatisms, and post-ictal confusion), support the diagnosis of focal seizures with impaired awareness originating from the temporal lobe.",
+        "reply": "The EEG confirms epileptiform activity in your right temporal lobe, which fits perfectly with your muddy taste aura, staring episodes, hand automatisms, and post-episode confusion. Let me get one more test to check for any structural cause.\n\nREQUEST TEST: MRI_Brain",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "MRI_Brain",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 6590,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 231,
+          "output_tokens_details": {
+            "thinking_tokens": 133
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 7,
+        "incoming": "RESULTS:\n\n**MRI Brain**\n\n**Findings:** No evidence of mass lesions, infarctions, or structural abnormalities.\n\n---\n\nThe MRI shows no tumors, strokes, scarring, or other structural problems in the brain that could be causing your seizures. This is reassuring and suggests your temporal lobe epilepsy is likely idiopathic (without an identifiable structural cause).",
+        "reply": "The MRI is reassuring — there's no tumor, scar tissue, or other structural cause behind your seizures. Combined with your muddy taste aura, staring episodes with facial grimacing, hand automatisms, post-episode confusion, and the EEG showing right temporal lobe epileptiform activity, I'm confident in the diagnosis.\n\nDIAGNOSIS READY: Temporal lobe epilepsy — focal seizures with impaired awareness (complex partial seizures) originating from the right temporal lobe",
+        "tool_calls": [],
+        "kind": "diagnosis",
+        "payload": "Temporal lobe epilepsy — focal seizures with impaired awareness (complex partial seizures) originating from the right temporal lobe",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 6819,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 207,
+          "output_tokens_details": {
+            "thinking_tokens": 35
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      }
+    ],
+    "audio": null
+  }
+}

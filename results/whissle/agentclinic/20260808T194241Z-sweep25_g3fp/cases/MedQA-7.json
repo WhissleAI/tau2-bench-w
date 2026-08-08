@@ -1,0 +1,588 @@
+{
+  "scenario_id": "MedQA-7",
+  "scenario_index": 7,
+  "dataset": "MedQA",
+  "mode": "text",
+  "correct_diagnosis": "Congenital Rubella Infection",
+  "answer_options": [],
+  "score": {
+    "outcome": "correct",
+    "correctness": true,
+    "doctor_diagnosis": "Congenital Rubella Syndrome",
+    "doctor_final_text": "I have reviewed the results from the hearing test and the earlier evaluations. These findings, along with your daughter's heart condition, cloudy eyes, and the positive rubella screen, provide a clear picture of her condition.\n\nDIAGNOSIS READY: Congenital Rubella Syndrome",
+    "moderator_raw": "yes",
+    "moderator_raw_text": "Yes",
+    "moderator_lenient": true,
+    "moderator_attempts": 1,
+    "moderator_normalized": false,
+    "moderator_unconstrained": false,
+    "declined": false,
+    "refusal_evidence": [],
+    "format_deviation": false,
+    "decline_source": null,
+    "decline_reason": "",
+    "spurious_commit": false
+  },
+  "infra_fail": false,
+  "error": null,
+  "findings": [],
+  "inferences_used": 7,
+  "max_inferences": 20,
+  "tests_ordered": [
+    "Echocardiogram",
+    ":",
+    "TORCH Screen",
+    "Hearing Test"
+  ],
+  "images_requested": 0,
+  "image": null,
+  "image_error": null,
+  "vision": "off",
+  "refusals": [],
+  "dialogue": [
+    {
+      "role": "doctor",
+      "inference": 1,
+      "kind": "question",
+      "text": "Hello, I'm Dr. Agent. Just so you know, I'm an AI assistant and this call is recorded for quality. To begin, can you describe the main reason for the newborn'",
+      "payload": null,
+      "latency_ms": 5490,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "I'm actually the baby's mother. The doctors here noticed something when they examined my daughter - they said she has some kind of heart murmur that they can hear continuously. I'm really worried because I didn't get any prenatal care during my pregnancy."
+    },
+    {
+      "role": "doctor",
+      "inference": 2,
+      "kind": "question",
+      "text": "I understand your concern, and I'm here to help you get some answers. Have the doctors mentioned if she has \"bounding\" pulses or if she is experiencing any trouble breathing?",
+      "payload": null,
+      "latency_ms": 5754,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "No, they haven't mentioned anything about bounding pulses or breathing problems. She seems to be breathing okay as far as I can tell. They did say something about some bluish spots on her skin and that her eyes looked a little cloudy, but I don't really understand what that means."
+    },
+    {
+      "role": "doctor",
+      "inference": 3,
+      "kind": "test",
+      "text": "I appreciate you sharing those observations about her eyes and skin. Have you noticed if she reacts or startles when there are loud noises in the room? REQUEST TEST: Echocardiogram",
+      "payload": "Echocardiogram",
+      "latency_ms": 4972,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: Echocardiogram shows patent ductus arteriosus"
+    },
+    {
+      "role": "doctor",
+      "inference": 4,
+      "kind": "test",
+      "text": "The echocardiogram confirms the patent ductus arteriosus, which explains the heart murmur. Do you recall having any illnesses, such as a rash or fever, while you were pregnant? REQUEST TEST:",
+      "payload": ":",
+      "latency_ms": 5240,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "I notice you've requested a test, but you haven't specified which test you'd like me to provide results for. \n\nBased on the available data, I can provide results for the following tests:\n\n- **TORCH Screen** (including Rubella IgM and other infections)\n- **Ophthalmologic Consult** (for the cloudy lenses/cataracts)\n- **Hearing Test** (for auditory function)\n\nPlease specify which test you would like results for, and I'll respond in the format \"RESULTS: [results here]\""
+    },
+    {
+      "role": "doctor",
+      "inference": 5,
+      "kind": "test",
+      "text": "I'd like to specifically check for any signs of infection that may have occurred during your pregnancy. REQUEST TEST: TORCH Screen",
+      "payload": "TORCH Screen",
+      "latency_ms": 4486,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: TORCH Screen shows Rubella IgM Positive; all other components of the TORCH panel (Toxoplasmosis, Other infections, Cytomegalovirus, Herpes simplex) are Negative"
+    },
+    {
+      "role": "doctor",
+      "inference": 6,
+      "kind": "test",
+      "text": "The positive Rubella IgM result, along with her heart and eye findings, is very telling. Has she had a formal evaluation of her hearing yet? REQUEST TEST: Hearing Test",
+      "payload": "Hearing Test",
+      "latency_ms": 4544,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: Hearing Test shows bilateral sensorineural hearing loss"
+    },
+    {
+      "role": "doctor",
+      "inference": 7,
+      "kind": "diagnosis",
+      "text": "I have reviewed the results from the hearing test and the earlier evaluations. These findings, along with your daughter's heart condition, cloudy eyes, and the positive rubella screen, provide a clear picture of her condition.\n\nDIAGNOSIS READY: Congenital Rubella Syndrome",
+      "payload": "Congenital Rubella Syndrome",
+      "latency_ms": 3691,
+      "refusal": null,
+      "via": "marker"
+    }
+  ],
+  "latency_ms": [
+    5490,
+    5754,
+    4972,
+    5240,
+    4486,
+    4544,
+    3691
+  ],
+  "wall_s": 50.74,
+  "doctor_turns": [
+    {
+      "inference": 1,
+      "incoming": "",
+      "reply": "Hello, I'm Dr. Agent. Just so you know, I'm an AI assistant and this call is recorded for quality. To begin, can you describe the main reason for the newborn'",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 3942,
+        "output_tokens": 1020,
+        "thinking_tokens": 979,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "MAX_TOKENS"
+    },
+    {
+      "inference": 2,
+      "incoming": "I'm actually the baby's mother. The doctors here noticed something when they examined my daughter - they said she has some kind of heart murmur that they can hear continuously. I'm really worried because I didn't get any prenatal care during my pregnancy.",
+      "reply": "I understand your concern, and I'm here to help you get some answers. Have the doctors mentioned if she has \"bounding\" pulses or if she is experiencing any trouble breathing?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4038,
+        "output_tokens": 1020,
+        "thinking_tokens": 983,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "MAX_TOKENS"
+    },
+    {
+      "inference": 3,
+      "incoming": "No, they haven't mentioned anything about bounding pulses or breathing problems. She seems to be breathing okay as far as I can tell. They did say something about some bluish spots on her skin and that her eyes looked a little cloudy, but I don't really understand what that means.",
+      "reply": "I appreciate you sharing those observations about her eyes and skin. Have you noticed if she reacts or startles when there are loud noises in the room? REQUEST TEST: Echocardiogram",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Echocardiogram",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4136,
+        "output_tokens": 1020,
+        "thinking_tokens": 984,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "MAX_TOKENS"
+    },
+    {
+      "inference": 4,
+      "incoming": "RESULTS: Echocardiogram shows patent ductus arteriosus",
+      "reply": "The echocardiogram confirms the patent ductus arteriosus, which explains the heart murmur. Do you recall having any illnesses, such as a rash or fever, while you were pregnant? REQUEST TEST:",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": ":",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4185,
+        "output_tokens": 1020,
+        "thinking_tokens": 981,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "MAX_TOKENS"
+    },
+    {
+      "inference": 5,
+      "incoming": "I notice you've requested a test, but you haven't specified which test you'd like me to provide results for. \n\nBased on the available data, I can provide results for the following tests:\n\n- **TORCH Screen** (including Rubella IgM and other infections)\n- **Ophthalmologic Consult** (for the cloudy lenses/cataracts)\n- **Hearing Test** (for auditory function)\n\nPlease specify which test you would like results for, and I'll respond in the format \"RESULTS: [results here]\"",
+      "reply": "I'd like to specifically check for any signs of infection that may have occurred during your pregnancy. REQUEST TEST: TORCH Screen",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "TORCH Screen",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4341,
+        "output_tokens": 835,
+        "thinking_tokens": 809,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    },
+    {
+      "inference": 6,
+      "incoming": "RESULTS: TORCH Screen shows Rubella IgM Positive; all other components of the TORCH panel (Toxoplasmosis, Other infections, Cytomegalovirus, Herpes simplex) are Negative",
+      "reply": "The positive Rubella IgM result, along with her heart and eye findings, is very telling. Has she had a formal evaluation of her hearing yet? REQUEST TEST: Hearing Test",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Hearing Test",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4406,
+        "output_tokens": 787,
+        "thinking_tokens": 752,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    },
+    {
+      "inference": 7,
+      "incoming": "RESULTS: Hearing Test shows bilateral sensorineural hearing loss",
+      "reply": "I have reviewed the results from the hearing test and the earlier evaluations. These findings, along with your daughter's heart condition, cloudy eyes, and the positive rubella screen, provide a clear picture of her condition.\n\nDIAGNOSIS READY: Congenital Rubella Syndrome",
+      "tool_calls": [],
+      "kind": "diagnosis",
+      "payload": "Congenital Rubella Syndrome",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4454,
+        "output_tokens": 662,
+        "thinking_tokens": 606,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    }
+  ],
+  "support_llm": "anthropic:claude-sonnet-4-5",
+  "support_llm_cost_usd": 0.01598,
+  "support_llm_calls": 7,
+  "voice_subset": false,
+  "diagnostics": {
+    "schema": "tau2.health.diagnostics/v1",
+    "benchmark": "agentclinic",
+    "case_id": "MedQA-7",
+    "mode": "text",
+    "availability": {
+      "flow_available": false,
+      "flow_reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "signals_available": false,
+      "signals_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "metadata_sidecar_available": false,
+      "metadata_sidecar_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "tools_available": true,
+      "tools_reason": null
+    },
+    "provenance": {
+      "benchmark": "agentclinic",
+      "mode": "text",
+      "transport_endpoint": "POST /api/bench/agent-turn",
+      "agent_id": "c2761ec7-d3f7-4bd7-b68c-40a87f1b1ab3",
+      "base_url": "https://aws-gateway-backend.whissle.ai/bot",
+      "seed": 42,
+      "stratum": {
+        "dataset": "MedQA",
+        "scenario_index": 7,
+        "selection": "head",
+        "limit": 25
+      },
+      "judge": {
+        "judge_provider": "anthropic",
+        "judge_model": "claude-sonnet-4-5",
+        "judge_endpoint": "anthropic:claude-sonnet-4-5",
+        "judge_independent": true,
+        "judge_independence_note": "Judge independence: this run's simulators and graders were routed through an external provider, independent of the agent under test. This is the stronger footing for a published comparison against the paper's numbers."
+      },
+      "judge_provider": "anthropic",
+      "judge_independent": true,
+      "run_id": null,
+      "run_dir": "results/whissle/agentclinic/20260808T194241Z-sweep25_g3fp",
+      "harness_commit": "86b4475",
+      "captured_at": "2026-08-08T19:44:56+00:00",
+      "protocol": "markers",
+      "history": "agentclinic",
+      "prompt_mode": "override",
+      "vision": "off",
+      "agent_type": null,
+      "total_inferences": 20,
+      "inferences_used": 7,
+      "support_llm": "anthropic:claude-sonnet-4-5",
+      "patient_bias": null,
+      "doctor_bias": null,
+      "voice_subset": false
+    },
+    "cost": {
+      "available": true,
+      "reason": null,
+      "judge_calls": 7,
+      "judge_cost_usd": 0.01598,
+      "agent_calls": 7
+    },
+    "flow": {
+      "available": false,
+      "reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "source": null,
+      "turns": null,
+      "summary": null,
+      "conversation_id": null,
+      "current_state": null,
+      "start_state": null,
+      "final_state": null,
+      "ended": null,
+      "flow_end": null,
+      "num_steps": null,
+      "step_counts_by_kind": null,
+      "states_visited": null,
+      "states_declared": null,
+      "states_unvisited": null,
+      "transitions": null,
+      "transitions_fired": null,
+      "var_sets": null,
+      "var_sources": null,
+      "guard_trips": null,
+      "state_divergences": null,
+      "tools_gated": null,
+      "says": null,
+      "steps": null
+    },
+    "signals": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "metadata_sidecar": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "tools": {
+      "available": true,
+      "reason": null,
+      "source": "doctor actions parsed from /api/bench/agent-turn replies",
+      "calls": [
+        {
+          "turn": 3,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Echocardiogram"
+          },
+          "result": "RESULTS: Echocardiogram shows patent ductus arteriosus",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 4972,
+          "terminal": false
+        },
+        {
+          "turn": 4,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": ":"
+          },
+          "result": "I notice you've requested a test, but you haven't specified which test you'd like me to provide results for. \n\nBased on the available data, I can provide results for the following tests:\n\n- **TORCH Screen** (including Rubella IgM and other infections)\n- **Ophthalmologic Consult** (for the cloudy lenses/cataracts)\n- **Hearing Test** (for auditory function)\n\nPlease specify which test you would like results for, and I'll respond in the format \"RESULTS: [results here]\"",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 5240,
+          "terminal": false
+        },
+        {
+          "turn": 5,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "TORCH Screen"
+          },
+          "result": "RESULTS: TORCH Screen shows Rubella IgM Positive; all other components of the TORCH panel (Toxoplasmosis, Other infections, Cytomegalovirus, Herpes simplex) are Negative",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 4486,
+          "terminal": false
+        },
+        {
+          "turn": 6,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Hearing Test"
+          },
+          "result": "RESULTS: Hearing Test shows bilateral sensorineural hearing loss",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 4544,
+          "terminal": false
+        },
+        {
+          "turn": 7,
+          "id": null,
+          "name": "give_diagnosis",
+          "arguments": {
+            "request": "Congenital Rubella Syndrome"
+          },
+          "result": null,
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 3691,
+          "terminal": true
+        }
+      ],
+      "summary": {
+        "n_calls": 5,
+        "by_name": {
+          "request_test": 4,
+          "give_diagnosis": 1
+        },
+        "n_ok": 5,
+        "n_error": 0,
+        "errors": []
+      },
+      "writes": {
+        "available": false,
+        "reason": "this benchmark issues no writes, so there is no said-vs-emitted-vs-landed distinction to record"
+      }
+    },
+    "turns": [
+      {
+        "inference": 1,
+        "incoming": "",
+        "reply": "Hello, I'm Dr. Agent. Just so you know, I'm an AI assistant and this call is recorded for quality. To begin, can you describe the main reason for the newborn'",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 3942,
+          "output_tokens": 1020,
+          "thinking_tokens": 979,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "MAX_TOKENS"
+      },
+      {
+        "inference": 2,
+        "incoming": "I'm actually the baby's mother. The doctors here noticed something when they examined my daughter - they said she has some kind of heart murmur that they can hear continuously. I'm really worried because I didn't get any prenatal care during my pregnancy.",
+        "reply": "I understand your concern, and I'm here to help you get some answers. Have the doctors mentioned if she has \"bounding\" pulses or if she is experiencing any trouble breathing?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4038,
+          "output_tokens": 1020,
+          "thinking_tokens": 983,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "MAX_TOKENS"
+      },
+      {
+        "inference": 3,
+        "incoming": "No, they haven't mentioned anything about bounding pulses or breathing problems. She seems to be breathing okay as far as I can tell. They did say something about some bluish spots on her skin and that her eyes looked a little cloudy, but I don't really understand what that means.",
+        "reply": "I appreciate you sharing those observations about her eyes and skin. Have you noticed if she reacts or startles when there are loud noises in the room? REQUEST TEST: Echocardiogram",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Echocardiogram",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4136,
+          "output_tokens": 1020,
+          "thinking_tokens": 984,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "MAX_TOKENS"
+      },
+      {
+        "inference": 4,
+        "incoming": "RESULTS: Echocardiogram shows patent ductus arteriosus",
+        "reply": "The echocardiogram confirms the patent ductus arteriosus, which explains the heart murmur. Do you recall having any illnesses, such as a rash or fever, while you were pregnant? REQUEST TEST:",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": ":",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4185,
+          "output_tokens": 1020,
+          "thinking_tokens": 981,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "MAX_TOKENS"
+      },
+      {
+        "inference": 5,
+        "incoming": "I notice you've requested a test, but you haven't specified which test you'd like me to provide results for. \n\nBased on the available data, I can provide results for the following tests:\n\n- **TORCH Screen** (including Rubella IgM and other infections)\n- **Ophthalmologic Consult** (for the cloudy lenses/cataracts)\n- **Hearing Test** (for auditory function)\n\nPlease specify which test you would like results for, and I'll respond in the format \"RESULTS: [results here]\"",
+        "reply": "I'd like to specifically check for any signs of infection that may have occurred during your pregnancy. REQUEST TEST: TORCH Screen",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "TORCH Screen",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4341,
+          "output_tokens": 835,
+          "thinking_tokens": 809,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      },
+      {
+        "inference": 6,
+        "incoming": "RESULTS: TORCH Screen shows Rubella IgM Positive; all other components of the TORCH panel (Toxoplasmosis, Other infections, Cytomegalovirus, Herpes simplex) are Negative",
+        "reply": "The positive Rubella IgM result, along with her heart and eye findings, is very telling. Has she had a formal evaluation of her hearing yet? REQUEST TEST: Hearing Test",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Hearing Test",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4406,
+          "output_tokens": 787,
+          "thinking_tokens": 752,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      },
+      {
+        "inference": 7,
+        "incoming": "RESULTS: Hearing Test shows bilateral sensorineural hearing loss",
+        "reply": "I have reviewed the results from the hearing test and the earlier evaluations. These findings, along with your daughter's heart condition, cloudy eyes, and the positive rubella screen, provide a clear picture of her condition.\n\nDIAGNOSIS READY: Congenital Rubella Syndrome",
+        "tool_calls": [],
+        "kind": "diagnosis",
+        "payload": "Congenital Rubella Syndrome",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4454,
+          "output_tokens": 662,
+          "thinking_tokens": 606,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      }
+    ],
+    "audio": null
+  }
+}

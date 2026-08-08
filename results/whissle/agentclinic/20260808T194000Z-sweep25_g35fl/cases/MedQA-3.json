@@ -1,0 +1,750 @@
+{
+  "scenario_id": "MedQA-3",
+  "scenario_index": 3,
+  "dataset": "MedQA",
+  "mode": "text",
+  "correct_diagnosis": "Diffuse large B-cell lymphoma",
+  "answer_options": [],
+  "score": {
+    "outcome": "correct",
+    "correctness": true,
+    "doctor_diagnosis": "Diffuse Large B-cell Lymphoma",
+    "doctor_final_text": "DIAGNOSIS READY: Diffuse Large B-cell Lymphoma",
+    "moderator_raw": "yes",
+    "moderator_raw_text": "Yes",
+    "moderator_lenient": true,
+    "moderator_attempts": 1,
+    "moderator_normalized": false,
+    "moderator_unconstrained": false,
+    "declined": false,
+    "refusal_evidence": [],
+    "format_deviation": false,
+    "decline_source": null,
+    "decline_reason": "",
+    "spurious_commit": false
+  },
+  "infra_fail": false,
+  "error": null,
+  "findings": [],
+  "inferences_used": 10,
+  "max_inferences": 20,
+  "tests_ordered": [
+    "Complete_Blood_Count",
+    "CT_Scan_Chest_Abdomen",
+    "Excisional_Lymph_Node_Biopsy",
+    "Bone_Marrow_Biopsy",
+    "PET_Scan"
+  ],
+  "images_requested": 0,
+  "image": null,
+  "image_error": null,
+  "vision": "off",
+  "refusals": [],
+  "dialogue": [
+    {
+      "role": "doctor",
+      "inference": 1,
+      "kind": "question",
+      "text": "Hello, I'm Dr. Agent. How long have you been experiencing this fatigue and abdominal pain?",
+      "payload": null,
+      "latency_ms": 1028,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Well, doctor, I've been feeling really tired for a while now, and this belly pain has been bothering me for about 4 weeks. It just seems to be getting worse, and I'm also sweating a lot at night, which is really unusual for me."
+    },
+    {
+      "role": "doctor",
+      "inference": 2,
+      "kind": "question",
+      "text": "Have you noticed any unintended weight loss along with those night sweats?",
+      "payload": null,
+      "latency_ms": 617,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Yes, actually I have. I've lost about 12 pounds without really trying, which is pretty concerning to me. My clothes are fitting differently too."
+    },
+    {
+      "role": "doctor",
+      "inference": 3,
+      "kind": "test",
+      "text": "REQUEST TEST: Complete_Blood_Count",
+      "payload": "Complete_Blood_Count",
+      "latency_ms": 558,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: Complete Blood Count shows:\n- WBC (White Blood Cells): Elevated\n- Hemoglobin: Slightly Decreased\n- Platelets: Normal"
+    },
+    {
+      "role": "doctor",
+      "inference": 4,
+      "kind": "test",
+      "text": "REQUEST TEST: CT_Scan_Chest_Abdomen",
+      "payload": "CT_Scan_Chest_Abdomen",
+      "latency_ms": 564,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: CT Scan of Thorax and Abdomen shows:\n- Massively enlarged axillary, mediastinal, and cervical lymph nodes"
+    },
+    {
+      "role": "doctor",
+      "inference": 5,
+      "kind": "test",
+      "text": "REQUEST TEST: Excisional_Lymph_Node_Biopsy",
+      "payload": "Excisional_Lymph_Node_Biopsy",
+      "latency_ms": 590,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: Cervical Lymph Node Biopsy shows:\n- Lymphocytes with a high proliferative index that stain positive for CD20"
+    },
+    {
+      "role": "doctor",
+      "inference": 6,
+      "kind": "test",
+      "text": "REQUEST TEST: Bone_Marrow_Biopsy",
+      "payload": "Bone_Marrow_Biopsy",
+      "latency_ms": 683,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: The requested Bone Marrow Biopsy results are not available in the current data.\n\nNORMAL READINGS\n\n---\n\n**Note:** Based on the available clinical information (elevated LDH, CD20+ lymphocytes with high proliferative index, massively enlarged lymph nodes, and constitutional symptoms), a bone marrow biopsy would be an appropriate next step for staging purposes. However, this test has not yet been performed according to the available records."
+    },
+    {
+      "role": "doctor",
+      "inference": 7,
+      "kind": "question",
+      "text": "\"Have you noticed any lumps or swelling anywhere else on your body, such as under your arms or in your groin?\"",
+      "payload": null,
+      "latency_ms": 643,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Yes, I've noticed some swelling in my neck over the last 4 days or so. It's been pretty noticeable and it's one of the reasons I decided to come in today."
+    },
+    {
+      "role": "doctor",
+      "inference": 8,
+      "kind": "question",
+      "text": "Have you experienced any persistent fevers or chills along with these symptoms?",
+      "payload": null,
+      "latency_ms": 640,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "No, I haven't had any fevers or chills. It's mainly just the tiredness, the belly pain, those drenching night sweats, and now this neck swelling that's been bothering me."
+    },
+    {
+      "role": "doctor",
+      "inference": 9,
+      "kind": "test",
+      "text": "REQUEST TEST: PET_Scan",
+      "payload": "PET_Scan",
+      "latency_ms": 537,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: The requested PET Scan results are not available in the current data.\n\nNORMAL READINGS\n\n---\n\n**Note:** Based on the available clinical information, a PET scan would be useful for staging and assessing metabolic activity of the lymphoma. However, this test has not yet been performed according to the available records. The diagnosis of CD20+ lymphoma (likely B-cell lymphoma such as Diffuse Large B-Cell Lymphoma or Burkitt Lymphoma given the high proliferative index) has been established through the cervical lymph node biopsy showing CD20+ lymphocytes with high proliferative index."
+    },
+    {
+      "role": "doctor",
+      "inference": 10,
+      "kind": "diagnosis",
+      "text": "DIAGNOSIS READY: Diffuse Large B-cell Lymphoma",
+      "payload": "Diffuse Large B-cell Lymphoma",
+      "latency_ms": 547,
+      "refusal": null,
+      "via": "marker"
+    }
+  ],
+  "latency_ms": [
+    1028,
+    617,
+    558,
+    564,
+    590,
+    683,
+    643,
+    640,
+    537,
+    547
+  ],
+  "wall_s": 28.83,
+  "doctor_turns": [
+    {
+      "inference": 1,
+      "incoming": "",
+      "reply": "Hello, I'm Dr. Agent. How long have you been experiencing this fatigue and abdominal pain?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 3954,
+        "output_tokens": 21,
+        "thinking_tokens": 0,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    },
+    {
+      "inference": 2,
+      "incoming": "Well, doctor, I've been feeling really tired for a while now, and this belly pain has been bothering me for about 4 weeks. It just seems to be getting worse, and I'm also sweating a lot at night, which is really unusual for me.",
+      "reply": "Have you noticed any unintended weight loss along with those night sweats?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4032,
+        "output_tokens": 13,
+        "thinking_tokens": 0,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    },
+    {
+      "inference": 3,
+      "incoming": "Yes, actually I have. I've lost about 12 pounds without really trying, which is pretty concerning to me. My clothes are fitting differently too.",
+      "reply": "REQUEST TEST: Complete_Blood_Count",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Complete_Blood_Count",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4080,
+        "output_tokens": 8,
+        "thinking_tokens": 0,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    },
+    {
+      "inference": 4,
+      "incoming": "RESULTS: Complete Blood Count shows:\n- WBC (White Blood Cells): Elevated\n- Hemoglobin: Slightly Decreased\n- Platelets: Normal",
+      "reply": "REQUEST TEST: CT_Scan_Chest_Abdomen",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "CT_Scan_Chest_Abdomen",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4120,
+        "output_tokens": 11,
+        "thinking_tokens": 0,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    },
+    {
+      "inference": 5,
+      "incoming": "RESULTS: CT Scan of Thorax and Abdomen shows:\n- Massively enlarged axillary, mediastinal, and cervical lymph nodes",
+      "reply": "REQUEST TEST: Excisional_Lymph_Node_Biopsy",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Excisional_Lymph_Node_Biopsy",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4160,
+        "output_tokens": 13,
+        "thinking_tokens": 0,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    },
+    {
+      "inference": 6,
+      "incoming": "RESULTS: Cervical Lymph Node Biopsy shows:\n- Lymphocytes with a high proliferative index that stain positive for CD20",
+      "reply": "REQUEST TEST: Bone_Marrow_Biopsy",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Bone_Marrow_Biopsy",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4201,
+        "output_tokens": 10,
+        "thinking_tokens": 0,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    },
+    {
+      "inference": 7,
+      "incoming": "RESULTS: The requested Bone Marrow Biopsy results are not available in the current data.\n\nNORMAL READINGS\n\n---\n\n**Note:** Based on the available clinical information (elevated LDH, CD20+ lymphocytes with high proliferative index, massively enlarged lymph nodes, and constitutional symptoms), a bone marrow biopsy would be an appropriate next step for staging purposes. However, this test has not yet been performed according to the available records.",
+      "reply": "\"Have you noticed any lumps or swelling anywhere else on your body, such as under your arms or in your groin?\"",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4300,
+        "output_tokens": 24,
+        "thinking_tokens": 0,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    },
+    {
+      "inference": 8,
+      "incoming": "Yes, I've noticed some swelling in my neck over the last 4 days or so. It's been pretty noticeable and it's one of the reasons I decided to come in today.",
+      "reply": "Have you experienced any persistent fevers or chills along with these symptoms?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4367,
+        "output_tokens": 14,
+        "thinking_tokens": 0,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    },
+    {
+      "inference": 9,
+      "incoming": "No, I haven't had any fevers or chills. It's mainly just the tiredness, the belly pain, those drenching night sweats, and now this neck swelling that's been bothering me.",
+      "reply": "REQUEST TEST: PET_Scan",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "PET_Scan",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4427,
+        "output_tokens": 6,
+        "thinking_tokens": 0,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    },
+    {
+      "inference": 10,
+      "incoming": "RESULTS: The requested PET Scan results are not available in the current data.\n\nNORMAL READINGS\n\n---\n\n**Note:** Based on the available clinical information, a PET scan would be useful for staging and assessing metabolic activity of the lymphoma. However, this test has not yet been performed according to the available records. The diagnosis of CD20+ lymphoma (likely B-cell lymphoma such as Diffuse Large B-Cell Lymphoma or Burkitt Lymphoma given the high proliferative index) has been established through the cervical lymph node biopsy showing CD20+ lymphocytes with high proliferative index.",
+      "reply": "DIAGNOSIS READY: Diffuse Large B-cell Lymphoma",
+      "tool_calls": [],
+      "kind": "diagnosis",
+      "payload": "Diffuse Large B-cell Lymphoma",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4553,
+        "output_tokens": 14,
+        "thinking_tokens": 0,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    }
+  ],
+  "support_llm": "anthropic:claude-sonnet-4-5",
+  "support_llm_cost_usd": 0.02635,
+  "support_llm_calls": 10,
+  "voice_subset": false,
+  "diagnostics": {
+    "schema": "tau2.health.diagnostics/v1",
+    "benchmark": "agentclinic",
+    "case_id": "MedQA-3",
+    "mode": "text",
+    "availability": {
+      "flow_available": false,
+      "flow_reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "signals_available": false,
+      "signals_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "metadata_sidecar_available": false,
+      "metadata_sidecar_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "tools_available": true,
+      "tools_reason": null
+    },
+    "provenance": {
+      "benchmark": "agentclinic",
+      "mode": "text",
+      "transport_endpoint": "POST /api/bench/agent-turn",
+      "agent_id": "c2761ec7-d3f7-4bd7-b68c-40a87f1b1ab3",
+      "base_url": "https://aws-gateway-backend.whissle.ai/bot",
+      "seed": 42,
+      "stratum": {
+        "dataset": "MedQA",
+        "scenario_index": 3,
+        "selection": "head",
+        "limit": 25
+      },
+      "judge": {
+        "judge_provider": "anthropic",
+        "judge_model": "claude-sonnet-4-5",
+        "judge_endpoint": "anthropic:claude-sonnet-4-5",
+        "judge_independent": true,
+        "judge_independence_note": "Judge independence: this run's simulators and graders were routed through an external provider, independent of the agent under test. This is the stronger footing for a published comparison against the paper's numbers."
+      },
+      "judge_provider": "anthropic",
+      "judge_independent": true,
+      "run_id": null,
+      "run_dir": "results/whissle/agentclinic/20260808T194000Z-sweep25_g35fl",
+      "harness_commit": "86b4475",
+      "captured_at": "2026-08-08T19:40:29+00:00",
+      "protocol": "markers",
+      "history": "agentclinic",
+      "prompt_mode": "override",
+      "vision": "off",
+      "agent_type": null,
+      "total_inferences": 20,
+      "inferences_used": 10,
+      "support_llm": "anthropic:claude-sonnet-4-5",
+      "patient_bias": null,
+      "doctor_bias": null,
+      "voice_subset": false
+    },
+    "cost": {
+      "available": true,
+      "reason": null,
+      "judge_calls": 10,
+      "judge_cost_usd": 0.02635,
+      "agent_calls": 10
+    },
+    "flow": {
+      "available": false,
+      "reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "source": null,
+      "turns": null,
+      "summary": null,
+      "conversation_id": null,
+      "current_state": null,
+      "start_state": null,
+      "final_state": null,
+      "ended": null,
+      "flow_end": null,
+      "num_steps": null,
+      "step_counts_by_kind": null,
+      "states_visited": null,
+      "states_declared": null,
+      "states_unvisited": null,
+      "transitions": null,
+      "transitions_fired": null,
+      "var_sets": null,
+      "var_sources": null,
+      "guard_trips": null,
+      "state_divergences": null,
+      "tools_gated": null,
+      "says": null,
+      "steps": null
+    },
+    "signals": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "metadata_sidecar": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "tools": {
+      "available": true,
+      "reason": null,
+      "source": "doctor actions parsed from /api/bench/agent-turn replies",
+      "calls": [
+        {
+          "turn": 3,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Complete_Blood_Count"
+          },
+          "result": "RESULTS: Complete Blood Count shows:\n- WBC (White Blood Cells): Elevated\n- Hemoglobin: Slightly Decreased\n- Platelets: Normal",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 558,
+          "terminal": false
+        },
+        {
+          "turn": 4,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "CT_Scan_Chest_Abdomen"
+          },
+          "result": "RESULTS: CT Scan of Thorax and Abdomen shows:\n- Massively enlarged axillary, mediastinal, and cervical lymph nodes",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 564,
+          "terminal": false
+        },
+        {
+          "turn": 5,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Excisional_Lymph_Node_Biopsy"
+          },
+          "result": "RESULTS: Cervical Lymph Node Biopsy shows:\n- Lymphocytes with a high proliferative index that stain positive for CD20",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 590,
+          "terminal": false
+        },
+        {
+          "turn": 6,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Bone_Marrow_Biopsy"
+          },
+          "result": "RESULTS: The requested Bone Marrow Biopsy results are not available in the current data.\n\nNORMAL READINGS\n\n---\n\n**Note:** Based on the available clinical information (elevated LDH, CD20+ lymphocytes with high proliferative index, massively enlarged lymph nodes, and constitutional symptoms), a bone marrow biopsy would be an appropriate next step for staging purposes. However, this test has not yet been performed according to the available records.",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 683,
+          "terminal": false
+        },
+        {
+          "turn": 9,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "PET_Scan"
+          },
+          "result": "RESULTS: The requested PET Scan results are not available in the current data.\n\nNORMAL READINGS\n\n---\n\n**Note:** Based on the available clinical information, a PET scan would be useful for staging and assessing metabolic activity of the lymphoma. However, this test has not yet been performed according to the available records. The diagnosis of CD20+ lymphoma (likely B-cell lymphoma such as Diffuse Large B-Cell Lymphoma or Burkitt Lymphoma given the high proliferative index) has been established through the cervical lymph node biopsy showing CD20+ lymphocytes with high proliferative index.",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 537,
+          "terminal": false
+        },
+        {
+          "turn": 10,
+          "id": null,
+          "name": "give_diagnosis",
+          "arguments": {
+            "request": "Diffuse Large B-cell Lymphoma"
+          },
+          "result": null,
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 547,
+          "terminal": true
+        }
+      ],
+      "summary": {
+        "n_calls": 6,
+        "by_name": {
+          "request_test": 5,
+          "give_diagnosis": 1
+        },
+        "n_ok": 6,
+        "n_error": 0,
+        "errors": []
+      },
+      "writes": {
+        "available": false,
+        "reason": "this benchmark issues no writes, so there is no said-vs-emitted-vs-landed distinction to record"
+      }
+    },
+    "turns": [
+      {
+        "inference": 1,
+        "incoming": "",
+        "reply": "Hello, I'm Dr. Agent. How long have you been experiencing this fatigue and abdominal pain?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 3954,
+          "output_tokens": 21,
+          "thinking_tokens": 0,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      },
+      {
+        "inference": 2,
+        "incoming": "Well, doctor, I've been feeling really tired for a while now, and this belly pain has been bothering me for about 4 weeks. It just seems to be getting worse, and I'm also sweating a lot at night, which is really unusual for me.",
+        "reply": "Have you noticed any unintended weight loss along with those night sweats?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4032,
+          "output_tokens": 13,
+          "thinking_tokens": 0,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      },
+      {
+        "inference": 3,
+        "incoming": "Yes, actually I have. I've lost about 12 pounds without really trying, which is pretty concerning to me. My clothes are fitting differently too.",
+        "reply": "REQUEST TEST: Complete_Blood_Count",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Complete_Blood_Count",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4080,
+          "output_tokens": 8,
+          "thinking_tokens": 0,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      },
+      {
+        "inference": 4,
+        "incoming": "RESULTS: Complete Blood Count shows:\n- WBC (White Blood Cells): Elevated\n- Hemoglobin: Slightly Decreased\n- Platelets: Normal",
+        "reply": "REQUEST TEST: CT_Scan_Chest_Abdomen",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "CT_Scan_Chest_Abdomen",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4120,
+          "output_tokens": 11,
+          "thinking_tokens": 0,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      },
+      {
+        "inference": 5,
+        "incoming": "RESULTS: CT Scan of Thorax and Abdomen shows:\n- Massively enlarged axillary, mediastinal, and cervical lymph nodes",
+        "reply": "REQUEST TEST: Excisional_Lymph_Node_Biopsy",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Excisional_Lymph_Node_Biopsy",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4160,
+          "output_tokens": 13,
+          "thinking_tokens": 0,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      },
+      {
+        "inference": 6,
+        "incoming": "RESULTS: Cervical Lymph Node Biopsy shows:\n- Lymphocytes with a high proliferative index that stain positive for CD20",
+        "reply": "REQUEST TEST: Bone_Marrow_Biopsy",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Bone_Marrow_Biopsy",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4201,
+          "output_tokens": 10,
+          "thinking_tokens": 0,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      },
+      {
+        "inference": 7,
+        "incoming": "RESULTS: The requested Bone Marrow Biopsy results are not available in the current data.\n\nNORMAL READINGS\n\n---\n\n**Note:** Based on the available clinical information (elevated LDH, CD20+ lymphocytes with high proliferative index, massively enlarged lymph nodes, and constitutional symptoms), a bone marrow biopsy would be an appropriate next step for staging purposes. However, this test has not yet been performed according to the available records.",
+        "reply": "\"Have you noticed any lumps or swelling anywhere else on your body, such as under your arms or in your groin?\"",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4300,
+          "output_tokens": 24,
+          "thinking_tokens": 0,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      },
+      {
+        "inference": 8,
+        "incoming": "Yes, I've noticed some swelling in my neck over the last 4 days or so. It's been pretty noticeable and it's one of the reasons I decided to come in today.",
+        "reply": "Have you experienced any persistent fevers or chills along with these symptoms?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4367,
+          "output_tokens": 14,
+          "thinking_tokens": 0,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      },
+      {
+        "inference": 9,
+        "incoming": "No, I haven't had any fevers or chills. It's mainly just the tiredness, the belly pain, those drenching night sweats, and now this neck swelling that's been bothering me.",
+        "reply": "REQUEST TEST: PET_Scan",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "PET_Scan",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4427,
+          "output_tokens": 6,
+          "thinking_tokens": 0,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      },
+      {
+        "inference": 10,
+        "incoming": "RESULTS: The requested PET Scan results are not available in the current data.\n\nNORMAL READINGS\n\n---\n\n**Note:** Based on the available clinical information, a PET scan would be useful for staging and assessing metabolic activity of the lymphoma. However, this test has not yet been performed according to the available records. The diagnosis of CD20+ lymphoma (likely B-cell lymphoma such as Diffuse Large B-Cell Lymphoma or Burkitt Lymphoma given the high proliferative index) has been established through the cervical lymph node biopsy showing CD20+ lymphocytes with high proliferative index.",
+        "reply": "DIAGNOSIS READY: Diffuse Large B-cell Lymphoma",
+        "tool_calls": [],
+        "kind": "diagnosis",
+        "payload": "Diffuse Large B-cell Lymphoma",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4553,
+          "output_tokens": 14,
+          "thinking_tokens": 0,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      }
+    ],
+    "audio": null
+  }
+}

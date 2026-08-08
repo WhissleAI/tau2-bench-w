@@ -1,0 +1,602 @@
+{
+  "scenario_id": "MedQA-4",
+  "scenario_index": 4,
+  "dataset": "MedQA",
+  "mode": "text",
+  "correct_diagnosis": "Acute interstitial nephritis",
+  "answer_options": [],
+  "score": {
+    "outcome": "correct",
+    "correctness": true,
+    "doctor_diagnosis": "Acute Interstitial Nephritis (AIN) secondary to beta-lactam antibiotic exposure (likely cephalexin, possibly amoxicillin)",
+    "doctor_final_text": "Doctor: Given the timeline with cephalexin, elevated kidney markers, and eosinophiluria with no prior renal issues, this fits well with drug-induced acute interstitial nephritis.\n\nDIAGNOSIS READY: Acute Interstitial Nephritis (AIN) secondary to beta-lactam antibiotic exposure (likely cephalexin, possibly amoxicillin)",
+    "moderator_raw": "yes",
+    "moderator_raw_text": "Yes",
+    "moderator_lenient": true,
+    "moderator_attempts": 1,
+    "moderator_normalized": false,
+    "moderator_unconstrained": false,
+    "declined": false,
+    "refusal_evidence": [],
+    "format_deviation": false,
+    "decline_source": null,
+    "decline_reason": "",
+    "spurious_commit": false
+  },
+  "infra_fail": false,
+  "error": null,
+  "findings": [],
+  "inferences_used": 6,
+  "max_inferences": 20,
+  "tests_ordered": [
+    "Urinalysis and REQUEST TEST: Serum_Creatinine_BUN"
+  ],
+  "images_requested": 0,
+  "image": null,
+  "image_error": null,
+  "vision": "off",
+  "refusals": [],
+  "dialogue": [
+    {
+      "role": "doctor",
+      "inference": 1,
+      "kind": "question",
+      "text": "Hello, I'm Dr. Agent - can you tell me more about when your fatigue, flank pain, and fever started?",
+      "payload": null,
+      "latency_ms": 2968,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Well, doctor, I started feeling really tired and having this dull ache in my side about a week or so after I finished taking that second antibiotic for my sinus infection. The fever came around the same time, and it just won't seem to go away."
+    },
+    {
+      "role": "doctor",
+      "inference": 2,
+      "kind": "question",
+      "text": "Doctor: Can you tell me which antibiotic you took for the sinusitis, and have you noticed any rash, joint pain, or blood in your urine along with this?",
+      "payload": null,
+      "latency_ms": 2168,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "I took amoxicillin first, but I broke out in a rash, so they switched me to cephalexin. The rash went away after that, but I haven't noticed any blood in my urine or joint pain - just this constant tiredness and the pain in my side."
+    },
+    {
+      "role": "doctor",
+      "inference": 3,
+      "kind": "question",
+      "text": "Doctor: Have you noticed any changes in how much you're urinating, or any swelling in your legs or face?",
+      "payload": null,
+      "latency_ms": 1932,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Now that you mention it, I haven't really been paying close attention to how much I'm urinating, but I don't think there's been a big change. I haven't noticed any swelling in my legs or face either."
+    },
+    {
+      "role": "doctor",
+      "inference": 4,
+      "kind": "test",
+      "text": "Doctor: Let's check some labs — REQUEST TEST: Urinalysis and REQUEST TEST: Serum_Creatinine_BUN",
+      "payload": "Urinalysis and REQUEST TEST: Serum_Creatinine_BUN",
+      "latency_ms": 2638,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: Based on the available test data:\n\n**Urinalysis:**\n- Leukocyturia: Present\n- Bacterial Culture: Negative\n- Cytospin stained with Hansel's solution: 3% binucleated cells with eosinophilic, granular cytoplasm (suggestive of eosinophiluria)\n\n**Serum Biochemistry:**\n- BUN (Urea): Elevated\n- Creatinine: Elevated\n\nThese findings indicate impaired renal function with eosinophiluria in the absence of bacterial infection, which in the context of recent antibiotic use (particularly beta-lactam antibiotics like amoxicillin and cephalexin) is highly suggestive of acute interstitial nephritis (AIN)."
+    },
+    {
+      "role": "doctor",
+      "inference": 5,
+      "kind": "question",
+      "text": "Doctor: These results strongly point to acute interstitial nephritis from the antibiotic exposure. Have you noticed any joint swelling or eye redness, or is this the first time you've had kidney problems?",
+      "payload": null,
+      "latency_ms": 3008,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "No, I haven't had any joint swelling or redness in my eyes. And as far as I know, I've never had any kidney problems before - my blood pressure medicine has been working fine for years and I've never had issues like this."
+    },
+    {
+      "role": "doctor",
+      "inference": 6,
+      "kind": "diagnosis",
+      "text": "Doctor: Given the timeline with cephalexin, elevated kidney markers, and eosinophiluria with no prior renal issues, this fits well with drug-induced acute interstitial nephritis.\n\nDIAGNOSIS READY: Acute Interstitial Nephritis (AIN) secondary to beta-lactam antibiotic exposure (likely cephalexin, possibly amoxicillin)",
+      "payload": "Acute Interstitial Nephritis (AIN) secondary to beta-lactam antibiotic exposure (likely cephalexin, possibly amoxicillin)",
+      "latency_ms": 3628,
+      "refusal": null,
+      "via": "marker"
+    }
+  ],
+  "latency_ms": [
+    2968,
+    2168,
+    1932,
+    2638,
+    3008,
+    3628
+  ],
+  "wall_s": 31.96,
+  "doctor_turns": [
+    {
+      "inference": 1,
+      "incoming": "",
+      "reply": "Hello, I'm Dr. Agent - can you tell me more about when your fatigue, flank pain, and fever started?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 5730,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 41,
+        "output_tokens_details": {
+          "thinking_tokens": 0
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 2,
+      "incoming": "Well, doctor, I started feeling really tired and having this dull ache in my side about a week or so after I finished taking that second antibiotic for my sinus infection. The fever came around the same time, and it just won't seem to go away.",
+      "reply": "Doctor: Can you tell me which antibiotic you took for the sinusitis, and have you noticed any rash, joint pain, or blood in your urine along with this?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 5841,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 55,
+        "output_tokens_details": {
+          "thinking_tokens": 0
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 3,
+      "incoming": "I took amoxicillin first, but I broke out in a rash, so they switched me to cephalexin. The rash went away after that, but I haven't noticed any blood in my urine or joint pain - just this constant tiredness and the pain in my side.",
+      "reply": "Doctor: Have you noticed any changes in how much you're urinating, or any swelling in your legs or face?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 5973,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 37,
+        "output_tokens_details": {
+          "thinking_tokens": 0
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 4,
+      "incoming": "Now that you mention it, I haven't really been paying close attention to how much I'm urinating, but I don't think there's been a big change. I haven't noticed any swelling in my legs or face either.",
+      "reply": "Doctor: Let's check some labs — REQUEST TEST: Urinalysis and REQUEST TEST: Serum_Creatinine_BUN",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Urinalysis and REQUEST TEST: Serum_Creatinine_BUN",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 6070,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 53,
+        "output_tokens_details": {
+          "thinking_tokens": 0
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 5,
+      "incoming": "RESULTS: Based on the available test data:\n\n**Urinalysis:**\n- Leukocyturia: Present\n- Bacterial Culture: Negative\n- Cytospin stained with Hansel's solution: 3% binucleated cells with eosinophilic, granular cytoplasm (suggestive of eosinophiluria)\n\n**Serum Biochemistry:**\n- BUN (Urea): Elevated\n- Creatinine: Elevated\n\nThese findings indicate impaired renal function with eosinophiluria in the absence of bacterial infection, which in the context of recent antibiotic use (particularly beta-lactam antibiotics like amoxicillin and cephalexin) is highly suggestive of acute interstitial nephritis (AIN).",
+      "reply": "Doctor: These results strongly point to acute interstitial nephritis from the antibiotic exposure. Have you noticed any joint swelling or eye redness, or is this the first time you've had kidney problems?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 6367,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 68,
+        "output_tokens_details": {
+          "thinking_tokens": 0
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 6,
+      "incoming": "No, I haven't had any joint swelling or redness in my eyes. And as far as I know, I've never had any kidney problems before - my blood pressure medicine has been working fine for years and I've never had issues like this.",
+      "reply": "Doctor: Given the timeline with cephalexin, elevated kidney markers, and eosinophiluria with no prior renal issues, this fits well with drug-induced acute interstitial nephritis.\n\nDIAGNOSIS READY: Acute Interstitial Nephritis (AIN) secondary to beta-lactam antibiotic exposure (likely cephalexin, possibly amoxicillin)",
+      "tool_calls": [],
+      "kind": "diagnosis",
+      "payload": "Acute Interstitial Nephritis (AIN) secondary to beta-lactam antibiotic exposure (likely cephalexin, possibly amoxicillin)",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 6502,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 135,
+        "output_tokens_details": {
+          "thinking_tokens": 0
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    }
+  ],
+  "support_llm": "anthropic:claude-sonnet-4-5",
+  "support_llm_cost_usd": 0.01609,
+  "support_llm_calls": 6,
+  "voice_subset": false,
+  "diagnostics": {
+    "schema": "tau2.health.diagnostics/v1",
+    "benchmark": "agentclinic",
+    "case_id": "MedQA-4",
+    "mode": "text",
+    "availability": {
+      "flow_available": false,
+      "flow_reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "signals_available": false,
+      "signals_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "metadata_sidecar_available": false,
+      "metadata_sidecar_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "tools_available": true,
+      "tools_reason": null
+    },
+    "provenance": {
+      "benchmark": "agentclinic",
+      "mode": "text",
+      "transport_endpoint": "POST /api/bench/agent-turn",
+      "agent_id": "c2761ec7-d3f7-4bd7-b68c-40a87f1b1ab3",
+      "base_url": "https://aws-gateway-backend.whissle.ai/bot",
+      "seed": 42,
+      "stratum": {
+        "dataset": "MedQA",
+        "scenario_index": 4,
+        "selection": "head",
+        "limit": 25
+      },
+      "judge": {
+        "judge_provider": "anthropic",
+        "judge_model": "claude-sonnet-4-5",
+        "judge_endpoint": "anthropic:claude-sonnet-4-5",
+        "judge_independent": true,
+        "judge_independence_note": "Judge independence: this run's simulators and graders were routed through an external provider, independent of the agent under test. This is the stronger footing for a published comparison against the paper's numbers."
+      },
+      "judge_provider": "anthropic",
+      "judge_independent": true,
+      "run_id": null,
+      "run_dir": "results/whissle/agentclinic/20260808T191547Z-sweep25_sonnet5",
+      "harness_commit": "86b4475",
+      "captured_at": "2026-08-08T19:16:48+00:00",
+      "protocol": "markers",
+      "history": "agentclinic",
+      "prompt_mode": "override",
+      "vision": "off",
+      "agent_type": null,
+      "total_inferences": 20,
+      "inferences_used": 6,
+      "support_llm": "anthropic:claude-sonnet-4-5",
+      "patient_bias": null,
+      "doctor_bias": null,
+      "voice_subset": false
+    },
+    "cost": {
+      "available": true,
+      "reason": null,
+      "judge_calls": 6,
+      "judge_cost_usd": 0.01609,
+      "agent_calls": 6
+    },
+    "flow": {
+      "available": false,
+      "reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "source": null,
+      "turns": null,
+      "summary": null,
+      "conversation_id": null,
+      "current_state": null,
+      "start_state": null,
+      "final_state": null,
+      "ended": null,
+      "flow_end": null,
+      "num_steps": null,
+      "step_counts_by_kind": null,
+      "states_visited": null,
+      "states_declared": null,
+      "states_unvisited": null,
+      "transitions": null,
+      "transitions_fired": null,
+      "var_sets": null,
+      "var_sources": null,
+      "guard_trips": null,
+      "state_divergences": null,
+      "tools_gated": null,
+      "says": null,
+      "steps": null
+    },
+    "signals": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "metadata_sidecar": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "tools": {
+      "available": true,
+      "reason": null,
+      "source": "doctor actions parsed from /api/bench/agent-turn replies",
+      "calls": [
+        {
+          "turn": 4,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Urinalysis and REQUEST TEST: Serum_Creatinine_BUN"
+          },
+          "result": "RESULTS: Based on the available test data:\n\n**Urinalysis:**\n- Leukocyturia: Present\n- Bacterial Culture: Negative\n- Cytospin stained with Hansel's solution: 3% binucleated cells with eosinophilic, granular cytoplasm (suggestive of eosinophiluria)\n\n**Serum Biochemistry:**\n- BUN (Urea): Elevated\n- Creatinine: Elevated\n\nThese findings indicate impaired renal function with eosinophiluria in the absence of bacterial infection, which in the context of recent antibiotic use (particularly beta-lactam antibiotics like amoxicillin and cephalexin) is highly suggestive of acute interstitial nephritis (AIN).",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 2638,
+          "terminal": false
+        },
+        {
+          "turn": 6,
+          "id": null,
+          "name": "give_diagnosis",
+          "arguments": {
+            "request": "Acute Interstitial Nephritis (AIN) secondary to beta-lactam antibiotic exposure (likely cephalexin, possibly amoxicillin)"
+          },
+          "result": null,
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 3628,
+          "terminal": true
+        }
+      ],
+      "summary": {
+        "n_calls": 2,
+        "by_name": {
+          "request_test": 1,
+          "give_diagnosis": 1
+        },
+        "n_ok": 2,
+        "n_error": 0,
+        "errors": []
+      },
+      "writes": {
+        "available": false,
+        "reason": "this benchmark issues no writes, so there is no said-vs-emitted-vs-landed distinction to record"
+      }
+    },
+    "turns": [
+      {
+        "inference": 1,
+        "incoming": "",
+        "reply": "Hello, I'm Dr. Agent - can you tell me more about when your fatigue, flank pain, and fever started?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 5730,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 41,
+          "output_tokens_details": {
+            "thinking_tokens": 0
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 2,
+        "incoming": "Well, doctor, I started feeling really tired and having this dull ache in my side about a week or so after I finished taking that second antibiotic for my sinus infection. The fever came around the same time, and it just won't seem to go away.",
+        "reply": "Doctor: Can you tell me which antibiotic you took for the sinusitis, and have you noticed any rash, joint pain, or blood in your urine along with this?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 5841,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 55,
+          "output_tokens_details": {
+            "thinking_tokens": 0
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 3,
+        "incoming": "I took amoxicillin first, but I broke out in a rash, so they switched me to cephalexin. The rash went away after that, but I haven't noticed any blood in my urine or joint pain - just this constant tiredness and the pain in my side.",
+        "reply": "Doctor: Have you noticed any changes in how much you're urinating, or any swelling in your legs or face?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 5973,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 37,
+          "output_tokens_details": {
+            "thinking_tokens": 0
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 4,
+        "incoming": "Now that you mention it, I haven't really been paying close attention to how much I'm urinating, but I don't think there's been a big change. I haven't noticed any swelling in my legs or face either.",
+        "reply": "Doctor: Let's check some labs — REQUEST TEST: Urinalysis and REQUEST TEST: Serum_Creatinine_BUN",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Urinalysis and REQUEST TEST: Serum_Creatinine_BUN",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 6070,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 53,
+          "output_tokens_details": {
+            "thinking_tokens": 0
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 5,
+        "incoming": "RESULTS: Based on the available test data:\n\n**Urinalysis:**\n- Leukocyturia: Present\n- Bacterial Culture: Negative\n- Cytospin stained with Hansel's solution: 3% binucleated cells with eosinophilic, granular cytoplasm (suggestive of eosinophiluria)\n\n**Serum Biochemistry:**\n- BUN (Urea): Elevated\n- Creatinine: Elevated\n\nThese findings indicate impaired renal function with eosinophiluria in the absence of bacterial infection, which in the context of recent antibiotic use (particularly beta-lactam antibiotics like amoxicillin and cephalexin) is highly suggestive of acute interstitial nephritis (AIN).",
+        "reply": "Doctor: These results strongly point to acute interstitial nephritis from the antibiotic exposure. Have you noticed any joint swelling or eye redness, or is this the first time you've had kidney problems?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 6367,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 68,
+          "output_tokens_details": {
+            "thinking_tokens": 0
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 6,
+        "incoming": "No, I haven't had any joint swelling or redness in my eyes. And as far as I know, I've never had any kidney problems before - my blood pressure medicine has been working fine for years and I've never had issues like this.",
+        "reply": "Doctor: Given the timeline with cephalexin, elevated kidney markers, and eosinophiluria with no prior renal issues, this fits well with drug-induced acute interstitial nephritis.\n\nDIAGNOSIS READY: Acute Interstitial Nephritis (AIN) secondary to beta-lactam antibiotic exposure (likely cephalexin, possibly amoxicillin)",
+        "tool_calls": [],
+        "kind": "diagnosis",
+        "payload": "Acute Interstitial Nephritis (AIN) secondary to beta-lactam antibiotic exposure (likely cephalexin, possibly amoxicillin)",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 6502,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 135,
+          "output_tokens_details": {
+            "thinking_tokens": 0
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      }
+    ],
+    "audio": null
+  }
+}

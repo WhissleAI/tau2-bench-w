@@ -1,0 +1,751 @@
+{
+  "scenario_id": "MedQA-9",
+  "scenario_index": 9,
+  "dataset": "MedQA",
+  "mode": "text",
+  "correct_diagnosis": "Endometritis",
+  "answer_options": [],
+  "score": {
+    "outcome": "correct",
+    "correctness": true,
+    "doctor_diagnosis": "Postpartum endometritis — infection of the uterine lining following prolonged labor and vaginal delivery, requiring broad-spectrum IV antibiotics (clindamycin plus gentamicin).",
+    "doctor_final_text": "The urine looks clean, so we can rule out a urinary tract infection, and your breasts and lungs don't suggest another source. With a fever of 102°F, chills, rapid heart rate, and a tender uterus three days after a prolonged labor with a large baby, the picture points clearly to an infection of the lining of your uterus.\n\nDIAGNOSIS READY: Postpartum endometritis — infection of the uterine lining following prolonged labor and vaginal delivery, requiring broad-spectrum IV antibiotics (clindamycin plus gentamicin).",
+    "moderator_raw": "yes",
+    "moderator_raw_text": "Yes",
+    "moderator_lenient": true,
+    "moderator_attempts": 1,
+    "moderator_normalized": false,
+    "moderator_unconstrained": false,
+    "declined": false,
+    "refusal_evidence": [],
+    "format_deviation": false,
+    "decline_source": null,
+    "decline_reason": "",
+    "spurious_commit": false
+  },
+  "infra_fail": false,
+  "error": null,
+  "findings": [],
+  "inferences_used": 8,
+  "max_inferences": 20,
+  "tests_ordered": [
+    "Vital_Signs",
+    "Urinalysis_with_Culture"
+  ],
+  "images_requested": 0,
+  "image": null,
+  "image_error": null,
+  "vision": "off",
+  "refusals": [],
+  "dialogue": [
+    {
+      "role": "doctor",
+      "inference": 1,
+      "kind": "question",
+      "text": "Hello, I'm Dr. Agent. I understand you've been having a fever after your delivery — can you tell me how many days ago you gave birth, and when the fever started?",
+      "payload": null,
+      "latency_ms": 6769,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "I gave birth about three days ago, and the fever started yesterday. I've been feeling pretty uncomfortable since then."
+    },
+    {
+      "role": "doctor",
+      "inference": 2,
+      "kind": "question",
+      "text": "Thank you. Was your delivery vaginal or by cesarean section, and were there any complications like prolonged labor or prolonged rupture of membranes?",
+      "payload": null,
+      "latency_ms": 5045,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "It was a vaginal delivery, and yes, my labor was quite long – it took a really long time before my baby finally came. My son was pretty big too, 11 pounds!"
+    },
+    {
+      "role": "doctor",
+      "inference": 3,
+      "kind": "question",
+      "text": "Have you noticed any foul-smelling or unusual vaginal discharge since the delivery, and is the lochia heavier than expected?",
+      "payload": null,
+      "latency_ms": 3699,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "I haven't really noticed any bad smell, but I'm not sure what's normal for the discharge. It doesn't seem heavier than I expected, but my belly has been really tender and sore."
+    },
+    {
+      "role": "doctor",
+      "inference": 4,
+      "kind": "question",
+      "text": "Can you show me where exactly your belly is tender — is it low down in the middle, over your uterus, or more to one side? And are you having any pain or burning when you urinate?",
+      "payload": null,
+      "latency_ms": 4180,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "It's low down in the middle, right over where I think my uterus is. No, I don't have any burning when I urinate, but I have been going to the bathroom a lot more often than usual."
+    },
+    {
+      "role": "doctor",
+      "inference": 5,
+      "kind": "question",
+      "text": "Are you experiencing any chills, body aches, or feeling generally unwell? And how are your breasts — any redness, engorgement, or tenderness that could suggest a breast infection?",
+      "payload": null,
+      "latency_ms": 5101,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "I have had some chills along with the fever, and I do feel pretty run down overall. My breasts are a bit engorged since my milk came in, but they're not red or anything, just the normal fullness from breastfeeding."
+    },
+    {
+      "role": "doctor",
+      "inference": 6,
+      "kind": "test",
+      "text": "Given your fever, chills, and uterine tenderness after a prolonged labor, I'm concerned about an infection of the uterine lining. Let me check your vital signs and run some blood work.\n\nREQUEST TEST: Vital_Signs\n\nREQUEST TEST: Complete_Blood_Count",
+      "payload": "Vital_Signs",
+      "latency_ms": 8516,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS:\n\n**Vital Signs:**\n- Temperature: 102°F (38.9°C) - ELEVATED\n- Blood Pressure: 118/78 mmHg - Normal\n- Heart Rate: 111/min - Elevated (tachycardia)\n- Respiratory Rate: 17/min - Normal\n- Oxygen Saturation: 98% on room air - Normal\n\n**Complete Blood Count:**\n- WBC: NORMAL READINGS\n- Hemoglobin: NORMAL READINGS\n- Platelets: NORMAL READINGS\n\n**Additional findings from physical examination:**\n- Abdominal exam shows tender uterus with decreased bowel sounds\n- Minor bibasilar crackles noted on lung exam, but no respiratory distress"
+    },
+    {
+      "role": "doctor",
+      "inference": 7,
+      "kind": "test",
+      "text": "The bibasilar crackles are likely minor atelectasis, but I want to rule out a urinary source given your frequent urination. Let me get a urine sample and examine your pelvis more closely.\n\nREQUEST TEST: Urinalysis_with_Culture\n\nREQUEST TEST: Pelvic_Examination",
+      "payload": "Urinalysis_with_Culture",
+      "latency_ms": 4326,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS:\n\n**Urinalysis:**\n- Appearance: NORMAL READINGS\n- WBC: NORMAL READINGS\n- RBC: NORMAL READINGS\n- Nitrites: NORMAL READINGS\n- Leukocyte Esterase: NORMAL READINGS\n\n**Pelvic Examination:**\n- NORMAL READINGS\n\n**Note:** The urinalysis shows no evidence of urinary tract infection. The pelvic examination findings would be consistent with the clinical picture, but specific detailed results are not available in the current dataset. Given the clinical context (postpartum day 3, fever, uterine tenderness, prolonged labor), these findings support the suspected diagnosis of endometritis."
+    },
+    {
+      "role": "doctor",
+      "inference": 8,
+      "kind": "diagnosis",
+      "text": "The urine looks clean, so we can rule out a urinary tract infection, and your breasts and lungs don't suggest another source. With a fever of 102°F, chills, rapid heart rate, and a tender uterus three days after a prolonged labor with a large baby, the picture points clearly to an infection of the lining of your uterus.\n\nDIAGNOSIS READY: Postpartum endometritis — infection of the uterine lining following prolonged labor and vaginal delivery, requiring broad-spectrum IV antibiotics (clindamycin plus gentamicin).",
+      "payload": "Postpartum endometritis — infection of the uterine lining following prolonged labor and vaginal delivery, requiring broad-spectrum IV antibiotics (clindamycin plus gentamicin).",
+      "latency_ms": 10735,
+      "refusal": null,
+      "via": "marker"
+    }
+  ],
+  "latency_ms": [
+    6769,
+    5045,
+    3699,
+    4180,
+    5101,
+    8516,
+    4326,
+    10735
+  ],
+  "wall_s": 71.37,
+  "doctor_turns": [
+    {
+      "inference": 1,
+      "incoming": "",
+      "reply": "Hello, I'm Dr. Agent. I understand you've been having a fever after your delivery — can you tell me how many days ago you gave birth, and when the fever started?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 5713,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 114,
+        "output_tokens_details": {
+          "thinking_tokens": 58
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 2,
+      "incoming": "I gave birth about three days ago, and the fever started yesterday. I've been feeling pretty uncomfortable since then.",
+      "reply": "Thank you. Was your delivery vaginal or by cesarean section, and were there any complications like prolonged labor or prolonged rupture of membranes?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 5807,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 78,
+        "output_tokens_details": {
+          "thinking_tokens": 27
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 3,
+      "incoming": "It was a vaginal delivery, and yes, my labor was quite long – it took a really long time before my baby finally came. My son was pretty big too, 11 pounds!",
+      "reply": "Have you noticed any foul-smelling or unusual vaginal discharge since the delivery, and is the lochia heavier than expected?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 5911,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 45,
+        "output_tokens_details": {
+          "thinking_tokens": 0
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 4,
+      "incoming": "I haven't really noticed any bad smell, but I'm not sure what's normal for the discharge. It doesn't seem heavier than I expected, but my belly has been really tender and sore.",
+      "reply": "Can you show me where exactly your belly is tender — is it low down in the middle, over your uterus, or more to one side? And are you having any pain or burning when you urinate?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 6015,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 55,
+        "output_tokens_details": {
+          "thinking_tokens": 0
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 5,
+      "incoming": "It's low down in the middle, right over where I think my uterus is. No, I don't have any burning when I urinate, but I have been going to the bathroom a lot more often than usual.",
+      "reply": "Are you experiencing any chills, body aches, or feeling generally unwell? And how are your breasts — any redness, engorgement, or tenderness that could suggest a breast infection?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 6125,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 156,
+        "output_tokens_details": {
+          "thinking_tokens": 96
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 6,
+      "incoming": "I have had some chills along with the fever, and I do feel pretty run down overall. My breasts are a bit engorged since my milk came in, but they're not red or anything, just the normal fullness from breastfeeding.",
+      "reply": "Given your fever, chills, and uterine tenderness after a prolonged labor, I'm concerned about an infection of the uterine lining. Let me check your vital signs and run some blood work.\n\nREQUEST TEST: Vital_Signs\n\nREQUEST TEST: Complete_Blood_Count",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Vital_Signs",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 6252,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 156,
+        "output_tokens_details": {
+          "thinking_tokens": 57
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 7,
+      "incoming": "RESULTS:\n\n**Vital Signs:**\n- Temperature: 102°F (38.9°C) - ELEVATED\n- Blood Pressure: 118/78 mmHg - Normal\n- Heart Rate: 111/min - Elevated (tachycardia)\n- Respiratory Rate: 17/min - Normal\n- Oxygen Saturation: 98% on room air - Normal\n\n**Complete Blood Count:**\n- WBC: NORMAL READINGS\n- Hemoglobin: NORMAL READINGS\n- Platelets: NORMAL READINGS\n\n**Additional findings from physical examination:**\n- Abdominal exam shows tender uterus with decreased bowel sounds\n- Minor bibasilar crackles noted on lung exam, but no respiratory distress",
+      "reply": "The bibasilar crackles are likely minor atelectasis, but I want to rule out a urinary source given your frequent urination. Let me get a urine sample and examine your pelvis more closely.\n\nREQUEST TEST: Urinalysis_with_Culture\n\nREQUEST TEST: Pelvic_Examination",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Urinalysis_with_Culture",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 6612,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 223,
+        "output_tokens_details": {
+          "thinking_tokens": 119
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 8,
+      "incoming": "RESULTS:\n\n**Urinalysis:**\n- Appearance: NORMAL READINGS\n- WBC: NORMAL READINGS\n- RBC: NORMAL READINGS\n- Nitrites: NORMAL READINGS\n- Leukocyte Esterase: NORMAL READINGS\n\n**Pelvic Examination:**\n- NORMAL READINGS\n\n**Note:** The urinalysis shows no evidence of urinary tract infection. The pelvic examination findings would be consistent with the clinical picture, but specific detailed results are not available in the current dataset. Given the clinical context (postpartum day 3, fever, uterine tenderness, prolonged labor), these findings support the suspected diagnosis of endometritis.",
+      "reply": "The urine looks clean, so we can rule out a urinary tract infection, and your breasts and lungs don't suggest another source. With a fever of 102°F, chills, rapid heart rate, and a tender uterus three days after a prolonged labor with a large baby, the picture points clearly to an infection of the lining of your uterus.\n\nDIAGNOSIS READY: Postpartum endometritis — infection of the uterine lining following prolonged labor and vaginal delivery, requiring broad-spectrum IV antibiotics (clindamycin plus gentamicin).",
+      "tool_calls": [],
+      "kind": "diagnosis",
+      "payload": "Postpartum endometritis — infection of the uterine lining following prolonged labor and vaginal delivery, requiring broad-spectrum IV antibiotics (clindamycin plus gentamicin).",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 6959,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 334,
+        "output_tokens_details": {
+          "thinking_tokens": 148
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    }
+  ],
+  "support_llm": "anthropic:claude-sonnet-4-5",
+  "support_llm_cost_usd": 0.02213,
+  "support_llm_calls": 8,
+  "voice_subset": false,
+  "diagnostics": {
+    "schema": "tau2.health.diagnostics/v1",
+    "benchmark": "agentclinic",
+    "case_id": "MedQA-9",
+    "mode": "text",
+    "availability": {
+      "flow_available": false,
+      "flow_reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "signals_available": false,
+      "signals_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "metadata_sidecar_available": false,
+      "metadata_sidecar_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "tools_available": true,
+      "tools_reason": null
+    },
+    "provenance": {
+      "benchmark": "agentclinic",
+      "mode": "text",
+      "transport_endpoint": "POST /api/bench/agent-turn",
+      "agent_id": "c2761ec7-d3f7-4bd7-b68c-40a87f1b1ab3",
+      "base_url": "https://aws-gateway-backend.whissle.ai/bot",
+      "seed": 42,
+      "stratum": {
+        "dataset": "MedQA",
+        "scenario_index": 9,
+        "selection": "head",
+        "limit": 25
+      },
+      "judge": {
+        "judge_provider": "anthropic",
+        "judge_model": "claude-sonnet-4-5",
+        "judge_endpoint": "anthropic:claude-sonnet-4-5",
+        "judge_independent": true,
+        "judge_independence_note": "Judge independence: this run's simulators and graders were routed through an external provider, independent of the agent under test. This is the stronger footing for a published comparison against the paper's numbers."
+      },
+      "judge_provider": "anthropic",
+      "judge_independent": true,
+      "run_id": null,
+      "run_dir": "results/whissle/agentclinic/20260808T192627Z-sweep25_fable5",
+      "harness_commit": "86b4475",
+      "captured_at": "2026-08-08T19:29:23+00:00",
+      "protocol": "markers",
+      "history": "agentclinic",
+      "prompt_mode": "override",
+      "vision": "off",
+      "agent_type": null,
+      "total_inferences": 20,
+      "inferences_used": 8,
+      "support_llm": "anthropic:claude-sonnet-4-5",
+      "patient_bias": null,
+      "doctor_bias": null,
+      "voice_subset": false
+    },
+    "cost": {
+      "available": true,
+      "reason": null,
+      "judge_calls": 8,
+      "judge_cost_usd": 0.02213,
+      "agent_calls": 8
+    },
+    "flow": {
+      "available": false,
+      "reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "source": null,
+      "turns": null,
+      "summary": null,
+      "conversation_id": null,
+      "current_state": null,
+      "start_state": null,
+      "final_state": null,
+      "ended": null,
+      "flow_end": null,
+      "num_steps": null,
+      "step_counts_by_kind": null,
+      "states_visited": null,
+      "states_declared": null,
+      "states_unvisited": null,
+      "transitions": null,
+      "transitions_fired": null,
+      "var_sets": null,
+      "var_sources": null,
+      "guard_trips": null,
+      "state_divergences": null,
+      "tools_gated": null,
+      "says": null,
+      "steps": null
+    },
+    "signals": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "metadata_sidecar": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "tools": {
+      "available": true,
+      "reason": null,
+      "source": "doctor actions parsed from /api/bench/agent-turn replies",
+      "calls": [
+        {
+          "turn": 6,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Vital_Signs"
+          },
+          "result": "RESULTS:\n\n**Vital Signs:**\n- Temperature: 102°F (38.9°C) - ELEVATED\n- Blood Pressure: 118/78 mmHg - Normal\n- Heart Rate: 111/min - Elevated (tachycardia)\n- Respiratory Rate: 17/min - Normal\n- Oxygen Saturation: 98% on room air - Normal\n\n**Complete Blood Count:**\n- WBC: NORMAL READINGS\n- Hemoglobin: NORMAL READINGS\n- Platelets: NORMAL READINGS\n\n**Additional findings from physical examination:**\n- Abdominal exam shows tender uterus with decreased bowel sounds\n- Minor bibasilar crackles noted on lung exam, but no respiratory distress",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 8516,
+          "terminal": false
+        },
+        {
+          "turn": 7,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Urinalysis_with_Culture"
+          },
+          "result": "RESULTS:\n\n**Urinalysis:**\n- Appearance: NORMAL READINGS\n- WBC: NORMAL READINGS\n- RBC: NORMAL READINGS\n- Nitrites: NORMAL READINGS\n- Leukocyte Esterase: NORMAL READINGS\n\n**Pelvic Examination:**\n- NORMAL READINGS\n\n**Note:** The urinalysis shows no evidence of urinary tract infection. The pelvic examination findings would be consistent with the clinical picture, but specific detailed results are not available in the current dataset. Given the clinical context (postpartum day 3, fever, uterine tenderness, prolonged labor), these findings support the suspected diagnosis of endometritis.",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 4326,
+          "terminal": false
+        },
+        {
+          "turn": 8,
+          "id": null,
+          "name": "give_diagnosis",
+          "arguments": {
+            "request": "Postpartum endometritis — infection of the uterine lining following prolonged labor and vaginal delivery, requiring broad-spectrum IV antibiotics (clindamycin plus gentamicin)."
+          },
+          "result": null,
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 10735,
+          "terminal": true
+        }
+      ],
+      "summary": {
+        "n_calls": 3,
+        "by_name": {
+          "request_test": 2,
+          "give_diagnosis": 1
+        },
+        "n_ok": 3,
+        "n_error": 0,
+        "errors": []
+      },
+      "writes": {
+        "available": false,
+        "reason": "this benchmark issues no writes, so there is no said-vs-emitted-vs-landed distinction to record"
+      }
+    },
+    "turns": [
+      {
+        "inference": 1,
+        "incoming": "",
+        "reply": "Hello, I'm Dr. Agent. I understand you've been having a fever after your delivery — can you tell me how many days ago you gave birth, and when the fever started?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 5713,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 114,
+          "output_tokens_details": {
+            "thinking_tokens": 58
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 2,
+        "incoming": "I gave birth about three days ago, and the fever started yesterday. I've been feeling pretty uncomfortable since then.",
+        "reply": "Thank you. Was your delivery vaginal or by cesarean section, and were there any complications like prolonged labor or prolonged rupture of membranes?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 5807,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 78,
+          "output_tokens_details": {
+            "thinking_tokens": 27
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 3,
+        "incoming": "It was a vaginal delivery, and yes, my labor was quite long – it took a really long time before my baby finally came. My son was pretty big too, 11 pounds!",
+        "reply": "Have you noticed any foul-smelling or unusual vaginal discharge since the delivery, and is the lochia heavier than expected?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 5911,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 45,
+          "output_tokens_details": {
+            "thinking_tokens": 0
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 4,
+        "incoming": "I haven't really noticed any bad smell, but I'm not sure what's normal for the discharge. It doesn't seem heavier than I expected, but my belly has been really tender and sore.",
+        "reply": "Can you show me where exactly your belly is tender — is it low down in the middle, over your uterus, or more to one side? And are you having any pain or burning when you urinate?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 6015,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 55,
+          "output_tokens_details": {
+            "thinking_tokens": 0
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 5,
+        "incoming": "It's low down in the middle, right over where I think my uterus is. No, I don't have any burning when I urinate, but I have been going to the bathroom a lot more often than usual.",
+        "reply": "Are you experiencing any chills, body aches, or feeling generally unwell? And how are your breasts — any redness, engorgement, or tenderness that could suggest a breast infection?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 6125,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 156,
+          "output_tokens_details": {
+            "thinking_tokens": 96
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 6,
+        "incoming": "I have had some chills along with the fever, and I do feel pretty run down overall. My breasts are a bit engorged since my milk came in, but they're not red or anything, just the normal fullness from breastfeeding.",
+        "reply": "Given your fever, chills, and uterine tenderness after a prolonged labor, I'm concerned about an infection of the uterine lining. Let me check your vital signs and run some blood work.\n\nREQUEST TEST: Vital_Signs\n\nREQUEST TEST: Complete_Blood_Count",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Vital_Signs",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 6252,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 156,
+          "output_tokens_details": {
+            "thinking_tokens": 57
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 7,
+        "incoming": "RESULTS:\n\n**Vital Signs:**\n- Temperature: 102°F (38.9°C) - ELEVATED\n- Blood Pressure: 118/78 mmHg - Normal\n- Heart Rate: 111/min - Elevated (tachycardia)\n- Respiratory Rate: 17/min - Normal\n- Oxygen Saturation: 98% on room air - Normal\n\n**Complete Blood Count:**\n- WBC: NORMAL READINGS\n- Hemoglobin: NORMAL READINGS\n- Platelets: NORMAL READINGS\n\n**Additional findings from physical examination:**\n- Abdominal exam shows tender uterus with decreased bowel sounds\n- Minor bibasilar crackles noted on lung exam, but no respiratory distress",
+        "reply": "The bibasilar crackles are likely minor atelectasis, but I want to rule out a urinary source given your frequent urination. Let me get a urine sample and examine your pelvis more closely.\n\nREQUEST TEST: Urinalysis_with_Culture\n\nREQUEST TEST: Pelvic_Examination",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Urinalysis_with_Culture",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 6612,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 223,
+          "output_tokens_details": {
+            "thinking_tokens": 119
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 8,
+        "incoming": "RESULTS:\n\n**Urinalysis:**\n- Appearance: NORMAL READINGS\n- WBC: NORMAL READINGS\n- RBC: NORMAL READINGS\n- Nitrites: NORMAL READINGS\n- Leukocyte Esterase: NORMAL READINGS\n\n**Pelvic Examination:**\n- NORMAL READINGS\n\n**Note:** The urinalysis shows no evidence of urinary tract infection. The pelvic examination findings would be consistent with the clinical picture, but specific detailed results are not available in the current dataset. Given the clinical context (postpartum day 3, fever, uterine tenderness, prolonged labor), these findings support the suspected diagnosis of endometritis.",
+        "reply": "The urine looks clean, so we can rule out a urinary tract infection, and your breasts and lungs don't suggest another source. With a fever of 102°F, chills, rapid heart rate, and a tender uterus three days after a prolonged labor with a large baby, the picture points clearly to an infection of the lining of your uterus.\n\nDIAGNOSIS READY: Postpartum endometritis — infection of the uterine lining following prolonged labor and vaginal delivery, requiring broad-spectrum IV antibiotics (clindamycin plus gentamicin).",
+        "tool_calls": [],
+        "kind": "diagnosis",
+        "payload": "Postpartum endometritis — infection of the uterine lining following prolonged labor and vaginal delivery, requiring broad-spectrum IV antibiotics (clindamycin plus gentamicin).",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 6959,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 334,
+          "output_tokens_details": {
+            "thinking_tokens": 148
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      }
+    ],
+    "audio": null
+  }
+}

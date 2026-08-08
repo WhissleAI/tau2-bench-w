@@ -1,0 +1,617 @@
+{
+  "scenario_id": "MedQA-20",
+  "scenario_index": 20,
+  "dataset": "MedQA",
+  "mode": "text",
+  "correct_diagnosis": "Cytomegalovirus retinitis",
+  "answer_options": [],
+  "score": {
+    "outcome": "correct",
+    "correctness": true,
+    "doctor_diagnosis": "Cytomegalovirus (CMV) Retinitis",
+    "doctor_final_text": "The fundoscopic findings of granular yellow-white opacities along the retinal vessels with hemorrhages, combined with your severely low CD4 count of 36, give me a clear picture of what's happening. This is a classic presentation in patients with advanced AIDS.\n\nDIAGNOSIS READY: Cytomegalovirus (CMV) Retinitis",
+    "moderator_raw": "yes",
+    "moderator_raw_text": "Yes",
+    "moderator_lenient": true,
+    "moderator_attempts": 1,
+    "moderator_normalized": false,
+    "moderator_unconstrained": false,
+    "declined": false,
+    "refusal_evidence": [],
+    "format_deviation": false,
+    "decline_source": null,
+    "decline_reason": "",
+    "spurious_commit": false
+  },
+  "infra_fail": false,
+  "error": null,
+  "findings": [],
+  "inferences_used": 6,
+  "max_inferences": 20,
+  "tests_ordered": [
+    "Dilated_Fundoscopic_Examination",
+    "CD4_Count"
+  ],
+  "images_requested": 0,
+  "image": null,
+  "image_error": null,
+  "vision": "off",
+  "refusals": [],
+  "dialogue": [
+    {
+      "role": "doctor",
+      "inference": 1,
+      "kind": "question",
+      "text": "Hello, I'm Dr. Agent. I understand you've been having decreased vision and seeing black spots in your right eye. Can you tell me how long this has been going on, and whether you have any eye pain or redness?",
+      "payload": null,
+      "latency_ms": 6148,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "It started about 2 days ago, and no, there's no pain at all. My eye doesn't look red either, it just feels like there's something blocking my vision with these dark spots floating around."
+    },
+    {
+      "role": "doctor",
+      "inference": 2,
+      "kind": "question",
+      "text": "Thank you. Do you know your most recent CD4 count, and are you currently taking antiretroviral therapy?",
+      "payload": null,
+      "latency_ms": 5059,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "I'm not sure of the exact number for my CD4 count, but I know it's been pretty low. Yes, I'm taking my HIV medications - I think it's efavirenz and a couple others that I take every day."
+    },
+    {
+      "role": "doctor",
+      "inference": 3,
+      "kind": "question",
+      "text": "Have you noticed any flashing lights, or is the vision loss affecting one specific area of your visual field? Also, have you had any fevers, headaches, or other symptoms recently?",
+      "payload": null,
+      "latency_ms": 4121,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "No flashing lights, but the vision loss seems to be more in certain areas - like patches where I can't see clearly. And no, I haven't had any fevers or headaches, just this eye problem."
+    },
+    {
+      "role": "doctor",
+      "inference": 4,
+      "kind": "test",
+      "text": "Thank you. I'd like to take a look at the back of your eye now to check your retina.\n\nREQUEST TEST: Dilated_Fundoscopic_Examination",
+      "payload": "Dilated_Fundoscopic_Examination",
+      "latency_ms": 4616,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: Fundoscopy shows granular yellow-white opacities around the retinal vessels and multiple areas of dot-blot hemorrhages."
+    },
+    {
+      "role": "doctor",
+      "inference": 5,
+      "kind": "test",
+      "text": "The fundoscopy findings show a classic pattern of retinal damage. Let me confirm your immune status with a lab test.\n\nREQUEST TEST: CD4_Count",
+      "payload": "CD4_Count",
+      "latency_ms": 7257,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: CD4 T-lymphocyte count is 36/mm3"
+    },
+    {
+      "role": "doctor",
+      "inference": 6,
+      "kind": "diagnosis",
+      "text": "The fundoscopic findings of granular yellow-white opacities along the retinal vessels with hemorrhages, combined with your severely low CD4 count of 36, give me a clear picture of what's happening. This is a classic presentation in patients with advanced AIDS.\n\nDIAGNOSIS READY: Cytomegalovirus (CMV) Retinitis",
+      "payload": "Cytomegalovirus (CMV) Retinitis",
+      "latency_ms": 6702,
+      "refusal": null,
+      "via": "marker"
+    }
+  ],
+  "latency_ms": [
+    6148,
+    5059,
+    4121,
+    4616,
+    7257,
+    6702
+  ],
+  "wall_s": 48.16,
+  "doctor_turns": [
+    {
+      "inference": 1,
+      "incoming": "",
+      "reply": "Hello, I'm Dr. Agent. I understand you've been having decreased vision and seeing black spots in your right eye. Can you tell me how long this has been going on, and whether you have any eye pain or redness?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 5735,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 146,
+        "output_tokens_details": {
+          "thinking_tokens": 76
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 2,
+      "incoming": "It started about 2 days ago, and no, there's no pain at all. My eye doesn't look red either, it just feels like there's something blocking my vision with these dark spots floating around.",
+      "reply": "Thank you. Do you know your most recent CD4 count, and are you currently taking antiretroviral therapy?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 5860,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 111,
+        "output_tokens_details": {
+          "thinking_tokens": 73
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 3,
+      "incoming": "I'm not sure of the exact number for my CD4 count, but I know it's been pretty low. Yes, I'm taking my HIV medications - I think it's efavirenz and a couple others that I take every day.",
+      "reply": "Have you noticed any flashing lights, or is the vision loss affecting one specific area of your visual field? Also, have you had any fevers, headaches, or other symptoms recently?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 5964,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 119,
+        "output_tokens_details": {
+          "thinking_tokens": 60
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 4,
+      "incoming": "No flashing lights, but the vision loss seems to be more in certain areas - like patches where I can't see clearly. And no, I haven't had any fevers or headaches, just this eye problem.",
+      "reply": "Thank you. I'd like to take a look at the back of your eye now to check your retina.\n\nREQUEST TEST: Dilated_Fundoscopic_Examination",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Dilated_Fundoscopic_Examination",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 6083,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 136,
+        "output_tokens_details": {
+          "thinking_tokens": 81
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 5,
+      "incoming": "RESULTS: Fundoscopy shows granular yellow-white opacities around the retinal vessels and multiple areas of dot-blot hemorrhages.",
+      "reply": "The fundoscopy findings show a classic pattern of retinal damage. Let me confirm your immune status with a lab test.\n\nREQUEST TEST: CD4_Count",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "CD4_Count",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 6190,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 190,
+        "output_tokens_details": {
+          "thinking_tokens": 133
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 6,
+      "incoming": "RESULTS: CD4 T-lymphocyte count is 36/mm3",
+      "reply": "The fundoscopic findings of granular yellow-white opacities along the retinal vessels with hemorrhages, combined with your severely low CD4 count of 36, give me a clear picture of what's happening. This is a classic presentation in patients with advanced AIDS.\n\nDIAGNOSIS READY: Cytomegalovirus (CMV) Retinitis",
+      "tool_calls": [],
+      "kind": "diagnosis",
+      "payload": "Cytomegalovirus (CMV) Retinitis",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 6273,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 173,
+        "output_tokens_details": {
+          "thinking_tokens": 54
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    }
+  ],
+  "support_llm": "anthropic:claude-sonnet-4-5",
+  "support_llm_cost_usd": 0.0113,
+  "support_llm_calls": 6,
+  "voice_subset": false,
+  "diagnostics": {
+    "schema": "tau2.health.diagnostics/v1",
+    "benchmark": "agentclinic",
+    "case_id": "MedQA-20",
+    "mode": "text",
+    "availability": {
+      "flow_available": false,
+      "flow_reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "signals_available": false,
+      "signals_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "metadata_sidecar_available": false,
+      "metadata_sidecar_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "tools_available": true,
+      "tools_reason": null
+    },
+    "provenance": {
+      "benchmark": "agentclinic",
+      "mode": "text",
+      "transport_endpoint": "POST /api/bench/agent-turn",
+      "agent_id": "c2761ec7-d3f7-4bd7-b68c-40a87f1b1ab3",
+      "base_url": "https://aws-gateway-backend.whissle.ai/bot",
+      "seed": 42,
+      "stratum": {
+        "dataset": "MedQA",
+        "scenario_index": 20,
+        "selection": "head",
+        "limit": 25
+      },
+      "judge": {
+        "judge_provider": "anthropic",
+        "judge_model": "claude-sonnet-4-5",
+        "judge_endpoint": "anthropic:claude-sonnet-4-5",
+        "judge_independent": true,
+        "judge_independence_note": "Judge independence: this run's simulators and graders were routed through an external provider, independent of the agent under test. This is the stronger footing for a published comparison against the paper's numbers."
+      },
+      "judge_provider": "anthropic",
+      "judge_independent": true,
+      "run_id": null,
+      "run_dir": "results/whissle/agentclinic/20260808T192627Z-sweep25_fable5",
+      "harness_commit": "86b4475",
+      "captured_at": "2026-08-08T19:31:23+00:00",
+      "protocol": "markers",
+      "history": "agentclinic",
+      "prompt_mode": "override",
+      "vision": "off",
+      "agent_type": null,
+      "total_inferences": 20,
+      "inferences_used": 6,
+      "support_llm": "anthropic:claude-sonnet-4-5",
+      "patient_bias": null,
+      "doctor_bias": null,
+      "voice_subset": false
+    },
+    "cost": {
+      "available": true,
+      "reason": null,
+      "judge_calls": 6,
+      "judge_cost_usd": 0.0113,
+      "agent_calls": 6
+    },
+    "flow": {
+      "available": false,
+      "reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "source": null,
+      "turns": null,
+      "summary": null,
+      "conversation_id": null,
+      "current_state": null,
+      "start_state": null,
+      "final_state": null,
+      "ended": null,
+      "flow_end": null,
+      "num_steps": null,
+      "step_counts_by_kind": null,
+      "states_visited": null,
+      "states_declared": null,
+      "states_unvisited": null,
+      "transitions": null,
+      "transitions_fired": null,
+      "var_sets": null,
+      "var_sources": null,
+      "guard_trips": null,
+      "state_divergences": null,
+      "tools_gated": null,
+      "says": null,
+      "steps": null
+    },
+    "signals": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "metadata_sidecar": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "tools": {
+      "available": true,
+      "reason": null,
+      "source": "doctor actions parsed from /api/bench/agent-turn replies",
+      "calls": [
+        {
+          "turn": 4,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Dilated_Fundoscopic_Examination"
+          },
+          "result": "RESULTS: Fundoscopy shows granular yellow-white opacities around the retinal vessels and multiple areas of dot-blot hemorrhages.",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 4616,
+          "terminal": false
+        },
+        {
+          "turn": 5,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "CD4_Count"
+          },
+          "result": "RESULTS: CD4 T-lymphocyte count is 36/mm3",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 7257,
+          "terminal": false
+        },
+        {
+          "turn": 6,
+          "id": null,
+          "name": "give_diagnosis",
+          "arguments": {
+            "request": "Cytomegalovirus (CMV) Retinitis"
+          },
+          "result": null,
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 6702,
+          "terminal": true
+        }
+      ],
+      "summary": {
+        "n_calls": 3,
+        "by_name": {
+          "request_test": 2,
+          "give_diagnosis": 1
+        },
+        "n_ok": 3,
+        "n_error": 0,
+        "errors": []
+      },
+      "writes": {
+        "available": false,
+        "reason": "this benchmark issues no writes, so there is no said-vs-emitted-vs-landed distinction to record"
+      }
+    },
+    "turns": [
+      {
+        "inference": 1,
+        "incoming": "",
+        "reply": "Hello, I'm Dr. Agent. I understand you've been having decreased vision and seeing black spots in your right eye. Can you tell me how long this has been going on, and whether you have any eye pain or redness?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 5735,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 146,
+          "output_tokens_details": {
+            "thinking_tokens": 76
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 2,
+        "incoming": "It started about 2 days ago, and no, there's no pain at all. My eye doesn't look red either, it just feels like there's something blocking my vision with these dark spots floating around.",
+        "reply": "Thank you. Do you know your most recent CD4 count, and are you currently taking antiretroviral therapy?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 5860,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 111,
+          "output_tokens_details": {
+            "thinking_tokens": 73
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 3,
+        "incoming": "I'm not sure of the exact number for my CD4 count, but I know it's been pretty low. Yes, I'm taking my HIV medications - I think it's efavirenz and a couple others that I take every day.",
+        "reply": "Have you noticed any flashing lights, or is the vision loss affecting one specific area of your visual field? Also, have you had any fevers, headaches, or other symptoms recently?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 5964,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 119,
+          "output_tokens_details": {
+            "thinking_tokens": 60
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 4,
+        "incoming": "No flashing lights, but the vision loss seems to be more in certain areas - like patches where I can't see clearly. And no, I haven't had any fevers or headaches, just this eye problem.",
+        "reply": "Thank you. I'd like to take a look at the back of your eye now to check your retina.\n\nREQUEST TEST: Dilated_Fundoscopic_Examination",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Dilated_Fundoscopic_Examination",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 6083,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 136,
+          "output_tokens_details": {
+            "thinking_tokens": 81
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 5,
+        "incoming": "RESULTS: Fundoscopy shows granular yellow-white opacities around the retinal vessels and multiple areas of dot-blot hemorrhages.",
+        "reply": "The fundoscopy findings show a classic pattern of retinal damage. Let me confirm your immune status with a lab test.\n\nREQUEST TEST: CD4_Count",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "CD4_Count",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 6190,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 190,
+          "output_tokens_details": {
+            "thinking_tokens": 133
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 6,
+        "incoming": "RESULTS: CD4 T-lymphocyte count is 36/mm3",
+        "reply": "The fundoscopic findings of granular yellow-white opacities along the retinal vessels with hemorrhages, combined with your severely low CD4 count of 36, give me a clear picture of what's happening. This is a classic presentation in patients with advanced AIDS.\n\nDIAGNOSIS READY: Cytomegalovirus (CMV) Retinitis",
+        "tool_calls": [],
+        "kind": "diagnosis",
+        "payload": "Cytomegalovirus (CMV) Retinitis",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 6273,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 173,
+          "output_tokens_details": {
+            "thinking_tokens": 54
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      }
+    ],
+    "audio": null
+  }
+}

@@ -1,0 +1,362 @@
+{
+  "scenario_id": "MedQA-20",
+  "scenario_index": 20,
+  "dataset": "MedQA",
+  "mode": "text",
+  "correct_diagnosis": "Cytomegalovirus retinitis",
+  "answer_options": [],
+  "score": {
+    "outcome": "correct",
+    "correctness": true,
+    "doctor_diagnosis": "CMV Retinitis",
+    "doctor_final_text": "Thank you for sharing that; a CD4 count of 36 puts you at a very high risk for opportunistic infections. Based on this severe immunosuppression and the classic granular yellow-white lesions with hemorrhages seen on your eye exam, I have determined your diagnosis. \n\nDIAGNOSIS READY: CMV Retinitis",
+    "moderator_raw": "yes",
+    "moderator_raw_text": "Yes",
+    "moderator_lenient": true,
+    "moderator_attempts": 1,
+    "moderator_normalized": false,
+    "moderator_unconstrained": false,
+    "declined": false,
+    "refusal_evidence": [],
+    "format_deviation": false,
+    "decline_source": null,
+    "decline_reason": "",
+    "spurious_commit": false
+  },
+  "infra_fail": false,
+  "error": null,
+  "findings": [],
+  "inferences_used": 3,
+  "max_inferences": 20,
+  "tests_ordered": [
+    "Dilated_Fundus_Exam",
+    "CD4_Count"
+  ],
+  "images_requested": 0,
+  "image": null,
+  "image_error": null,
+  "vision": "off",
+  "refusals": [],
+  "dialogue": [
+    {
+      "role": "doctor",
+      "inference": 1,
+      "kind": "test",
+      "text": "Hello, I am Dr. Agent. Can you tell me how quickly these vision changes and black spots developed in your right eye, and if you are experiencing any pain? \n\nREQUEST TEST: Dilated_Fundus_Exam",
+      "payload": "Dilated_Fundus_Exam",
+      "latency_ms": 3132,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: Based on the fundoscopy examination performed, the findings show:\n\n**Fundoscopy (Dilated Fundus Exam):**\n- Granular yellow-white opacities around the retinal vessels\n- Multiple areas of dot-blot hemorrhages\n\nThese findings are consistent with retinal involvement and require immediate attention given the clinical context."
+    },
+    {
+      "role": "doctor",
+      "inference": 2,
+      "kind": "test",
+      "text": "To help me understand the depth of your immune suppression, do you know what your most recent CD4 T-lymphocyte count was? I would also like to run some blood work to confirm this.\n\nREQUEST TEST: CD4_Count",
+      "payload": "CD4_Count",
+      "latency_ms": 4257,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: \n\n**CD4 Count:**\n- CD4 T-lymphocyte: 36/mm³\n\nThis indicates severe immunosuppression (normal range is typically 500-1,500 cells/mm³). A CD4 count below 200/mm³ defines AIDS, and a count of 36/mm³ places the patient at very high risk for opportunistic infections."
+    },
+    {
+      "role": "doctor",
+      "inference": 3,
+      "kind": "diagnosis",
+      "text": "Thank you for sharing that; a CD4 count of 36 puts you at a very high risk for opportunistic infections. Based on this severe immunosuppression and the classic granular yellow-white lesions with hemorrhages seen on your eye exam, I have determined your diagnosis. \n\nDIAGNOSIS READY: CMV Retinitis",
+      "payload": "CMV Retinitis",
+      "latency_ms": 4274,
+      "refusal": null,
+      "via": "marker"
+    }
+  ],
+  "latency_ms": [
+    3132,
+    4257,
+    4274
+  ],
+  "wall_s": 21.43,
+  "doctor_turns": [
+    {
+      "inference": 1,
+      "incoming": "",
+      "reply": "Hello, I am Dr. Agent. Can you tell me how quickly these vision changes and black spots developed in your right eye, and if you are experiencing any pain? \n\nREQUEST TEST: Dilated_Fundus_Exam",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Dilated_Fundus_Exam",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 3960,
+        "output_tokens": 566,
+        "thinking_tokens": 520,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    },
+    {
+      "inference": 2,
+      "incoming": "RESULTS: Based on the fundoscopy examination performed, the findings show:\n\n**Fundoscopy (Dilated Fundus Exam):**\n- Granular yellow-white opacities around the retinal vessels\n- Multiple areas of dot-blot hemorrhages\n\nThese findings are consistent with retinal involvement and require immediate attention given the clinical context.",
+      "reply": "To help me understand the depth of your immune suppression, do you know what your most recent CD4 T-lymphocyte count was? I would also like to run some blood work to confirm this.\n\nREQUEST TEST: CD4_Count",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "CD4_Count",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4075,
+        "output_tokens": 919,
+        "thinking_tokens": 871,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    },
+    {
+      "inference": 3,
+      "incoming": "RESULTS: \n\n**CD4 Count:**\n- CD4 T-lymphocyte: 36/mm³\n\nThis indicates severe immunosuppression (normal range is typically 500-1,500 cells/mm³). A CD4 count below 200/mm³ defines AIDS, and a count of 36/mm³ places the patient at very high risk for opportunistic infections.",
+      "reply": "Thank you for sharing that; a CD4 count of 36 puts you at a very high risk for opportunistic infections. Based on this severe immunosuppression and the classic granular yellow-white lesions with hemorrhages seen on your eye exam, I have determined your diagnosis. \n\nDIAGNOSIS READY: CMV Retinitis",
+      "tool_calls": [],
+      "kind": "diagnosis",
+      "payload": "CMV Retinitis",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4211,
+        "output_tokens": 859,
+        "thinking_tokens": 794,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    }
+  ],
+  "support_llm": "anthropic:claude-sonnet-4-5",
+  "support_llm_cost_usd": 0.00552,
+  "support_llm_calls": 3,
+  "voice_subset": false,
+  "diagnostics": {
+    "schema": "tau2.health.diagnostics/v1",
+    "benchmark": "agentclinic",
+    "case_id": "MedQA-20",
+    "mode": "text",
+    "availability": {
+      "flow_available": false,
+      "flow_reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "signals_available": false,
+      "signals_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "metadata_sidecar_available": false,
+      "metadata_sidecar_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "tools_available": true,
+      "tools_reason": null
+    },
+    "provenance": {
+      "benchmark": "agentclinic",
+      "mode": "text",
+      "transport_endpoint": "POST /api/bench/agent-turn",
+      "agent_id": "c2761ec7-d3f7-4bd7-b68c-40a87f1b1ab3",
+      "base_url": "https://aws-gateway-backend.whissle.ai/bot",
+      "seed": 42,
+      "stratum": {
+        "dataset": "MedQA",
+        "scenario_index": 20,
+        "selection": "head",
+        "limit": 25
+      },
+      "judge": {
+        "judge_provider": "anthropic",
+        "judge_model": "claude-sonnet-4-5",
+        "judge_endpoint": "anthropic:claude-sonnet-4-5",
+        "judge_independent": true,
+        "judge_independence_note": "Judge independence: this run's simulators and graders were routed through an external provider, independent of the agent under test. This is the stronger footing for a published comparison against the paper's numbers."
+      },
+      "judge_provider": "anthropic",
+      "judge_independent": true,
+      "run_id": null,
+      "run_dir": "results/whissle/agentclinic/20260808T193252Z-sweep25_g35f",
+      "harness_commit": "86b4475",
+      "captured_at": "2026-08-08T19:37:29+00:00",
+      "protocol": "markers",
+      "history": "agentclinic",
+      "prompt_mode": "override",
+      "vision": "off",
+      "agent_type": null,
+      "total_inferences": 20,
+      "inferences_used": 3,
+      "support_llm": "anthropic:claude-sonnet-4-5",
+      "patient_bias": null,
+      "doctor_bias": null,
+      "voice_subset": false
+    },
+    "cost": {
+      "available": true,
+      "reason": null,
+      "judge_calls": 3,
+      "judge_cost_usd": 0.00552,
+      "agent_calls": 3
+    },
+    "flow": {
+      "available": false,
+      "reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "source": null,
+      "turns": null,
+      "summary": null,
+      "conversation_id": null,
+      "current_state": null,
+      "start_state": null,
+      "final_state": null,
+      "ended": null,
+      "flow_end": null,
+      "num_steps": null,
+      "step_counts_by_kind": null,
+      "states_visited": null,
+      "states_declared": null,
+      "states_unvisited": null,
+      "transitions": null,
+      "transitions_fired": null,
+      "var_sets": null,
+      "var_sources": null,
+      "guard_trips": null,
+      "state_divergences": null,
+      "tools_gated": null,
+      "says": null,
+      "steps": null
+    },
+    "signals": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "metadata_sidecar": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "tools": {
+      "available": true,
+      "reason": null,
+      "source": "doctor actions parsed from /api/bench/agent-turn replies",
+      "calls": [
+        {
+          "turn": 1,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Dilated_Fundus_Exam"
+          },
+          "result": "RESULTS: Based on the fundoscopy examination performed, the findings show:\n\n**Fundoscopy (Dilated Fundus Exam):**\n- Granular yellow-white opacities around the retinal vessels\n- Multiple areas of dot-blot hemorrhages\n\nThese findings are consistent with retinal involvement and require immediate attention given the clinical context.",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 3132,
+          "terminal": false
+        },
+        {
+          "turn": 2,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "CD4_Count"
+          },
+          "result": "RESULTS: \n\n**CD4 Count:**\n- CD4 T-lymphocyte: 36/mm³\n\nThis indicates severe immunosuppression (normal range is typically 500-1,500 cells/mm³). A CD4 count below 200/mm³ defines AIDS, and a count of 36/mm³ places the patient at very high risk for opportunistic infections.",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 4257,
+          "terminal": false
+        },
+        {
+          "turn": 3,
+          "id": null,
+          "name": "give_diagnosis",
+          "arguments": {
+            "request": "CMV Retinitis"
+          },
+          "result": null,
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 4274,
+          "terminal": true
+        }
+      ],
+      "summary": {
+        "n_calls": 3,
+        "by_name": {
+          "request_test": 2,
+          "give_diagnosis": 1
+        },
+        "n_ok": 3,
+        "n_error": 0,
+        "errors": []
+      },
+      "writes": {
+        "available": false,
+        "reason": "this benchmark issues no writes, so there is no said-vs-emitted-vs-landed distinction to record"
+      }
+    },
+    "turns": [
+      {
+        "inference": 1,
+        "incoming": "",
+        "reply": "Hello, I am Dr. Agent. Can you tell me how quickly these vision changes and black spots developed in your right eye, and if you are experiencing any pain? \n\nREQUEST TEST: Dilated_Fundus_Exam",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Dilated_Fundus_Exam",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 3960,
+          "output_tokens": 566,
+          "thinking_tokens": 520,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      },
+      {
+        "inference": 2,
+        "incoming": "RESULTS: Based on the fundoscopy examination performed, the findings show:\n\n**Fundoscopy (Dilated Fundus Exam):**\n- Granular yellow-white opacities around the retinal vessels\n- Multiple areas of dot-blot hemorrhages\n\nThese findings are consistent with retinal involvement and require immediate attention given the clinical context.",
+        "reply": "To help me understand the depth of your immune suppression, do you know what your most recent CD4 T-lymphocyte count was? I would also like to run some blood work to confirm this.\n\nREQUEST TEST: CD4_Count",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "CD4_Count",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4075,
+          "output_tokens": 919,
+          "thinking_tokens": 871,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      },
+      {
+        "inference": 3,
+        "incoming": "RESULTS: \n\n**CD4 Count:**\n- CD4 T-lymphocyte: 36/mm³\n\nThis indicates severe immunosuppression (normal range is typically 500-1,500 cells/mm³). A CD4 count below 200/mm³ defines AIDS, and a count of 36/mm³ places the patient at very high risk for opportunistic infections.",
+        "reply": "Thank you for sharing that; a CD4 count of 36 puts you at a very high risk for opportunistic infections. Based on this severe immunosuppression and the classic granular yellow-white lesions with hemorrhages seen on your eye exam, I have determined your diagnosis. \n\nDIAGNOSIS READY: CMV Retinitis",
+        "tool_calls": [],
+        "kind": "diagnosis",
+        "payload": "CMV Retinitis",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4211,
+          "output_tokens": 859,
+          "thinking_tokens": 794,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      }
+    ],
+    "audio": null
+  }
+}

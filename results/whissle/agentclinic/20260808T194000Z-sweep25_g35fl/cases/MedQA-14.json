@@ -1,0 +1,509 @@
+{
+  "scenario_id": "MedQA-14",
+  "scenario_index": 14,
+  "dataset": "MedQA",
+  "mode": "text",
+  "correct_diagnosis": "Rupture of the flexor digitorum profundus tendon at its point of insertion",
+  "answer_options": [],
+  "score": {
+    "outcome": "incorrect",
+    "correctness": false,
+    "doctor_diagnosis": "Mallet finger (extensor tendon rupture at the distal interphalangeal joint)",
+    "doctor_final_text": "DIAGNOSIS READY: Mallet finger (extensor tendon rupture at the distal interphalangeal joint)",
+    "moderator_raw": "no",
+    "moderator_raw_text": "No",
+    "moderator_lenient": false,
+    "moderator_attempts": 1,
+    "moderator_normalized": false,
+    "moderator_unconstrained": false,
+    "declined": false,
+    "refusal_evidence": [],
+    "format_deviation": false,
+    "decline_source": null,
+    "decline_reason": "",
+    "spurious_commit": false
+  },
+  "infra_fail": false,
+  "error": null,
+  "findings": [],
+  "inferences_used": 6,
+  "max_inferences": 20,
+  "tests_ordered": [
+    "X-Ray_Right_Finger",
+    "Physical_Examination_Right_Ring_Finger"
+  ],
+  "images_requested": 0,
+  "image": null,
+  "image_error": null,
+  "vision": "off",
+  "refusals": [],
+  "dialogue": [
+    {
+      "role": "doctor",
+      "inference": 1,
+      "kind": "question",
+      "text": "Hello, I'm Dr. Agent. How long have you been experiencing the swelling and pain in your right ring finger?",
+      "payload": null,
+      "latency_ms": 893,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "It started about 2 days ago when I was playing football. My finger got caught in another player's jersey and he pulled away really hard."
+    },
+    {
+      "role": "doctor",
+      "inference": 2,
+      "kind": "question",
+      "text": "Did you hear a pop or snap when your finger was pulled, and have you noticed any bruising or inability to straighten it?",
+      "payload": null,
+      "latency_ms": 613,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "I didn't really hear a pop or anything like that. There's some bruising, but actually the problem is I can't bend the tip of my finger - it just stays straight even when I try to make a fist."
+    },
+    {
+      "role": "doctor",
+      "inference": 3,
+      "kind": "test",
+      "text": "REQUEST TEST: X-Ray_Right_Finger",
+      "payload": "X-Ray_Right_Finger",
+      "latency_ms": 691,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: X-ray of the Right Hand shows no bone fractures or dislocations visible. Soft tissue swelling noted around the distal interphalangeal joint of the right ring finger."
+    },
+    {
+      "role": "doctor",
+      "inference": 4,
+      "kind": "question",
+      "text": "Did you notice if the tip of your finger drooped immediately after the injury, or did it develop over those two days?",
+      "payload": null,
+      "latency_ms": 795,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "It happened pretty much right away after the injury. I noticed I couldn't bend the tip and it just kind of stayed in that extended position from the start."
+    },
+    {
+      "role": "doctor",
+      "inference": 5,
+      "kind": "test",
+      "text": "REQUEST TEST: Physical_Examination_Right_Ring_Finger",
+      "payload": "Physical_Examination_Right_Ring_Finger",
+      "latency_ms": 634,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: Physical Examination of Right Ring Finger shows:\n\n**Inspection:** Right ring finger is extended, with visible swelling at the distal interphalangeal joint.\n\n**Palpation:** Tenderness localized at the distal interphalangeal joint of the right ring finger.\n\n**Range of Motion:** Patient unable to flex the right ring finger at the distal interphalangeal joint while attempting to make a fist. No joint laxity.\n\n**Neurovascular Assessment:** Normal capillary refill, no sensory deficits."
+    },
+    {
+      "role": "doctor",
+      "inference": 6,
+      "kind": "diagnosis",
+      "text": "DIAGNOSIS READY: Mallet finger (extensor tendon rupture at the distal interphalangeal joint)",
+      "payload": "Mallet finger (extensor tendon rupture at the distal interphalangeal joint)",
+      "latency_ms": 731,
+      "refusal": null,
+      "via": "marker"
+    }
+  ],
+  "latency_ms": [
+    893,
+    613,
+    691,
+    795,
+    634,
+    731
+  ],
+  "wall_s": 15.69,
+  "doctor_turns": [
+    {
+      "inference": 1,
+      "incoming": "",
+      "reply": "Hello, I'm Dr. Agent. How long have you been experiencing the swelling and pain in your right ring finger?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 3944,
+        "output_tokens": 25,
+        "thinking_tokens": 0,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    },
+    {
+      "inference": 2,
+      "incoming": "It started about 2 days ago when I was playing football. My finger got caught in another player's jersey and he pulled away really hard.",
+      "reply": "Did you hear a pop or snap when your finger was pulled, and have you noticed any bruising or inability to straighten it?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4000,
+        "output_tokens": 25,
+        "thinking_tokens": 0,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    },
+    {
+      "inference": 3,
+      "incoming": "I didn't really hear a pop or anything like that. There's some bruising, but actually the problem is I can't bend the tip of my finger - it just stays straight even when I try to make a fist.",
+      "reply": "REQUEST TEST: X-Ray_Right_Finger",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "X-Ray_Right_Finger",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4075,
+        "output_tokens": 10,
+        "thinking_tokens": 0,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    },
+    {
+      "inference": 4,
+      "incoming": "RESULTS: X-ray of the Right Hand shows no bone fractures or dislocations visible. Soft tissue swelling noted around the distal interphalangeal joint of the right ring finger.",
+      "reply": "Did you notice if the tip of your finger drooped immediately after the injury, or did it develop over those two days?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4122,
+        "output_tokens": 25,
+        "thinking_tokens": 0,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    },
+    {
+      "inference": 5,
+      "incoming": "It happened pretty much right away after the injury. I noticed I couldn't bend the tip and it just kind of stayed in that extended position from the start.",
+      "reply": "REQUEST TEST: Physical_Examination_Right_Ring_Finger",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Physical_Examination_Right_Ring_Finger",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4182,
+        "output_tokens": 12,
+        "thinking_tokens": 0,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    },
+    {
+      "inference": 6,
+      "incoming": "RESULTS: Physical Examination of Right Ring Finger shows:\n\n**Inspection:** Right ring finger is extended, with visible swelling at the distal interphalangeal joint.\n\n**Palpation:** Tenderness localized at the distal interphalangeal joint of the right ring finger.\n\n**Range of Motion:** Patient unable to flex the right ring finger at the distal interphalangeal joint while attempting to make a fist. No joint laxity.\n\n**Neurovascular Assessment:** Normal capillary refill, no sensory deficits.",
+      "reply": "DIAGNOSIS READY: Mallet finger (extensor tendon rupture at the distal interphalangeal joint)",
+      "tool_calls": [],
+      "kind": "diagnosis",
+      "payload": "Mallet finger (extensor tendon rupture at the distal interphalangeal joint)",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4299,
+        "output_tokens": 23,
+        "thinking_tokens": 0,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    }
+  ],
+  "support_llm": "anthropic:claude-sonnet-4-5",
+  "support_llm_cost_usd": 0.0118,
+  "support_llm_calls": 6,
+  "voice_subset": false,
+  "diagnostics": {
+    "schema": "tau2.health.diagnostics/v1",
+    "benchmark": "agentclinic",
+    "case_id": "MedQA-14",
+    "mode": "text",
+    "availability": {
+      "flow_available": false,
+      "flow_reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "signals_available": false,
+      "signals_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "metadata_sidecar_available": false,
+      "metadata_sidecar_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "tools_available": true,
+      "tools_reason": null
+    },
+    "provenance": {
+      "benchmark": "agentclinic",
+      "mode": "text",
+      "transport_endpoint": "POST /api/bench/agent-turn",
+      "agent_id": "c2761ec7-d3f7-4bd7-b68c-40a87f1b1ab3",
+      "base_url": "https://aws-gateway-backend.whissle.ai/bot",
+      "seed": 42,
+      "stratum": {
+        "dataset": "MedQA",
+        "scenario_index": 14,
+        "selection": "head",
+        "limit": 25
+      },
+      "judge": {
+        "judge_provider": "anthropic",
+        "judge_model": "claude-sonnet-4-5",
+        "judge_endpoint": "anthropic:claude-sonnet-4-5",
+        "judge_independent": true,
+        "judge_independence_note": "Judge independence: this run's simulators and graders were routed through an external provider, independent of the agent under test. This is the stronger footing for a published comparison against the paper's numbers."
+      },
+      "judge_provider": "anthropic",
+      "judge_independent": true,
+      "run_id": null,
+      "run_dir": "results/whissle/agentclinic/20260808T194000Z-sweep25_g35fl",
+      "harness_commit": "86b4475",
+      "captured_at": "2026-08-08T19:41:34+00:00",
+      "protocol": "markers",
+      "history": "agentclinic",
+      "prompt_mode": "override",
+      "vision": "off",
+      "agent_type": null,
+      "total_inferences": 20,
+      "inferences_used": 6,
+      "support_llm": "anthropic:claude-sonnet-4-5",
+      "patient_bias": null,
+      "doctor_bias": null,
+      "voice_subset": false
+    },
+    "cost": {
+      "available": true,
+      "reason": null,
+      "judge_calls": 6,
+      "judge_cost_usd": 0.0118,
+      "agent_calls": 6
+    },
+    "flow": {
+      "available": false,
+      "reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "source": null,
+      "turns": null,
+      "summary": null,
+      "conversation_id": null,
+      "current_state": null,
+      "start_state": null,
+      "final_state": null,
+      "ended": null,
+      "flow_end": null,
+      "num_steps": null,
+      "step_counts_by_kind": null,
+      "states_visited": null,
+      "states_declared": null,
+      "states_unvisited": null,
+      "transitions": null,
+      "transitions_fired": null,
+      "var_sets": null,
+      "var_sources": null,
+      "guard_trips": null,
+      "state_divergences": null,
+      "tools_gated": null,
+      "says": null,
+      "steps": null
+    },
+    "signals": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "metadata_sidecar": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "tools": {
+      "available": true,
+      "reason": null,
+      "source": "doctor actions parsed from /api/bench/agent-turn replies",
+      "calls": [
+        {
+          "turn": 3,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "X-Ray_Right_Finger"
+          },
+          "result": "RESULTS: X-ray of the Right Hand shows no bone fractures or dislocations visible. Soft tissue swelling noted around the distal interphalangeal joint of the right ring finger.",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 691,
+          "terminal": false
+        },
+        {
+          "turn": 5,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Physical_Examination_Right_Ring_Finger"
+          },
+          "result": "RESULTS: Physical Examination of Right Ring Finger shows:\n\n**Inspection:** Right ring finger is extended, with visible swelling at the distal interphalangeal joint.\n\n**Palpation:** Tenderness localized at the distal interphalangeal joint of the right ring finger.\n\n**Range of Motion:** Patient unable to flex the right ring finger at the distal interphalangeal joint while attempting to make a fist. No joint laxity.\n\n**Neurovascular Assessment:** Normal capillary refill, no sensory deficits.",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 634,
+          "terminal": false
+        },
+        {
+          "turn": 6,
+          "id": null,
+          "name": "give_diagnosis",
+          "arguments": {
+            "request": "Mallet finger (extensor tendon rupture at the distal interphalangeal joint)"
+          },
+          "result": null,
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 731,
+          "terminal": true
+        }
+      ],
+      "summary": {
+        "n_calls": 3,
+        "by_name": {
+          "request_test": 2,
+          "give_diagnosis": 1
+        },
+        "n_ok": 3,
+        "n_error": 0,
+        "errors": []
+      },
+      "writes": {
+        "available": false,
+        "reason": "this benchmark issues no writes, so there is no said-vs-emitted-vs-landed distinction to record"
+      }
+    },
+    "turns": [
+      {
+        "inference": 1,
+        "incoming": "",
+        "reply": "Hello, I'm Dr. Agent. How long have you been experiencing the swelling and pain in your right ring finger?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 3944,
+          "output_tokens": 25,
+          "thinking_tokens": 0,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      },
+      {
+        "inference": 2,
+        "incoming": "It started about 2 days ago when I was playing football. My finger got caught in another player's jersey and he pulled away really hard.",
+        "reply": "Did you hear a pop or snap when your finger was pulled, and have you noticed any bruising or inability to straighten it?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4000,
+          "output_tokens": 25,
+          "thinking_tokens": 0,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      },
+      {
+        "inference": 3,
+        "incoming": "I didn't really hear a pop or anything like that. There's some bruising, but actually the problem is I can't bend the tip of my finger - it just stays straight even when I try to make a fist.",
+        "reply": "REQUEST TEST: X-Ray_Right_Finger",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "X-Ray_Right_Finger",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4075,
+          "output_tokens": 10,
+          "thinking_tokens": 0,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      },
+      {
+        "inference": 4,
+        "incoming": "RESULTS: X-ray of the Right Hand shows no bone fractures or dislocations visible. Soft tissue swelling noted around the distal interphalangeal joint of the right ring finger.",
+        "reply": "Did you notice if the tip of your finger drooped immediately after the injury, or did it develop over those two days?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4122,
+          "output_tokens": 25,
+          "thinking_tokens": 0,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      },
+      {
+        "inference": 5,
+        "incoming": "It happened pretty much right away after the injury. I noticed I couldn't bend the tip and it just kind of stayed in that extended position from the start.",
+        "reply": "REQUEST TEST: Physical_Examination_Right_Ring_Finger",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Physical_Examination_Right_Ring_Finger",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4182,
+          "output_tokens": 12,
+          "thinking_tokens": 0,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      },
+      {
+        "inference": 6,
+        "incoming": "RESULTS: Physical Examination of Right Ring Finger shows:\n\n**Inspection:** Right ring finger is extended, with visible swelling at the distal interphalangeal joint.\n\n**Palpation:** Tenderness localized at the distal interphalangeal joint of the right ring finger.\n\n**Range of Motion:** Patient unable to flex the right ring finger at the distal interphalangeal joint while attempting to make a fist. No joint laxity.\n\n**Neurovascular Assessment:** Normal capillary refill, no sensory deficits.",
+        "reply": "DIAGNOSIS READY: Mallet finger (extensor tendon rupture at the distal interphalangeal joint)",
+        "tool_calls": [],
+        "kind": "diagnosis",
+        "payload": "Mallet finger (extensor tendon rupture at the distal interphalangeal joint)",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4299,
+          "output_tokens": 23,
+          "thinking_tokens": 0,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      }
+    ],
+    "audio": null
+  }
+}

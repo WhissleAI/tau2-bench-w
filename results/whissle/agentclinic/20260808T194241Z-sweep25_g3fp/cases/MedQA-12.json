@@ -1,0 +1,1063 @@
+{
+  "scenario_id": "MedQA-12",
+  "scenario_index": 12,
+  "dataset": "MedQA",
+  "mode": "text",
+  "correct_diagnosis": "Posterior hip dislocation",
+  "answer_options": [],
+  "score": {
+    "outcome": "correct",
+    "correctness": true,
+    "doctor_diagnosis": "Posterior hip dislocation",
+    "doctor_final_text": "We will begin the procedure as soon as the sedation team is ready. DIAGNOSIS READY: Posterior hip dislocation",
+    "moderator_raw": "yes",
+    "moderator_raw_text": "Yes",
+    "moderator_lenient": true,
+    "moderator_attempts": 1,
+    "moderator_normalized": false,
+    "moderator_unconstrained": false,
+    "declined": false,
+    "refusal_evidence": [],
+    "format_deviation": false,
+    "decline_source": null,
+    "decline_reason": "",
+    "spurious_commit": false
+  },
+  "infra_fail": false,
+  "error": null,
+  "findings": [],
+  "inferences_used": 17,
+  "max_inferences": 20,
+  "tests_ordered": [
+    "Pelvis_X-Ray",
+    "CT_Pelvis",
+    "X-Ray_Knees"
+  ],
+  "images_requested": 0,
+  "image": null,
+  "image_error": null,
+  "vision": "off",
+  "refusals": [],
+  "dialogue": [
+    {
+      "role": "doctor",
+      "inference": 1,
+      "kind": "question",
+      "text": "Hello, I'm Dr. Agent. Just so you know, I'm an AI assistant and this call is recorded. Can you describe exactly how your right leg is positioned and if you are able to move it at all?",
+      "payload": null,
+      "latency_ms": 4636,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "My right leg feels really weird - it's kind of bent and turned inward, and it looks a bit shorter than my left leg. I can barely move it at all because the pain in my groin is so intense whenever I try."
+    },
+    {
+      "role": "doctor",
+      "inference": 2,
+      "kind": "test",
+      "text": "I'm sorry you're in such intense pain. Did your knee strike the dashboard during the impact? REQUEST TEST: Pelvis_X-Ray",
+      "payload": "Pelvis_X-Ray",
+      "latency_ms": 4068,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: Pelvic X-ray shows no fractures identified in the pelvic ring or femoral neck, but alignment suggests posterior dislocation of the right hip."
+    },
+    {
+      "role": "doctor",
+      "inference": 3,
+      "kind": "question",
+      "text": "The imaging confirms your right hip is dislocated. Are you experiencing any numbness, tingling, or weakness in your right foot or toes?",
+      "payload": null,
+      "latency_ms": 3752,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "No, I don't have any numbness or tingling in my foot or toes. I can still feel everything down there, it's just the groin pain that's unbearable."
+    },
+    {
+      "role": "doctor",
+      "inference": 4,
+      "kind": "question",
+      "text": "I'm glad to hear you still have sensation in your foot. Does your right foot feel warm to the touch, and are you able to move your ankle at all?",
+      "payload": null,
+      "latency_ms": 5896,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Yes, my foot feels normal temperature-wise, and I can wiggle my toes and move my ankle a little bit. It's really just the hip area where I can't move because of the pain."
+    },
+    {
+      "role": "doctor",
+      "inference": 5,
+      "kind": "test",
+      "text": "That's good to hear. Do you notice any significant bruising, swelling, or pain specifically around your right knee where it might have hit the dashboard? \nREQUEST TEST: CT_Pelvis",
+      "payload": "CT_Pelvis",
+      "latency_ms": 5501,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: The CT Pelvis test is not available in the current data. However, based on available imaging, the Pelvic X-ray shows no fractures identified in the pelvic ring or femoral neck, but alignment suggests posterior dislocation of the right hip.\n\nNORMAL READINGS for CT Pelvis would be expected to show:\n- Intact acetabulum without fractures\n- Confirmation of posterior hip dislocation\n- No associated femoral head fractures\n- No significant soft tissue hematoma"
+    },
+    {
+      "role": "doctor",
+      "inference": 6,
+      "kind": "question",
+      "text": "Thank you for sharing that information. Since we've confirmed the dislocation, I'd like to check if you're experiencing any pain in your chest or abdomen from the seatbelt or",
+      "payload": null,
+      "latency_ms": 5541,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "No, thankfully I don't have any chest or belly pain from the seatbelt. It's really just my right groin and both knees that are hurting from the impact."
+    },
+    {
+      "role": "doctor",
+      "inference": 7,
+      "kind": "test",
+      "text": "I'm sorry to hear your knees are also in pain. Are you able to fully straighten your legs, or do you notice any significant swelling or bruising in that area?\n\nREQUEST TEST: X-Ray_Knees",
+      "payload": "X-Ray_Knees",
+      "latency_ms": 4674,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: The X-Ray_Knees test is not available in the current data. However, physical examination findings show tenderness over both knee caps on palpation. The left leg demonstrates normal range of motion, while the right leg has limited range of motion due to pain and abnormal positioning from the hip dislocation.\n\nNORMAL READINGS for knee X-rays would be expected to show:\n- No fractures of the patella, femur, or tibia\n- Normal joint spaces\n- No dislocation\n- No significant soft tissue swelling"
+    },
+    {
+      "role": "doctor",
+      "inference": 8,
+      "kind": "question",
+      "text": "I understand your knees are quite painful after hitting the dashboard. Do you feel any instability or a \"giving way\" sensation in either of your knees when they are moved? Also, are you having",
+      "payload": null,
+      "latency_ms": 5803,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "No, my knees don't feel unstable or like they're giving way - they're just sore and tender, especially over the kneecaps. The pain is more like bruising from hitting the dashboard rather than anything feeling loose or wobbly."
+    },
+    {
+      "role": "doctor",
+      "inference": 9,
+      "kind": "question",
+      "text": "I'm glad to hear your knees feel stable despite the soreness. Have you noticed any pain in your lower back or had any difficulty urinating since the collision?",
+      "payload": null,
+      "latency_ms": 5513,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "No, my lower back feels fine and I haven't had any problems with urinating. It's really just the groin pain and my knees that are bothering me from the accident."
+    },
+    {
+      "role": "doctor",
+      "inference": 10,
+      "kind": "question",
+      "text": "It sounds like your symptoms are localized to the hip and knees following the impact. Given the positioning of your leg and the imaging results, I have a clear understanding of your condition.\n\nDIAG",
+      "payload": null,
+      "latency_ms": 4827,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Okay, so what happens next? Will I need surgery to fix my hip, or can you just put it back in place somehow?"
+    },
+    {
+      "role": "doctor",
+      "inference": 11,
+      "kind": "question",
+      "text": "We will attempt to put your hip back into its socket using a procedure called a closed reduction while you are under sedation. This is typically done without surgery unless the hip cannot be stabilized or there are hidden bone",
+      "payload": null,
+      "latency_ms": 5596,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Oh, that's a relief that you might not need surgery! How soon can we do this procedure, and will I be able to walk normally again after my hip is back in place?"
+    },
+    {
+      "role": "doctor",
+      "inference": 12,
+      "kind": "question",
+      "text": "We aim to perform the reduction as soon as possible to restore blood flow to the joint and ensure the best recovery. With successful reduction and physical therapy, most patients are able to return to walking normally.",
+      "payload": null,
+      "latency_ms": 4931,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "That's good to hear! How long do you think the recovery will take before I can get back to work? I'm a teacher, so I'm on my feet a lot with the kids."
+    },
+    {
+      "role": "doctor",
+      "inference": 13,
+      "kind": "question",
+      "text": "Recovery typically takes about six to twelve weeks, involving physical therapy and a gradual return to full weight-bearing activities like teaching. I have gathered all the information necessary from your symptoms and",
+      "payload": null,
+      "latency_ms": 5245,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "That sounds like quite a while, but I understand I need to heal properly. Will I need to use crutches during that time, and are there any long-term complications I should be worried about?"
+    },
+    {
+      "role": "doctor",
+      "inference": 14,
+      "kind": "question",
+      "text": "You will likely need crutches for several weeks to protect the joint as it heals, and we will monitor you for complications like avascular necrosis. Based on your injury and the imaging results",
+      "payload": null,
+      "latency_ms": 5458,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Avascular necrosis sounds scary - what exactly is that? And will you be able to tell if that's happening during my follow-up appointments?"
+    },
+    {
+      "role": "doctor",
+      "inference": 15,
+      "kind": "question",
+      "text": "Avascular necrosis is bone tissue death caused by a lack of blood supply, but we will monitor for it closely using follow-up imaging. Based on the \"dashboard injury\" mechanism, your leg'",
+      "payload": null,
+      "latency_ms": 5780,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Oh, I see - so it's something that could happen later on, not right away. That's definitely concerning, but I'm glad you'll be keeping a close eye on it with the follow-up scans."
+    },
+    {
+      "role": "doctor",
+      "inference": 16,
+      "kind": "question",
+      "text": "That is correct, and we will perform regular check-ups to catch any changes early. Given your clinical presentation and the X-ray results confirming the positioning of your hip, I am",
+      "payload": null,
+      "latency_ms": 5441,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "I appreciate you explaining everything so clearly, doctor. I'm ready to do whatever it takes to get better and get back to my students. When can we get started with the reduction procedure?"
+    },
+    {
+      "role": "doctor",
+      "inference": 17,
+      "kind": "diagnosis",
+      "text": "We will begin the procedure as soon as the sedation team is ready. DIAGNOSIS READY: Posterior hip dislocation",
+      "payload": "Posterior hip dislocation",
+      "latency_ms": 4575,
+      "refusal": null,
+      "via": "marker"
+    }
+  ],
+  "latency_ms": [
+    4636,
+    4068,
+    3752,
+    5896,
+    5501,
+    5541,
+    4674,
+    5803,
+    5513,
+    4827,
+    5596,
+    4931,
+    5245,
+    5458,
+    5780,
+    5441,
+    4575
+  ],
+  "wall_s": 128.23,
+  "doctor_turns": [
+    {
+      "inference": 1,
+      "incoming": "",
+      "reply": "Hello, I'm Dr. Agent. Just so you know, I'm an AI assistant and this call is recorded. Can you describe exactly how your right leg is positioned and if you are able to move it at all?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 3954,
+        "output_tokens": 872,
+        "thinking_tokens": 825,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    },
+    {
+      "inference": 2,
+      "incoming": "My right leg feels really weird - it's kind of bent and turned inward, and it looks a bit shorter than my left leg. I can barely move it at all because the pain in my groin is so intense whenever I try.",
+      "reply": "I'm sorry you're in such intense pain. Did your knee strike the dashboard during the impact? REQUEST TEST: Pelvis_X-Ray",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Pelvis_X-Ray",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4050,
+        "output_tokens": 660,
+        "thinking_tokens": 629,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    },
+    {
+      "inference": 3,
+      "incoming": "RESULTS: Pelvic X-ray shows no fractures identified in the pelvic ring or femoral neck, but alignment suggests posterior dislocation of the right hip.",
+      "reply": "The imaging confirms your right hip is dislocated. Are you experiencing any numbness, tingling, or weakness in your right foot or toes?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4112,
+        "output_tokens": 582,
+        "thinking_tokens": 555,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    },
+    {
+      "inference": 4,
+      "incoming": "No, I don't have any numbness or tingling in my foot or toes. I can still feel everything down there, it's just the groin pain that's unbearable.",
+      "reply": "I'm glad to hear you still have sensation in your foot. Does your right foot feel warm to the touch, and are you able to move your ankle at all?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4178,
+        "output_tokens": 1016,
+        "thinking_tokens": 981,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    },
+    {
+      "inference": 5,
+      "incoming": "Yes, my foot feels normal temperature-wise, and I can wiggle my toes and move my ankle a little bit. It's really just the hip area where I can't move because of the pain.",
+      "reply": "That's good to hear. Do you notice any significant bruising, swelling, or pain specifically around your right knee where it might have hit the dashboard? \nREQUEST TEST: CT_Pelvis",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "CT_Pelvis",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4258,
+        "output_tokens": 1019,
+        "thinking_tokens": 979,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    },
+    {
+      "inference": 6,
+      "incoming": "RESULTS: The CT Pelvis test is not available in the current data. However, based on available imaging, the Pelvic X-ray shows no fractures identified in the pelvic ring or femoral neck, but alignment suggests posterior dislocation of the right hip.\n\nNORMAL READINGS for CT Pelvis would be expected to show:\n- Intact acetabulum without fractures\n- Confirmation of posterior hip dislocation\n- No associated femoral head fractures\n- No significant soft tissue hematoma",
+      "reply": "Thank you for sharing that information. Since we've confirmed the dislocation, I'd like to check if you're experiencing any pain in your chest or abdomen from the seatbelt or",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4395,
+        "output_tokens": 1020,
+        "thinking_tokens": 982,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "MAX_TOKENS"
+    },
+    {
+      "inference": 7,
+      "incoming": "No, thankfully I don't have any chest or belly pain from the seatbelt. It's really just my right groin and both knees that are hurting from the impact.",
+      "reply": "I'm sorry to hear your knees are also in pain. Are you able to fully straighten your legs, or do you notice any significant swelling or bruising in that area?\n\nREQUEST TEST: X-Ray_Knees",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "X-Ray_Knees",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4471,
+        "output_tokens": 894,
+        "thinking_tokens": 848,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    },
+    {
+      "inference": 8,
+      "incoming": "RESULTS: The X-Ray_Knees test is not available in the current data. However, physical examination findings show tenderness over both knee caps on palpation. The left leg demonstrates normal range of motion, while the right leg has limited range of motion due to pain and abnormal positioning from the hip dislocation.\n\nNORMAL READINGS for knee X-rays would be expected to show:\n- No fractures of the patella, femur, or tibia\n- Normal joint spaces\n- No dislocation\n- No significant soft tissue swelling",
+      "reply": "I understand your knees are quite painful after hitting the dashboard. Do you feel any instability or a \"giving way\" sensation in either of your knees when they are moved? Also, are you having",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4626,
+        "output_tokens": 1020,
+        "thinking_tokens": 981,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "MAX_TOKENS"
+    },
+    {
+      "inference": 9,
+      "incoming": "No, my knees don't feel unstable or like they're giving way - they're just sore and tender, especially over the kneecaps. The pain is more like bruising from hitting the dashboard rather than anything feeling loose or wobbly.",
+      "reply": "I'm glad to hear your knees feel stable despite the soreness. Have you noticed any pain in your lower back or had any difficulty urinating since the collision?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4718,
+        "output_tokens": 1012,
+        "thinking_tokens": 979,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    },
+    {
+      "inference": 10,
+      "incoming": "No, my lower back feels fine and I haven't had any problems with urinating. It's really just the groin pain and my knees that are bothering me from the accident.",
+      "reply": "It sounds like your symptoms are localized to the hip and knees following the impact. Given the positioning of your leg and the imaging results, I have a clear understanding of your condition.\n\nDIAG",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4791,
+        "output_tokens": 1020,
+        "thinking_tokens": 981,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "MAX_TOKENS"
+    },
+    {
+      "inference": 11,
+      "incoming": "Okay, so what happens next? Will I need surgery to fix my hip, or can you just put it back in place somehow?",
+      "reply": "We will attempt to put your hip back into its socket using a procedure called a closed reduction while you are under sedation. This is typically done without surgery unless the hip cannot be stabilized or there are hidden bone",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4860,
+        "output_tokens": 1020,
+        "thinking_tokens": 979,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "MAX_TOKENS"
+    },
+    {
+      "inference": 12,
+      "incoming": "Oh, that's a relief that you might not need surgery! How soon can we do this procedure, and will I be able to walk normally again after my hip is back in place?",
+      "reply": "We aim to perform the reduction as soon as possible to restore blood flow to the joint and ensure the best recovery. With successful reduction and physical therapy, most patients are able to return to walking normally.",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4942,
+        "output_tokens": 1020,
+        "thinking_tokens": 979,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "MAX_TOKENS"
+    },
+    {
+      "inference": 13,
+      "incoming": "That's good to hear! How long do you think the recovery will take before I can get back to work? I'm a teacher, so I'm on my feet a lot with the kids.",
+      "reply": "Recovery typically takes about six to twelve weeks, involving physical therapy and a gradual return to full weight-bearing activities like teaching. I have gathered all the information necessary from your symptoms and",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 5027,
+        "output_tokens": 1020,
+        "thinking_tokens": 984,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "MAX_TOKENS"
+    },
+    {
+      "inference": 14,
+      "incoming": "That sounds like quite a while, but I understand I need to heal properly. Will I need to use crutches during that time, and are there any long-term complications I should be worried about?",
+      "reply": "You will likely need crutches for several weeks to protect the joint as it heals, and we will monitor you for complications like avascular necrosis. Based on your injury and the imaging results",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 5106,
+        "output_tokens": 1020,
+        "thinking_tokens": 983,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "MAX_TOKENS"
+    },
+    {
+      "inference": 15,
+      "incoming": "Avascular necrosis sounds scary - what exactly is that? And will you be able to tell if that's happening during my follow-up appointments?",
+      "reply": "Avascular necrosis is bone tissue death caused by a lack of blood supply, but we will monitor for it closely using follow-up imaging. Based on the \"dashboard injury\" mechanism, your leg'",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 5175,
+        "output_tokens": 1020,
+        "thinking_tokens": 980,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "MAX_TOKENS"
+    },
+    {
+      "inference": 16,
+      "incoming": "Oh, I see - so it's something that could happen later on, not right away. That's definitely concerning, but I'm glad you'll be keeping a close eye on it with the follow-up scans.",
+      "reply": "That is correct, and we will perform regular check-ups to catch any changes early. Given your clinical presentation and the X-ray results confirming the positioning of your hip, I am",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 5265,
+        "output_tokens": 1020,
+        "thinking_tokens": 983,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "MAX_TOKENS"
+    },
+    {
+      "inference": 17,
+      "incoming": "I appreciate you explaining everything so clearly, doctor. I'm ready to do whatever it takes to get better and get back to my students. When can we get started with the reduction procedure?",
+      "reply": "We will begin the procedure as soon as the sedation team is ready. DIAGNOSIS READY: Posterior hip dislocation",
+      "tool_calls": [],
+      "kind": "diagnosis",
+      "payload": "Posterior hip dislocation",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 5343,
+        "output_tokens": 977,
+        "thinking_tokens": 955,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    }
+  ],
+  "support_llm": "anthropic:claude-sonnet-4-5",
+  "support_llm_cost_usd": 0.0599,
+  "support_llm_calls": 17,
+  "voice_subset": false,
+  "diagnostics": {
+    "schema": "tau2.health.diagnostics/v1",
+    "benchmark": "agentclinic",
+    "case_id": "MedQA-12",
+    "mode": "text",
+    "availability": {
+      "flow_available": false,
+      "flow_reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "signals_available": false,
+      "signals_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "metadata_sidecar_available": false,
+      "metadata_sidecar_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "tools_available": true,
+      "tools_reason": null
+    },
+    "provenance": {
+      "benchmark": "agentclinic",
+      "mode": "text",
+      "transport_endpoint": "POST /api/bench/agent-turn",
+      "agent_id": "c2761ec7-d3f7-4bd7-b68c-40a87f1b1ab3",
+      "base_url": "https://aws-gateway-backend.whissle.ai/bot",
+      "seed": 42,
+      "stratum": {
+        "dataset": "MedQA",
+        "scenario_index": 12,
+        "selection": "head",
+        "limit": 25
+      },
+      "judge": {
+        "judge_provider": "anthropic",
+        "judge_model": "claude-sonnet-4-5",
+        "judge_endpoint": "anthropic:claude-sonnet-4-5",
+        "judge_independent": true,
+        "judge_independence_note": "Judge independence: this run's simulators and graders were routed through an external provider, independent of the agent under test. This is the stronger footing for a published comparison against the paper's numbers."
+      },
+      "judge_provider": "anthropic",
+      "judge_independent": true,
+      "run_id": null,
+      "run_dir": "results/whissle/agentclinic/20260808T194241Z-sweep25_g3fp",
+      "harness_commit": "86b4475",
+      "captured_at": "2026-08-08T19:47:59+00:00",
+      "protocol": "markers",
+      "history": "agentclinic",
+      "prompt_mode": "override",
+      "vision": "off",
+      "agent_type": null,
+      "total_inferences": 20,
+      "inferences_used": 17,
+      "support_llm": "anthropic:claude-sonnet-4-5",
+      "patient_bias": null,
+      "doctor_bias": null,
+      "voice_subset": false
+    },
+    "cost": {
+      "available": true,
+      "reason": null,
+      "judge_calls": 17,
+      "judge_cost_usd": 0.0599,
+      "agent_calls": 17
+    },
+    "flow": {
+      "available": false,
+      "reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "source": null,
+      "turns": null,
+      "summary": null,
+      "conversation_id": null,
+      "current_state": null,
+      "start_state": null,
+      "final_state": null,
+      "ended": null,
+      "flow_end": null,
+      "num_steps": null,
+      "step_counts_by_kind": null,
+      "states_visited": null,
+      "states_declared": null,
+      "states_unvisited": null,
+      "transitions": null,
+      "transitions_fired": null,
+      "var_sets": null,
+      "var_sources": null,
+      "guard_trips": null,
+      "state_divergences": null,
+      "tools_gated": null,
+      "says": null,
+      "steps": null
+    },
+    "signals": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "metadata_sidecar": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "tools": {
+      "available": true,
+      "reason": null,
+      "source": "doctor actions parsed from /api/bench/agent-turn replies",
+      "calls": [
+        {
+          "turn": 2,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Pelvis_X-Ray"
+          },
+          "result": "RESULTS: Pelvic X-ray shows no fractures identified in the pelvic ring or femoral neck, but alignment suggests posterior dislocation of the right hip.",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 4068,
+          "terminal": false
+        },
+        {
+          "turn": 5,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "CT_Pelvis"
+          },
+          "result": "RESULTS: The CT Pelvis test is not available in the current data. However, based on available imaging, the Pelvic X-ray shows no fractures identified in the pelvic ring or femoral neck, but alignment suggests posterior dislocation of the right hip.\n\nNORMAL READINGS for CT Pelvis would be expected to show:\n- Intact acetabulum without fractures\n- Confirmation of posterior hip dislocation\n- No associated femoral head fractures\n- No significant soft tissue hematoma",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 5501,
+          "terminal": false
+        },
+        {
+          "turn": 7,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "X-Ray_Knees"
+          },
+          "result": "RESULTS: The X-Ray_Knees test is not available in the current data. However, physical examination findings show tenderness over both knee caps on palpation. The left leg demonstrates normal range of motion, while the right leg has limited range of motion due to pain and abnormal positioning from the hip dislocation.\n\nNORMAL READINGS for knee X-rays would be expected to show:\n- No fractures of the patella, femur, or tibia\n- Normal joint spaces\n- No dislocation\n- No significant soft tissue swelling",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 4674,
+          "terminal": false
+        },
+        {
+          "turn": 17,
+          "id": null,
+          "name": "give_diagnosis",
+          "arguments": {
+            "request": "Posterior hip dislocation"
+          },
+          "result": null,
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 4575,
+          "terminal": true
+        }
+      ],
+      "summary": {
+        "n_calls": 4,
+        "by_name": {
+          "request_test": 3,
+          "give_diagnosis": 1
+        },
+        "n_ok": 4,
+        "n_error": 0,
+        "errors": []
+      },
+      "writes": {
+        "available": false,
+        "reason": "this benchmark issues no writes, so there is no said-vs-emitted-vs-landed distinction to record"
+      }
+    },
+    "turns": [
+      {
+        "inference": 1,
+        "incoming": "",
+        "reply": "Hello, I'm Dr. Agent. Just so you know, I'm an AI assistant and this call is recorded. Can you describe exactly how your right leg is positioned and if you are able to move it at all?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 3954,
+          "output_tokens": 872,
+          "thinking_tokens": 825,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      },
+      {
+        "inference": 2,
+        "incoming": "My right leg feels really weird - it's kind of bent and turned inward, and it looks a bit shorter than my left leg. I can barely move it at all because the pain in my groin is so intense whenever I try.",
+        "reply": "I'm sorry you're in such intense pain. Did your knee strike the dashboard during the impact? REQUEST TEST: Pelvis_X-Ray",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Pelvis_X-Ray",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4050,
+          "output_tokens": 660,
+          "thinking_tokens": 629,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      },
+      {
+        "inference": 3,
+        "incoming": "RESULTS: Pelvic X-ray shows no fractures identified in the pelvic ring or femoral neck, but alignment suggests posterior dislocation of the right hip.",
+        "reply": "The imaging confirms your right hip is dislocated. Are you experiencing any numbness, tingling, or weakness in your right foot or toes?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4112,
+          "output_tokens": 582,
+          "thinking_tokens": 555,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      },
+      {
+        "inference": 4,
+        "incoming": "No, I don't have any numbness or tingling in my foot or toes. I can still feel everything down there, it's just the groin pain that's unbearable.",
+        "reply": "I'm glad to hear you still have sensation in your foot. Does your right foot feel warm to the touch, and are you able to move your ankle at all?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4178,
+          "output_tokens": 1016,
+          "thinking_tokens": 981,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      },
+      {
+        "inference": 5,
+        "incoming": "Yes, my foot feels normal temperature-wise, and I can wiggle my toes and move my ankle a little bit. It's really just the hip area where I can't move because of the pain.",
+        "reply": "That's good to hear. Do you notice any significant bruising, swelling, or pain specifically around your right knee where it might have hit the dashboard? \nREQUEST TEST: CT_Pelvis",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "CT_Pelvis",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4258,
+          "output_tokens": 1019,
+          "thinking_tokens": 979,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      },
+      {
+        "inference": 6,
+        "incoming": "RESULTS: The CT Pelvis test is not available in the current data. However, based on available imaging, the Pelvic X-ray shows no fractures identified in the pelvic ring or femoral neck, but alignment suggests posterior dislocation of the right hip.\n\nNORMAL READINGS for CT Pelvis would be expected to show:\n- Intact acetabulum without fractures\n- Confirmation of posterior hip dislocation\n- No associated femoral head fractures\n- No significant soft tissue hematoma",
+        "reply": "Thank you for sharing that information. Since we've confirmed the dislocation, I'd like to check if you're experiencing any pain in your chest or abdomen from the seatbelt or",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4395,
+          "output_tokens": 1020,
+          "thinking_tokens": 982,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "MAX_TOKENS"
+      },
+      {
+        "inference": 7,
+        "incoming": "No, thankfully I don't have any chest or belly pain from the seatbelt. It's really just my right groin and both knees that are hurting from the impact.",
+        "reply": "I'm sorry to hear your knees are also in pain. Are you able to fully straighten your legs, or do you notice any significant swelling or bruising in that area?\n\nREQUEST TEST: X-Ray_Knees",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "X-Ray_Knees",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4471,
+          "output_tokens": 894,
+          "thinking_tokens": 848,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      },
+      {
+        "inference": 8,
+        "incoming": "RESULTS: The X-Ray_Knees test is not available in the current data. However, physical examination findings show tenderness over both knee caps on palpation. The left leg demonstrates normal range of motion, while the right leg has limited range of motion due to pain and abnormal positioning from the hip dislocation.\n\nNORMAL READINGS for knee X-rays would be expected to show:\n- No fractures of the patella, femur, or tibia\n- Normal joint spaces\n- No dislocation\n- No significant soft tissue swelling",
+        "reply": "I understand your knees are quite painful after hitting the dashboard. Do you feel any instability or a \"giving way\" sensation in either of your knees when they are moved? Also, are you having",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4626,
+          "output_tokens": 1020,
+          "thinking_tokens": 981,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "MAX_TOKENS"
+      },
+      {
+        "inference": 9,
+        "incoming": "No, my knees don't feel unstable or like they're giving way - they're just sore and tender, especially over the kneecaps. The pain is more like bruising from hitting the dashboard rather than anything feeling loose or wobbly.",
+        "reply": "I'm glad to hear your knees feel stable despite the soreness. Have you noticed any pain in your lower back or had any difficulty urinating since the collision?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4718,
+          "output_tokens": 1012,
+          "thinking_tokens": 979,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      },
+      {
+        "inference": 10,
+        "incoming": "No, my lower back feels fine and I haven't had any problems with urinating. It's really just the groin pain and my knees that are bothering me from the accident.",
+        "reply": "It sounds like your symptoms are localized to the hip and knees following the impact. Given the positioning of your leg and the imaging results, I have a clear understanding of your condition.\n\nDIAG",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4791,
+          "output_tokens": 1020,
+          "thinking_tokens": 981,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "MAX_TOKENS"
+      },
+      {
+        "inference": 11,
+        "incoming": "Okay, so what happens next? Will I need surgery to fix my hip, or can you just put it back in place somehow?",
+        "reply": "We will attempt to put your hip back into its socket using a procedure called a closed reduction while you are under sedation. This is typically done without surgery unless the hip cannot be stabilized or there are hidden bone",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4860,
+          "output_tokens": 1020,
+          "thinking_tokens": 979,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "MAX_TOKENS"
+      },
+      {
+        "inference": 12,
+        "incoming": "Oh, that's a relief that you might not need surgery! How soon can we do this procedure, and will I be able to walk normally again after my hip is back in place?",
+        "reply": "We aim to perform the reduction as soon as possible to restore blood flow to the joint and ensure the best recovery. With successful reduction and physical therapy, most patients are able to return to walking normally.",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4942,
+          "output_tokens": 1020,
+          "thinking_tokens": 979,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "MAX_TOKENS"
+      },
+      {
+        "inference": 13,
+        "incoming": "That's good to hear! How long do you think the recovery will take before I can get back to work? I'm a teacher, so I'm on my feet a lot with the kids.",
+        "reply": "Recovery typically takes about six to twelve weeks, involving physical therapy and a gradual return to full weight-bearing activities like teaching. I have gathered all the information necessary from your symptoms and",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 5027,
+          "output_tokens": 1020,
+          "thinking_tokens": 984,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "MAX_TOKENS"
+      },
+      {
+        "inference": 14,
+        "incoming": "That sounds like quite a while, but I understand I need to heal properly. Will I need to use crutches during that time, and are there any long-term complications I should be worried about?",
+        "reply": "You will likely need crutches for several weeks to protect the joint as it heals, and we will monitor you for complications like avascular necrosis. Based on your injury and the imaging results",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 5106,
+          "output_tokens": 1020,
+          "thinking_tokens": 983,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "MAX_TOKENS"
+      },
+      {
+        "inference": 15,
+        "incoming": "Avascular necrosis sounds scary - what exactly is that? And will you be able to tell if that's happening during my follow-up appointments?",
+        "reply": "Avascular necrosis is bone tissue death caused by a lack of blood supply, but we will monitor for it closely using follow-up imaging. Based on the \"dashboard injury\" mechanism, your leg'",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 5175,
+          "output_tokens": 1020,
+          "thinking_tokens": 980,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "MAX_TOKENS"
+      },
+      {
+        "inference": 16,
+        "incoming": "Oh, I see - so it's something that could happen later on, not right away. That's definitely concerning, but I'm glad you'll be keeping a close eye on it with the follow-up scans.",
+        "reply": "That is correct, and we will perform regular check-ups to catch any changes early. Given your clinical presentation and the X-ray results confirming the positioning of your hip, I am",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 5265,
+          "output_tokens": 1020,
+          "thinking_tokens": 983,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "MAX_TOKENS"
+      },
+      {
+        "inference": 17,
+        "incoming": "I appreciate you explaining everything so clearly, doctor. I'm ready to do whatever it takes to get better and get back to my students. When can we get started with the reduction procedure?",
+        "reply": "We will begin the procedure as soon as the sedation team is ready. DIAGNOSIS READY: Posterior hip dislocation",
+        "tool_calls": [],
+        "kind": "diagnosis",
+        "payload": "Posterior hip dislocation",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 5343,
+          "output_tokens": 977,
+          "thinking_tokens": 955,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      }
+    ],
+    "audio": null
+  }
+}

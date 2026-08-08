@@ -1,0 +1,566 @@
+{
+  "scenario_id": "MedQA-17",
+  "scenario_index": 17,
+  "dataset": "MedQA",
+  "mode": "text",
+  "correct_diagnosis": "Pyoderma gangrenosum",
+  "answer_options": [],
+  "score": {
+    "outcome": "correct",
+    "correctness": true,
+    "doctor_diagnosis": "Pyoderma Gangrenosum, likely associated with Crohn's disease",
+    "doctor_final_text": "That's very helpful context—Crohn's disease is strongly associated with pyoderma gangrenosum, and your history of uveitis also suggests an underlying inflammatory condition. Given the biopsy confirmation and your medical history, I have enough information to make my diagnosis. DIAGNOSIS READY: Pyoderma Gangrenosum, likely associated with Crohn's disease",
+    "moderator_raw": "yes",
+    "moderator_raw_text": "Yes",
+    "moderator_lenient": true,
+    "moderator_attempts": 1,
+    "moderator_normalized": false,
+    "moderator_unconstrained": false,
+    "declined": false,
+    "refusal_evidence": [],
+    "format_deviation": false,
+    "decline_source": null,
+    "decline_reason": "",
+    "spurious_commit": false
+  },
+  "infra_fail": false,
+  "error": null,
+  "findings": [],
+  "inferences_used": 6,
+  "max_inferences": 20,
+  "tests_ordered": [
+    "Wound_Culture and REQUEST TEST: Skin_Biopsy to help determine whether this is an infection, inflammatory condition, or something else."
+  ],
+  "images_requested": 0,
+  "image": null,
+  "image_error": null,
+  "vision": "off",
+  "refusals": [],
+  "dialogue": [
+    {
+      "role": "doctor",
+      "inference": 1,
+      "kind": "question",
+      "text": "Good morning, I'm Dr. Agent, and I'm an AI assistant—this call is recorded for quality. I understand you have a painful, ulcerative skin lesion on your leg. Can you tell me when this lesion first appeared?",
+      "payload": null,
+      "latency_ms": 1416,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Good morning, Doctor. Yes, it first appeared about a month ago. It started as just a small red spot on my right leg, but it's gotten bigger since then."
+    },
+    {
+      "role": "doctor",
+      "inference": 2,
+      "kind": "question",
+      "text": "How has the lesion changed over that month—has it become more painful, or has the pain stayed about the same? And does it drain any fluid or pus?",
+      "payload": null,
+      "latency_ms": 1091,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Yes, it's definitely become more painful as it's gotten larger. There is some drainage from the center of the lesion, and the edges have turned kind of purplish."
+    },
+    {
+      "role": "doctor",
+      "inference": 3,
+      "kind": "question",
+      "text": "The purplish edges and drainage are important details—thank you. Has anyone cultured or tested the fluid from the lesion, or looked at it under a microscope?",
+      "payload": null,
+      "latency_ms": 1598,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "No, no one has tested it yet. This is actually my first visit to get it checked out since it appeared."
+    },
+    {
+      "role": "doctor",
+      "inference": 4,
+      "kind": "test",
+      "text": "I need to get a sample of that drainage and the tissue to identify what's causing this. Let me REQUEST TEST: Wound_Culture and REQUEST TEST: Skin_Biopsy to help determine whether this is an infection, inflammatory condition, or something else.",
+      "payload": "Wound_Culture and REQUEST TEST: Skin_Biopsy to help determine whether this is an infection, inflammatory condition, or something else.",
+      "latency_ms": 1566,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: \n\n**Skin Biopsy:**\n- Histopathology shows neutrophilic infiltration without infection, consistent with pyoderma gangrenosum\n\n**Wound Culture:**\n- NORMAL READINGS (No culture results available in the provided data - likely negative for infectious organisms given the biopsy findings show no infection)"
+    },
+    {
+      "role": "doctor",
+      "inference": 5,
+      "kind": "question",
+      "text": "The biopsy results show this is pyoderma gangrenosum—a non-infectious inflammatory condition where your immune system is attacking healthy skin tissue. This explains the painful ulcer with the purplish edges and drainage. Have you had any recent infections, surgeries, or been diagnosed with any inflammatory bowel diseases or rheumatologic conditions?",
+      "payload": null,
+      "latency_ms": 1441,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Yes, I have Crohn's disease, which I've been managing with mesalamine. I also had anterior uveitis about 8 months ago that was treated with corticosteroids."
+    },
+    {
+      "role": "doctor",
+      "inference": 6,
+      "kind": "diagnosis",
+      "text": "That's very helpful context—Crohn's disease is strongly associated with pyoderma gangrenosum, and your history of uveitis also suggests an underlying inflammatory condition. Given the biopsy confirmation and your medical history, I have enough information to make my diagnosis. DIAGNOSIS READY: Pyoderma Gangrenosum, likely associated with Crohn's disease",
+      "payload": "Pyoderma Gangrenosum, likely associated with Crohn's disease",
+      "latency_ms": 1625,
+      "refusal": null,
+      "via": "marker"
+    }
+  ],
+  "latency_ms": [
+    1416,
+    1091,
+    1598,
+    1566,
+    1441,
+    1625
+  ],
+  "wall_s": 22.58,
+  "doctor_turns": [
+    {
+      "inference": 1,
+      "incoming": "",
+      "reply": "Good morning, I'm Dr. Agent, and I'm an AI assistant—this call is recorded for quality. I understand you have a painful, ulcerative skin lesion on your leg. Can you tell me when this lesion first appeared?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4126,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 54,
+        "service_tier": "standard",
+        "inference_geo": "not_available"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 2,
+      "incoming": "Good morning, Doctor. Yes, it first appeared about a month ago. It started as just a small red spot on my right leg, but it's gotten bigger since then.",
+      "reply": "How has the lesion changed over that month—has it become more painful, or has the pain stayed about the same? And does it drain any fluid or pus?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4214,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 38,
+        "service_tier": "standard",
+        "inference_geo": "not_available"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 3,
+      "incoming": "Yes, it's definitely become more painful as it's gotten larger. There is some drainage from the center of the lesion, and the edges have turned kind of purplish.",
+      "reply": "The purplish edges and drainage are important details—thank you. Has anyone cultured or tested the fluid from the lesion, or looked at it under a microscope?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4288,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 39,
+        "service_tier": "standard",
+        "inference_geo": "not_available"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 4,
+      "incoming": "No, no one has tested it yet. This is actually my first visit to get it checked out since it appeared.",
+      "reply": "I need to get a sample of that drainage and the tissue to identify what's causing this. Let me REQUEST TEST: Wound_Culture and REQUEST TEST: Skin_Biopsy to help determine whether this is an infection, inflammatory condition, or something else.",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Wound_Culture and REQUEST TEST: Skin_Biopsy to help determine whether this is an infection, inflammatory condition, or something else.",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4350,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 58,
+        "service_tier": "standard",
+        "inference_geo": "not_available"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 5,
+      "incoming": "RESULTS: \n\n**Skin Biopsy:**\n- Histopathology shows neutrophilic infiltration without infection, consistent with pyoderma gangrenosum\n\n**Wound Culture:**\n- NORMAL READINGS (No culture results available in the provided data - likely negative for infectious organisms given the biopsy findings show no infection)",
+      "reply": "The biopsy results show this is pyoderma gangrenosum—a non-infectious inflammatory condition where your immune system is attacking healthy skin tissue. This explains the painful ulcer with the purplish edges and drainage. Have you had any recent infections, surgeries, or been diagnosed with any inflammatory bowel diseases or rheumatologic conditions?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4484,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 77,
+        "service_tier": "standard",
+        "inference_geo": "not_available"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 6,
+      "incoming": "Yes, I have Crohn's disease, which I've been managing with mesalamine. I also had anterior uveitis about 8 months ago that was treated with corticosteroids.",
+      "reply": "That's very helpful context—Crohn's disease is strongly associated with pyoderma gangrenosum, and your history of uveitis also suggests an underlying inflammatory condition. Given the biopsy confirmation and your medical history, I have enough information to make my diagnosis. DIAGNOSIS READY: Pyoderma Gangrenosum, likely associated with Crohn's disease",
+      "tool_calls": [],
+      "kind": "diagnosis",
+      "payload": "Pyoderma Gangrenosum, likely associated with Crohn's disease",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4602,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 85,
+        "service_tier": "standard",
+        "inference_geo": "not_available"
+      },
+      "stop_reason": "end_turn"
+    }
+  ],
+  "support_llm": "anthropic:claude-sonnet-4-5",
+  "support_llm_cost_usd": 0.01315,
+  "support_llm_calls": 6,
+  "voice_subset": false,
+  "diagnostics": {
+    "schema": "tau2.health.diagnostics/v1",
+    "benchmark": "agentclinic",
+    "case_id": "MedQA-17",
+    "mode": "text",
+    "availability": {
+      "flow_available": false,
+      "flow_reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "signals_available": false,
+      "signals_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "metadata_sidecar_available": false,
+      "metadata_sidecar_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "tools_available": true,
+      "tools_reason": null
+    },
+    "provenance": {
+      "benchmark": "agentclinic",
+      "mode": "text",
+      "transport_endpoint": "POST /api/bench/agent-turn",
+      "agent_id": "c2761ec7-d3f7-4bd7-b68c-40a87f1b1ab3",
+      "base_url": "https://aws-gateway-backend.whissle.ai/bot",
+      "seed": 42,
+      "stratum": {
+        "dataset": "MedQA",
+        "scenario_index": 17,
+        "selection": "head",
+        "limit": 25
+      },
+      "judge": {
+        "judge_provider": "anthropic",
+        "judge_model": "claude-sonnet-4-5",
+        "judge_endpoint": "anthropic:claude-sonnet-4-5",
+        "judge_independent": true,
+        "judge_independence_note": "Judge independence: this run's simulators and graders were routed through an external provider, independent of the agent under test. This is the stronger footing for a published comparison against the paper's numbers."
+      },
+      "judge_provider": "anthropic",
+      "judge_independent": true,
+      "run_id": null,
+      "run_dir": "results/whissle/agentclinic/20260808T185622Z-sweep25_haiku",
+      "harness_commit": "86b4475",
+      "captured_at": "2026-08-08T18:59:58+00:00",
+      "protocol": "markers",
+      "history": "agentclinic",
+      "prompt_mode": "override",
+      "vision": "off",
+      "agent_type": null,
+      "total_inferences": 20,
+      "inferences_used": 6,
+      "support_llm": "anthropic:claude-sonnet-4-5",
+      "patient_bias": null,
+      "doctor_bias": null,
+      "voice_subset": false
+    },
+    "cost": {
+      "available": true,
+      "reason": null,
+      "judge_calls": 6,
+      "judge_cost_usd": 0.01315,
+      "agent_calls": 6
+    },
+    "flow": {
+      "available": false,
+      "reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "source": null,
+      "turns": null,
+      "summary": null,
+      "conversation_id": null,
+      "current_state": null,
+      "start_state": null,
+      "final_state": null,
+      "ended": null,
+      "flow_end": null,
+      "num_steps": null,
+      "step_counts_by_kind": null,
+      "states_visited": null,
+      "states_declared": null,
+      "states_unvisited": null,
+      "transitions": null,
+      "transitions_fired": null,
+      "var_sets": null,
+      "var_sources": null,
+      "guard_trips": null,
+      "state_divergences": null,
+      "tools_gated": null,
+      "says": null,
+      "steps": null
+    },
+    "signals": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "metadata_sidecar": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "tools": {
+      "available": true,
+      "reason": null,
+      "source": "doctor actions parsed from /api/bench/agent-turn replies",
+      "calls": [
+        {
+          "turn": 4,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Wound_Culture and REQUEST TEST: Skin_Biopsy to help determine whether this is an infection, inflammatory condition, or something else."
+          },
+          "result": "RESULTS: \n\n**Skin Biopsy:**\n- Histopathology shows neutrophilic infiltration without infection, consistent with pyoderma gangrenosum\n\n**Wound Culture:**\n- NORMAL READINGS (No culture results available in the provided data - likely negative for infectious organisms given the biopsy findings show no infection)",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 1566,
+          "terminal": false
+        },
+        {
+          "turn": 6,
+          "id": null,
+          "name": "give_diagnosis",
+          "arguments": {
+            "request": "Pyoderma Gangrenosum, likely associated with Crohn's disease"
+          },
+          "result": null,
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 1625,
+          "terminal": true
+        }
+      ],
+      "summary": {
+        "n_calls": 2,
+        "by_name": {
+          "request_test": 1,
+          "give_diagnosis": 1
+        },
+        "n_ok": 2,
+        "n_error": 0,
+        "errors": []
+      },
+      "writes": {
+        "available": false,
+        "reason": "this benchmark issues no writes, so there is no said-vs-emitted-vs-landed distinction to record"
+      }
+    },
+    "turns": [
+      {
+        "inference": 1,
+        "incoming": "",
+        "reply": "Good morning, I'm Dr. Agent, and I'm an AI assistant—this call is recorded for quality. I understand you have a painful, ulcerative skin lesion on your leg. Can you tell me when this lesion first appeared?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4126,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 54,
+          "service_tier": "standard",
+          "inference_geo": "not_available"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 2,
+        "incoming": "Good morning, Doctor. Yes, it first appeared about a month ago. It started as just a small red spot on my right leg, but it's gotten bigger since then.",
+        "reply": "How has the lesion changed over that month—has it become more painful, or has the pain stayed about the same? And does it drain any fluid or pus?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4214,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 38,
+          "service_tier": "standard",
+          "inference_geo": "not_available"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 3,
+        "incoming": "Yes, it's definitely become more painful as it's gotten larger. There is some drainage from the center of the lesion, and the edges have turned kind of purplish.",
+        "reply": "The purplish edges and drainage are important details—thank you. Has anyone cultured or tested the fluid from the lesion, or looked at it under a microscope?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4288,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 39,
+          "service_tier": "standard",
+          "inference_geo": "not_available"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 4,
+        "incoming": "No, no one has tested it yet. This is actually my first visit to get it checked out since it appeared.",
+        "reply": "I need to get a sample of that drainage and the tissue to identify what's causing this. Let me REQUEST TEST: Wound_Culture and REQUEST TEST: Skin_Biopsy to help determine whether this is an infection, inflammatory condition, or something else.",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Wound_Culture and REQUEST TEST: Skin_Biopsy to help determine whether this is an infection, inflammatory condition, or something else.",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4350,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 58,
+          "service_tier": "standard",
+          "inference_geo": "not_available"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 5,
+        "incoming": "RESULTS: \n\n**Skin Biopsy:**\n- Histopathology shows neutrophilic infiltration without infection, consistent with pyoderma gangrenosum\n\n**Wound Culture:**\n- NORMAL READINGS (No culture results available in the provided data - likely negative for infectious organisms given the biopsy findings show no infection)",
+        "reply": "The biopsy results show this is pyoderma gangrenosum—a non-infectious inflammatory condition where your immune system is attacking healthy skin tissue. This explains the painful ulcer with the purplish edges and drainage. Have you had any recent infections, surgeries, or been diagnosed with any inflammatory bowel diseases or rheumatologic conditions?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4484,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 77,
+          "service_tier": "standard",
+          "inference_geo": "not_available"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 6,
+        "incoming": "Yes, I have Crohn's disease, which I've been managing with mesalamine. I also had anterior uveitis about 8 months ago that was treated with corticosteroids.",
+        "reply": "That's very helpful context—Crohn's disease is strongly associated with pyoderma gangrenosum, and your history of uveitis also suggests an underlying inflammatory condition. Given the biopsy confirmation and your medical history, I have enough information to make my diagnosis. DIAGNOSIS READY: Pyoderma Gangrenosum, likely associated with Crohn's disease",
+        "tool_calls": [],
+        "kind": "diagnosis",
+        "payload": "Pyoderma Gangrenosum, likely associated with Crohn's disease",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4602,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 85,
+          "service_tier": "standard",
+          "inference_geo": "not_available"
+        },
+        "stop_reason": "end_turn"
+      }
+    ],
+    "audio": null
+  }
+}

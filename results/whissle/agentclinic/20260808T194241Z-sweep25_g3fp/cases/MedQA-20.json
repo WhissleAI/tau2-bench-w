@@ -1,0 +1,1161 @@
+{
+  "scenario_id": "MedQA-20",
+  "scenario_index": 20,
+  "dataset": "MedQA",
+  "mode": "text",
+  "correct_diagnosis": "Cytomegalovirus retinitis",
+  "answer_options": [],
+  "score": {
+    "outcome": "correct",
+    "correctness": true,
+    "doctor_diagnosis": "CMV Retinitis",
+    "doctor_final_text": "We should aim to start your treatment today, and yes, you will need frequent follow-up appointments to monitor your vision closely. DIAGNOSIS READY: CMV Retinitis",
+    "moderator_raw": "yes",
+    "moderator_raw_text": "Yes",
+    "moderator_lenient": true,
+    "moderator_attempts": 1,
+    "moderator_normalized": false,
+    "moderator_unconstrained": false,
+    "declined": false,
+    "refusal_evidence": [],
+    "format_deviation": false,
+    "decline_source": null,
+    "decline_reason": "",
+    "spurious_commit": false
+  },
+  "infra_fail": false,
+  "error": null,
+  "findings": [],
+  "inferences_used": 19,
+  "max_inferences": 20,
+  "tests_ordered": [
+    "CD4_Count and REQUEST TEST: Dilated_Funduscopic_Exam.",
+    "CMV_PCR_Serum.",
+    "Visual_Acu"
+  ],
+  "images_requested": 0,
+  "image": null,
+  "image_error": null,
+  "vision": "off",
+  "refusals": [],
+  "dialogue": [
+    {
+      "role": "doctor",
+      "inference": 1,
+      "kind": "question",
+      "text": "Hello, I'm Dr. Agent. Just so you know, I'm an AI assistant and this call is recorded. When did these vision changes start, and do you know your most recent CD4 count?",
+      "payload": null,
+      "latency_ms": 4908,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "The vision changes started about 2 days ago in my right eye. I'm not sure about my exact CD4 count right now - I'd have to check my recent lab results."
+    },
+    {
+      "role": "doctor",
+      "inference": 2,
+      "kind": "test",
+      "text": "I see. Are you experiencing any pain, redness, or flashes of light in that eye? REQUEST TEST: CD4_Count and REQUEST TEST: Dilated_Funduscopic_Exam.",
+      "payload": "CD4_Count and REQUEST TEST: Dilated_Funduscopic_Exam.",
+      "latency_ms": 5388,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS:\n\n**CD4 Count:**\n- CD4 T-lymphocyte: 36/mm³ (critically low - normal range is 500-1,500/mm³)\n\n**Dilated Funduscopic Exam:**\n- Granular yellow-white opacities around the retinal vessels\n- Multiple areas of dot-blot hemorrhages\n\nThese findings are consistent with retinal pathology, particularly concerning given the severely immunocompromised state indicated by the CD4 count."
+    },
+    {
+      "role": "doctor",
+      "inference": 3,
+      "kind": "question",
+      "text": "I've reviewed your results, and your CD4 count is critically low, which makes your eyes very vulnerable to specific infections. Are the black spots you're seeing moving around like",
+      "payload": null,
+      "latency_ms": 5610,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Yes, they do seem to move around when I move my eyes - like little floaters drifting across my vision. It's been really affecting my ability to see clearly out of that eye."
+    },
+    {
+      "role": "doctor",
+      "inference": 4,
+      "kind": "question",
+      "text": "That \"drifting\" sensation is common with certain types of retinal inflammation in patients with low CD4 counts. Have you noticed any loss of your peripheral vision or a feeling like a curtain",
+      "payload": null,
+      "latency_ms": 5061,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "No, I haven't noticed any curtain-like feeling or problems with my peripheral vision. It's mainly just the floaters and the overall blurriness in my right eye that's bothering me."
+    },
+    {
+      "role": "doctor",
+      "inference": 5,
+      "kind": "test",
+      "text": "I understand. Is your left eye experiencing any similar symptoms, and are you currently taking your antiretroviral medications? REQUEST TEST: CMV_PCR_Serum.",
+      "payload": "CMV_PCR_Serum.",
+      "latency_ms": 5721,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS:\n\nI don't have CMV PCR Serum test results in the available data.\n\nNORMAL READINGS\n\nHowever, based on the existing test results, I can confirm:\n- **CD4 T-lymphocyte: 36/mm³** (critically low)\n- **Fundoscopic findings: Granular yellow-white opacities around retinal vessels with dot-blot hemorrhages** (highly suggestive of CMV retinitis given the severe immunosuppression)"
+    },
+    {
+      "role": "doctor",
+      "inference": 6,
+      "kind": "question",
+      "text": "I'm still interested in whether your left eye has any symptoms and if you've been able to take your antiretroviral therapy regularly. I'd also like to check your vision more",
+      "payload": null,
+      "latency_ms": 5737,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "My left eye feels completely fine - no problems there at all. And yes, I've been taking my HIV medications regularly, all of them as prescribed. I haven't missed any doses."
+    },
+    {
+      "role": "doctor",
+      "inference": 7,
+      "kind": "question",
+      "text": "I am glad to hear that your left eye is unaffected and that you are staying consistent with your medications. Have you noticed any specific areas where your vision is completely missing, or is it just blurry overall?",
+      "payload": null,
+      "latency_ms": 5856,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "It's mostly just blurry overall - everything seems hazy and out of focus in that eye. I haven't noticed any specific blind spots or areas where my vision is completely gone, just the general blurriness and those floaters I mentioned."
+    },
+    {
+      "role": "doctor",
+      "inference": 8,
+      "kind": "question",
+      "text": "I understand, thank you for clarifying that it is mostly a general blurriness. Have you experienced any other systemic symptoms recently, such as fever, night sweats, or unintentional weight loss?",
+      "payload": null,
+      "latency_ms": 4698,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "No, I haven't had any fever or night sweats recently. I haven't really noticed any significant weight loss either - I've been trying to keep up with my nutritional supplements to maintain my weight."
+    },
+    {
+      "role": "doctor",
+      "inference": 9,
+      "kind": "test",
+      "text": "I'm glad you haven't had those systemic symptoms. Have you ever been diagnosed with any other infections related to your HIV in the past? REQUEST TEST: Visual_Acu",
+      "payload": "Visual_Acu",
+      "latency_ms": 5334,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS:\n\nI don't have Visual Acuity test results in the available data.\n\nNORMAL READINGS\n\nHowever, based on your available examination findings:\n- **CD4 T-lymphocyte: 36/mm³** (critically low)\n- **Fundoscopic findings: Granular yellow-white opacities around retinal vessels with dot-blot hemorrhages**\n- **General condition: Multiple violaceous plaques over trunk and extremities, cervical lymphadenopathy present**\n\nThese findings suggest significant immunocompromise with concerning retinal pathology."
+    },
+    {
+      "role": "doctor",
+      "inference": 10,
+      "kind": "question",
+      "text": "I noticed some purple spots on your skin and swollen glands during the exam; how long have those been present? Have you ever been diagnosed with Cytomegalovirus (CMV) or any other",
+      "payload": null,
+      "latency_ms": 5330,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Oh, those purple spots are from my Kaposi's sarcoma - I was diagnosed with that about 2 years ago. As for CMV, I'm not sure if I've been specifically diagnosed with it before, but I did have that fungal infection in my esophagus about 6 months ago that they treated."
+    },
+    {
+      "role": "doctor",
+      "inference": 11,
+      "kind": "question",
+      "text": "That is helpful information regarding your history with Kaposi's sarcoma and the previous esophageal infection. Are you experiencing any pain in that eye or sensitivity to bright lights? I would also like to check",
+      "payload": null,
+      "latency_ms": 5657,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "No, there's no pain in my eye at all, and I haven't noticed any particular sensitivity to bright lights. It's really just the blurriness and those black floaters that are bothering me - the eye itself doesn't hurt."
+    },
+    {
+      "role": "doctor",
+      "inference": 12,
+      "kind": "question",
+      "text": "I appreciate you sharing those details about your history with Kaposi's sarcoma and the esophageal infection. Given your symptoms and the appearance of your retina, I would like to check for a specific viral infection.",
+      "payload": null,
+      "latency_ms": 4839,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Okay, sure. What kind of viral infection are you thinking about? Is there a specific test you need to do?"
+    },
+    {
+      "role": "doctor",
+      "inference": 13,
+      "kind": "question",
+      "text": "I am specifically looking for Cytomegalovirus, often called CMV, which is a common cause of vision issues in people with low CD4 counts. Based on your symptoms and the exam",
+      "payload": null,
+      "latency_ms": 4908,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Oh, I see. So you think this might be CMV affecting my eye? Is that something serious, and what would the treatment involve?"
+    },
+    {
+      "role": "doctor",
+      "inference": 14,
+      "kind": "question",
+      "text": "Yes, it is a serious condition that requires prompt treatment with antiviral medications to prevent permanent vision loss. Based on your specific eye exam findings and your very low CD4 count, I",
+      "payload": null,
+      "latency_ms": 4850,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "That sounds really concerning - I definitely don't want to lose my vision. How soon would I need to start treatment, and would it be pills or something else? I'm already taking so many medications for my HIV and everything else."
+    },
+    {
+      "role": "doctor",
+      "inference": 15,
+      "kind": "question",
+      "text": "Treatment usually starts immediately and often involves either oral medication or injections directly into the eye. Given your clinical presentation and critically low CD4 count, I am confident in the findings.\n\nDI",
+      "payload": null,
+      "latency_ms": 4430,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Injections into the eye? That sounds pretty intense. How often would I need those injections, and how long does the treatment usually last? I just want to make sure I understand what I'm getting into here."
+    },
+    {
+      "role": "doctor",
+      "inference": 16,
+      "kind": "question",
+      "text": "I understand that eye injections sound intimidating, but they are highly effective at stopping the virus quickly. Given your symptoms and the specific findings on your retinal exam, I have determined the cause of your vision loss",
+      "payload": null,
+      "latency_ms": 5099,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Okay, I understand. So what exactly is causing my vision loss, and what are the next steps? Should I be worried about my left eye getting affected too?"
+    },
+    {
+      "role": "doctor",
+      "inference": 17,
+      "kind": "question",
+      "text": "You have CMV retinitis, a viral infection that occurs when the immune system is significantly weakened. We must begin antiviral treatment immediately to preserve your vision and prevent the infection from spreading to your left eye.",
+      "payload": null,
+      "latency_ms": 5273,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Okay, that's really scary to hear. So I'll need to start this treatment right away then? And is there anything I can do to protect my left eye from getting infected too, or is it just a matter of getting my immune system stronger?"
+    },
+    {
+      "role": "doctor",
+      "inference": 18,
+      "kind": "question",
+      "text": "Yes, starting treatment immediately is crucial to save your vision. The most important way to protect your other eye is to continue your antiretroviral therapy to improve your immune system.",
+      "payload": null,
+      "latency_ms": 5071,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "I've been taking all my HIV meds regularly like I said, so hopefully that will help. When do we start the treatment - like today or tomorrow? And will I need to come back frequently for follow-up appointments?"
+    },
+    {
+      "role": "doctor",
+      "inference": 19,
+      "kind": "diagnosis",
+      "text": "We should aim to start your treatment today, and yes, you will need frequent follow-up appointments to monitor your vision closely. DIAGNOSIS READY: CMV Retinitis",
+      "payload": "CMV Retinitis",
+      "latency_ms": 4858,
+      "refusal": null,
+      "via": "marker"
+    }
+  ],
+  "latency_ms": [
+    4908,
+    5388,
+    5610,
+    5061,
+    5721,
+    5737,
+    5856,
+    4698,
+    5334,
+    5330,
+    5657,
+    4839,
+    4908,
+    4850,
+    4430,
+    5099,
+    5273,
+    5071,
+    4858
+  ],
+  "wall_s": 151.36,
+  "doctor_turns": [
+    {
+      "inference": 1,
+      "incoming": "",
+      "reply": "Hello, I'm Dr. Agent. Just so you know, I'm an AI assistant and this call is recorded. When did these vision changes start, and do you know your most recent CD4 count?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 3960,
+        "output_tokens": 959,
+        "thinking_tokens": 915,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    },
+    {
+      "inference": 2,
+      "incoming": "The vision changes started about 2 days ago in my right eye. I'm not sure about my exact CD4 count right now - I'd have to check my recent lab results.",
+      "reply": "I see. Are you experiencing any pain, redness, or flashes of light in that eye? REQUEST TEST: CD4_Count and REQUEST TEST: Dilated_Funduscopic_Exam.",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "CD4_Count and REQUEST TEST: Dilated_Funduscopic_Exam.",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4044,
+        "output_tokens": 1019,
+        "thinking_tokens": 980,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    },
+    {
+      "inference": 3,
+      "incoming": "RESULTS:\n\n**CD4 Count:**\n- CD4 T-lymphocyte: 36/mm³ (critically low - normal range is 500-1,500/mm³)\n\n**Dilated Funduscopic Exam:**\n- Granular yellow-white opacities around the retinal vessels\n- Multiple areas of dot-blot hemorrhages\n\nThese findings are consistent with retinal pathology, particularly concerning given the severely immunocompromised state indicated by the CD4 count.",
+      "reply": "I've reviewed your results, and your CD4 count is critically low, which makes your eyes very vulnerable to specific infections. Are the black spots you're seeing moving around like",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4187,
+        "output_tokens": 1020,
+        "thinking_tokens": 983,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "MAX_TOKENS"
+    },
+    {
+      "inference": 4,
+      "incoming": "Yes, they do seem to move around when I move my eyes - like little floaters drifting across my vision. It's been really affecting my ability to see clearly out of that eye.",
+      "reply": "That \"drifting\" sensation is common with certain types of retinal inflammation in patients with low CD4 counts. Have you noticed any loss of your peripheral vision or a feeling like a curtain",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4265,
+        "output_tokens": 1020,
+        "thinking_tokens": 983,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "MAX_TOKENS"
+    },
+    {
+      "inference": 5,
+      "incoming": "No, I haven't noticed any curtain-like feeling or problems with my peripheral vision. It's mainly just the floaters and the overall blurriness in my right eye that's bothering me.",
+      "reply": "I understand. Is your left eye experiencing any similar symptoms, and are you currently taking your antiretroviral medications? REQUEST TEST: CMV_PCR_Serum.",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "CMV_PCR_Serum.",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4347,
+        "output_tokens": 1012,
+        "thinking_tokens": 980,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    },
+    {
+      "inference": 6,
+      "incoming": "RESULTS:\n\nI don't have CMV PCR Serum test results in the available data.\n\nNORMAL READINGS\n\nHowever, based on the existing test results, I can confirm:\n- **CD4 T-lymphocyte: 36/mm³** (critically low)\n- **Fundoscopic findings: Granular yellow-white opacities around retinal vessels with dot-blot hemorrhages** (highly suggestive of CMV retinitis given the severe immunosuppression)",
+      "reply": "I'm still interested in whether your left eye has any symptoms and if you've been able to take your antiretroviral therapy regularly. I'd also like to check your vision more",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4478,
+        "output_tokens": 1020,
+        "thinking_tokens": 981,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "MAX_TOKENS"
+    },
+    {
+      "inference": 7,
+      "incoming": "My left eye feels completely fine - no problems there at all. And yes, I've been taking my HIV medications regularly, all of them as prescribed. I haven't missed any doses.",
+      "reply": "I am glad to hear that your left eye is unaffected and that you are staying consistent with your medications. Have you noticed any specific areas where your vision is completely missing, or is it just blurry overall?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4559,
+        "output_tokens": 1020,
+        "thinking_tokens": 979,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "MAX_TOKENS"
+    },
+    {
+      "inference": 8,
+      "incoming": "It's mostly just blurry overall - everything seems hazy and out of focus in that eye. I haven't noticed any specific blind spots or areas where my vision is completely gone, just the general blurriness and those floaters I mentioned.",
+      "reply": "I understand, thank you for clarifying that it is mostly a general blurriness. Have you experienced any other systemic symptoms recently, such as fever, night sweats, or unintentional weight loss?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4652,
+        "output_tokens": 1020,
+        "thinking_tokens": 981,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "MAX_TOKENS"
+    },
+    {
+      "inference": 9,
+      "incoming": "No, I haven't had any fever or night sweats recently. I haven't really noticed any significant weight loss either - I've been trying to keep up with my nutritional supplements to maintain my weight.",
+      "reply": "I'm glad you haven't had those systemic symptoms. Have you ever been diagnosed with any other infections related to your HIV in the past? REQUEST TEST: Visual_Acu",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Visual_Acu",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4735,
+        "output_tokens": 1020,
+        "thinking_tokens": 983,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "MAX_TOKENS"
+    },
+    {
+      "inference": 10,
+      "incoming": "RESULTS:\n\nI don't have Visual Acuity test results in the available data.\n\nNORMAL READINGS\n\nHowever, based on your available examination findings:\n- **CD4 T-lymphocyte: 36/mm³** (critically low)\n- **Fundoscopic findings: Granular yellow-white opacities around retinal vessels with dot-blot hemorrhages**\n- **General condition: Multiple violaceous plaques over trunk and extremities, cervical lymphadenopathy present**\n\nThese findings suggest significant immunocompromise with concerning retinal pathology.",
+      "reply": "I noticed some purple spots on your skin and swollen glands during the exam; how long have those been present? Have you ever been diagnosed with Cytomegalovirus (CMV) or any other",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4887,
+        "output_tokens": 1020,
+        "thinking_tokens": 982,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "MAX_TOKENS"
+    },
+    {
+      "inference": 11,
+      "incoming": "Oh, those purple spots are from my Kaposi's sarcoma - I was diagnosed with that about 2 years ago. As for CMV, I'm not sure if I've been specifically diagnosed with it before, but I did have that fungal infection in my esophagus about 6 months ago that they treated.",
+      "reply": "That is helpful information regarding your history with Kaposi's sarcoma and the previous esophageal infection. Are you experiencing any pain in that eye or sensitivity to bright lights? I would also like to check",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4992,
+        "output_tokens": 1020,
+        "thinking_tokens": 981,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "MAX_TOKENS"
+    },
+    {
+      "inference": 12,
+      "incoming": "No, there's no pain in my eye at all, and I haven't noticed any particular sensitivity to bright lights. It's really just the blurriness and those black floaters that are bothering me - the eye itself doesn't hurt.",
+      "reply": "I appreciate you sharing those details about your history with Kaposi's sarcoma and the esophageal infection. Given your symptoms and the appearance of your retina, I would like to check for a specific viral infection.",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 5086,
+        "output_tokens": 1020,
+        "thinking_tokens": 979,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "MAX_TOKENS"
+    },
+    {
+      "inference": 13,
+      "incoming": "Okay, sure. What kind of viral infection are you thinking about? Is there a specific test you need to do?",
+      "reply": "I am specifically looking for Cytomegalovirus, often called CMV, which is a common cause of vision issues in people with low CD4 counts. Based on your symptoms and the exam",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 5153,
+        "output_tokens": 1020,
+        "thinking_tokens": 984,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "MAX_TOKENS"
+    },
+    {
+      "inference": 14,
+      "incoming": "Oh, I see. So you think this might be CMV affecting my eye? Is that something serious, and what would the treatment involve?",
+      "reply": "Yes, it is a serious condition that requires prompt treatment with antiviral medications to prevent permanent vision loss. Based on your specific eye exam findings and your very low CD4 count, I",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 5219,
+        "output_tokens": 1020,
+        "thinking_tokens": 984,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "MAX_TOKENS"
+    },
+    {
+      "inference": 15,
+      "incoming": "That sounds really concerning - I definitely don't want to lose my vision. How soon would I need to start treatment, and would it be pills or something else? I'm already taking so many medications for my HIV and everything else.",
+      "reply": "Treatment usually starts immediately and often involves either oral medication or injections directly into the eye. Given your clinical presentation and critically low CD4 count, I am confident in the findings.\n\nDI",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 5306,
+        "output_tokens": 1020,
+        "thinking_tokens": 983,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "MAX_TOKENS"
+    },
+    {
+      "inference": 16,
+      "incoming": "Injections into the eye? That sounds pretty intense. How often would I need those injections, and how long does the treatment usually last? I just want to make sure I understand what I'm getting into here.",
+      "reply": "I understand that eye injections sound intimidating, but they are highly effective at stopping the virus quickly. Given your symptoms and the specific findings on your retinal exam, I have determined the cause of your vision loss",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 5389,
+        "output_tokens": 1020,
+        "thinking_tokens": 980,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "MAX_TOKENS"
+    },
+    {
+      "inference": 17,
+      "incoming": "Okay, I understand. So what exactly is causing my vision loss, and what are the next steps? Should I be worried about my left eye getting affected too?",
+      "reply": "You have CMV retinitis, a viral infection that occurs when the immune system is significantly weakened. We must begin antiviral treatment immediately to preserve your vision and prevent the infection from spreading to your left eye.",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 5464,
+        "output_tokens": 1020,
+        "thinking_tokens": 980,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "MAX_TOKENS"
+    },
+    {
+      "inference": 18,
+      "incoming": "Okay, that's really scary to hear. So I'll need to start this treatment right away then? And is there anything I can do to protect my left eye from getting infected too, or is it just a matter of getting my immune system stronger?",
+      "reply": "Yes, starting treatment immediately is crucial to save your vision. The most important way to protect your other eye is to continue your antiretroviral therapy to improve your immune system.",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 5559,
+        "output_tokens": 1020,
+        "thinking_tokens": 984,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "MAX_TOKENS"
+    },
+    {
+      "inference": 19,
+      "incoming": "I've been taking all my HIV meds regularly like I said, so hopefully that will help. When do we start the treatment - like today or tomorrow? And will I need to come back frequently for follow-up appointments?",
+      "reply": "We should aim to start your treatment today, and yes, you will need frequent follow-up appointments to monitor your vision closely. DIAGNOSIS READY: CMV Retinitis",
+      "tool_calls": [],
+      "kind": "diagnosis",
+      "payload": "CMV Retinitis",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 5642,
+        "output_tokens": 994,
+        "thinking_tokens": 960,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    }
+  ],
+  "support_llm": "anthropic:claude-sonnet-4-5",
+  "support_llm_cost_usd": 0.08127,
+  "support_llm_calls": 19,
+  "voice_subset": false,
+  "diagnostics": {
+    "schema": "tau2.health.diagnostics/v1",
+    "benchmark": "agentclinic",
+    "case_id": "MedQA-20",
+    "mode": "text",
+    "availability": {
+      "flow_available": false,
+      "flow_reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "signals_available": false,
+      "signals_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "metadata_sidecar_available": false,
+      "metadata_sidecar_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "tools_available": true,
+      "tools_reason": null
+    },
+    "provenance": {
+      "benchmark": "agentclinic",
+      "mode": "text",
+      "transport_endpoint": "POST /api/bench/agent-turn",
+      "agent_id": "c2761ec7-d3f7-4bd7-b68c-40a87f1b1ab3",
+      "base_url": "https://aws-gateway-backend.whissle.ai/bot",
+      "seed": 42,
+      "stratum": {
+        "dataset": "MedQA",
+        "scenario_index": 20,
+        "selection": "head",
+        "limit": 25
+      },
+      "judge": {
+        "judge_provider": "anthropic",
+        "judge_model": "claude-sonnet-4-5",
+        "judge_endpoint": "anthropic:claude-sonnet-4-5",
+        "judge_independent": true,
+        "judge_independence_note": "Judge independence: this run's simulators and graders were routed through an external provider, independent of the agent under test. This is the stronger footing for a published comparison against the paper's numbers."
+      },
+      "judge_provider": "anthropic",
+      "judge_independent": true,
+      "run_id": null,
+      "run_dir": "results/whissle/agentclinic/20260808T194241Z-sweep25_g3fp",
+      "harness_commit": "86b4475",
+      "captured_at": "2026-08-08T19:52:01+00:00",
+      "protocol": "markers",
+      "history": "agentclinic",
+      "prompt_mode": "override",
+      "vision": "off",
+      "agent_type": null,
+      "total_inferences": 20,
+      "inferences_used": 19,
+      "support_llm": "anthropic:claude-sonnet-4-5",
+      "patient_bias": null,
+      "doctor_bias": null,
+      "voice_subset": false
+    },
+    "cost": {
+      "available": true,
+      "reason": null,
+      "judge_calls": 19,
+      "judge_cost_usd": 0.08127,
+      "agent_calls": 19
+    },
+    "flow": {
+      "available": false,
+      "reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "source": null,
+      "turns": null,
+      "summary": null,
+      "conversation_id": null,
+      "current_state": null,
+      "start_state": null,
+      "final_state": null,
+      "ended": null,
+      "flow_end": null,
+      "num_steps": null,
+      "step_counts_by_kind": null,
+      "states_visited": null,
+      "states_declared": null,
+      "states_unvisited": null,
+      "transitions": null,
+      "transitions_fired": null,
+      "var_sets": null,
+      "var_sources": null,
+      "guard_trips": null,
+      "state_divergences": null,
+      "tools_gated": null,
+      "says": null,
+      "steps": null
+    },
+    "signals": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "metadata_sidecar": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "tools": {
+      "available": true,
+      "reason": null,
+      "source": "doctor actions parsed from /api/bench/agent-turn replies",
+      "calls": [
+        {
+          "turn": 2,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "CD4_Count and REQUEST TEST: Dilated_Funduscopic_Exam."
+          },
+          "result": "RESULTS:\n\n**CD4 Count:**\n- CD4 T-lymphocyte: 36/mm³ (critically low - normal range is 500-1,500/mm³)\n\n**Dilated Funduscopic Exam:**\n- Granular yellow-white opacities around the retinal vessels\n- Multiple areas of dot-blot hemorrhages\n\nThese findings are consistent with retinal pathology, particularly concerning given the severely immunocompromised state indicated by the CD4 count.",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 5388,
+          "terminal": false
+        },
+        {
+          "turn": 5,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "CMV_PCR_Serum."
+          },
+          "result": "RESULTS:\n\nI don't have CMV PCR Serum test results in the available data.\n\nNORMAL READINGS\n\nHowever, based on the existing test results, I can confirm:\n- **CD4 T-lymphocyte: 36/mm³** (critically low)\n- **Fundoscopic findings: Granular yellow-white opacities around retinal vessels with dot-blot hemorrhages** (highly suggestive of CMV retinitis given the severe immunosuppression)",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 5721,
+          "terminal": false
+        },
+        {
+          "turn": 9,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Visual_Acu"
+          },
+          "result": "RESULTS:\n\nI don't have Visual Acuity test results in the available data.\n\nNORMAL READINGS\n\nHowever, based on your available examination findings:\n- **CD4 T-lymphocyte: 36/mm³** (critically low)\n- **Fundoscopic findings: Granular yellow-white opacities around retinal vessels with dot-blot hemorrhages**\n- **General condition: Multiple violaceous plaques over trunk and extremities, cervical lymphadenopathy present**\n\nThese findings suggest significant immunocompromise with concerning retinal pathology.",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 5334,
+          "terminal": false
+        },
+        {
+          "turn": 19,
+          "id": null,
+          "name": "give_diagnosis",
+          "arguments": {
+            "request": "CMV Retinitis"
+          },
+          "result": null,
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 4858,
+          "terminal": true
+        }
+      ],
+      "summary": {
+        "n_calls": 4,
+        "by_name": {
+          "request_test": 3,
+          "give_diagnosis": 1
+        },
+        "n_ok": 4,
+        "n_error": 0,
+        "errors": []
+      },
+      "writes": {
+        "available": false,
+        "reason": "this benchmark issues no writes, so there is no said-vs-emitted-vs-landed distinction to record"
+      }
+    },
+    "turns": [
+      {
+        "inference": 1,
+        "incoming": "",
+        "reply": "Hello, I'm Dr. Agent. Just so you know, I'm an AI assistant and this call is recorded. When did these vision changes start, and do you know your most recent CD4 count?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 3960,
+          "output_tokens": 959,
+          "thinking_tokens": 915,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      },
+      {
+        "inference": 2,
+        "incoming": "The vision changes started about 2 days ago in my right eye. I'm not sure about my exact CD4 count right now - I'd have to check my recent lab results.",
+        "reply": "I see. Are you experiencing any pain, redness, or flashes of light in that eye? REQUEST TEST: CD4_Count and REQUEST TEST: Dilated_Funduscopic_Exam.",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "CD4_Count and REQUEST TEST: Dilated_Funduscopic_Exam.",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4044,
+          "output_tokens": 1019,
+          "thinking_tokens": 980,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      },
+      {
+        "inference": 3,
+        "incoming": "RESULTS:\n\n**CD4 Count:**\n- CD4 T-lymphocyte: 36/mm³ (critically low - normal range is 500-1,500/mm³)\n\n**Dilated Funduscopic Exam:**\n- Granular yellow-white opacities around the retinal vessels\n- Multiple areas of dot-blot hemorrhages\n\nThese findings are consistent with retinal pathology, particularly concerning given the severely immunocompromised state indicated by the CD4 count.",
+        "reply": "I've reviewed your results, and your CD4 count is critically low, which makes your eyes very vulnerable to specific infections. Are the black spots you're seeing moving around like",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4187,
+          "output_tokens": 1020,
+          "thinking_tokens": 983,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "MAX_TOKENS"
+      },
+      {
+        "inference": 4,
+        "incoming": "Yes, they do seem to move around when I move my eyes - like little floaters drifting across my vision. It's been really affecting my ability to see clearly out of that eye.",
+        "reply": "That \"drifting\" sensation is common with certain types of retinal inflammation in patients with low CD4 counts. Have you noticed any loss of your peripheral vision or a feeling like a curtain",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4265,
+          "output_tokens": 1020,
+          "thinking_tokens": 983,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "MAX_TOKENS"
+      },
+      {
+        "inference": 5,
+        "incoming": "No, I haven't noticed any curtain-like feeling or problems with my peripheral vision. It's mainly just the floaters and the overall blurriness in my right eye that's bothering me.",
+        "reply": "I understand. Is your left eye experiencing any similar symptoms, and are you currently taking your antiretroviral medications? REQUEST TEST: CMV_PCR_Serum.",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "CMV_PCR_Serum.",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4347,
+          "output_tokens": 1012,
+          "thinking_tokens": 980,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      },
+      {
+        "inference": 6,
+        "incoming": "RESULTS:\n\nI don't have CMV PCR Serum test results in the available data.\n\nNORMAL READINGS\n\nHowever, based on the existing test results, I can confirm:\n- **CD4 T-lymphocyte: 36/mm³** (critically low)\n- **Fundoscopic findings: Granular yellow-white opacities around retinal vessels with dot-blot hemorrhages** (highly suggestive of CMV retinitis given the severe immunosuppression)",
+        "reply": "I'm still interested in whether your left eye has any symptoms and if you've been able to take your antiretroviral therapy regularly. I'd also like to check your vision more",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4478,
+          "output_tokens": 1020,
+          "thinking_tokens": 981,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "MAX_TOKENS"
+      },
+      {
+        "inference": 7,
+        "incoming": "My left eye feels completely fine - no problems there at all. And yes, I've been taking my HIV medications regularly, all of them as prescribed. I haven't missed any doses.",
+        "reply": "I am glad to hear that your left eye is unaffected and that you are staying consistent with your medications. Have you noticed any specific areas where your vision is completely missing, or is it just blurry overall?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4559,
+          "output_tokens": 1020,
+          "thinking_tokens": 979,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "MAX_TOKENS"
+      },
+      {
+        "inference": 8,
+        "incoming": "It's mostly just blurry overall - everything seems hazy and out of focus in that eye. I haven't noticed any specific blind spots or areas where my vision is completely gone, just the general blurriness and those floaters I mentioned.",
+        "reply": "I understand, thank you for clarifying that it is mostly a general blurriness. Have you experienced any other systemic symptoms recently, such as fever, night sweats, or unintentional weight loss?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4652,
+          "output_tokens": 1020,
+          "thinking_tokens": 981,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "MAX_TOKENS"
+      },
+      {
+        "inference": 9,
+        "incoming": "No, I haven't had any fever or night sweats recently. I haven't really noticed any significant weight loss either - I've been trying to keep up with my nutritional supplements to maintain my weight.",
+        "reply": "I'm glad you haven't had those systemic symptoms. Have you ever been diagnosed with any other infections related to your HIV in the past? REQUEST TEST: Visual_Acu",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Visual_Acu",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4735,
+          "output_tokens": 1020,
+          "thinking_tokens": 983,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "MAX_TOKENS"
+      },
+      {
+        "inference": 10,
+        "incoming": "RESULTS:\n\nI don't have Visual Acuity test results in the available data.\n\nNORMAL READINGS\n\nHowever, based on your available examination findings:\n- **CD4 T-lymphocyte: 36/mm³** (critically low)\n- **Fundoscopic findings: Granular yellow-white opacities around retinal vessels with dot-blot hemorrhages**\n- **General condition: Multiple violaceous plaques over trunk and extremities, cervical lymphadenopathy present**\n\nThese findings suggest significant immunocompromise with concerning retinal pathology.",
+        "reply": "I noticed some purple spots on your skin and swollen glands during the exam; how long have those been present? Have you ever been diagnosed with Cytomegalovirus (CMV) or any other",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4887,
+          "output_tokens": 1020,
+          "thinking_tokens": 982,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "MAX_TOKENS"
+      },
+      {
+        "inference": 11,
+        "incoming": "Oh, those purple spots are from my Kaposi's sarcoma - I was diagnosed with that about 2 years ago. As for CMV, I'm not sure if I've been specifically diagnosed with it before, but I did have that fungal infection in my esophagus about 6 months ago that they treated.",
+        "reply": "That is helpful information regarding your history with Kaposi's sarcoma and the previous esophageal infection. Are you experiencing any pain in that eye or sensitivity to bright lights? I would also like to check",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4992,
+          "output_tokens": 1020,
+          "thinking_tokens": 981,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "MAX_TOKENS"
+      },
+      {
+        "inference": 12,
+        "incoming": "No, there's no pain in my eye at all, and I haven't noticed any particular sensitivity to bright lights. It's really just the blurriness and those black floaters that are bothering me - the eye itself doesn't hurt.",
+        "reply": "I appreciate you sharing those details about your history with Kaposi's sarcoma and the esophageal infection. Given your symptoms and the appearance of your retina, I would like to check for a specific viral infection.",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 5086,
+          "output_tokens": 1020,
+          "thinking_tokens": 979,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "MAX_TOKENS"
+      },
+      {
+        "inference": 13,
+        "incoming": "Okay, sure. What kind of viral infection are you thinking about? Is there a specific test you need to do?",
+        "reply": "I am specifically looking for Cytomegalovirus, often called CMV, which is a common cause of vision issues in people with low CD4 counts. Based on your symptoms and the exam",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 5153,
+          "output_tokens": 1020,
+          "thinking_tokens": 984,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "MAX_TOKENS"
+      },
+      {
+        "inference": 14,
+        "incoming": "Oh, I see. So you think this might be CMV affecting my eye? Is that something serious, and what would the treatment involve?",
+        "reply": "Yes, it is a serious condition that requires prompt treatment with antiviral medications to prevent permanent vision loss. Based on your specific eye exam findings and your very low CD4 count, I",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 5219,
+          "output_tokens": 1020,
+          "thinking_tokens": 984,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "MAX_TOKENS"
+      },
+      {
+        "inference": 15,
+        "incoming": "That sounds really concerning - I definitely don't want to lose my vision. How soon would I need to start treatment, and would it be pills or something else? I'm already taking so many medications for my HIV and everything else.",
+        "reply": "Treatment usually starts immediately and often involves either oral medication or injections directly into the eye. Given your clinical presentation and critically low CD4 count, I am confident in the findings.\n\nDI",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 5306,
+          "output_tokens": 1020,
+          "thinking_tokens": 983,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "MAX_TOKENS"
+      },
+      {
+        "inference": 16,
+        "incoming": "Injections into the eye? That sounds pretty intense. How often would I need those injections, and how long does the treatment usually last? I just want to make sure I understand what I'm getting into here.",
+        "reply": "I understand that eye injections sound intimidating, but they are highly effective at stopping the virus quickly. Given your symptoms and the specific findings on your retinal exam, I have determined the cause of your vision loss",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 5389,
+          "output_tokens": 1020,
+          "thinking_tokens": 980,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "MAX_TOKENS"
+      },
+      {
+        "inference": 17,
+        "incoming": "Okay, I understand. So what exactly is causing my vision loss, and what are the next steps? Should I be worried about my left eye getting affected too?",
+        "reply": "You have CMV retinitis, a viral infection that occurs when the immune system is significantly weakened. We must begin antiviral treatment immediately to preserve your vision and prevent the infection from spreading to your left eye.",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 5464,
+          "output_tokens": 1020,
+          "thinking_tokens": 980,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "MAX_TOKENS"
+      },
+      {
+        "inference": 18,
+        "incoming": "Okay, that's really scary to hear. So I'll need to start this treatment right away then? And is there anything I can do to protect my left eye from getting infected too, or is it just a matter of getting my immune system stronger?",
+        "reply": "Yes, starting treatment immediately is crucial to save your vision. The most important way to protect your other eye is to continue your antiretroviral therapy to improve your immune system.",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 5559,
+          "output_tokens": 1020,
+          "thinking_tokens": 984,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "MAX_TOKENS"
+      },
+      {
+        "inference": 19,
+        "incoming": "I've been taking all my HIV meds regularly like I said, so hopefully that will help. When do we start the treatment - like today or tomorrow? And will I need to come back frequently for follow-up appointments?",
+        "reply": "We should aim to start your treatment today, and yes, you will need frequent follow-up appointments to monitor your vision closely. DIAGNOSIS READY: CMV Retinitis",
+        "tool_calls": [],
+        "kind": "diagnosis",
+        "payload": "CMV Retinitis",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 5642,
+          "output_tokens": 994,
+          "thinking_tokens": 960,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      }
+    ],
+    "audio": null
+  }
+}

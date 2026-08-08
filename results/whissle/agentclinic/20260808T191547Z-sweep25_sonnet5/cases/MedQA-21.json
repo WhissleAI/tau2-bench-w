@@ -1,0 +1,535 @@
+{
+  "scenario_id": "MedQA-21",
+  "scenario_index": 21,
+  "dataset": "MedQA",
+  "mode": "text",
+  "correct_diagnosis": "Reactive Arthritis",
+  "answer_options": [],
+  "score": {
+    "outcome": "correct",
+    "correctness": true,
+    "doctor_diagnosis": "Reactive arthritis (Reiter's syndrome), likely triggered by chlamydial urethritis — presenting with the classic triad of urethritis, conjunctivitis, and asymmetric oligoarthritis (knee now, ankle previously).",
+    "doctor_final_text": "DIAGNOSIS READY: Reactive arthritis (Reiter's syndrome), likely triggered by chlamydial urethritis — presenting with the classic triad of urethritis, conjunctivitis, and asymmetric oligoarthritis (knee now, ankle previously).",
+    "moderator_raw": "yes",
+    "moderator_raw_text": "Yes",
+    "moderator_lenient": true,
+    "moderator_attempts": 1,
+    "moderator_normalized": false,
+    "moderator_unconstrained": false,
+    "declined": false,
+    "refusal_evidence": [],
+    "format_deviation": false,
+    "decline_source": null,
+    "decline_reason": "",
+    "spurious_commit": false
+  },
+  "infra_fail": false,
+  "error": null,
+  "findings": [],
+  "inferences_used": 5,
+  "max_inferences": 20,
+  "tests_ordered": [
+    "Urine_NAAT_Chlamydia_Gonorrhea"
+  ],
+  "images_requested": 0,
+  "image": null,
+  "image_error": null,
+  "vision": "off",
+  "refusals": [],
+  "dialogue": [
+    {
+      "role": "doctor",
+      "inference": 1,
+      "kind": "question",
+      "text": "Can you tell me your age and whether you've noticed any eye redness, irritation, or vision changes recently?",
+      "payload": null,
+      "latency_ms": 2433,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "I'm 17 years old. Yeah, actually my eyes have been kind of red and irritated for a little while now, but my vision seems okay."
+    },
+    {
+      "role": "doctor",
+      "inference": 2,
+      "kind": "question",
+      "text": "Have you had any recent diarrhea, gastrointestinal illness, or sexually transmitted infections in the past few weeks?",
+      "payload": null,
+      "latency_ms": 3168,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "No, I haven't had any diarrhea or stomach problems. But, um, I have been having some burning when I pee for the past few weeks, which has been pretty uncomfortable."
+    },
+    {
+      "role": "doctor",
+      "inference": 3,
+      "kind": "question",
+      "text": "This sounds like reactive arthritis - the combination of joint pain/swelling, eye irritation, and urinary symptoms. Can you tell me if you've had any new sexual partners recently, or any skin rashes or mouth sores?",
+      "payload": null,
+      "latency_ms": 4065,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Yeah, I've been with two different girls recently, and honestly, we don't always use protection. But no, I haven't noticed any rashes or sores in my mouth or on my skin."
+    },
+    {
+      "role": "doctor",
+      "inference": 4,
+      "kind": "test",
+      "text": "Given your symptoms, I'd like to check for an underlying STI - specifically chlamydia, which is a common trigger for reactive arthritis. REQUEST TEST: Urine_NAAT_Chlamydia_Gonorrhea",
+      "payload": "Urine_NAAT_Chlamydia_Gonorrhea",
+      "latency_ms": 3103,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: The requested test \"Urine_NAAT_Chlamydia_Gonorrhea\" is not available in the current data.\n\nHowever, given the clinical presentation (urethritis symptoms, unprotected sexual contact, conjunctivitis, and arthritis), this test would be highly appropriate to order.\n\nBased on available information, I can provide:\n- **Urinalysis shows**: WBC 12-16/hpf (elevated, suggesting urethritis)\n- **HIV ELISA**: Negative\n\nNORMAL READINGS for Urine NAAT for Chlamydia/Gonorrhea would typically be reported, but the clinical picture is highly suggestive of reactive arthritis (Reiter's syndrome) secondary to a genitourinary infection, likely chlamydial urethritis."
+    },
+    {
+      "role": "doctor",
+      "inference": 5,
+      "kind": "diagnosis",
+      "text": "DIAGNOSIS READY: Reactive arthritis (Reiter's syndrome), likely triggered by chlamydial urethritis — presenting with the classic triad of urethritis, conjunctivitis, and asymmetric oligoarthritis (knee now, ankle previously).",
+      "payload": "Reactive arthritis (Reiter's syndrome), likely triggered by chlamydial urethritis — presenting with the classic triad of urethritis, conjunctivitis, and asymmetric oligoarthritis (knee now, ankle previously).",
+      "latency_ms": 2424,
+      "refusal": null,
+      "via": "marker"
+    }
+  ],
+  "latency_ms": [
+    2433,
+    3168,
+    4065,
+    3103,
+    2424
+  ],
+  "wall_s": 28.16,
+  "doctor_turns": [
+    {
+      "inference": 1,
+      "incoming": "",
+      "reply": "Can you tell me your age and whether you've noticed any eye redness, irritation, or vision changes recently?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 5750,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 36,
+        "output_tokens_details": {
+          "thinking_tokens": 0
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 2,
+      "incoming": "I'm 17 years old. Yeah, actually my eyes have been kind of red and irritated for a little while now, but my vision seems okay.",
+      "reply": "Have you had any recent diarrhea, gastrointestinal illness, or sexually transmitted infections in the past few weeks?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 5830,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 43,
+        "output_tokens_details": {
+          "thinking_tokens": 0
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 3,
+      "incoming": "No, I haven't had any diarrhea or stomach problems. But, um, I have been having some burning when I pee for the past few weeks, which has been pretty uncomfortable.",
+      "reply": "This sounds like reactive arthritis - the combination of joint pain/swelling, eye irritation, and urinary symptoms. Can you tell me if you've had any new sexual partners recently, or any skin rashes or mouth sores?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 5929,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 77,
+        "output_tokens_details": {
+          "thinking_tokens": 0
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 4,
+      "incoming": "Yeah, I've been with two different girls recently, and honestly, we don't always use protection. But no, I haven't noticed any rashes or sores in my mouth or on my skin.",
+      "reply": "Given your symptoms, I'd like to check for an underlying STI - specifically chlamydia, which is a common trigger for reactive arthritis. REQUEST TEST: Urine_NAAT_Chlamydia_Gonorrhea",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Urine_NAAT_Chlamydia_Gonorrhea",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 6063,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 81,
+        "output_tokens_details": {
+          "thinking_tokens": 0
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 5,
+      "incoming": "RESULTS: The requested test \"Urine_NAAT_Chlamydia_Gonorrhea\" is not available in the current data.\n\nHowever, given the clinical presentation (urethritis symptoms, unprotected sexual contact, conjunctivitis, and arthritis), this test would be highly appropriate to order.\n\nBased on available information, I can provide:\n- **Urinalysis shows**: WBC 12-16/hpf (elevated, suggesting urethritis)\n- **HIV ELISA**: Negative\n\nNORMAL READINGS for Urine NAAT for Chlamydia/Gonorrhea would typically be reported, but the clinical picture is highly suggestive of reactive arthritis (Reiter's syndrome) secondary to a genitourinary infection, likely chlamydial urethritis.",
+      "reply": "DIAGNOSIS READY: Reactive arthritis (Reiter's syndrome), likely triggered by chlamydial urethritis — presenting with the classic triad of urethritis, conjunctivitis, and asymmetric oligoarthritis (knee now, ankle previously).",
+      "tool_calls": [],
+      "kind": "diagnosis",
+      "payload": "Reactive arthritis (Reiter's syndrome), likely triggered by chlamydial urethritis — presenting with the classic triad of urethritis, conjunctivitis, and asymmetric oligoarthritis (knee now, ankle previously).",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 6408,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 96,
+        "output_tokens_details": {
+          "thinking_tokens": 0
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    }
+  ],
+  "support_llm": "anthropic:claude-sonnet-4-5",
+  "support_llm_cost_usd": 0.01174,
+  "support_llm_calls": 5,
+  "voice_subset": false,
+  "diagnostics": {
+    "schema": "tau2.health.diagnostics/v1",
+    "benchmark": "agentclinic",
+    "case_id": "MedQA-21",
+    "mode": "text",
+    "availability": {
+      "flow_available": false,
+      "flow_reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "signals_available": false,
+      "signals_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "metadata_sidecar_available": false,
+      "metadata_sidecar_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "tools_available": true,
+      "tools_reason": null
+    },
+    "provenance": {
+      "benchmark": "agentclinic",
+      "mode": "text",
+      "transport_endpoint": "POST /api/bench/agent-turn",
+      "agent_id": "c2761ec7-d3f7-4bd7-b68c-40a87f1b1ab3",
+      "base_url": "https://aws-gateway-backend.whissle.ai/bot",
+      "seed": 42,
+      "stratum": {
+        "dataset": "MedQA",
+        "scenario_index": 21,
+        "selection": "head",
+        "limit": 25
+      },
+      "judge": {
+        "judge_provider": "anthropic",
+        "judge_model": "claude-sonnet-4-5",
+        "judge_endpoint": "anthropic:claude-sonnet-4-5",
+        "judge_independent": true,
+        "judge_independence_note": "Judge independence: this run's simulators and graders were routed through an external provider, independent of the agent under test. This is the stronger footing for a published comparison against the paper's numbers."
+      },
+      "judge_provider": "anthropic",
+      "judge_independent": true,
+      "run_id": null,
+      "run_dir": "results/whissle/agentclinic/20260808T191547Z-sweep25_sonnet5",
+      "harness_commit": "86b4475",
+      "captured_at": "2026-08-08T19:19:44+00:00",
+      "protocol": "markers",
+      "history": "agentclinic",
+      "prompt_mode": "override",
+      "vision": "off",
+      "agent_type": null,
+      "total_inferences": 20,
+      "inferences_used": 5,
+      "support_llm": "anthropic:claude-sonnet-4-5",
+      "patient_bias": null,
+      "doctor_bias": null,
+      "voice_subset": false
+    },
+    "cost": {
+      "available": true,
+      "reason": null,
+      "judge_calls": 5,
+      "judge_cost_usd": 0.01174,
+      "agent_calls": 5
+    },
+    "flow": {
+      "available": false,
+      "reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "source": null,
+      "turns": null,
+      "summary": null,
+      "conversation_id": null,
+      "current_state": null,
+      "start_state": null,
+      "final_state": null,
+      "ended": null,
+      "flow_end": null,
+      "num_steps": null,
+      "step_counts_by_kind": null,
+      "states_visited": null,
+      "states_declared": null,
+      "states_unvisited": null,
+      "transitions": null,
+      "transitions_fired": null,
+      "var_sets": null,
+      "var_sources": null,
+      "guard_trips": null,
+      "state_divergences": null,
+      "tools_gated": null,
+      "says": null,
+      "steps": null
+    },
+    "signals": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "metadata_sidecar": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "tools": {
+      "available": true,
+      "reason": null,
+      "source": "doctor actions parsed from /api/bench/agent-turn replies",
+      "calls": [
+        {
+          "turn": 4,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Urine_NAAT_Chlamydia_Gonorrhea"
+          },
+          "result": "RESULTS: The requested test \"Urine_NAAT_Chlamydia_Gonorrhea\" is not available in the current data.\n\nHowever, given the clinical presentation (urethritis symptoms, unprotected sexual contact, conjunctivitis, and arthritis), this test would be highly appropriate to order.\n\nBased on available information, I can provide:\n- **Urinalysis shows**: WBC 12-16/hpf (elevated, suggesting urethritis)\n- **HIV ELISA**: Negative\n\nNORMAL READINGS for Urine NAAT for Chlamydia/Gonorrhea would typically be reported, but the clinical picture is highly suggestive of reactive arthritis (Reiter's syndrome) secondary to a genitourinary infection, likely chlamydial urethritis.",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 3103,
+          "terminal": false
+        },
+        {
+          "turn": 5,
+          "id": null,
+          "name": "give_diagnosis",
+          "arguments": {
+            "request": "Reactive arthritis (Reiter's syndrome), likely triggered by chlamydial urethritis — presenting with the classic triad of urethritis, conjunctivitis, and asymmetric oligoarthritis (knee now, ankle previously)."
+          },
+          "result": null,
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 2424,
+          "terminal": true
+        }
+      ],
+      "summary": {
+        "n_calls": 2,
+        "by_name": {
+          "request_test": 1,
+          "give_diagnosis": 1
+        },
+        "n_ok": 2,
+        "n_error": 0,
+        "errors": []
+      },
+      "writes": {
+        "available": false,
+        "reason": "this benchmark issues no writes, so there is no said-vs-emitted-vs-landed distinction to record"
+      }
+    },
+    "turns": [
+      {
+        "inference": 1,
+        "incoming": "",
+        "reply": "Can you tell me your age and whether you've noticed any eye redness, irritation, or vision changes recently?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 5750,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 36,
+          "output_tokens_details": {
+            "thinking_tokens": 0
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 2,
+        "incoming": "I'm 17 years old. Yeah, actually my eyes have been kind of red and irritated for a little while now, but my vision seems okay.",
+        "reply": "Have you had any recent diarrhea, gastrointestinal illness, or sexually transmitted infections in the past few weeks?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 5830,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 43,
+          "output_tokens_details": {
+            "thinking_tokens": 0
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 3,
+        "incoming": "No, I haven't had any diarrhea or stomach problems. But, um, I have been having some burning when I pee for the past few weeks, which has been pretty uncomfortable.",
+        "reply": "This sounds like reactive arthritis - the combination of joint pain/swelling, eye irritation, and urinary symptoms. Can you tell me if you've had any new sexual partners recently, or any skin rashes or mouth sores?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 5929,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 77,
+          "output_tokens_details": {
+            "thinking_tokens": 0
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 4,
+        "incoming": "Yeah, I've been with two different girls recently, and honestly, we don't always use protection. But no, I haven't noticed any rashes or sores in my mouth or on my skin.",
+        "reply": "Given your symptoms, I'd like to check for an underlying STI - specifically chlamydia, which is a common trigger for reactive arthritis. REQUEST TEST: Urine_NAAT_Chlamydia_Gonorrhea",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Urine_NAAT_Chlamydia_Gonorrhea",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 6063,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 81,
+          "output_tokens_details": {
+            "thinking_tokens": 0
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 5,
+        "incoming": "RESULTS: The requested test \"Urine_NAAT_Chlamydia_Gonorrhea\" is not available in the current data.\n\nHowever, given the clinical presentation (urethritis symptoms, unprotected sexual contact, conjunctivitis, and arthritis), this test would be highly appropriate to order.\n\nBased on available information, I can provide:\n- **Urinalysis shows**: WBC 12-16/hpf (elevated, suggesting urethritis)\n- **HIV ELISA**: Negative\n\nNORMAL READINGS for Urine NAAT for Chlamydia/Gonorrhea would typically be reported, but the clinical picture is highly suggestive of reactive arthritis (Reiter's syndrome) secondary to a genitourinary infection, likely chlamydial urethritis.",
+        "reply": "DIAGNOSIS READY: Reactive arthritis (Reiter's syndrome), likely triggered by chlamydial urethritis — presenting with the classic triad of urethritis, conjunctivitis, and asymmetric oligoarthritis (knee now, ankle previously).",
+        "tool_calls": [],
+        "kind": "diagnosis",
+        "payload": "Reactive arthritis (Reiter's syndrome), likely triggered by chlamydial urethritis — presenting with the classic triad of urethritis, conjunctivitis, and asymmetric oligoarthritis (knee now, ankle previously).",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 6408,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 96,
+          "output_tokens_details": {
+            "thinking_tokens": 0
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      }
+    ],
+    "audio": null
+  }
+}

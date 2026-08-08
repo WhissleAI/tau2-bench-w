@@ -1,0 +1,684 @@
+{
+  "scenario_id": "MedQA-9",
+  "scenario_index": 9,
+  "dataset": "MedQA",
+  "mode": "text",
+  "correct_diagnosis": "Endometritis",
+  "answer_options": [],
+  "score": {
+    "outcome": "correct",
+    "correctness": true,
+    "doctor_diagnosis": "Postpartum endometritis — recommend hospital admission for IV broad-spectrum antibiotics (e.g., clindamycin plus gentamicin).",
+    "doctor_final_text": "Given your fever, tachycardia, and tender uterus with prolonged labor/multiple exams as risk factors, this is a clinical diagnosis of postpartum endometritis regardless of the normal labs. \n\nDIAGNOSIS READY: Postpartum endometritis — recommend hospital admission for IV broad-spectrum antibiotics (e.g., clindamycin plus gentamicin).",
+    "moderator_raw": "yes",
+    "moderator_raw_text": "Yes",
+    "moderator_lenient": true,
+    "moderator_attempts": 1,
+    "moderator_normalized": false,
+    "moderator_unconstrained": false,
+    "declined": false,
+    "refusal_evidence": [],
+    "format_deviation": false,
+    "decline_source": null,
+    "decline_reason": "",
+    "spurious_commit": false
+  },
+  "infra_fail": false,
+  "error": null,
+  "findings": [],
+  "inferences_used": 7,
+  "max_inferences": 20,
+  "tests_ordered": [
+    "Vital_Signs_and_Physical_Exam",
+    "CBC_and_Blood_Cultures"
+  ],
+  "images_requested": 0,
+  "image": null,
+  "image_error": null,
+  "vision": "off",
+  "refusals": [],
+  "dialogue": [
+    {
+      "role": "doctor",
+      "inference": 1,
+      "kind": "question",
+      "text": "How many days postpartum are you, and how high has your fever been?",
+      "payload": null,
+      "latency_ms": 3045,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "I'm about 3 days postpartum now. My fever has been around 101 to 102 degrees Fahrenheit - I've felt pretty warm and uncomfortable."
+    },
+    {
+      "role": "doctor",
+      "inference": 2,
+      "kind": "question",
+      "text": "Can you describe the abdominal pain—is it more in the lower abdomen, and is your uterus tender when pressed? Also, have you noticed any foul-smelling vaginal discharge?",
+      "payload": null,
+      "latency_ms": 2408,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Yes, the pain is definitely in my lower abdomen, and it really hurts when that area is pressed or touched. I haven't noticed any foul-smelling discharge though - everything seems normal in that regard."
+    },
+    {
+      "role": "doctor",
+      "inference": 3,
+      "kind": "question",
+      "text": "Have you had any chills, increased heart rate, or noticed heavy or unusual vaginal bleeding since delivery?",
+      "payload": null,
+      "latency_ms": 2239,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Yes, I've had some chills along with the fever - they come and go. I haven't really noticed my heart racing or anything like that, and the bleeding seems pretty normal for after delivery, not unusually heavy."
+    },
+    {
+      "role": "doctor",
+      "inference": 4,
+      "kind": "question",
+      "text": "Was your delivery vaginal or cesarean, and were there any complications—like prolonged labor, multiple exams, or retained placental tissue?",
+      "payload": null,
+      "latency_ms": 2939,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "It was a vaginal delivery, and yes, the labor was really long - it felt like it went on forever. The doctors and nurses did quite a few exams during that time, but as far as I know, they said everything came out okay with the placenta."
+    },
+    {
+      "role": "doctor",
+      "inference": 5,
+      "kind": "test",
+      "text": "Prolonged labor and multiple exams raise your infection risk. I'd like to check your temperature, heart rate, and do an abdominal/pelvic exam — REQUEST TEST: Vital_Signs_and_Physical_Exam",
+      "payload": "Vital_Signs_and_Physical_Exam",
+      "latency_ms": 2429,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: Based on your physical examination:\n\n**Vital Signs:**\n- Temperature: 102°F (38.9°C) - elevated\n- Blood Pressure: 118/78 mmHg - normal\n- Heart Rate: 111/min - elevated (tachycardia)\n- Respiratory Rate: 17/min - normal\n- Oxygen Saturation: 98% on room air - normal\n\n**Abdominal Examination:**\n- Abdomen is not distended\n- Bowel sounds are decreased\n- Your uterus is tender to palpation (painful when pressed)\n\n**Pulmonary Examination:**\n- Minor crackles heard at the base of both lungs\n- No signs of respiratory distress\n\nThese findings show you have a significant fever, your heart rate is elevated (which often happens with fever and infection), and most importantly, your uterus is tender on examination. Combined with your prolonged labor and multiple cervical exams, this clinical picture is very concerning for endometritis (uterine infection), which is one of the most common postpartum infections."
+    },
+    {
+      "role": "doctor",
+      "inference": 6,
+      "kind": "test",
+      "text": "I'd like to check a CBC and blood cultures to confirm infection and rule out bacteremia — REQUEST TEST: CBC_and_Blood_Cultures",
+      "payload": "CBC_and_Blood_Cultures",
+      "latency_ms": 2374,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: \n\n**Complete Blood Count (CBC):**\n- WBC (White Blood Cell count): NORMAL READINGS\n- Hemoglobin: NORMAL READINGS\n- Platelets: NORMAL READINGS\n\n**Blood Cultures:**\n- NORMAL READINGS\n\nNote: While the specific values are showing as normal readings in the available data, your clinical presentation (fever of 102°F, tachycardia at 111/min, uterine tenderness, and risk factors of prolonged labor with multiple cervical exams) remains highly suggestive of postpartum endometritis. Clinical diagnosis often precedes laboratory confirmation, and treatment should not be delayed while awaiting culture results in cases of suspected postpartum infection."
+    },
+    {
+      "role": "doctor",
+      "inference": 7,
+      "kind": "diagnosis",
+      "text": "Given your fever, tachycardia, and tender uterus with prolonged labor/multiple exams as risk factors, this is a clinical diagnosis of postpartum endometritis regardless of the normal labs. \n\nDIAGNOSIS READY: Postpartum endometritis — recommend hospital admission for IV broad-spectrum antibiotics (e.g., clindamycin plus gentamicin).",
+      "payload": "Postpartum endometritis — recommend hospital admission for IV broad-spectrum antibiotics (e.g., clindamycin plus gentamicin).",
+      "latency_ms": 2968,
+      "refusal": null,
+      "via": "marker"
+    }
+  ],
+  "latency_ms": [
+    3045,
+    2408,
+    2239,
+    2939,
+    2429,
+    2374,
+    2968
+  ],
+  "wall_s": 40.56,
+  "doctor_turns": [
+    {
+      "inference": 1,
+      "incoming": "",
+      "reply": "How many days postpartum are you, and how high has your fever been?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 5713,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 21,
+        "output_tokens_details": {
+          "thinking_tokens": 0
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 2,
+      "incoming": "I'm about 3 days postpartum now. My fever has been around 101 to 102 degrees Fahrenheit - I've felt pretty warm and uncomfortable.",
+      "reply": "Can you describe the abdominal pain—is it more in the lower abdomen, and is your uterus tender when pressed? Also, have you noticed any foul-smelling vaginal discharge?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 5788,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 63,
+        "output_tokens_details": {
+          "thinking_tokens": 0
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 3,
+      "incoming": "Yes, the pain is definitely in my lower abdomen, and it really hurts when that area is pressed or touched. I haven't noticed any foul-smelling discharge though - everything seems normal in that regard.",
+      "reply": "Have you had any chills, increased heart rate, or noticed heavy or unusual vaginal bleeding since delivery?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 5918,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 41,
+        "output_tokens_details": {
+          "thinking_tokens": 0
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 4,
+      "incoming": "Yes, I've had some chills along with the fever - they come and go. I haven't really noticed my heart racing or anything like that, and the bleeding seems pretty normal for after delivery, not unusually heavy.",
+      "reply": "Was your delivery vaginal or cesarean, and were there any complications—like prolonged labor, multiple exams, or retained placental tissue?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 6026,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 48,
+        "output_tokens_details": {
+          "thinking_tokens": 0
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 5,
+      "incoming": "It was a vaginal delivery, and yes, the labor was really long - it felt like it went on forever. The doctors and nurses did quite a few exams during that time, but as far as I know, they said everything came out okay with the placenta.",
+      "reply": "Prolonged labor and multiple exams raise your infection risk. I'd like to check your temperature, heart rate, and do an abdominal/pelvic exam — REQUEST TEST: Vital_Signs_and_Physical_Exam",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Vital_Signs_and_Physical_Exam",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 6146,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 80,
+        "output_tokens_details": {
+          "thinking_tokens": 0
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 6,
+      "incoming": "RESULTS: Based on your physical examination:\n\n**Vital Signs:**\n- Temperature: 102°F (38.9°C) - elevated\n- Blood Pressure: 118/78 mmHg - normal\n- Heart Rate: 111/min - elevated (tachycardia)\n- Respiratory Rate: 17/min - normal\n- Oxygen Saturation: 98% on room air - normal\n\n**Abdominal Examination:**\n- Abdomen is not distended\n- Bowel sounds are decreased\n- Your uterus is tender to palpation (painful when pressed)\n\n**Pulmonary Examination:**\n- Minor crackles heard at the base of both lungs\n- No signs of respiratory distress\n\nThese findings show you have a significant fever, your heart rate is elevated (which often happens with fever and infection), and most importantly, your uterus is tender on examination. Combined with your prolonged labor and multiple cervical exams, this clinical picture is very concerning for endometritis (uterine infection), which is one of the most common postpartum infections.",
+      "reply": "I'd like to check a CBC and blood cultures to confirm infection and rule out bacteremia — REQUEST TEST: CBC_and_Blood_Cultures",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "CBC_and_Blood_Cultures",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 6568,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 57,
+        "output_tokens_details": {
+          "thinking_tokens": 0
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 7,
+      "incoming": "RESULTS: \n\n**Complete Blood Count (CBC):**\n- WBC (White Blood Cell count): NORMAL READINGS\n- Hemoglobin: NORMAL READINGS\n- Platelets: NORMAL READINGS\n\n**Blood Cultures:**\n- NORMAL READINGS\n\nNote: While the specific values are showing as normal readings in the available data, your clinical presentation (fever of 102°F, tachycardia at 111/min, uterine tenderness, and risk factors of prolonged labor with multiple cervical exams) remains highly suggestive of postpartum endometritis. Clinical diagnosis often precedes laboratory confirmation, and treatment should not be delayed while awaiting culture results in cases of suspected postpartum infection.",
+      "reply": "Given your fever, tachycardia, and tender uterus with prolonged labor/multiple exams as risk factors, this is a clinical diagnosis of postpartum endometritis regardless of the normal labs. \n\nDIAGNOSIS READY: Postpartum endometritis — recommend hospital admission for IV broad-spectrum antibiotics (e.g., clindamycin plus gentamicin).",
+      "tool_calls": [],
+      "kind": "diagnosis",
+      "payload": "Postpartum endometritis — recommend hospital admission for IV broad-spectrum antibiotics (e.g., clindamycin plus gentamicin).",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 6880,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 134,
+        "output_tokens_details": {
+          "thinking_tokens": 0
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    }
+  ],
+  "support_llm": "anthropic:claude-sonnet-4-5",
+  "support_llm_cost_usd": 0.02052,
+  "support_llm_calls": 7,
+  "voice_subset": false,
+  "diagnostics": {
+    "schema": "tau2.health.diagnostics/v1",
+    "benchmark": "agentclinic",
+    "case_id": "MedQA-9",
+    "mode": "text",
+    "availability": {
+      "flow_available": false,
+      "flow_reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "signals_available": false,
+      "signals_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "metadata_sidecar_available": false,
+      "metadata_sidecar_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "tools_available": true,
+      "tools_reason": null
+    },
+    "provenance": {
+      "benchmark": "agentclinic",
+      "mode": "text",
+      "transport_endpoint": "POST /api/bench/agent-turn",
+      "agent_id": "c2761ec7-d3f7-4bd7-b68c-40a87f1b1ab3",
+      "base_url": "https://aws-gateway-backend.whissle.ai/bot",
+      "seed": 42,
+      "stratum": {
+        "dataset": "MedQA",
+        "scenario_index": 9,
+        "selection": "head",
+        "limit": 25
+      },
+      "judge": {
+        "judge_provider": "anthropic",
+        "judge_model": "claude-sonnet-4-5",
+        "judge_endpoint": "anthropic:claude-sonnet-4-5",
+        "judge_independent": true,
+        "judge_independence_note": "Judge independence: this run's simulators and graders were routed through an external provider, independent of the agent under test. This is the stronger footing for a published comparison against the paper's numbers."
+      },
+      "judge_provider": "anthropic",
+      "judge_independent": true,
+      "run_id": null,
+      "run_dir": "results/whissle/agentclinic/20260808T191547Z-sweep25_sonnet5",
+      "harness_commit": "86b4475",
+      "captured_at": "2026-08-08T19:17:44+00:00",
+      "protocol": "markers",
+      "history": "agentclinic",
+      "prompt_mode": "override",
+      "vision": "off",
+      "agent_type": null,
+      "total_inferences": 20,
+      "inferences_used": 7,
+      "support_llm": "anthropic:claude-sonnet-4-5",
+      "patient_bias": null,
+      "doctor_bias": null,
+      "voice_subset": false
+    },
+    "cost": {
+      "available": true,
+      "reason": null,
+      "judge_calls": 7,
+      "judge_cost_usd": 0.02052,
+      "agent_calls": 7
+    },
+    "flow": {
+      "available": false,
+      "reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "source": null,
+      "turns": null,
+      "summary": null,
+      "conversation_id": null,
+      "current_state": null,
+      "start_state": null,
+      "final_state": null,
+      "ended": null,
+      "flow_end": null,
+      "num_steps": null,
+      "step_counts_by_kind": null,
+      "states_visited": null,
+      "states_declared": null,
+      "states_unvisited": null,
+      "transitions": null,
+      "transitions_fired": null,
+      "var_sets": null,
+      "var_sources": null,
+      "guard_trips": null,
+      "state_divergences": null,
+      "tools_gated": null,
+      "says": null,
+      "steps": null
+    },
+    "signals": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "metadata_sidecar": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "tools": {
+      "available": true,
+      "reason": null,
+      "source": "doctor actions parsed from /api/bench/agent-turn replies",
+      "calls": [
+        {
+          "turn": 5,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Vital_Signs_and_Physical_Exam"
+          },
+          "result": "RESULTS: Based on your physical examination:\n\n**Vital Signs:**\n- Temperature: 102°F (38.9°C) - elevated\n- Blood Pressure: 118/78 mmHg - normal\n- Heart Rate: 111/min - elevated (tachycardia)\n- Respiratory Rate: 17/min - normal\n- Oxygen Saturation: 98% on room air - normal\n\n**Abdominal Examination:**\n- Abdomen is not distended\n- Bowel sounds are decreased\n- Your uterus is tender to palpation (painful when pressed)\n\n**Pulmonary Examination:**\n- Minor crackles heard at the base of both lungs\n- No signs of respiratory distress\n\nThese findings show you have a significant fever, your heart rate is elevated (which often happens with fever and infection), and most importantly, your uterus is tender on examination. Combined with your prolonged labor and multiple cervical exams, this clinical picture is very concerning for endometritis (uterine infection), which is one of the most common postpartum infections.",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 2429,
+          "terminal": false
+        },
+        {
+          "turn": 6,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "CBC_and_Blood_Cultures"
+          },
+          "result": "RESULTS: \n\n**Complete Blood Count (CBC):**\n- WBC (White Blood Cell count): NORMAL READINGS\n- Hemoglobin: NORMAL READINGS\n- Platelets: NORMAL READINGS\n\n**Blood Cultures:**\n- NORMAL READINGS\n\nNote: While the specific values are showing as normal readings in the available data, your clinical presentation (fever of 102°F, tachycardia at 111/min, uterine tenderness, and risk factors of prolonged labor with multiple cervical exams) remains highly suggestive of postpartum endometritis. Clinical diagnosis often precedes laboratory confirmation, and treatment should not be delayed while awaiting culture results in cases of suspected postpartum infection.",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 2374,
+          "terminal": false
+        },
+        {
+          "turn": 7,
+          "id": null,
+          "name": "give_diagnosis",
+          "arguments": {
+            "request": "Postpartum endometritis — recommend hospital admission for IV broad-spectrum antibiotics (e.g., clindamycin plus gentamicin)."
+          },
+          "result": null,
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 2968,
+          "terminal": true
+        }
+      ],
+      "summary": {
+        "n_calls": 3,
+        "by_name": {
+          "request_test": 2,
+          "give_diagnosis": 1
+        },
+        "n_ok": 3,
+        "n_error": 0,
+        "errors": []
+      },
+      "writes": {
+        "available": false,
+        "reason": "this benchmark issues no writes, so there is no said-vs-emitted-vs-landed distinction to record"
+      }
+    },
+    "turns": [
+      {
+        "inference": 1,
+        "incoming": "",
+        "reply": "How many days postpartum are you, and how high has your fever been?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 5713,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 21,
+          "output_tokens_details": {
+            "thinking_tokens": 0
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 2,
+        "incoming": "I'm about 3 days postpartum now. My fever has been around 101 to 102 degrees Fahrenheit - I've felt pretty warm and uncomfortable.",
+        "reply": "Can you describe the abdominal pain—is it more in the lower abdomen, and is your uterus tender when pressed? Also, have you noticed any foul-smelling vaginal discharge?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 5788,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 63,
+          "output_tokens_details": {
+            "thinking_tokens": 0
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 3,
+        "incoming": "Yes, the pain is definitely in my lower abdomen, and it really hurts when that area is pressed or touched. I haven't noticed any foul-smelling discharge though - everything seems normal in that regard.",
+        "reply": "Have you had any chills, increased heart rate, or noticed heavy or unusual vaginal bleeding since delivery?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 5918,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 41,
+          "output_tokens_details": {
+            "thinking_tokens": 0
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 4,
+        "incoming": "Yes, I've had some chills along with the fever - they come and go. I haven't really noticed my heart racing or anything like that, and the bleeding seems pretty normal for after delivery, not unusually heavy.",
+        "reply": "Was your delivery vaginal or cesarean, and were there any complications—like prolonged labor, multiple exams, or retained placental tissue?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 6026,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 48,
+          "output_tokens_details": {
+            "thinking_tokens": 0
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 5,
+        "incoming": "It was a vaginal delivery, and yes, the labor was really long - it felt like it went on forever. The doctors and nurses did quite a few exams during that time, but as far as I know, they said everything came out okay with the placenta.",
+        "reply": "Prolonged labor and multiple exams raise your infection risk. I'd like to check your temperature, heart rate, and do an abdominal/pelvic exam — REQUEST TEST: Vital_Signs_and_Physical_Exam",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Vital_Signs_and_Physical_Exam",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 6146,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 80,
+          "output_tokens_details": {
+            "thinking_tokens": 0
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 6,
+        "incoming": "RESULTS: Based on your physical examination:\n\n**Vital Signs:**\n- Temperature: 102°F (38.9°C) - elevated\n- Blood Pressure: 118/78 mmHg - normal\n- Heart Rate: 111/min - elevated (tachycardia)\n- Respiratory Rate: 17/min - normal\n- Oxygen Saturation: 98% on room air - normal\n\n**Abdominal Examination:**\n- Abdomen is not distended\n- Bowel sounds are decreased\n- Your uterus is tender to palpation (painful when pressed)\n\n**Pulmonary Examination:**\n- Minor crackles heard at the base of both lungs\n- No signs of respiratory distress\n\nThese findings show you have a significant fever, your heart rate is elevated (which often happens with fever and infection), and most importantly, your uterus is tender on examination. Combined with your prolonged labor and multiple cervical exams, this clinical picture is very concerning for endometritis (uterine infection), which is one of the most common postpartum infections.",
+        "reply": "I'd like to check a CBC and blood cultures to confirm infection and rule out bacteremia — REQUEST TEST: CBC_and_Blood_Cultures",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "CBC_and_Blood_Cultures",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 6568,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 57,
+          "output_tokens_details": {
+            "thinking_tokens": 0
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 7,
+        "incoming": "RESULTS: \n\n**Complete Blood Count (CBC):**\n- WBC (White Blood Cell count): NORMAL READINGS\n- Hemoglobin: NORMAL READINGS\n- Platelets: NORMAL READINGS\n\n**Blood Cultures:**\n- NORMAL READINGS\n\nNote: While the specific values are showing as normal readings in the available data, your clinical presentation (fever of 102°F, tachycardia at 111/min, uterine tenderness, and risk factors of prolonged labor with multiple cervical exams) remains highly suggestive of postpartum endometritis. Clinical diagnosis often precedes laboratory confirmation, and treatment should not be delayed while awaiting culture results in cases of suspected postpartum infection.",
+        "reply": "Given your fever, tachycardia, and tender uterus with prolonged labor/multiple exams as risk factors, this is a clinical diagnosis of postpartum endometritis regardless of the normal labs. \n\nDIAGNOSIS READY: Postpartum endometritis — recommend hospital admission for IV broad-spectrum antibiotics (e.g., clindamycin plus gentamicin).",
+        "tool_calls": [],
+        "kind": "diagnosis",
+        "payload": "Postpartum endometritis — recommend hospital admission for IV broad-spectrum antibiotics (e.g., clindamycin plus gentamicin).",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 6880,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 134,
+          "output_tokens_details": {
+            "thinking_tokens": 0
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      }
+    ],
+    "audio": null
+  }
+}

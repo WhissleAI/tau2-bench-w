@@ -1,0 +1,550 @@
+{
+  "scenario_id": "MedQA-12",
+  "scenario_index": 12,
+  "dataset": "MedQA",
+  "mode": "text",
+  "correct_diagnosis": "Posterior hip dislocation",
+  "answer_options": [],
+  "score": {
+    "outcome": "correct",
+    "correctness": true,
+    "doctor_diagnosis": "Posterior dislocation of the right hip (traumatic, from dashboard impact in rear-end collision) with associated sciatic nerve compression/neurapraxia, no associated fracture — requiring emergent closed reduction under sedation.",
+    "doctor_final_text": "The X-ray gives us everything we need — a confirmed posterior dislocation without associated fracture, and your neurological symptoms tell me the sciatic nerve is being compressed. This requires urgent reduction under sedation, ideally within six hours, to protect the nerve and the blood supply to your femoral head.\n\nDIAGNOSIS READY: Posterior dislocation of the right hip (traumatic, from dashboard impact in rear-end collision) with associated sciatic nerve compression/neurapraxia, no associated fracture — requiring emergent closed reduction under sedation.",
+    "moderator_raw": "yes",
+    "moderator_raw_text": "Yes",
+    "moderator_lenient": true,
+    "moderator_attempts": 1,
+    "moderator_normalized": false,
+    "moderator_unconstrained": false,
+    "declined": false,
+    "refusal_evidence": [],
+    "format_deviation": false,
+    "decline_source": null,
+    "decline_reason": "",
+    "spurious_commit": false
+  },
+  "infra_fail": false,
+  "error": null,
+  "findings": [],
+  "inferences_used": 5,
+  "max_inferences": 20,
+  "tests_ordered": [
+    "Pelvis_and_Hip_X-Ray",
+    "CT_Pelvis"
+  ],
+  "images_requested": 0,
+  "image": null,
+  "image_error": null,
+  "vision": "off",
+  "refusals": [],
+  "dialogue": [
+    {
+      "role": "doctor",
+      "inference": 1,
+      "kind": "question",
+      "text": "Hello, I'm Dr. Agent. I understand you were in a rear-end collision and are having right groin pain — can you describe how your leg is positioned right now, and whether you can move it?",
+      "payload": null,
+      "latency_ms": 5833,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "My right leg feels really weird - it's kind of bent and turned inward, and it looks a little shorter than my left leg. I can barely move it at all because the pain in my groin is so severe when I try."
+    },
+    {
+      "role": "doctor",
+      "inference": 2,
+      "kind": "test",
+      "text": "That positioning — flexed, internally rotated, and shortened — is very concerning after a dashboard-type impact. Are you having any numbness, tingling, or weakness down the back of your leg or in your foot?\n\nREQUEST TEST: Pelvis_and_Hip_X-Ray",
+      "payload": "Pelvis_and_Hip_X-Ray",
+      "latency_ms": 5526,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: Pelvic X-ray shows no fractures identified in the pelvic ring or femoral neck, but alignment suggests posterior dislocation of the right hip."
+    },
+    {
+      "role": "doctor",
+      "inference": 3,
+      "kind": "question",
+      "text": "The X-ray confirms what I suspected — your hip has dislocated posteriorly, meaning the ball of your thigh bone has been pushed out the back of the socket. Before we proceed, I still need to know: do you have any numbness or tingling down the back of your leg, or trouble moving your foot up and down? The sciatic nerve runs right behind the hip and can be injured in these dislocations.",
+      "payload": null,
+      "latency_ms": 6432,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Actually, yes - now that you mention it, I do have some tingling down the back of my right leg, and my foot feels a bit numb. I hadn't really noticed it before because the groin pain was so overwhelming."
+    },
+    {
+      "role": "doctor",
+      "inference": 4,
+      "kind": "test",
+      "text": "That tingling and numbness tells me the sciatic nerve is being compressed by the dislocated hip, which makes this a true orthopedic emergency. Let me get one more study to rule out any small fractures the X-ray might have missed before we reduce the hip.\n\nREQUEST TEST: CT_Pelvis",
+      "payload": "CT_Pelvis",
+      "latency_ms": 6534,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: The requested CT_Pelvis is not available in the current data. Based on the available imaging (Pelvic X-ray), NORMAL READINGS were found for the pelvic ring and femoral neck with no fractures identified, though posterior dislocation of the right hip is confirmed on alignment assessment."
+    },
+    {
+      "role": "doctor",
+      "inference": 5,
+      "kind": "diagnosis",
+      "text": "The X-ray gives us everything we need — a confirmed posterior dislocation without associated fracture, and your neurological symptoms tell me the sciatic nerve is being compressed. This requires urgent reduction under sedation, ideally within six hours, to protect the nerve and the blood supply to your femoral head.\n\nDIAGNOSIS READY: Posterior dislocation of the right hip (traumatic, from dashboard impact in rear-end collision) with associated sciatic nerve compression/neurapraxia, no associated fracture — requiring emergent closed reduction under sedation.",
+      "payload": "Posterior dislocation of the right hip (traumatic, from dashboard impact in rear-end collision) with associated sciatic nerve compression/neurapraxia, no associated fracture — requiring emergent closed reduction under sedation.",
+      "latency_ms": 4632,
+      "refusal": null,
+      "via": "marker"
+    }
+  ],
+  "latency_ms": [
+    5833,
+    5526,
+    6432,
+    6534,
+    4632
+  ],
+  "wall_s": 39.39,
+  "doctor_turns": [
+    {
+      "inference": 1,
+      "incoming": "",
+      "reply": "Hello, I'm Dr. Agent. I understand you were in a rear-end collision and are having right groin pain — can you describe how your leg is positioned right now, and whether you can move it?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 5735,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 166,
+        "output_tokens_details": {
+          "thinking_tokens": 104
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 2,
+      "incoming": "My right leg feels really weird - it's kind of bent and turned inward, and it looks a little shorter than my left leg. I can barely move it at all because the pain in my groin is so severe when I try.",
+      "reply": "That positioning — flexed, internally rotated, and shortened — is very concerning after a dashboard-type impact. Are you having any numbness, tingling, or weakness down the back of your leg or in your foot?\n\nREQUEST TEST: Pelvis_and_Hip_X-Ray",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Pelvis_and_Hip_X-Ray",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 5858,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 188,
+        "output_tokens_details": {
+          "thinking_tokens": 93
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 3,
+      "incoming": "RESULTS: Pelvic X-ray shows no fractures identified in the pelvic ring or femoral neck, but alignment suggests posterior dislocation of the right hip.",
+      "reply": "The X-ray confirms what I suspected — your hip has dislocated posteriorly, meaning the ball of your thigh bone has been pushed out the back of the socket. Before we proceed, I still need to know: do you have any numbness or tingling down the back of your leg, or trouble moving your foot up and down? The sciatic nerve runs right behind the hip and can be injured in these dislocations.",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 6011,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 235,
+        "output_tokens_details": {
+          "thinking_tokens": 106
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 4,
+      "incoming": "Actually, yes - now that you mention it, I do have some tingling down the back of my right leg, and my foot feels a bit numb. I hadn't really noticed it before because the groin pain was so overwhelming.",
+      "reply": "That tingling and numbness tells me the sciatic nerve is being compressed by the dislocated hip, which makes this a true orthopedic emergency. Let me get one more study to rule out any small fractures the X-ray might have missed before we reduce the hip.\n\nREQUEST TEST: CT_Pelvis",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "CT_Pelvis",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 6207,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 225,
+        "output_tokens_details": {
+          "thinking_tokens": 123
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 5,
+      "incoming": "RESULTS: The requested CT_Pelvis is not available in the current data. Based on the available imaging (Pelvic X-ray), NORMAL READINGS were found for the pelvic ring and femoral neck with no fractures identified, though posterior dislocation of the right hip is confirmed on alignment assessment.",
+      "reply": "The X-ray gives us everything we need — a confirmed posterior dislocation without associated fracture, and your neurological symptoms tell me the sciatic nerve is being compressed. This requires urgent reduction under sedation, ideally within six hours, to protect the nerve and the blood supply to your femoral head.\n\nDIAGNOSIS READY: Posterior dislocation of the right hip (traumatic, from dashboard impact in rear-end collision) with associated sciatic nerve compression/neurapraxia, no associated fracture — requiring emergent closed reduction under sedation.",
+      "tool_calls": [],
+      "kind": "diagnosis",
+      "payload": "Posterior dislocation of the right hip (traumatic, from dashboard impact in rear-end collision) with associated sciatic nerve compression/neurapraxia, no associated fracture — requiring emergent closed reduction under sedation.",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 6412,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 223,
+        "output_tokens_details": {
+          "thinking_tokens": 31
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    }
+  ],
+  "support_llm": "anthropic:claude-sonnet-4-5",
+  "support_llm_cost_usd": 0.00971,
+  "support_llm_calls": 5,
+  "voice_subset": false,
+  "diagnostics": {
+    "schema": "tau2.health.diagnostics/v1",
+    "benchmark": "agentclinic",
+    "case_id": "MedQA-12",
+    "mode": "text",
+    "availability": {
+      "flow_available": false,
+      "flow_reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "signals_available": false,
+      "signals_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "metadata_sidecar_available": false,
+      "metadata_sidecar_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "tools_available": true,
+      "tools_reason": null
+    },
+    "provenance": {
+      "benchmark": "agentclinic",
+      "mode": "text",
+      "transport_endpoint": "POST /api/bench/agent-turn",
+      "agent_id": "c2761ec7-d3f7-4bd7-b68c-40a87f1b1ab3",
+      "base_url": "https://aws-gateway-backend.whissle.ai/bot",
+      "seed": 42,
+      "stratum": {
+        "dataset": "MedQA",
+        "scenario_index": 12,
+        "selection": "head",
+        "limit": 25
+      },
+      "judge": {
+        "judge_provider": "anthropic",
+        "judge_model": "claude-sonnet-4-5",
+        "judge_endpoint": "anthropic:claude-sonnet-4-5",
+        "judge_independent": true,
+        "judge_independence_note": "Judge independence: this run's simulators and graders were routed through an external provider, independent of the agent under test. This is the stronger footing for a published comparison against the paper's numbers."
+      },
+      "judge_provider": "anthropic",
+      "judge_independent": true,
+      "run_id": null,
+      "run_dir": "results/whissle/agentclinic/20260808T192627Z-sweep25_fable5",
+      "harness_commit": "86b4475",
+      "captured_at": "2026-08-08T19:29:32+00:00",
+      "protocol": "markers",
+      "history": "agentclinic",
+      "prompt_mode": "override",
+      "vision": "off",
+      "agent_type": null,
+      "total_inferences": 20,
+      "inferences_used": 5,
+      "support_llm": "anthropic:claude-sonnet-4-5",
+      "patient_bias": null,
+      "doctor_bias": null,
+      "voice_subset": false
+    },
+    "cost": {
+      "available": true,
+      "reason": null,
+      "judge_calls": 5,
+      "judge_cost_usd": 0.00971,
+      "agent_calls": 5
+    },
+    "flow": {
+      "available": false,
+      "reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "source": null,
+      "turns": null,
+      "summary": null,
+      "conversation_id": null,
+      "current_state": null,
+      "start_state": null,
+      "final_state": null,
+      "ended": null,
+      "flow_end": null,
+      "num_steps": null,
+      "step_counts_by_kind": null,
+      "states_visited": null,
+      "states_declared": null,
+      "states_unvisited": null,
+      "transitions": null,
+      "transitions_fired": null,
+      "var_sets": null,
+      "var_sources": null,
+      "guard_trips": null,
+      "state_divergences": null,
+      "tools_gated": null,
+      "says": null,
+      "steps": null
+    },
+    "signals": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "metadata_sidecar": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "tools": {
+      "available": true,
+      "reason": null,
+      "source": "doctor actions parsed from /api/bench/agent-turn replies",
+      "calls": [
+        {
+          "turn": 2,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Pelvis_and_Hip_X-Ray"
+          },
+          "result": "RESULTS: Pelvic X-ray shows no fractures identified in the pelvic ring or femoral neck, but alignment suggests posterior dislocation of the right hip.",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 5526,
+          "terminal": false
+        },
+        {
+          "turn": 4,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "CT_Pelvis"
+          },
+          "result": "RESULTS: The requested CT_Pelvis is not available in the current data. Based on the available imaging (Pelvic X-ray), NORMAL READINGS were found for the pelvic ring and femoral neck with no fractures identified, though posterior dislocation of the right hip is confirmed on alignment assessment.",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 6534,
+          "terminal": false
+        },
+        {
+          "turn": 5,
+          "id": null,
+          "name": "give_diagnosis",
+          "arguments": {
+            "request": "Posterior dislocation of the right hip (traumatic, from dashboard impact in rear-end collision) with associated sciatic nerve compression/neurapraxia, no associated fracture — requiring emergent closed reduction under sedation."
+          },
+          "result": null,
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 4632,
+          "terminal": true
+        }
+      ],
+      "summary": {
+        "n_calls": 3,
+        "by_name": {
+          "request_test": 2,
+          "give_diagnosis": 1
+        },
+        "n_ok": 3,
+        "n_error": 0,
+        "errors": []
+      },
+      "writes": {
+        "available": false,
+        "reason": "this benchmark issues no writes, so there is no said-vs-emitted-vs-landed distinction to record"
+      }
+    },
+    "turns": [
+      {
+        "inference": 1,
+        "incoming": "",
+        "reply": "Hello, I'm Dr. Agent. I understand you were in a rear-end collision and are having right groin pain — can you describe how your leg is positioned right now, and whether you can move it?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 5735,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 166,
+          "output_tokens_details": {
+            "thinking_tokens": 104
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 2,
+        "incoming": "My right leg feels really weird - it's kind of bent and turned inward, and it looks a little shorter than my left leg. I can barely move it at all because the pain in my groin is so severe when I try.",
+        "reply": "That positioning — flexed, internally rotated, and shortened — is very concerning after a dashboard-type impact. Are you having any numbness, tingling, or weakness down the back of your leg or in your foot?\n\nREQUEST TEST: Pelvis_and_Hip_X-Ray",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Pelvis_and_Hip_X-Ray",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 5858,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 188,
+          "output_tokens_details": {
+            "thinking_tokens": 93
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 3,
+        "incoming": "RESULTS: Pelvic X-ray shows no fractures identified in the pelvic ring or femoral neck, but alignment suggests posterior dislocation of the right hip.",
+        "reply": "The X-ray confirms what I suspected — your hip has dislocated posteriorly, meaning the ball of your thigh bone has been pushed out the back of the socket. Before we proceed, I still need to know: do you have any numbness or tingling down the back of your leg, or trouble moving your foot up and down? The sciatic nerve runs right behind the hip and can be injured in these dislocations.",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 6011,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 235,
+          "output_tokens_details": {
+            "thinking_tokens": 106
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 4,
+        "incoming": "Actually, yes - now that you mention it, I do have some tingling down the back of my right leg, and my foot feels a bit numb. I hadn't really noticed it before because the groin pain was so overwhelming.",
+        "reply": "That tingling and numbness tells me the sciatic nerve is being compressed by the dislocated hip, which makes this a true orthopedic emergency. Let me get one more study to rule out any small fractures the X-ray might have missed before we reduce the hip.\n\nREQUEST TEST: CT_Pelvis",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "CT_Pelvis",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 6207,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 225,
+          "output_tokens_details": {
+            "thinking_tokens": 123
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 5,
+        "incoming": "RESULTS: The requested CT_Pelvis is not available in the current data. Based on the available imaging (Pelvic X-ray), NORMAL READINGS were found for the pelvic ring and femoral neck with no fractures identified, though posterior dislocation of the right hip is confirmed on alignment assessment.",
+        "reply": "The X-ray gives us everything we need — a confirmed posterior dislocation without associated fracture, and your neurological symptoms tell me the sciatic nerve is being compressed. This requires urgent reduction under sedation, ideally within six hours, to protect the nerve and the blood supply to your femoral head.\n\nDIAGNOSIS READY: Posterior dislocation of the right hip (traumatic, from dashboard impact in rear-end collision) with associated sciatic nerve compression/neurapraxia, no associated fracture — requiring emergent closed reduction under sedation.",
+        "tool_calls": [],
+        "kind": "diagnosis",
+        "payload": "Posterior dislocation of the right hip (traumatic, from dashboard impact in rear-end collision) with associated sciatic nerve compression/neurapraxia, no associated fracture — requiring emergent closed reduction under sedation.",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 6412,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 223,
+          "output_tokens_details": {
+            "thinking_tokens": 31
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      }
+    ],
+    "audio": null
+  }
+}

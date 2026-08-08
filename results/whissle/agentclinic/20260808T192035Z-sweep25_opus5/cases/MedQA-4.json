@@ -1,0 +1,602 @@
+{
+  "scenario_id": "MedQA-4",
+  "scenario_index": 4,
+  "dataset": "MedQA",
+  "mode": "text",
+  "correct_diagnosis": "Acute interstitial nephritis",
+  "answer_options": [],
+  "score": {
+    "outcome": "correct",
+    "correctness": true,
+    "doctor_diagnosis": "Drug-induced acute (tubulo)interstitial nephritis — most likely triggered by the beta-lactam antibiotics (amoxicillin/cephalexin), with omeprazole as a possible contributing agent.",
+    "doctor_final_text": "Thank you — that's an important piece. The rash on amoxicillin, fever, sterile pyuria with urinary eosinophils, and rising creatinine all point one direction, so I'd like to stop the suspected drugs and check kidney imaging if needed.\n\nDIAGNOSIS READY: Drug-induced acute (tubulo)interstitial nephritis — most likely triggered by the beta-lactam antibiotics (amoxicillin/cephalexin), with omeprazole as a possible contributing agent.",
+    "moderator_raw": "yes",
+    "moderator_raw_text": "Yes",
+    "moderator_lenient": true,
+    "moderator_attempts": 1,
+    "moderator_normalized": false,
+    "moderator_unconstrained": false,
+    "declined": false,
+    "refusal_evidence": [],
+    "format_deviation": false,
+    "decline_source": null,
+    "decline_reason": "",
+    "spurious_commit": false
+  },
+  "infra_fail": false,
+  "error": null,
+  "findings": [],
+  "inferences_used": 6,
+  "max_inferences": 20,
+  "tests_ordered": [
+    "Comprehensive_Metabolic_Panel (creatinine, BUN), CBC_with_differential (eosinophil count), Urinalysis_with_microscopy"
+  ],
+  "images_requested": 0,
+  "image": null,
+  "image_error": null,
+  "vision": "off",
+  "refusals": [],
+  "dialogue": [
+    {
+      "role": "doctor",
+      "inference": 1,
+      "kind": "question",
+      "text": "Hello, I'm Dr. Agent — I'm an AI assistant and this call is recorded for quality. Can you tell me when the fatigue, flank pain, and fever started in relation to finishing your antibiotic?",
+      "payload": null,
+      "latency_ms": 3018,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Well, doctor, I finished the antibiotics about a week ago, but honestly the fatigue and fever never really went away even while I was taking them. The flank pain started maybe a few days after I switched to that second antibiotic, the cephalexin."
+    },
+    {
+      "role": "doctor",
+      "inference": 2,
+      "kind": "question",
+      "text": "Have you noticed any skin rash, joint aches, or a change in how much you're urinating since starting the cephalexin?",
+      "payload": null,
+      "latency_ms": 2469,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Yes, I did have that rash when I was on the first antibiotic, the amoxicillin, but it went away after switching to cephalexin. I haven't noticed any joint aches, and my urination seems about the same as usual - no real changes there."
+    },
+    {
+      "role": "doctor",
+      "inference": 3,
+      "kind": "question",
+      "text": "Have you had any burning when you urinate, blood in your urine, or any nausea and loss of appetite lately?",
+      "payload": null,
+      "latency_ms": 4087,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "No, I haven't had any burning when I urinate or noticed any blood in my urine. I haven't really had much nausea either, though I suppose my appetite hasn't been great with feeling so tired and feverish."
+    },
+    {
+      "role": "doctor",
+      "inference": 4,
+      "kind": "test",
+      "text": "Thanks — that helps. Let me get some labs to see how your kidneys are doing.\n\nREQUEST TEST: Comprehensive_Metabolic_Panel (creatinine, BUN), CBC_with_differential (eosinophil count), Urinalysis_with_microscopy",
+      "payload": "Comprehensive_Metabolic_Panel (creatinine, BUN), CBC_with_differential (eosinophil count), Urinalysis_with_microscopy",
+      "latency_ms": 3964,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: \n\n**Comprehensive Metabolic Panel:**\n- Creatinine: Elevated\n- BUN (Urea): Elevated\n\n**CBC with Differential:**\n- Eosinophil count: NORMAL READINGS\n\n**Urinalysis with Microscopy:**\n- Leukocyturia: Present\n- Bacterial Culture: Negative\n- Cytospin stained with Hansel's solution: 3% binucleated cells with eosinophilic, granular cytoplasm\n\n**Additional findings from examination:**\n- Temperature: 37.9°C (100.2°F)\n- Blood Pressure: 145/90 mmHg\n- Mild flank tenderness on examination\n- Mild tenderness on percussion of renal angles"
+    },
+    {
+      "role": "doctor",
+      "inference": 5,
+      "kind": "question",
+      "text": "That fits a drug reaction in the kidneys — sterile pyuria with eosinophils on Hansel stain. Are you taking any other medications, like ibuprofen, naproxen, or a proton pump inhibitor?",
+      "payload": null,
+      "latency_ms": 4192,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Yes, I've been taking omeprazole for my acid reflux for quite a while now, maybe a couple of years. I don't take ibuprofen or naproxen regularly though - just occasionally if I have a headache."
+    },
+    {
+      "role": "doctor",
+      "inference": 6,
+      "kind": "diagnosis",
+      "text": "Thank you — that's an important piece. The rash on amoxicillin, fever, sterile pyuria with urinary eosinophils, and rising creatinine all point one direction, so I'd like to stop the suspected drugs and check kidney imaging if needed.\n\nDIAGNOSIS READY: Drug-induced acute (tubulo)interstitial nephritis — most likely triggered by the beta-lactam antibiotics (amoxicillin/cephalexin), with omeprazole as a possible contributing agent.",
+      "payload": "Drug-induced acute (tubulo)interstitial nephritis — most likely triggered by the beta-lactam antibiotics (amoxicillin/cephalexin), with omeprazole as a possible contributing agent.",
+      "latency_ms": 4332,
+      "refusal": null,
+      "via": "marker"
+    }
+  ],
+  "latency_ms": [
+    3018,
+    2469,
+    4087,
+    3964,
+    4192,
+    4332
+  ],
+  "wall_s": 37.32,
+  "doctor_turns": [
+    {
+      "inference": 1,
+      "incoming": "",
+      "reply": "Hello, I'm Dr. Agent — I'm an AI assistant and this call is recorded for quality. Can you tell me when the fatigue, flank pain, and fever started in relation to finishing your antibiotic?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 5729,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 175,
+        "output_tokens_details": {
+          "thinking_tokens": 102
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 2,
+      "incoming": "Well, doctor, I finished the antibiotics about a week ago, but honestly the fatigue and fever never really went away even while I was taking them. The flank pain started maybe a few days after I switched to that second antibiotic, the cephalexin.",
+      "reply": "Have you noticed any skin rash, joint aches, or a change in how much you're urinating since starting the cephalexin?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 5879,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 98,
+        "output_tokens_details": {
+          "thinking_tokens": 58
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 3,
+      "incoming": "Yes, I did have that rash when I was on the first antibiotic, the amoxicillin, but it went away after switching to cephalexin. I haven't noticed any joint aches, and my urination seems about the same as usual - no real changes there.",
+      "reply": "Have you had any burning when you urinate, blood in your urine, or any nausea and loss of appetite lately?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 5995,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 114,
+        "output_tokens_details": {
+          "thinking_tokens": 77
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 4,
+      "incoming": "No, I haven't had any burning when I urinate or noticed any blood in my urine. I haven't really had much nausea either, though I suppose my appetite hasn't been great with feeling so tired and feverish.",
+      "reply": "Thanks — that helps. Let me get some labs to see how your kidneys are doing.\n\nREQUEST TEST: Comprehensive_Metabolic_Panel (creatinine, BUN), CBC_with_differential (eosinophil count), Urinalysis_with_microscopy",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Comprehensive_Metabolic_Panel (creatinine, BUN), CBC_with_differential (eosinophil count), Urinalysis_with_microscopy",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 6098,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 168,
+        "output_tokens_details": {
+          "thinking_tokens": 73
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 5,
+      "incoming": "RESULTS: \n\n**Comprehensive Metabolic Panel:**\n- Creatinine: Elevated\n- BUN (Urea): Elevated\n\n**CBC with Differential:**\n- Eosinophil count: NORMAL READINGS\n\n**Urinalysis with Microscopy:**\n- Leukocyturia: Present\n- Bacterial Culture: Negative\n- Cytospin stained with Hansel's solution: 3% binucleated cells with eosinophilic, granular cytoplasm\n\n**Additional findings from examination:**\n- Temperature: 37.9°C (100.2°F)\n- Blood Pressure: 145/90 mmHg\n- Mild flank tenderness on examination\n- Mild tenderness on percussion of renal angles",
+      "reply": "That fits a drug reaction in the kidneys — sterile pyuria with eosinophils on Hansel stain. Are you taking any other medications, like ibuprofen, naproxen, or a proton pump inhibitor?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 6443,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 160,
+        "output_tokens_details": {
+          "thinking_tokens": 86
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    },
+    {
+      "inference": 6,
+      "incoming": "Yes, I've been taking omeprazole for my acid reflux for quite a while now, maybe a couple of years. I don't take ibuprofen or naproxen regularly though - just occasionally if I have a headache.",
+      "reply": "Thank you — that's an important piece. The rash on amoxicillin, fever, sterile pyuria with urinary eosinophils, and rising creatinine all point one direction, so I'd like to stop the suspected drugs and check kidney imaging if needed.\n\nDIAGNOSIS READY: Drug-induced acute (tubulo)interstitial nephritis — most likely triggered by the beta-lactam antibiotics (amoxicillin/cephalexin), with omeprazole as a possible contributing agent.",
+      "tool_calls": [],
+      "kind": "diagnosis",
+      "payload": "Drug-induced acute (tubulo)interstitial nephritis — most likely triggered by the beta-lactam antibiotics (amoxicillin/cephalexin), with omeprazole as a possible contributing agent.",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 6585,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 220,
+        "output_tokens_details": {
+          "thinking_tokens": 50
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "stop_reason": "end_turn"
+    }
+  ],
+  "support_llm": "anthropic:claude-sonnet-4-5",
+  "support_llm_cost_usd": 0.01644,
+  "support_llm_calls": 6,
+  "voice_subset": false,
+  "diagnostics": {
+    "schema": "tau2.health.diagnostics/v1",
+    "benchmark": "agentclinic",
+    "case_id": "MedQA-4",
+    "mode": "text",
+    "availability": {
+      "flow_available": false,
+      "flow_reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "signals_available": false,
+      "signals_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "metadata_sidecar_available": false,
+      "metadata_sidecar_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "tools_available": true,
+      "tools_reason": null
+    },
+    "provenance": {
+      "benchmark": "agentclinic",
+      "mode": "text",
+      "transport_endpoint": "POST /api/bench/agent-turn",
+      "agent_id": "c2761ec7-d3f7-4bd7-b68c-40a87f1b1ab3",
+      "base_url": "https://aws-gateway-backend.whissle.ai/bot",
+      "seed": 42,
+      "stratum": {
+        "dataset": "MedQA",
+        "scenario_index": 4,
+        "selection": "head",
+        "limit": 25
+      },
+      "judge": {
+        "judge_provider": "anthropic",
+        "judge_model": "claude-sonnet-4-5",
+        "judge_endpoint": "anthropic:claude-sonnet-4-5",
+        "judge_independent": true,
+        "judge_independence_note": "Judge independence: this run's simulators and graders were routed through an external provider, independent of the agent under test. This is the stronger footing for a published comparison against the paper's numbers."
+      },
+      "judge_provider": "anthropic",
+      "judge_independent": true,
+      "run_id": null,
+      "run_dir": "results/whissle/agentclinic/20260808T192035Z-sweep25_opus5",
+      "harness_commit": "86b4475",
+      "captured_at": "2026-08-08T19:21:37+00:00",
+      "protocol": "markers",
+      "history": "agentclinic",
+      "prompt_mode": "override",
+      "vision": "off",
+      "agent_type": null,
+      "total_inferences": 20,
+      "inferences_used": 6,
+      "support_llm": "anthropic:claude-sonnet-4-5",
+      "patient_bias": null,
+      "doctor_bias": null,
+      "voice_subset": false
+    },
+    "cost": {
+      "available": true,
+      "reason": null,
+      "judge_calls": 6,
+      "judge_cost_usd": 0.01644,
+      "agent_calls": 6
+    },
+    "flow": {
+      "available": false,
+      "reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "source": null,
+      "turns": null,
+      "summary": null,
+      "conversation_id": null,
+      "current_state": null,
+      "start_state": null,
+      "final_state": null,
+      "ended": null,
+      "flow_end": null,
+      "num_steps": null,
+      "step_counts_by_kind": null,
+      "states_visited": null,
+      "states_declared": null,
+      "states_unvisited": null,
+      "transitions": null,
+      "transitions_fired": null,
+      "var_sets": null,
+      "var_sources": null,
+      "guard_trips": null,
+      "state_divergences": null,
+      "tools_gated": null,
+      "says": null,
+      "steps": null
+    },
+    "signals": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "metadata_sidecar": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "tools": {
+      "available": true,
+      "reason": null,
+      "source": "doctor actions parsed from /api/bench/agent-turn replies",
+      "calls": [
+        {
+          "turn": 4,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Comprehensive_Metabolic_Panel (creatinine, BUN), CBC_with_differential (eosinophil count), Urinalysis_with_microscopy"
+          },
+          "result": "RESULTS: \n\n**Comprehensive Metabolic Panel:**\n- Creatinine: Elevated\n- BUN (Urea): Elevated\n\n**CBC with Differential:**\n- Eosinophil count: NORMAL READINGS\n\n**Urinalysis with Microscopy:**\n- Leukocyturia: Present\n- Bacterial Culture: Negative\n- Cytospin stained with Hansel's solution: 3% binucleated cells with eosinophilic, granular cytoplasm\n\n**Additional findings from examination:**\n- Temperature: 37.9°C (100.2°F)\n- Blood Pressure: 145/90 mmHg\n- Mild flank tenderness on examination\n- Mild tenderness on percussion of renal angles",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 3964,
+          "terminal": false
+        },
+        {
+          "turn": 6,
+          "id": null,
+          "name": "give_diagnosis",
+          "arguments": {
+            "request": "Drug-induced acute (tubulo)interstitial nephritis — most likely triggered by the beta-lactam antibiotics (amoxicillin/cephalexin), with omeprazole as a possible contributing agent."
+          },
+          "result": null,
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 4332,
+          "terminal": true
+        }
+      ],
+      "summary": {
+        "n_calls": 2,
+        "by_name": {
+          "request_test": 1,
+          "give_diagnosis": 1
+        },
+        "n_ok": 2,
+        "n_error": 0,
+        "errors": []
+      },
+      "writes": {
+        "available": false,
+        "reason": "this benchmark issues no writes, so there is no said-vs-emitted-vs-landed distinction to record"
+      }
+    },
+    "turns": [
+      {
+        "inference": 1,
+        "incoming": "",
+        "reply": "Hello, I'm Dr. Agent — I'm an AI assistant and this call is recorded for quality. Can you tell me when the fatigue, flank pain, and fever started in relation to finishing your antibiotic?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 5729,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 175,
+          "output_tokens_details": {
+            "thinking_tokens": 102
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 2,
+        "incoming": "Well, doctor, I finished the antibiotics about a week ago, but honestly the fatigue and fever never really went away even while I was taking them. The flank pain started maybe a few days after I switched to that second antibiotic, the cephalexin.",
+        "reply": "Have you noticed any skin rash, joint aches, or a change in how much you're urinating since starting the cephalexin?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 5879,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 98,
+          "output_tokens_details": {
+            "thinking_tokens": 58
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 3,
+        "incoming": "Yes, I did have that rash when I was on the first antibiotic, the amoxicillin, but it went away after switching to cephalexin. I haven't noticed any joint aches, and my urination seems about the same as usual - no real changes there.",
+        "reply": "Have you had any burning when you urinate, blood in your urine, or any nausea and loss of appetite lately?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 5995,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 114,
+          "output_tokens_details": {
+            "thinking_tokens": 77
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 4,
+        "incoming": "No, I haven't had any burning when I urinate or noticed any blood in my urine. I haven't really had much nausea either, though I suppose my appetite hasn't been great with feeling so tired and feverish.",
+        "reply": "Thanks — that helps. Let me get some labs to see how your kidneys are doing.\n\nREQUEST TEST: Comprehensive_Metabolic_Panel (creatinine, BUN), CBC_with_differential (eosinophil count), Urinalysis_with_microscopy",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Comprehensive_Metabolic_Panel (creatinine, BUN), CBC_with_differential (eosinophil count), Urinalysis_with_microscopy",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 6098,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 168,
+          "output_tokens_details": {
+            "thinking_tokens": 73
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 5,
+        "incoming": "RESULTS: \n\n**Comprehensive Metabolic Panel:**\n- Creatinine: Elevated\n- BUN (Urea): Elevated\n\n**CBC with Differential:**\n- Eosinophil count: NORMAL READINGS\n\n**Urinalysis with Microscopy:**\n- Leukocyturia: Present\n- Bacterial Culture: Negative\n- Cytospin stained with Hansel's solution: 3% binucleated cells with eosinophilic, granular cytoplasm\n\n**Additional findings from examination:**\n- Temperature: 37.9°C (100.2°F)\n- Blood Pressure: 145/90 mmHg\n- Mild flank tenderness on examination\n- Mild tenderness on percussion of renal angles",
+        "reply": "That fits a drug reaction in the kidneys — sterile pyuria with eosinophils on Hansel stain. Are you taking any other medications, like ibuprofen, naproxen, or a proton pump inhibitor?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 6443,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 160,
+          "output_tokens_details": {
+            "thinking_tokens": 86
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      },
+      {
+        "inference": 6,
+        "incoming": "Yes, I've been taking omeprazole for my acid reflux for quite a while now, maybe a couple of years. I don't take ibuprofen or naproxen regularly though - just occasionally if I have a headache.",
+        "reply": "Thank you — that's an important piece. The rash on amoxicillin, fever, sterile pyuria with urinary eosinophils, and rising creatinine all point one direction, so I'd like to stop the suspected drugs and check kidney imaging if needed.\n\nDIAGNOSIS READY: Drug-induced acute (tubulo)interstitial nephritis — most likely triggered by the beta-lactam antibiotics (amoxicillin/cephalexin), with omeprazole as a possible contributing agent.",
+        "tool_calls": [],
+        "kind": "diagnosis",
+        "payload": "Drug-induced acute (tubulo)interstitial nephritis — most likely triggered by the beta-lactam antibiotics (amoxicillin/cephalexin), with omeprazole as a possible contributing agent.",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 6585,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 220,
+          "output_tokens_details": {
+            "thinking_tokens": 50
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "stop_reason": "end_turn"
+      }
+    ],
+    "audio": null
+  }
+}

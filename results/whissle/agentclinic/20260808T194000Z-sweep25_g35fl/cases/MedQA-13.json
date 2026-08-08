@@ -1,0 +1,460 @@
+{
+  "scenario_id": "MedQA-13",
+  "scenario_index": 13,
+  "dataset": "MedQA",
+  "mode": "text",
+  "correct_diagnosis": "Hirschsprung’s disease",
+  "answer_options": [],
+  "score": {
+    "outcome": "correct",
+    "correctness": true,
+    "doctor_diagnosis": "Hirschsprung's disease",
+    "doctor_final_text": "DIAGNOSIS READY: Hirschsprung's disease",
+    "moderator_raw": "yes",
+    "moderator_raw_text": "Yes",
+    "moderator_lenient": true,
+    "moderator_attempts": 1,
+    "moderator_normalized": false,
+    "moderator_unconstrained": false,
+    "declined": false,
+    "refusal_evidence": [],
+    "format_deviation": false,
+    "decline_source": null,
+    "decline_reason": "",
+    "spurious_commit": false
+  },
+  "infra_fail": false,
+  "error": null,
+  "findings": [],
+  "inferences_used": 5,
+  "max_inferences": 20,
+  "tests_ordered": [
+    "Abdominal_X-ray",
+    "Contrast_enema"
+  ],
+  "images_requested": 0,
+  "image": null,
+  "image_error": null,
+  "vision": "off",
+  "refusals": [],
+  "dialogue": [
+    {
+      "role": "doctor",
+      "inference": 1,
+      "kind": "question",
+      "text": "Hello, I'm Dr. Agent. How long has the baby been experiencing this bilious vomiting?",
+      "payload": null,
+      "latency_ms": 909,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "He's been vomiting that greenish bile since yesterday, right after we got home from the birth. It seems to happen especially when I try to feed him."
+    },
+    {
+      "role": "doctor",
+      "inference": 2,
+      "kind": "question",
+      "text": "Has the infant had any bowel movements or passed any meconium since birth?",
+      "payload": null,
+      "latency_ms": 707,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "No, he hasn't passed anything at all since he was born two days ago. I've been checking his diapers constantly, but they've all been completely clean."
+    },
+    {
+      "role": "doctor",
+      "inference": 3,
+      "kind": "test",
+      "text": "REQUEST TEST: Abdominal_X-ray",
+      "payload": "Abdominal_X-ray",
+      "latency_ms": 652,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: Abdominal X-ray shows dilated loops of bowel with no gas in the rectum, suggestive of a distal obstruction."
+    },
+    {
+      "role": "doctor",
+      "inference": 4,
+      "kind": "test",
+      "text": "REQUEST TEST: Contrast_enema",
+      "payload": "Contrast_enema",
+      "latency_ms": 572,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: The requested test \"Contrast_enema\" is not available in the current data.\n\nHowever, based on the available information, the Rectal Biopsy results show:\n\n**Histopathology: Absence of ganglion cells in the submucosa and myenteric plexus, consistent with Hirschsprung's disease.**\n\nThis finding, combined with the Abdominal X-ray results showing dilated loops of bowel with no gas in the rectum, strongly supports the diagnosis of Hirschsprung's disease."
+    },
+    {
+      "role": "doctor",
+      "inference": 5,
+      "kind": "diagnosis",
+      "text": "DIAGNOSIS READY: Hirschsprung's disease",
+      "payload": "Hirschsprung's disease",
+      "latency_ms": 566,
+      "refusal": null,
+      "via": "marker"
+    }
+  ],
+  "latency_ms": [
+    909,
+    707,
+    652,
+    572,
+    566
+  ],
+  "wall_s": 13.54,
+  "doctor_turns": [
+    {
+      "inference": 1,
+      "incoming": "",
+      "reply": "Hello, I'm Dr. Agent. How long has the baby been experiencing this bilious vomiting?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 3957,
+        "output_tokens": 21,
+        "thinking_tokens": 0,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    },
+    {
+      "inference": 2,
+      "incoming": "He's been vomiting that greenish bile since yesterday, right after we got home from the birth. It seems to happen especially when I try to feed him.",
+      "reply": "Has the infant had any bowel movements or passed any meconium since birth?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4011,
+        "output_tokens": 16,
+        "thinking_tokens": 0,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    },
+    {
+      "inference": 3,
+      "incoming": "No, he hasn't passed anything at all since he was born two days ago. I've been checking his diapers constantly, but they've all been completely clean.",
+      "reply": "REQUEST TEST: Abdominal_X-ray",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Abdominal_X-ray",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4065,
+        "output_tokens": 9,
+        "thinking_tokens": 0,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    },
+    {
+      "inference": 4,
+      "incoming": "RESULTS: Abdominal X-ray shows dilated loops of bowel with no gas in the rectum, suggestive of a distal obstruction.",
+      "reply": "REQUEST TEST: Contrast_enema",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Contrast_enema",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4101,
+        "output_tokens": 7,
+        "thinking_tokens": 0,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    },
+    {
+      "inference": 5,
+      "incoming": "RESULTS: The requested test \"Contrast_enema\" is not available in the current data.\n\nHowever, based on the available information, the Rectal Biopsy results show:\n\n**Histopathology: Absence of ganglion cells in the submucosa and myenteric plexus, consistent with Hirschsprung's disease.**\n\nThis finding, combined with the Abdominal X-ray results showing dilated loops of bowel with no gas in the rectum, strongly supports the diagnosis of Hirschsprung's disease.",
+      "reply": "DIAGNOSIS READY: Hirschsprung's disease",
+      "tool_calls": [],
+      "kind": "diagnosis",
+      "payload": "Hirschsprung's disease",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4211,
+        "output_tokens": 12,
+        "thinking_tokens": 0,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    }
+  ],
+  "support_llm": "anthropic:claude-sonnet-4-5",
+  "support_llm_cost_usd": 0.00884,
+  "support_llm_calls": 5,
+  "voice_subset": false,
+  "diagnostics": {
+    "schema": "tau2.health.diagnostics/v1",
+    "benchmark": "agentclinic",
+    "case_id": "MedQA-13",
+    "mode": "text",
+    "availability": {
+      "flow_available": false,
+      "flow_reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "signals_available": false,
+      "signals_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "metadata_sidecar_available": false,
+      "metadata_sidecar_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "tools_available": true,
+      "tools_reason": null
+    },
+    "provenance": {
+      "benchmark": "agentclinic",
+      "mode": "text",
+      "transport_endpoint": "POST /api/bench/agent-turn",
+      "agent_id": "c2761ec7-d3f7-4bd7-b68c-40a87f1b1ab3",
+      "base_url": "https://aws-gateway-backend.whissle.ai/bot",
+      "seed": 42,
+      "stratum": {
+        "dataset": "MedQA",
+        "scenario_index": 13,
+        "selection": "head",
+        "limit": 25
+      },
+      "judge": {
+        "judge_provider": "anthropic",
+        "judge_model": "claude-sonnet-4-5",
+        "judge_endpoint": "anthropic:claude-sonnet-4-5",
+        "judge_independent": true,
+        "judge_independence_note": "Judge independence: this run's simulators and graders were routed through an external provider, independent of the agent under test. This is the stronger footing for a published comparison against the paper's numbers."
+      },
+      "judge_provider": "anthropic",
+      "judge_independent": true,
+      "run_id": null,
+      "run_dir": "results/whissle/agentclinic/20260808T194000Z-sweep25_g35fl",
+      "harness_commit": "86b4475",
+      "captured_at": "2026-08-08T19:41:24+00:00",
+      "protocol": "markers",
+      "history": "agentclinic",
+      "prompt_mode": "override",
+      "vision": "off",
+      "agent_type": null,
+      "total_inferences": 20,
+      "inferences_used": 5,
+      "support_llm": "anthropic:claude-sonnet-4-5",
+      "patient_bias": null,
+      "doctor_bias": null,
+      "voice_subset": false
+    },
+    "cost": {
+      "available": true,
+      "reason": null,
+      "judge_calls": 5,
+      "judge_cost_usd": 0.00884,
+      "agent_calls": 5
+    },
+    "flow": {
+      "available": false,
+      "reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "source": null,
+      "turns": null,
+      "summary": null,
+      "conversation_id": null,
+      "current_state": null,
+      "start_state": null,
+      "final_state": null,
+      "ended": null,
+      "flow_end": null,
+      "num_steps": null,
+      "step_counts_by_kind": null,
+      "states_visited": null,
+      "states_declared": null,
+      "states_unvisited": null,
+      "transitions": null,
+      "transitions_fired": null,
+      "var_sets": null,
+      "var_sources": null,
+      "guard_trips": null,
+      "state_divergences": null,
+      "tools_gated": null,
+      "says": null,
+      "steps": null
+    },
+    "signals": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "metadata_sidecar": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "tools": {
+      "available": true,
+      "reason": null,
+      "source": "doctor actions parsed from /api/bench/agent-turn replies",
+      "calls": [
+        {
+          "turn": 3,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Abdominal_X-ray"
+          },
+          "result": "RESULTS: Abdominal X-ray shows dilated loops of bowel with no gas in the rectum, suggestive of a distal obstruction.",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 652,
+          "terminal": false
+        },
+        {
+          "turn": 4,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Contrast_enema"
+          },
+          "result": "RESULTS: The requested test \"Contrast_enema\" is not available in the current data.\n\nHowever, based on the available information, the Rectal Biopsy results show:\n\n**Histopathology: Absence of ganglion cells in the submucosa and myenteric plexus, consistent with Hirschsprung's disease.**\n\nThis finding, combined with the Abdominal X-ray results showing dilated loops of bowel with no gas in the rectum, strongly supports the diagnosis of Hirschsprung's disease.",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 572,
+          "terminal": false
+        },
+        {
+          "turn": 5,
+          "id": null,
+          "name": "give_diagnosis",
+          "arguments": {
+            "request": "Hirschsprung's disease"
+          },
+          "result": null,
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 566,
+          "terminal": true
+        }
+      ],
+      "summary": {
+        "n_calls": 3,
+        "by_name": {
+          "request_test": 2,
+          "give_diagnosis": 1
+        },
+        "n_ok": 3,
+        "n_error": 0,
+        "errors": []
+      },
+      "writes": {
+        "available": false,
+        "reason": "this benchmark issues no writes, so there is no said-vs-emitted-vs-landed distinction to record"
+      }
+    },
+    "turns": [
+      {
+        "inference": 1,
+        "incoming": "",
+        "reply": "Hello, I'm Dr. Agent. How long has the baby been experiencing this bilious vomiting?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 3957,
+          "output_tokens": 21,
+          "thinking_tokens": 0,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      },
+      {
+        "inference": 2,
+        "incoming": "He's been vomiting that greenish bile since yesterday, right after we got home from the birth. It seems to happen especially when I try to feed him.",
+        "reply": "Has the infant had any bowel movements or passed any meconium since birth?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4011,
+          "output_tokens": 16,
+          "thinking_tokens": 0,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      },
+      {
+        "inference": 3,
+        "incoming": "No, he hasn't passed anything at all since he was born two days ago. I've been checking his diapers constantly, but they've all been completely clean.",
+        "reply": "REQUEST TEST: Abdominal_X-ray",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Abdominal_X-ray",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4065,
+          "output_tokens": 9,
+          "thinking_tokens": 0,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      },
+      {
+        "inference": 4,
+        "incoming": "RESULTS: Abdominal X-ray shows dilated loops of bowel with no gas in the rectum, suggestive of a distal obstruction.",
+        "reply": "REQUEST TEST: Contrast_enema",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Contrast_enema",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4101,
+          "output_tokens": 7,
+          "thinking_tokens": 0,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      },
+      {
+        "inference": 5,
+        "incoming": "RESULTS: The requested test \"Contrast_enema\" is not available in the current data.\n\nHowever, based on the available information, the Rectal Biopsy results show:\n\n**Histopathology: Absence of ganglion cells in the submucosa and myenteric plexus, consistent with Hirschsprung's disease.**\n\nThis finding, combined with the Abdominal X-ray results showing dilated loops of bowel with no gas in the rectum, strongly supports the diagnosis of Hirschsprung's disease.",
+        "reply": "DIAGNOSIS READY: Hirschsprung's disease",
+        "tool_calls": [],
+        "kind": "diagnosis",
+        "payload": "Hirschsprung's disease",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4211,
+          "output_tokens": 12,
+          "thinking_tokens": 0,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      }
+    ],
+    "audio": null
+  }
+}

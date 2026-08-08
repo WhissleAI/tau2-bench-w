@@ -1,0 +1,524 @@
+{
+  "scenario_id": "MedQA-19",
+  "scenario_index": 19,
+  "dataset": "MedQA",
+  "mode": "text",
+  "correct_diagnosis": "Disc herniation",
+  "answer_options": [],
+  "score": {
+    "outcome": "correct",
+    "correctness": true,
+    "doctor_diagnosis": "L5-S1 Disc Herniation with Sciatica.",
+    "doctor_final_text": "The MRI results confirm that you have an L5-S1 disc herniation pressing on the adjacent nerve root, which explains the shooting pain and tingling in your foot. This diagnosis aligns with your symptoms and the injury occurring during your deadlifts.\n\nDIAGNOSIS READY: L5-S1 Disc Herniation with Sciatica.",
+    "moderator_raw": "yes",
+    "moderator_raw_text": "Yes",
+    "moderator_lenient": true,
+    "moderator_attempts": 1,
+    "moderator_normalized": false,
+    "moderator_unconstrained": false,
+    "declined": false,
+    "refusal_evidence": [],
+    "format_deviation": false,
+    "decline_source": null,
+    "decline_reason": "",
+    "spurious_commit": false
+  },
+  "infra_fail": false,
+  "error": null,
+  "findings": [],
+  "inferences_used": 6,
+  "max_inferences": 20,
+  "tests_ordered": [
+    "Straight_Leg_Raise_Test.",
+    "Achilles_Reflex",
+    "MRI_Lum"
+  ],
+  "images_requested": 0,
+  "image": null,
+  "image_error": null,
+  "vision": "off",
+  "refusals": [],
+  "dialogue": [
+    {
+      "role": "doctor",
+      "inference": 1,
+      "kind": "question",
+      "text": "Hello, I'm Dr. Agent. Just so you know, I'm an AI assistant and this call is recorded for quality. To help me understand your back pain, have you noticed any weakness in your leg or any changes in your bowel or bladder control?",
+      "payload": null,
+      "latency_ms": 3168,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "No, I haven't noticed any weakness in my leg, and my bowel and bladder function seem completely normal. It's really just this sharp pain that shoots down from my lower back all the way to my foot."
+    },
+    {
+      "role": "doctor",
+      "inference": 2,
+      "kind": "test",
+      "text": "I understand. Are you experiencing any numbness or tingling in your leg or foot, and does the pain feel worse when you sit, cough, or sneeze? REQUEST TEST: Straight_Leg_Raise_Test.",
+      "payload": "Straight_Leg_Raise_Test.",
+      "latency_ms": 4270,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: Positive straight leg raise test with pain radiating down the leg."
+    },
+    {
+      "role": "doctor",
+      "inference": 3,
+      "kind": "question",
+      "text": "The positive straight leg raise test suggests some nerve irritation. Do you feel any numbness or tingling in your foot, and did this pain start after you lifted something heavy?",
+      "payload": null,
+      "latency_ms": 3593,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Yes, there's definitely some tingling in my foot, especially on the outer side. And I was doing deadlifts at the gym when it happened - I felt that sharp pain right in the middle of a lift."
+    },
+    {
+      "role": "doctor",
+      "inference": 4,
+      "kind": "test",
+      "text": "I see; the tingling on the outer side of your foot often points to a specific nerve root in your lower back being affected. Could you try standing on your toes and then your heels to see if you have any difficulty supporting your weight?\n\nREQUEST TEST: Achilles_Reflex",
+      "payload": "Achilles_Reflex",
+      "latency_ms": 4205,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: Normal ankle and knee reflexes."
+    },
+    {
+      "role": "doctor",
+      "inference": 5,
+      "kind": "test",
+      "text": "It's good that your reflexes are normal. Were you able to stand on your toes and heels without any trouble, or did you notice any weakness?\n\nREQUEST TEST: MRI_Lum",
+      "payload": "MRI_Lum",
+      "latency_ms": 5281,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: Evidence of L5-S1 disc herniation impinging on the adjacent nerve root."
+    },
+    {
+      "role": "doctor",
+      "inference": 6,
+      "kind": "diagnosis",
+      "text": "The MRI results confirm that you have an L5-S1 disc herniation pressing on the adjacent nerve root, which explains the shooting pain and tingling in your foot. This diagnosis aligns with your symptoms and the injury occurring during your deadlifts.\n\nDIAGNOSIS READY: L5-S1 Disc Herniation with Sciatica.",
+      "payload": "L5-S1 Disc Herniation with Sciatica.",
+      "latency_ms": 3668,
+      "refusal": null,
+      "via": "marker"
+    }
+  ],
+  "latency_ms": [
+    3168,
+    4270,
+    3593,
+    4205,
+    5281,
+    3668
+  ],
+  "wall_s": 35.32,
+  "doctor_turns": [
+    {
+      "inference": 1,
+      "incoming": "",
+      "reply": "Hello, I'm Dr. Agent. Just so you know, I'm an AI assistant and this call is recorded for quality. To help me understand your back pain, have you noticed any weakness in your leg or any changes in your bowel or bladder control?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 3945,
+        "output_tokens": 522,
+        "thinking_tokens": 468,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    },
+    {
+      "inference": 2,
+      "incoming": "No, I haven't noticed any weakness in my leg, and my bowel and bladder function seem completely normal. It's really just this sharp pain that shoots down from my lower back all the way to my foot.",
+      "reply": "I understand. Are you experiencing any numbness or tingling in your leg or foot, and does the pain feel worse when you sit, cough, or sneeze? REQUEST TEST: Straight_Leg_Raise_Test.",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Straight_Leg_Raise_Test.",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4045,
+        "output_tokens": 754,
+        "thinking_tokens": 712,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    },
+    {
+      "inference": 3,
+      "incoming": "RESULTS: Positive straight leg raise test with pain radiating down the leg.",
+      "reply": "The positive straight leg raise test suggests some nerve irritation. Do you feel any numbness or tingling in your foot, and did this pain start after you lifted something heavy?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4103,
+        "output_tokens": 544,
+        "thinking_tokens": 511,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    },
+    {
+      "inference": 4,
+      "incoming": "Yes, there's definitely some tingling in my foot, especially on the outer side. And I was doing deadlifts at the gym when it happened - I felt that sharp pain right in the middle of a lift.",
+      "reply": "I see; the tingling on the outer side of your foot often points to a specific nerve root in your lower back being affected. Could you try standing on your toes and then your heels to see if you have any difficulty supporting your weight?\n\nREQUEST TEST: Achilles_Reflex",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Achilles_Reflex",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4182,
+        "output_tokens": 703,
+        "thinking_tokens": 647,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    },
+    {
+      "inference": 5,
+      "incoming": "RESULTS: Normal ankle and knee reflexes.",
+      "reply": "It's good that your reflexes are normal. Were you able to stand on your toes and heels without any trouble, or did you notice any weakness?\n\nREQUEST TEST: MRI_Lum",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "MRI_Lum",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4248,
+        "output_tokens": 1020,
+        "thinking_tokens": 982,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "MAX_TOKENS"
+    },
+    {
+      "inference": 6,
+      "incoming": "RESULTS: Evidence of L5-S1 disc herniation impinging on the adjacent nerve root.",
+      "reply": "The MRI results confirm that you have an L5-S1 disc herniation pressing on the adjacent nerve root, which explains the shooting pain and tingling in your foot. This diagnosis aligns with your symptoms and the injury occurring during your deadlifts.\n\nDIAGNOSIS READY: L5-S1 Disc Herniation with Sciatica.",
+      "tool_calls": [],
+      "kind": "diagnosis",
+      "payload": "L5-S1 Disc Herniation with Sciatica.",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4308,
+        "output_tokens": 748,
+        "thinking_tokens": 680,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    }
+  ],
+  "support_llm": "anthropic:claude-sonnet-4-5",
+  "support_llm_cost_usd": 0.01016,
+  "support_llm_calls": 6,
+  "voice_subset": false,
+  "diagnostics": {
+    "schema": "tau2.health.diagnostics/v1",
+    "benchmark": "agentclinic",
+    "case_id": "MedQA-19",
+    "mode": "text",
+    "availability": {
+      "flow_available": false,
+      "flow_reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "signals_available": false,
+      "signals_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "metadata_sidecar_available": false,
+      "metadata_sidecar_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "tools_available": true,
+      "tools_reason": null
+    },
+    "provenance": {
+      "benchmark": "agentclinic",
+      "mode": "text",
+      "transport_endpoint": "POST /api/bench/agent-turn",
+      "agent_id": "c2761ec7-d3f7-4bd7-b68c-40a87f1b1ab3",
+      "base_url": "https://aws-gateway-backend.whissle.ai/bot",
+      "seed": 42,
+      "stratum": {
+        "dataset": "MedQA",
+        "scenario_index": 19,
+        "selection": "head",
+        "limit": 25
+      },
+      "judge": {
+        "judge_provider": "anthropic",
+        "judge_model": "claude-sonnet-4-5",
+        "judge_endpoint": "anthropic:claude-sonnet-4-5",
+        "judge_independent": true,
+        "judge_independence_note": "Judge independence: this run's simulators and graders were routed through an external provider, independent of the agent under test. This is the stronger footing for a published comparison against the paper's numbers."
+      },
+      "judge_provider": "anthropic",
+      "judge_independent": true,
+      "run_id": null,
+      "run_dir": "results/whissle/agentclinic/20260808T194241Z-sweep25_g3fp",
+      "harness_commit": "86b4475",
+      "captured_at": "2026-08-08T19:50:00+00:00",
+      "protocol": "markers",
+      "history": "agentclinic",
+      "prompt_mode": "override",
+      "vision": "off",
+      "agent_type": null,
+      "total_inferences": 20,
+      "inferences_used": 6,
+      "support_llm": "anthropic:claude-sonnet-4-5",
+      "patient_bias": null,
+      "doctor_bias": null,
+      "voice_subset": false
+    },
+    "cost": {
+      "available": true,
+      "reason": null,
+      "judge_calls": 6,
+      "judge_cost_usd": 0.01016,
+      "agent_calls": 6
+    },
+    "flow": {
+      "available": false,
+      "reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "source": null,
+      "turns": null,
+      "summary": null,
+      "conversation_id": null,
+      "current_state": null,
+      "start_state": null,
+      "final_state": null,
+      "ended": null,
+      "flow_end": null,
+      "num_steps": null,
+      "step_counts_by_kind": null,
+      "states_visited": null,
+      "states_declared": null,
+      "states_unvisited": null,
+      "transitions": null,
+      "transitions_fired": null,
+      "var_sets": null,
+      "var_sources": null,
+      "guard_trips": null,
+      "state_divergences": null,
+      "tools_gated": null,
+      "says": null,
+      "steps": null
+    },
+    "signals": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "metadata_sidecar": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "tools": {
+      "available": true,
+      "reason": null,
+      "source": "doctor actions parsed from /api/bench/agent-turn replies",
+      "calls": [
+        {
+          "turn": 2,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Straight_Leg_Raise_Test."
+          },
+          "result": "RESULTS: Positive straight leg raise test with pain radiating down the leg.",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 4270,
+          "terminal": false
+        },
+        {
+          "turn": 4,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Achilles_Reflex"
+          },
+          "result": "RESULTS: Normal ankle and knee reflexes.",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 4205,
+          "terminal": false
+        },
+        {
+          "turn": 5,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "MRI_Lum"
+          },
+          "result": "RESULTS: Evidence of L5-S1 disc herniation impinging on the adjacent nerve root.",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 5281,
+          "terminal": false
+        },
+        {
+          "turn": 6,
+          "id": null,
+          "name": "give_diagnosis",
+          "arguments": {
+            "request": "L5-S1 Disc Herniation with Sciatica."
+          },
+          "result": null,
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 3668,
+          "terminal": true
+        }
+      ],
+      "summary": {
+        "n_calls": 4,
+        "by_name": {
+          "request_test": 3,
+          "give_diagnosis": 1
+        },
+        "n_ok": 4,
+        "n_error": 0,
+        "errors": []
+      },
+      "writes": {
+        "available": false,
+        "reason": "this benchmark issues no writes, so there is no said-vs-emitted-vs-landed distinction to record"
+      }
+    },
+    "turns": [
+      {
+        "inference": 1,
+        "incoming": "",
+        "reply": "Hello, I'm Dr. Agent. Just so you know, I'm an AI assistant and this call is recorded for quality. To help me understand your back pain, have you noticed any weakness in your leg or any changes in your bowel or bladder control?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 3945,
+          "output_tokens": 522,
+          "thinking_tokens": 468,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      },
+      {
+        "inference": 2,
+        "incoming": "No, I haven't noticed any weakness in my leg, and my bowel and bladder function seem completely normal. It's really just this sharp pain that shoots down from my lower back all the way to my foot.",
+        "reply": "I understand. Are you experiencing any numbness or tingling in your leg or foot, and does the pain feel worse when you sit, cough, or sneeze? REQUEST TEST: Straight_Leg_Raise_Test.",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Straight_Leg_Raise_Test.",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4045,
+          "output_tokens": 754,
+          "thinking_tokens": 712,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      },
+      {
+        "inference": 3,
+        "incoming": "RESULTS: Positive straight leg raise test with pain radiating down the leg.",
+        "reply": "The positive straight leg raise test suggests some nerve irritation. Do you feel any numbness or tingling in your foot, and did this pain start after you lifted something heavy?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4103,
+          "output_tokens": 544,
+          "thinking_tokens": 511,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      },
+      {
+        "inference": 4,
+        "incoming": "Yes, there's definitely some tingling in my foot, especially on the outer side. And I was doing deadlifts at the gym when it happened - I felt that sharp pain right in the middle of a lift.",
+        "reply": "I see; the tingling on the outer side of your foot often points to a specific nerve root in your lower back being affected. Could you try standing on your toes and then your heels to see if you have any difficulty supporting your weight?\n\nREQUEST TEST: Achilles_Reflex",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Achilles_Reflex",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4182,
+          "output_tokens": 703,
+          "thinking_tokens": 647,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      },
+      {
+        "inference": 5,
+        "incoming": "RESULTS: Normal ankle and knee reflexes.",
+        "reply": "It's good that your reflexes are normal. Were you able to stand on your toes and heels without any trouble, or did you notice any weakness?\n\nREQUEST TEST: MRI_Lum",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "MRI_Lum",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4248,
+          "output_tokens": 1020,
+          "thinking_tokens": 982,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "MAX_TOKENS"
+      },
+      {
+        "inference": 6,
+        "incoming": "RESULTS: Evidence of L5-S1 disc herniation impinging on the adjacent nerve root.",
+        "reply": "The MRI results confirm that you have an L5-S1 disc herniation pressing on the adjacent nerve root, which explains the shooting pain and tingling in your foot. This diagnosis aligns with your symptoms and the injury occurring during your deadlifts.\n\nDIAGNOSIS READY: L5-S1 Disc Herniation with Sciatica.",
+        "tool_calls": [],
+        "kind": "diagnosis",
+        "payload": "L5-S1 Disc Herniation with Sciatica.",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4308,
+          "output_tokens": 748,
+          "thinking_tokens": 680,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      }
+    ],
+    "audio": null
+  }
+}

@@ -1,0 +1,705 @@
+{
+  "scenario_id": "MedQA-11",
+  "scenario_index": 11,
+  "dataset": "MedQA",
+  "mode": "text",
+  "correct_diagnosis": "Complex partial seizure",
+  "answer_options": [],
+  "score": {
+    "outcome": "incorrect",
+    "correctness": false,
+    "doctor_diagnosis": "[diagnosis here]\".\n\nLet's write a brief, reassuring response to the patient's question,",
+    "doctor_final_text": "\" or do I just output that line? Yes, \"DIAGNOSIS READY: [diagnosis here]\".\n\nLet's write a brief, reassuring response to the patient's question,",
+    "moderator_raw": "no",
+    "moderator_raw_text": "No",
+    "moderator_lenient": false,
+    "moderator_attempts": 1,
+    "moderator_normalized": false,
+    "moderator_unconstrained": false,
+    "declined": false,
+    "refusal_evidence": [],
+    "format_deviation": false,
+    "decline_source": null,
+    "decline_reason": "",
+    "spurious_commit": false
+  },
+  "infra_fail": false,
+  "error": null,
+  "findings": [],
+  "inferences_used": 10,
+  "max_inferences": 20,
+  "tests_ordered": [
+    "EEG",
+    "Brain_MRI"
+  ],
+  "images_requested": 0,
+  "image": null,
+  "image_error": null,
+  "vision": "off",
+  "refusals": [],
+  "dialogue": [
+    {
+      "role": "doctor",
+      "inference": 1,
+      "kind": "question",
+      "text": "Hello, I am Dr. Agent, and I will be evaluating you today. Can you tell me more about these episodes of unresponsiveness and when they first started?",
+      "payload": null,
+      "latency_ms": 1840,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Hi, Doctor. These episodes started about a month ago. During them, I just kind of stare and my face makes weird movements, but I don't remember what happens when they're going on."
+    },
+    {
+      "role": "doctor",
+      "inference": 2,
+      "kind": "question",
+      "text": "Just so you know, I'm an AI assistant and this call is recorded for quality. To help me understand what's happening, do you experience any warning signs before these episodes start, or any confusion after they end?",
+      "payload": null,
+      "latency_ms": 4714,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Yes, actually! Right before they start, I get this weird muddy taste in my mouth. And after the episodes, I feel really tired and confused for a while."
+    },
+    {
+      "role": "doctor",
+      "inference": 3,
+      "kind": "test",
+      "text": "Thank you for sharing that; a muddy taste followed by confusion is highly characteristic of certain types of seizures. How long do these episodes typically last when someone else is there to witness them?\n\nREQUEST TEST: EEG",
+      "payload": "EEG",
+      "latency_ms": 3910,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: Electroencephalogram (EEG) shows interictal spikes and sharp waves localized to the temporal lobes, more prominent on the right side."
+    },
+    {
+      "role": "doctor",
+      "inference": 4,
+      "kind": "test",
+      "text": "The EEG results showing sharp waves in your temporal lobe, combined with the metallic taste and confusion, are very revealing. Have you ever had any head injuries, brain infections, or high-fever seizures during your childhood? \n\nREQUEST TEST: Brain_MRI",
+      "payload": "Brain_MRI",
+      "latency_ms": 4508,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: MRI Brain shows no evidence of mass lesions, infarctions, or structural abnormalities."
+    },
+    {
+      "role": "doctor",
+      "inference": 5,
+      "kind": "question",
+      "text": "Thank you for that information; a normal MRI is reassuring as it rules out major structural causes. Do these episodes occur more frequently at a certain time of day, or are they triggered",
+      "payload": null,
+      "latency_ms": 4931,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "They don't really happen at a specific time of day. They just seem to come out of nowhere - sometimes during the day when I'm at school or at home. I haven't noticed anything special that makes them start."
+    },
+    {
+      "role": "doctor",
+      "inference": 6,
+      "kind": "question",
+      "text": "Based on your symptoms of unresponsiveness, the aura of a muddy taste, facial grimacing, post-ictal confusion, and the EEG showing sharp waves in your temporal lobe, we have a",
+      "payload": null,
+      "latency_ms": 5203,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Oh, okay. So what does that mean, Doctor? Is there something wrong with my brain?"
+    },
+    {
+      "role": "doctor",
+      "inference": 7,
+      "kind": "question",
+      "text": "\"\n    *   \"Based on your symptoms of a gustatory aura, staring spells with grimacing, post-ictal confusion, and the localized EEG spikes, you are experiencing focal",
+      "payload": null,
+      "latency_ms": 4352,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Oh... so it's something with my brain having these episodes? Is that why I can't remember them and feel so tired afterwards?"
+    },
+    {
+      "role": "doctor",
+      "inference": 8,
+      "kind": "question",
+      "text": "Yes, exactly. During these episodes, temporary abnormal electrical activity in your temporal lobe causes the staring, facial movements, and subsequent memory loss and fatigue. I am ready to make a formal",
+      "payload": null,
+      "latency_ms": 4429,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Okay, I understand. So what happens next? Will I need to take medicine or something to make these episodes stop?"
+    },
+    {
+      "role": "doctor",
+      "inference": 9,
+      "kind": "question",
+      "text": "Yes, we will likely discuss starting you on daily anti-seizure medication to prevent these episodes and keep you safe. Based on your symptoms and the EEG results, I am ready to make a",
+      "payload": null,
+      "latency_ms": 4593,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Okay, that makes sense. Will the medicine make the episodes go away completely? And how long will I need to take it?"
+    },
+    {
+      "role": "doctor",
+      "inference": 10,
+      "kind": "diagnosis",
+      "text": "\" or do I just output that line? Yes, \"DIAGNOSIS READY: [diagnosis here]\".\n\nLet's write a brief, reassuring response to the patient's question,",
+      "payload": "[diagnosis here]\".\n\nLet's write a brief, reassuring response to the patient's question,",
+      "latency_ms": 4643,
+      "refusal": null,
+      "via": "marker"
+    }
+  ],
+  "latency_ms": [
+    1840,
+    4714,
+    3910,
+    4508,
+    4931,
+    5203,
+    4352,
+    4429,
+    4593,
+    4643
+  ],
+  "wall_s": 61.51,
+  "doctor_turns": [
+    {
+      "inference": 1,
+      "incoming": "",
+      "reply": "Hello, I am Dr. Agent, and I will be evaluating you today. Can you tell me more about these episodes of unresponsiveness and when they first started?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 3945,
+        "output_tokens": 248,
+        "thinking_tokens": 214,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    },
+    {
+      "inference": 2,
+      "incoming": "Hi, Doctor. These episodes started about a month ago. During them, I just kind of stare and my face makes weird movements, but I don't remember what happens when they're going on.",
+      "reply": "Just so you know, I'm an AI assistant and this call is recorded for quality. To help me understand what's happening, do you experience any warning signs before these episodes start, or any confusion after they end?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4022,
+        "output_tokens": 838,
+        "thinking_tokens": 792,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    },
+    {
+      "inference": 3,
+      "incoming": "Yes, actually! Right before they start, I get this weird muddy taste in my mouth. And after the episodes, I feel really tired and confused for a while.",
+      "reply": "Thank you for sharing that; a muddy taste followed by confusion is highly characteristic of certain types of seizures. How long do these episodes typically last when someone else is there to witness them?\n\nREQUEST TEST: EEG",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "EEG",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4104,
+        "output_tokens": 685,
+        "thinking_tokens": 643,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    },
+    {
+      "inference": 4,
+      "incoming": "RESULTS: Electroencephalogram (EEG) shows interictal spikes and sharp waves localized to the temporal lobes, more prominent on the right side.",
+      "reply": "The EEG results showing sharp waves in your temporal lobe, combined with the metallic taste and confusion, are very revealing. Have you ever had any head injuries, brain infections, or high-fever seizures during your childhood? \n\nREQUEST TEST: Brain_MRI",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Brain_MRI",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4176,
+        "output_tokens": 850,
+        "thinking_tokens": 798,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    },
+    {
+      "inference": 5,
+      "incoming": "RESULTS: MRI Brain shows no evidence of mass lesions, infarctions, or structural abnormalities.",
+      "reply": "Thank you for that information; a normal MRI is reassuring as it rules out major structural causes. Do these episodes occur more frequently at a certain time of day, or are they triggered",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4248,
+        "output_tokens": 1020,
+        "thinking_tokens": 984,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "MAX_TOKENS"
+    },
+    {
+      "inference": 6,
+      "incoming": "They don't really happen at a specific time of day. They just seem to come out of nowhere - sometimes during the day when I'm at school or at home. I haven't noticed anything special that makes them start.",
+      "reply": "Based on your symptoms of unresponsiveness, the aura of a muddy taste, facial grimacing, post-ictal confusion, and the EEG showing sharp waves in your temporal lobe, we have a",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4334,
+        "output_tokens": 1020,
+        "thinking_tokens": 981,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "MAX_TOKENS"
+    },
+    {
+      "inference": 7,
+      "incoming": "Oh, okay. So what does that mean, Doctor? Is there something wrong with my brain?",
+      "reply": "\"\n    *   \"Based on your symptoms of a gustatory aura, staring spells with grimacing, post-ictal confusion, and the localized EEG spikes, you are experiencing focal",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4395,
+        "output_tokens": 1020,
+        "thinking_tokens": 983,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "MAX_TOKENS"
+    },
+    {
+      "inference": 8,
+      "incoming": "Oh... so it's something with my brain having these episodes? Is that why I can't remember them and feel so tired afterwards?",
+      "reply": "Yes, exactly. During these episodes, temporary abnormal electrical activity in your temporal lobe causes the staring, facial movements, and subsequent memory loss and fatigue. I am ready to make a formal",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4463,
+        "output_tokens": 1020,
+        "thinking_tokens": 983,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "MAX_TOKENS"
+    },
+    {
+      "inference": 9,
+      "incoming": "Okay, I understand. So what happens next? Will I need to take medicine or something to make these episodes stop?",
+      "reply": "Yes, we will likely discuss starting you on daily anti-seizure medication to prevent these episodes and keep you safe. Based on your symptoms and the EEG results, I am ready to make a",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4526,
+        "output_tokens": 1020,
+        "thinking_tokens": 981,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "MAX_TOKENS"
+    },
+    {
+      "inference": 10,
+      "incoming": "Okay, that makes sense. Will the medicine make the episodes go away completely? And how long will I need to take it?",
+      "reply": "\" or do I just output that line? Yes, \"DIAGNOSIS READY: [diagnosis here]\".\n\nLet's write a brief, reassuring response to the patient's question,",
+      "tool_calls": [],
+      "kind": "diagnosis",
+      "payload": "[diagnosis here]\".\n\nLet's write a brief, reassuring response to the patient's question,",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4593,
+        "output_tokens": 1020,
+        "thinking_tokens": 981,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "MAX_TOKENS"
+    }
+  ],
+  "support_llm": "anthropic:claude-sonnet-4-5",
+  "support_llm_cost_usd": 0.02427,
+  "support_llm_calls": 10,
+  "voice_subset": false,
+  "diagnostics": {
+    "schema": "tau2.health.diagnostics/v1",
+    "benchmark": "agentclinic",
+    "case_id": "MedQA-11",
+    "mode": "text",
+    "availability": {
+      "flow_available": false,
+      "flow_reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "signals_available": false,
+      "signals_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "metadata_sidecar_available": false,
+      "metadata_sidecar_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "tools_available": true,
+      "tools_reason": null
+    },
+    "provenance": {
+      "benchmark": "agentclinic",
+      "mode": "text",
+      "transport_endpoint": "POST /api/bench/agent-turn",
+      "agent_id": "c2761ec7-d3f7-4bd7-b68c-40a87f1b1ab3",
+      "base_url": "https://aws-gateway-backend.whissle.ai/bot",
+      "seed": 42,
+      "stratum": {
+        "dataset": "MedQA",
+        "scenario_index": 11,
+        "selection": "head",
+        "limit": 25
+      },
+      "judge": {
+        "judge_provider": "anthropic",
+        "judge_model": "claude-sonnet-4-5",
+        "judge_endpoint": "anthropic:claude-sonnet-4-5",
+        "judge_independent": true,
+        "judge_independence_note": "Judge independence: this run's simulators and graders were routed through an external provider, independent of the agent under test. This is the stronger footing for a published comparison against the paper's numbers."
+      },
+      "judge_provider": "anthropic",
+      "judge_independent": true,
+      "run_id": null,
+      "run_dir": "results/whissle/agentclinic/20260808T193252Z-sweep25_g35f",
+      "harness_commit": "86b4475",
+      "captured_at": "2026-08-08T19:36:13+00:00",
+      "protocol": "markers",
+      "history": "agentclinic",
+      "prompt_mode": "override",
+      "vision": "off",
+      "agent_type": null,
+      "total_inferences": 20,
+      "inferences_used": 10,
+      "support_llm": "anthropic:claude-sonnet-4-5",
+      "patient_bias": null,
+      "doctor_bias": null,
+      "voice_subset": false
+    },
+    "cost": {
+      "available": true,
+      "reason": null,
+      "judge_calls": 10,
+      "judge_cost_usd": 0.02427,
+      "agent_calls": 10
+    },
+    "flow": {
+      "available": false,
+      "reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "source": null,
+      "turns": null,
+      "summary": null,
+      "conversation_id": null,
+      "current_state": null,
+      "start_state": null,
+      "final_state": null,
+      "ended": null,
+      "flow_end": null,
+      "num_steps": null,
+      "step_counts_by_kind": null,
+      "states_visited": null,
+      "states_declared": null,
+      "states_unvisited": null,
+      "transitions": null,
+      "transitions_fired": null,
+      "var_sets": null,
+      "var_sources": null,
+      "guard_trips": null,
+      "state_divergences": null,
+      "tools_gated": null,
+      "says": null,
+      "steps": null
+    },
+    "signals": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "metadata_sidecar": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "tools": {
+      "available": true,
+      "reason": null,
+      "source": "doctor actions parsed from /api/bench/agent-turn replies",
+      "calls": [
+        {
+          "turn": 3,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "EEG"
+          },
+          "result": "RESULTS: Electroencephalogram (EEG) shows interictal spikes and sharp waves localized to the temporal lobes, more prominent on the right side.",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 3910,
+          "terminal": false
+        },
+        {
+          "turn": 4,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Brain_MRI"
+          },
+          "result": "RESULTS: MRI Brain shows no evidence of mass lesions, infarctions, or structural abnormalities.",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 4508,
+          "terminal": false
+        },
+        {
+          "turn": 10,
+          "id": null,
+          "name": "give_diagnosis",
+          "arguments": {
+            "request": "[diagnosis here]\".\n\nLet's write a brief, reassuring response to the patient's question,"
+          },
+          "result": null,
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 4643,
+          "terminal": true
+        }
+      ],
+      "summary": {
+        "n_calls": 3,
+        "by_name": {
+          "request_test": 2,
+          "give_diagnosis": 1
+        },
+        "n_ok": 3,
+        "n_error": 0,
+        "errors": []
+      },
+      "writes": {
+        "available": false,
+        "reason": "this benchmark issues no writes, so there is no said-vs-emitted-vs-landed distinction to record"
+      }
+    },
+    "turns": [
+      {
+        "inference": 1,
+        "incoming": "",
+        "reply": "Hello, I am Dr. Agent, and I will be evaluating you today. Can you tell me more about these episodes of unresponsiveness and when they first started?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 3945,
+          "output_tokens": 248,
+          "thinking_tokens": 214,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      },
+      {
+        "inference": 2,
+        "incoming": "Hi, Doctor. These episodes started about a month ago. During them, I just kind of stare and my face makes weird movements, but I don't remember what happens when they're going on.",
+        "reply": "Just so you know, I'm an AI assistant and this call is recorded for quality. To help me understand what's happening, do you experience any warning signs before these episodes start, or any confusion after they end?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4022,
+          "output_tokens": 838,
+          "thinking_tokens": 792,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      },
+      {
+        "inference": 3,
+        "incoming": "Yes, actually! Right before they start, I get this weird muddy taste in my mouth. And after the episodes, I feel really tired and confused for a while.",
+        "reply": "Thank you for sharing that; a muddy taste followed by confusion is highly characteristic of certain types of seizures. How long do these episodes typically last when someone else is there to witness them?\n\nREQUEST TEST: EEG",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "EEG",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4104,
+          "output_tokens": 685,
+          "thinking_tokens": 643,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      },
+      {
+        "inference": 4,
+        "incoming": "RESULTS: Electroencephalogram (EEG) shows interictal spikes and sharp waves localized to the temporal lobes, more prominent on the right side.",
+        "reply": "The EEG results showing sharp waves in your temporal lobe, combined with the metallic taste and confusion, are very revealing. Have you ever had any head injuries, brain infections, or high-fever seizures during your childhood? \n\nREQUEST TEST: Brain_MRI",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Brain_MRI",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4176,
+          "output_tokens": 850,
+          "thinking_tokens": 798,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      },
+      {
+        "inference": 5,
+        "incoming": "RESULTS: MRI Brain shows no evidence of mass lesions, infarctions, or structural abnormalities.",
+        "reply": "Thank you for that information; a normal MRI is reassuring as it rules out major structural causes. Do these episodes occur more frequently at a certain time of day, or are they triggered",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4248,
+          "output_tokens": 1020,
+          "thinking_tokens": 984,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "MAX_TOKENS"
+      },
+      {
+        "inference": 6,
+        "incoming": "They don't really happen at a specific time of day. They just seem to come out of nowhere - sometimes during the day when I'm at school or at home. I haven't noticed anything special that makes them start.",
+        "reply": "Based on your symptoms of unresponsiveness, the aura of a muddy taste, facial grimacing, post-ictal confusion, and the EEG showing sharp waves in your temporal lobe, we have a",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4334,
+          "output_tokens": 1020,
+          "thinking_tokens": 981,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "MAX_TOKENS"
+      },
+      {
+        "inference": 7,
+        "incoming": "Oh, okay. So what does that mean, Doctor? Is there something wrong with my brain?",
+        "reply": "\"\n    *   \"Based on your symptoms of a gustatory aura, staring spells with grimacing, post-ictal confusion, and the localized EEG spikes, you are experiencing focal",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4395,
+          "output_tokens": 1020,
+          "thinking_tokens": 983,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "MAX_TOKENS"
+      },
+      {
+        "inference": 8,
+        "incoming": "Oh... so it's something with my brain having these episodes? Is that why I can't remember them and feel so tired afterwards?",
+        "reply": "Yes, exactly. During these episodes, temporary abnormal electrical activity in your temporal lobe causes the staring, facial movements, and subsequent memory loss and fatigue. I am ready to make a formal",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4463,
+          "output_tokens": 1020,
+          "thinking_tokens": 983,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "MAX_TOKENS"
+      },
+      {
+        "inference": 9,
+        "incoming": "Okay, I understand. So what happens next? Will I need to take medicine or something to make these episodes stop?",
+        "reply": "Yes, we will likely discuss starting you on daily anti-seizure medication to prevent these episodes and keep you safe. Based on your symptoms and the EEG results, I am ready to make a",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4526,
+          "output_tokens": 1020,
+          "thinking_tokens": 981,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "MAX_TOKENS"
+      },
+      {
+        "inference": 10,
+        "incoming": "Okay, that makes sense. Will the medicine make the episodes go away completely? And how long will I need to take it?",
+        "reply": "\" or do I just output that line? Yes, \"DIAGNOSIS READY: [diagnosis here]\".\n\nLet's write a brief, reassuring response to the patient's question,",
+        "tool_calls": [],
+        "kind": "diagnosis",
+        "payload": "[diagnosis here]\".\n\nLet's write a brief, reassuring response to the patient's question,",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4593,
+          "output_tokens": 1020,
+          "thinking_tokens": 981,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "MAX_TOKENS"
+      }
+    ],
+    "audio": null
+  }
+}

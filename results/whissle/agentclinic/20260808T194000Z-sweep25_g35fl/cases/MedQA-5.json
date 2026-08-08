@@ -1,0 +1,460 @@
+{
+  "scenario_id": "MedQA-5",
+  "scenario_index": 5,
+  "dataset": "MedQA",
+  "mode": "text",
+  "correct_diagnosis": "Pes anserine bursitis",
+  "answer_options": [],
+  "score": {
+    "outcome": "incorrect",
+    "correctness": false,
+    "doctor_diagnosis": "Patellar tendinopathy",
+    "doctor_final_text": "DIAGNOSIS READY: Patellar tendinopathy",
+    "moderator_raw": "no",
+    "moderator_raw_text": "No",
+    "moderator_lenient": false,
+    "moderator_attempts": 1,
+    "moderator_normalized": false,
+    "moderator_unconstrained": false,
+    "declined": false,
+    "refusal_evidence": [],
+    "format_deviation": false,
+    "decline_source": null,
+    "decline_reason": "",
+    "spurious_commit": false
+  },
+  "infra_fail": false,
+  "error": null,
+  "findings": [],
+  "inferences_used": 5,
+  "max_inferences": 20,
+  "tests_ordered": [
+    "Knee_X-Ray",
+    "Knee_MRI"
+  ],
+  "images_requested": 0,
+  "image": null,
+  "image_error": null,
+  "vision": "off",
+  "refusals": [],
+  "dialogue": [
+    {
+      "role": "doctor",
+      "inference": 1,
+      "kind": "question",
+      "text": "Hello, I'm Dr. Agent. Can you tell me more about the knee pain and what kind of physical activity you were doing when it started?",
+      "payload": null,
+      "latency_ms": 798,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Well, I joined a volleyball team recently and we've been practicing a lot. The pain started yesterday after practice and it's been getting worse - it's right here on the inside of my knee, just below my kneecap."
+    },
+    {
+      "role": "doctor",
+      "inference": 2,
+      "kind": "test",
+      "text": "REQUEST TEST: Knee_X-Ray",
+      "payload": "Knee_X-Ray",
+      "latency_ms": 560,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: X-Ray of the knee shows no fracture, dislocation, or appreciable joint effusion. The bony structures appear intact and properly aligned."
+    },
+    {
+      "role": "doctor",
+      "inference": 3,
+      "kind": "question",
+      "text": "Does the pain get worse when you try to bend or straighten your leg against resistance?",
+      "payload": null,
+      "latency_ms": 783,
+      "refusal": null,
+      "via": "text"
+    },
+    {
+      "role": "patient",
+      "text": "Yes, it definitely hurts more when I try to straighten my leg, especially if I'm pushing against something. Bending it isn't quite as bad, but straightening really makes that spot ache."
+    },
+    {
+      "role": "doctor",
+      "inference": 4,
+      "kind": "test",
+      "text": "REQUEST TEST: Knee_MRI",
+      "payload": "Knee_MRI",
+      "latency_ms": 627,
+      "refusal": null,
+      "via": "marker"
+    },
+    {
+      "role": "measurement",
+      "text": "RESULTS: MRI of the knee can be considered if clinical suspicion persists despite negative initial workup. However, based on your clinical presentation - recent increase in volleyball activity, pain localized to the medial aspect of the tibia just below the patella, pain with resisted knee extension, negative X-ray, and physical exam findings of tenderness over the tibial tubercle area without ligamentous instability - the diagnosis can be made clinically without mandatory MRI at this time.\n\nIf MRI were to be performed, it would likely show inflammation and edema at the patellar tendon insertion site on the tibial tubercle, consistent with patellar tendinopathy or apophysitis."
+    },
+    {
+      "role": "doctor",
+      "inference": 5,
+      "kind": "diagnosis",
+      "text": "DIAGNOSIS READY: Patellar tendinopathy",
+      "payload": "Patellar tendinopathy",
+      "latency_ms": 568,
+      "refusal": null,
+      "via": "marker"
+    }
+  ],
+  "latency_ms": [
+    798,
+    560,
+    783,
+    627,
+    568
+  ],
+  "wall_s": 15.86,
+  "doctor_turns": [
+    {
+      "inference": 1,
+      "incoming": "",
+      "reply": "Hello, I'm Dr. Agent. Can you tell me more about the knee pain and what kind of physical activity you were doing when it started?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 3942,
+        "output_tokens": 31,
+        "thinking_tokens": 0,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    },
+    {
+      "inference": 2,
+      "incoming": "Well, I joined a volleyball team recently and we've been practicing a lot. The pain started yesterday after practice and it's been getting worse - it's right here on the inside of my knee, just below my kneecap.",
+      "reply": "REQUEST TEST: Knee_X-Ray",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Knee_X-Ray",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4024,
+        "output_tokens": 8,
+        "thinking_tokens": 0,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    },
+    {
+      "inference": 3,
+      "incoming": "RESULTS: X-Ray of the knee shows no fracture, dislocation, or appreciable joint effusion. The bony structures appear intact and properly aligned.",
+      "reply": "Does the pain get worse when you try to bend or straighten your leg against resistance?",
+      "tool_calls": [],
+      "kind": "question",
+      "payload": null,
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4062,
+        "output_tokens": 17,
+        "thinking_tokens": 0,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    },
+    {
+      "inference": 4,
+      "incoming": "Yes, it definitely hurts more when I try to straighten my leg, especially if I'm pushing against something. Bending it isn't quite as bad, but straightening really makes that spot ache.",
+      "reply": "REQUEST TEST: Knee_MRI",
+      "tool_calls": [],
+      "kind": "test",
+      "payload": "Knee_MRI",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4122,
+        "output_tokens": 6,
+        "thinking_tokens": 0,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    },
+    {
+      "inference": 5,
+      "incoming": "RESULTS: MRI of the knee can be considered if clinical suspicion persists despite negative initial workup. However, based on your clinical presentation - recent increase in volleyball activity, pain localized to the medial aspect of the tibia just below the patella, pain with resisted knee extension, negative X-ray, and physical exam findings of tenderness over the tibial tubercle area without ligamentous instability - the diagnosis can be made clinically without mandatory MRI at this time.\n\nIf MRI were to be performed, it would likely show inflammation and edema at the patellar tendon insertion site on the tibial tubercle, consistent with patellar tendinopathy or apophysitis.",
+      "reply": "DIAGNOSIS READY: Patellar tendinopathy",
+      "tool_calls": [],
+      "kind": "diagnosis",
+      "payload": "Patellar tendinopathy",
+      "format_deviation": false,
+      "image_attached": false,
+      "usage": {
+        "input_tokens": 4257,
+        "output_tokens": 11,
+        "thinking_tokens": 0,
+        "cache_read_input_tokens": 0
+      },
+      "stop_reason": "STOP"
+    }
+  ],
+  "support_llm": "anthropic:claude-sonnet-4-5",
+  "support_llm_cost_usd": 0.00996,
+  "support_llm_calls": 5,
+  "voice_subset": false,
+  "diagnostics": {
+    "schema": "tau2.health.diagnostics/v1",
+    "benchmark": "agentclinic",
+    "case_id": "MedQA-5",
+    "mode": "text",
+    "availability": {
+      "flow_available": false,
+      "flow_reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "signals_available": false,
+      "signals_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "metadata_sidecar_available": false,
+      "metadata_sidecar_reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "tools_available": true,
+      "tools_reason": null
+    },
+    "provenance": {
+      "benchmark": "agentclinic",
+      "mode": "text",
+      "transport_endpoint": "POST /api/bench/agent-turn",
+      "agent_id": "c2761ec7-d3f7-4bd7-b68c-40a87f1b1ab3",
+      "base_url": "https://aws-gateway-backend.whissle.ai/bot",
+      "seed": 42,
+      "stratum": {
+        "dataset": "MedQA",
+        "scenario_index": 5,
+        "selection": "head",
+        "limit": 25
+      },
+      "judge": {
+        "judge_provider": "anthropic",
+        "judge_model": "claude-sonnet-4-5",
+        "judge_endpoint": "anthropic:claude-sonnet-4-5",
+        "judge_independent": true,
+        "judge_independence_note": "Judge independence: this run's simulators and graders were routed through an external provider, independent of the agent under test. This is the stronger footing for a published comparison against the paper's numbers."
+      },
+      "judge_provider": "anthropic",
+      "judge_independent": true,
+      "run_id": null,
+      "run_dir": "results/whissle/agentclinic/20260808T194000Z-sweep25_g35fl",
+      "harness_commit": "86b4475",
+      "captured_at": "2026-08-08T19:40:36+00:00",
+      "protocol": "markers",
+      "history": "agentclinic",
+      "prompt_mode": "override",
+      "vision": "off",
+      "agent_type": null,
+      "total_inferences": 20,
+      "inferences_used": 5,
+      "support_llm": "anthropic:claude-sonnet-4-5",
+      "patient_bias": null,
+      "doctor_bias": null,
+      "voice_subset": false
+    },
+    "cost": {
+      "available": true,
+      "reason": null,
+      "judge_calls": 5,
+      "judge_cost_usd": 0.00996,
+      "agent_calls": 5
+    },
+    "flow": {
+      "available": false,
+      "reason": "driven over POST /api/bench/agent-turn, a stateless brain call: it runs no flow engine and mints no conversation row, so no flow trace exists for this case",
+      "source": null,
+      "turns": null,
+      "summary": null,
+      "conversation_id": null,
+      "current_state": null,
+      "start_state": null,
+      "final_state": null,
+      "ended": null,
+      "flow_end": null,
+      "num_steps": null,
+      "step_counts_by_kind": null,
+      "states_visited": null,
+      "states_declared": null,
+      "states_unvisited": null,
+      "transitions": null,
+      "transitions_fired": null,
+      "var_sets": null,
+      "var_sources": null,
+      "guard_trips": null,
+      "state_divergences": null,
+      "tools_gated": null,
+      "says": null,
+      "steps": null
+    },
+    "signals": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "metadata_sidecar": {
+      "available": false,
+      "reason": "text mode — these are VOICE-pipeline signals and do not exist for a text run (absence, not zero)",
+      "source": null,
+      "turns": null,
+      "summary": null
+    },
+    "tools": {
+      "available": true,
+      "reason": null,
+      "source": "doctor actions parsed from /api/bench/agent-turn replies",
+      "calls": [
+        {
+          "turn": 2,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Knee_X-Ray"
+          },
+          "result": "RESULTS: X-Ray of the knee shows no fracture, dislocation, or appreciable joint effusion. The bony structures appear intact and properly aligned.",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 560,
+          "terminal": false
+        },
+        {
+          "turn": 4,
+          "id": null,
+          "name": "request_test",
+          "arguments": {
+            "request": "Knee_MRI"
+          },
+          "result": "RESULTS: MRI of the knee can be considered if clinical suspicion persists despite negative initial workup. However, based on your clinical presentation - recent increase in volleyball activity, pain localized to the medial aspect of the tibia just below the patella, pain with resisted knee extension, negative X-ray, and physical exam findings of tenderness over the tibial tubercle area without ligamentous instability - the diagnosis can be made clinically without mandatory MRI at this time.\n\nIf MRI were to be performed, it would likely show inflammation and edema at the patellar tendon insertion site on the tibial tubercle, consistent with patellar tendinopathy or apophysitis.",
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 627,
+          "terminal": false
+        },
+        {
+          "turn": 5,
+          "id": null,
+          "name": "give_diagnosis",
+          "arguments": {
+            "request": "Patellar tendinopathy"
+          },
+          "result": null,
+          "ok": true,
+          "error": null,
+          "via": "marker",
+          "latency_ms": 568,
+          "terminal": true
+        }
+      ],
+      "summary": {
+        "n_calls": 3,
+        "by_name": {
+          "request_test": 2,
+          "give_diagnosis": 1
+        },
+        "n_ok": 3,
+        "n_error": 0,
+        "errors": []
+      },
+      "writes": {
+        "available": false,
+        "reason": "this benchmark issues no writes, so there is no said-vs-emitted-vs-landed distinction to record"
+      }
+    },
+    "turns": [
+      {
+        "inference": 1,
+        "incoming": "",
+        "reply": "Hello, I'm Dr. Agent. Can you tell me more about the knee pain and what kind of physical activity you were doing when it started?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 3942,
+          "output_tokens": 31,
+          "thinking_tokens": 0,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      },
+      {
+        "inference": 2,
+        "incoming": "Well, I joined a volleyball team recently and we've been practicing a lot. The pain started yesterday after practice and it's been getting worse - it's right here on the inside of my knee, just below my kneecap.",
+        "reply": "REQUEST TEST: Knee_X-Ray",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Knee_X-Ray",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4024,
+          "output_tokens": 8,
+          "thinking_tokens": 0,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      },
+      {
+        "inference": 3,
+        "incoming": "RESULTS: X-Ray of the knee shows no fracture, dislocation, or appreciable joint effusion. The bony structures appear intact and properly aligned.",
+        "reply": "Does the pain get worse when you try to bend or straighten your leg against resistance?",
+        "tool_calls": [],
+        "kind": "question",
+        "payload": null,
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4062,
+          "output_tokens": 17,
+          "thinking_tokens": 0,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      },
+      {
+        "inference": 4,
+        "incoming": "Yes, it definitely hurts more when I try to straighten my leg, especially if I'm pushing against something. Bending it isn't quite as bad, but straightening really makes that spot ache.",
+        "reply": "REQUEST TEST: Knee_MRI",
+        "tool_calls": [],
+        "kind": "test",
+        "payload": "Knee_MRI",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4122,
+          "output_tokens": 6,
+          "thinking_tokens": 0,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      },
+      {
+        "inference": 5,
+        "incoming": "RESULTS: MRI of the knee can be considered if clinical suspicion persists despite negative initial workup. However, based on your clinical presentation - recent increase in volleyball activity, pain localized to the medial aspect of the tibia just below the patella, pain with resisted knee extension, negative X-ray, and physical exam findings of tenderness over the tibial tubercle area without ligamentous instability - the diagnosis can be made clinically without mandatory MRI at this time.\n\nIf MRI were to be performed, it would likely show inflammation and edema at the patellar tendon insertion site on the tibial tubercle, consistent with patellar tendinopathy or apophysitis.",
+        "reply": "DIAGNOSIS READY: Patellar tendinopathy",
+        "tool_calls": [],
+        "kind": "diagnosis",
+        "payload": "Patellar tendinopathy",
+        "format_deviation": false,
+        "image_attached": false,
+        "usage": {
+          "input_tokens": 4257,
+          "output_tokens": 11,
+          "thinking_tokens": 0,
+          "cache_read_input_tokens": 0
+        },
+        "stop_reason": "STOP"
+      }
+    ],
+    "audio": null
+  }
+}
