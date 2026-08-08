@@ -1,0 +1,306 @@
+{
+  "schema": "tau2.ablation.metadata/v1",
+  "run_id": "pilot",
+  "benchmark": "metadata_ablation",
+  "started_at": "2026-08-08T20:26:00.916772+00:00",
+  "finished_at": "2026-08-08T20:28:37.363943+00:00",
+  "corpus": {
+    "version": "metadata_ablation_v1",
+    "seed": 20260808,
+    "digest": "3d8d5831954e2a71",
+    "routes": [
+      "book_appointment",
+      "reschedule_appointment",
+      "cancel_appointment",
+      "billing_question",
+      "update_contact_details",
+      "prescription_refill",
+      "escalate_to_human",
+      "other"
+    ],
+    "slot_keys": [
+      "caller_name",
+      "member_id",
+      "date",
+      "amount",
+      "phone"
+    ],
+    "n": 100,
+    "slices": {
+      "entity": 40,
+      "intent": 30,
+      "emotion": 30
+    },
+    "digest_of_run": "7409487e9aa4f848",
+    "n_run": 4
+  },
+  "decoding": {
+    "agent_id": "f36d75fb-b245-4e2f-9fe1-a240c9eb3db7",
+    "model": "claude-sonnet-5",
+    "provider": "claude",
+    "max_tokens": 400,
+    "thinking": {
+      "type": "disabled"
+    },
+    "system": "You are the intake brain for a voice agent at Northgate Health. You receive one caller turn at a time.\n\nReply with EXACTLY ONE JSON object and nothing else — no prose, no code fence:\n{\"route\": \"<route>\", \"slots\": {\"<key>\": \"<value>\", ...}, \"reply\": \"<one or two sentences you would say back>\"}\n\nroute must be exactly one of: book_appointment, reschedule_appointment, cancel_appointment, billing_question, update_contact_details, prescription_refill, escalate_to_human, other\nslots keys may only be: caller_name, member_id, date, amount, phone\n\nRules for slots:\n- Include a slot ONLY if the caller actually said its value in this call.\n- Never guess, never complete a partial value, never carry a value over from your own general knowledge. An omitted slot is always better than an invented one.\n- member_id, phone: digits only, no spaces or punctuation.\n- amount: a plain decimal number, no currency symbol (e.g. 142.50).\n- date: lowercase month name and day number (e.g. march 14).\n- caller_name: exactly as the caller gave it.\n",
+    "tools": [],
+    "system_sha": "e7e9a8f6dbc97131"
+  },
+  "arms": [
+    {
+      "key": "A",
+      "label": "A — metadata off",
+      "metadata_mode": "off",
+      "description": "The brain sees the ASR transcript and nothing else. This is also, exactly, what the live voice path does today: production STT routes to AssemblyAI/Sarvam/Deepgram, none of which emit a metadata head.",
+      "exploratory": false,
+      "channel_accuracy": null,
+      "noise_seed": 20260808
+    },
+    {
+      "key": "B",
+      "label": "B — metadata present (cascade output, production format)",
+      "metadata_mode": "production",
+      "description": "The transcript, preceded by the real whissle-large metadata head's output for the same audio, rendered by production's own formatter. NOT a reconstruction of the signal — the signal itself, obtained from the batch path, which is the only place the head is currently reachable.",
+      "exploratory": false,
+      "channel_accuracy": null,
+      "noise_seed": 20260808
+    }
+  ],
+  "primary_comparison": [
+    "A",
+    "B"
+  ],
+  "n_total": 4,
+  "n_comparable": 0,
+  "n_excluded": 4,
+  "exclusions": [
+    {
+      "case_id": "ent_001",
+      "reason": "turn_failed: A: agent-turn failed after 4 attempts: HTTP 503: {\"detail\":\"No model provider is currently usable (credit, key or quota problem on our side). This is not a problem with your request. Providers tried — claude: provider_down (HTTP 400: {\\\"type\\\":\\\"err"
+    },
+    {
+      "case_id": "ent_002",
+      "reason": "turn_failed: A: agent-turn failed after 4 attempts: HTTP 503: {\"detail\":\"No model provider is currently usable (credit, key or quota problem on our side). This is not a problem with your request. Providers tried — claude: provider_down (HTTP 400: {\\\"type\\\":\\\"err"
+    },
+    {
+      "case_id": "ent_003",
+      "reason": "turn_failed: A: agent-turn failed after 4 attempts: HTTP 503: {\"detail\":\"No model provider is currently usable (credit, key or quota problem on our side). This is not a problem with your request. Providers tried — claude: provider_down (HTTP 400: {\\\"type\\\":\\\"err"
+    },
+    {
+      "case_id": "ent_004",
+      "reason": "turn_failed: A: agent-turn failed after 4 attempts: HTTP 503: {\"detail\":\"No model provider is currently usable (credit, key or quota problem on our side). This is not a problem with your request. Providers tried — claude: provider_down (HTTP 400: {\\\"type\\\":\\\"err"
+    }
+  ],
+  "metadata_head": {
+    "preflight": {
+      "probes": 6,
+      "metadata_hits": 6,
+      "availability": 1.0,
+      "latencies_s": [
+        4.5,
+        4.2,
+        4.1,
+        4.1,
+        4.1,
+        4.1
+      ],
+      "serving": true,
+      "note": "Availability below 1.0 is the production behaviour of /api/models/transcribe: the whissle-large metadata head is called in parallel and fails open on timeout, so the `metadata` key is simply absent. The ablation retries per case to obtain it."
+    },
+    "first_attempt_availability": 1.0,
+    "note": "First-attempt availability is what an ordinary caller of /api/models/transcribe experiences. The suite retries to obtain the metadata; the retries change nothing about the audio or transcript."
+  },
+  "asr_cascade": {
+    "digit_slots": 5,
+    "digit_recoverable": 4,
+    "digit_error_rate": 0.2,
+    "proper_noun_slots": 4,
+    "proper_noun_recoverable": 4,
+    "proper_noun_error_rate": 0.0,
+    "note": "A property of the ear, measured once, identical for both arms. It bounds what any entity consumption could achieve: a value the ear never heard cannot be filled correctly downstream."
+  },
+  "replies_changed_by_metadata": 0,
+  "per_arm": {},
+  "paired": {
+    "n_metrics": 2,
+    "gains": [],
+    "regressions": [],
+    "null": [],
+    "underpowered": [],
+    "results": [
+      {
+        "metric": "routing_correct (all slices)",
+        "n_pairs": 0,
+        "b_only": 0,
+        "a_only": 0,
+        "both": 0,
+        "neither": 0,
+        "rate_a": null,
+        "rate_b": null,
+        "mean_a": null,
+        "mean_b": null,
+        "delta": null,
+        "ci": null,
+        "p_value": 1.0,
+        "test": "exact McNemar (binomial)",
+        "mde": null,
+        "verdict": "not measured",
+        "note": "",
+        "detail": {
+          "discordant": 0
+        }
+      },
+      {
+        "metric": "latency_ms",
+        "n_pairs": 0,
+        "b_only": 0,
+        "a_only": 0,
+        "both": 0,
+        "neither": 0,
+        "rate_a": null,
+        "rate_b": null,
+        "mean_a": null,
+        "mean_b": null,
+        "delta": null,
+        "ci": [
+          0.0,
+          0.0
+        ],
+        "p_value": 1.0,
+        "test": "Wilcoxon signed-rank",
+        "mde": null,
+        "verdict": "not measured",
+        "note": "every pair was identical — the arms produced the same value on every case",
+        "detail": {
+          "n_nonzero": 0
+        }
+      }
+    ]
+  },
+  "structural_audit": {
+    "backend_root": "/Users/karan/Desktop/work/whissle/live_assist/whissle_gateway_backend",
+    "channels": [
+      {
+        "channel": "emotion",
+        "produced": true,
+        "reaches_prompt": true,
+        "reaches_flow": false,
+        "serving_live_path": null,
+        "evidence": [
+          "pipecat-bot/bot/services_build.py:227",
+          "pipecat-bot/services/metadata_processor.py:28"
+        ],
+        "verified": true,
+        "summary": "Produced by the whissle-large metadata head; injected into the prompt inside the [User speech analysis: …] developer message. Reaches the model — but only when the head is serving, which on the live voice path it is not."
+      },
+      {
+        "channel": "intent",
+        "produced": true,
+        "reaches_prompt": true,
+        "reaches_flow": false,
+        "serving_live_path": null,
+        "evidence": [
+          "pipecat-bot/bot/services_build.py:227",
+          "pipecat-bot/services/flow/expr.py:125"
+        ],
+        "verified": true,
+        "summary": "Produced and injected alongside emotion. NOT read by the flow engine: transitions are decided by expression evaluation and an LLM condition judge, never by the ASR intent head."
+      },
+      {
+        "channel": "entity",
+        "produced": true,
+        "reaches_prompt": false,
+        "reaches_flow": false,
+        "serving_live_path": null,
+        "evidence": [
+          "pipecat-bot/services/whissle_stt.py:102",
+          "pipecat-bot/services/flow/collector.py:258"
+        ],
+        "verified": true,
+        "summary": "Requested from the ASR as a metadata tag and then dropped: `entity` is not in _METADATA_FIELDS, so it never reaches the prompt, and nothing in services/flow/ reads it, so it never reaches a slot. Slots are filled by a separate LLM extraction pass over the transcript (flow/collector.py), which is text-only. The entity channel currently contributes nothing to anything."
+      },
+      {
+        "channel": "age",
+        "produced": true,
+        "reaches_prompt": false,
+        "reaches_flow": false,
+        "serving_live_path": null,
+        "evidence": [
+          "pipecat-bot/bot/services_build.py:227"
+        ],
+        "verified": true,
+        "summary": "Produced by the same head and never injected — not in _METADATA_FIELDS."
+      },
+      {
+        "channel": "gender",
+        "produced": true,
+        "reaches_prompt": false,
+        "reaches_flow": false,
+        "serving_live_path": null,
+        "evidence": [
+          "pipecat-bot/bot/services_build.py:227"
+        ],
+        "verified": true,
+        "summary": "Produced by the same head and never injected — not in _METADATA_FIELDS."
+      },
+      {
+        "channel": "hesitation",
+        "produced": true,
+        "reaches_prompt": false,
+        "reaches_flow": false,
+        "serving_live_path": null,
+        "evidence": [
+          "pipecat-bot/services/hesitation.py:130"
+        ],
+        "verified": true,
+        "summary": "Computed from the metadata probability timeline and emitted to the client only. Phase 1 is produce-and-record: it is never placed in the prompt, so it cannot change a reply. It also depends on the same head, so with the head off it computes over an empty timeline."
+      },
+      {
+        "channel": "shadow",
+        "produced": true,
+        "reaches_prompt": false,
+        "reaches_flow": false,
+        "serving_live_path": null,
+        "evidence": [
+          "pipecat-bot/services/shadow_llm.py:16"
+        ],
+        "verified": true,
+        "summary": "Shadow draft / predicted tools sit behind SHADOW_LLM and SHADOW_LLM_DRAFT, both defaulting off."
+      },
+      {
+        "channel": "speculation",
+        "produced": true,
+        "reaches_prompt": false,
+        "reaches_flow": false,
+        "serving_live_path": null,
+        "evidence": [
+          "pipecat-bot/services/speculative_tools.py:129"
+        ],
+        "verified": true,
+        "summary": "Speculative tool pre-warm sits behind SPECULATIVE_TOOLS, defaulting off."
+      }
+    ],
+    "channels_reaching_the_prompt": [
+      "emotion",
+      "intent"
+    ],
+    "channels_produced_and_discarded": [
+      "entity",
+      "age",
+      "gender",
+      "hesitation",
+      "shadow",
+      "speculation"
+    ],
+    "live_voice_path": {
+      "claim": "On the live voice path the metadata head is not running. Production STT is routed to AssemblyAI (English/Hinglish), Sarvam (Indian languages) or Deepgram; none of them emit a metadata head. The whissle-large sidecar that would supply one is gated behind WHISSLE_STT_TRANSPORT=grpc plus WHISSLE_GRPC_TARGET. Consequence: for live calls, arm B and arm A are the same prompt, and the metadata layer's contribution to production today is structurally zero — independent of any experiment.",
+      "evidence": [
+        "pipecat-bot/bot/services_build.py:706",
+        "pipecat-bot/services/whissle_metadata_sidecar.py:89"
+      ],
+      "batch_path_note": "The BATCH path is different and is why this ablation can run at all: /api/models/transcribe calls whissle_batch_metadata in parallel with the external transcription, and that head IS serving in production. It is fail-open, so a timeout simply omits the `metadata` key.",
+      "verified": true
+    },
+    "headline": "Of 8 cascade channels, 2 (emotion, intent) reach the model at all; the rest are produced and discarded. On the live voice path none of them reach it, because the head that produces them is not running there."
+  }
+}
