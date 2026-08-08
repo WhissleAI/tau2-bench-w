@@ -11,21 +11,35 @@ benchmark rather than inventing one.
 The only substitution is the *backend* that runs these prompts. Upstream calls
 OpenAI/Anthropic/Replicate directly; this repo has no such key and deliberately routes
 everything through Whissle's own à-la-carte model API (``POST /api/models/chat``, the
-same driver ``tau2.flow.usersim`` uses for its simulated user and judges). A
-LiteLLM-backed option is provided for anyone who wants to reproduce a specific
-published configuration (``--support-llm litellm:gpt-4o``); which backend ran is
-recorded in every artifact, because a different patient/moderator model IS a
-comparability caveat and should never be silent.
+same driver ``tau2.flow.usersim`` uses for its simulated user and judges) by default.
+An independent judge stays one flag away — ``--judge-provider openai|anthropic``, or
+``--support-llm litellm:<model>`` to reproduce a specific published configuration —
+and which backend ran is recorded in every artifact, because a different
+patient/moderator model IS a comparability caveat and should never be silent. See
+``tau2.health.model_router.INDEPENDENCE_CAVEAT`` for what a Whissle-judged number may
+and may not be used for.
 """
 from __future__ import annotations
 
 import os
 from typing import Any, Optional, Protocol
 
-from tau2.flow.usersim import ModelError, WhissleModel
+from tau2.flow.usersim import ModelError
 from tau2.health.agentclinic.dataset import Scenario
+from tau2.health.model_router import (
+    ConstrainedChoice,
+    LiteLLMJudgeLLM,
+    WhissleJudgeLLM,
+    canonicalize_choice,
+    constrained_choice,
+    make_judge_llm,
+)
 
 # ── the support-LLM seam ────────────────────────────────────────────────────────
+# The seam itself now lives in tau2.health.model_router, shared with the
+# PatientAgentBench adapter so there is exactly ONE retry/cost implementation for the
+# model API. These names are kept as aliases: they are the vocabulary of this module
+# (and of upstream's), and callers/tests written against them keep working.
 
 class SupportLLM(Protocol):
     """Anything that can answer a (system, user) prompt with a string."""
@@ -35,62 +49,19 @@ class SupportLLM(Protocol):
     def complete(self, system: str, user: str) -> str: ...
 
 
-class WhissleSupportLLM:
-    """Whissle's own chat model API — the self-contained default (one wsk_ key)."""
-
-    def __init__(self, model: Optional[WhissleModel] = None) -> None:
-        self._m = model or WhissleModel()
-        self.name = "whissle:/api/models/chat"
-
-    def complete(self, system: str, user: str) -> str:
-        return self._m.chat([{"role": "system", "content": system},
-                             {"role": "user", "content": user}])
-
-    @property
-    def cost_usd(self) -> float:
-        return getattr(self._m, "total_cost_usd", 0.0)
-
-    @property
-    def calls(self) -> int:
-        return getattr(self._m, "calls", 0)
-
-
-class LiteLLMSupportLLM:
-    """Reproduce a published configuration (``gpt-4o``, ``claude-3-5-sonnet``, …)
-    through tau2's existing LiteLLM plumbing. Needs that provider's key in the env."""
-
-    def __init__(self, model: str) -> None:
-        self.model = model
-        self.name = f"litellm:{model}"
-        self.calls = 0
-        self.cost_usd = 0.0
-
-    def complete(self, system: str, user: str) -> str:
-        import litellm
-
-        r = litellm.completion(
-            model=self.model,
-            messages=[{"role": "system", "content": system},
-                      {"role": "user", "content": user}],
-            temperature=0.05,
-            max_tokens=256,
-        )
-        self.calls += 1
-        try:
-            self.cost_usd += float(litellm.completion_cost(r) or 0.0)
-        except Exception:  # noqa: BLE001 — cost is telemetry, never fatal
-            pass
-        return (r.choices[0].message.content or "").strip()
+#: The self-contained default (one ``wsk_`` key) — Whissle's own chat model API.
+WhissleSupportLLM = WhissleJudgeLLM
+#: The independent path: OpenAI / Anthropic / any LiteLLM-routable model.
+LiteLLMSupportLLM = LiteLLMJudgeLLM
 
 
 def make_support_llm(spec: str) -> SupportLLM:
-    """``"whissle"`` (default) or ``"litellm:<model>"``."""
-    spec = (spec or "whissle").strip()
-    if spec == "whissle":
-        return WhissleSupportLLM()
-    if spec.startswith("litellm:"):
-        return LiteLLMSupportLLM(spec.split(":", 1)[1])
-    raise ValueError(f"unknown support-llm spec {spec!r} (whissle | litellm:<model>)")
+    """``"whissle"`` (default) | ``"openai"`` | ``"anthropic"`` | ``"litellm:<model>"``.
+
+    Thin wrapper over :func:`tau2.health.model_router.make_judge_llm` so the
+    AgentClinic flag that shipped first keeps working unchanged.
+    """
+    return make_judge_llm(spec or "whissle")
 
 
 # ── cognitive biases (upstream text, verbatim) ──────────────────────────────────
@@ -202,18 +173,50 @@ MODERATOR_SYSTEM = ("You are responsible for determining if the corrent diagnosi
                     "and the doctor diagnosis are the same disease. Please respond "
                     "only with Yes or No. Nothing else.")
 
+#: The only two replies upstream's grading rule can read. Anything else scores the
+#: case wrong regardless of what the doctor said.
+MODERATOR_ALLOWED = ("yes", "no")
 
-def compare_results(diagnosis: str, correct_diagnosis: str,
-                    llm: SupportLLM) -> str:
-    """Upstream's moderator call, verbatim (typo in the system prompt included).
+
+def _moderator_user_prompt(diagnosis: str, correct_diagnosis: str) -> str:
+    """Upstream's user message, verbatim.
 
     Note upstream hands the moderator the WHOLE doctor utterance, not the extracted
     disease name; we do the same so a verbose commitment is graded identically."""
+    return ("\nHere is the correct diagnosis: " + correct_diagnosis
+            + "\n Here was the doctor dialogue: " + diagnosis
+            + "\nAre these the same?")
+
+
+def compare_results(diagnosis: str, correct_diagnosis: str,
+                    llm: SupportLLM) -> str:
+    """Upstream's moderator call, verbatim (typo in the system prompt included)."""
     return llm.complete(
-        MODERATOR_SYSTEM,
-        "\nHere is the correct diagnosis: " + correct_diagnosis
-        + "\n Here was the doctor dialogue: " + diagnosis
-        + "\nAre these the same?").lower()
+        MODERATOR_SYSTEM, _moderator_user_prompt(diagnosis, correct_diagnosis)).lower()
+
+
+def moderate(diagnosis: str, correct_diagnosis: str, llm: SupportLLM, *,
+             attempts: int = 3) -> ConstrainedChoice:
+    """Upstream's moderator, with its reply CONSTRAINED to exactly ``yes`` / ``no``.
+
+    Upstream's grading rule is a literal test against the string ``yes``. Upstream
+    could rely on that because it pinned one model to one prompt. The moment the
+    moderator is routed through a different backend — ours, or anyone's — a reply of
+    ``"Yes."`` scores the case WRONG for a reason that has nothing to do with the
+    doctor's clinical call, and the whole benchmark quietly measures the grader's
+    punctuation habits.
+
+    So the reply is constrained on the DECODE side and never by editing the prompt:
+    the system and user messages stay byte-for-byte upstream, decorated replies
+    (``"Yes."``, ``"**yes**"``) canonicalize to the bare token, and a genuinely
+    non-conforming reply (``"yes, they are the same"``) is retried with a
+    one-word instruction appended to a follow-up *user* message. Whether it took a
+    retry, and whether the raw reply had to be normalized, is recorded on the case —
+    grader formatting must never move a number invisibly.
+    """
+    return constrained_choice(
+        llm, MODERATOR_SYSTEM, _moderator_user_prompt(diagnosis, correct_diagnosis),
+        MODERATOR_ALLOWED, attempts=attempts)
 
 
 def moderator_says_yes(raw: str) -> bool:
@@ -232,6 +235,7 @@ def moderator_says_yes_lenient(raw: str) -> bool:
 
 __all__ = [
     "DOCTOR_BIASES",
+    "MODERATOR_ALLOWED",
     "LiteLLMSupportLLM",
     "MeasurementAgent",
     "ModelError",
@@ -240,9 +244,11 @@ __all__ = [
     "SupportLLM",
     "WhissleSupportLLM",
     "bias_text",
+    "canonicalize_choice",
     "compare_results",
     "judge_declination",
     "make_support_llm",
+    "moderate",
     "moderator_says_yes",
     "moderator_says_yes_lenient",
 ]

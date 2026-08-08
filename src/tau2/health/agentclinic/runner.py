@@ -28,8 +28,9 @@ from tau2.health.agentclinic.agents import (
     PatientAgent,
     SupportLLM,
     bias_text,
-    compare_results,
+    compare_results,  # noqa: F401 — kept exported for callers pinning upstream's raw call
     judge_declination,
+    moderate,
     moderator_says_yes,
     moderator_says_yes_lenient,
 )
@@ -39,6 +40,7 @@ from tau2.health.agentclinic.errors import infra_finding, is_infra_error
 from tau2.health.agentclinic.protocol import DoctorAction, looks_like_refusal
 from tau2.health.agentclinic.scoring import CaseScore
 from tau2.health.agentclinic.vision import OFF, CaseImage, VisionError, fetch_image
+from tau2.health.model_router import ConstrainedChoice
 
 RESULTS_ROOT = Path("results/whissle/agentclinic")
 
@@ -195,22 +197,33 @@ def run_case(
     if committed:
         assert action is not None
         raw = ""
+        verdict: Optional[ConstrainedChoice] = None
         try:
-            raw = compare_results(action.text, correct_dx, support)
+            # Constrained to exactly "yes"/"no": upstream's grading rule is a literal
+            # string test, so a routed model answering "Yes." would mark a CORRECT
+            # diagnosis wrong. The prompt is untouched; only the decode is pinned.
+            verdict = moderate(action.text, correct_dx, support)
+            raw = verdict.raw.strip().lower()
         except Exception as e:  # noqa: BLE001 — a dead moderator is infra, not a miss
             error = error or f"moderator: {type(e).__name__}: {e}"
             if is_infra_error(e):
                 infra_fail = True
                 findings.append(infra_finding(error, phase="moderator").as_dict())
         if not infra_fail:
-            ok = moderator_says_yes(raw)
+            ok = moderator_says_yes(verdict.value if verdict else raw)
             score = CaseScore(
                 outcome="correct" if ok else "incorrect",
                 correctness=ok,
                 doctor_diagnosis=action.payload,
                 doctor_final_text=action.text,
                 moderator_raw=raw,
+                # The grader's reply VERBATIM, before any lowercasing or canonical-
+                # ization, so an artifact can always be re-graded by hand.
+                moderator_raw_text=verdict.raw if verdict else raw,
                 moderator_lenient=moderator_says_yes_lenient(raw),
+                moderator_attempts=verdict.attempts if verdict else 0,
+                moderator_normalized=bool(verdict.normalized) if verdict else False,
+                moderator_unconstrained=bool(verdict and not verdict.resolved),
                 declined=False,
                 refusal_evidence=[r["evidence"] for r in refusals],
                 format_deviation=format_deviation,

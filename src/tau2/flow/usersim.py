@@ -48,18 +48,25 @@ class WhissleModel:
     """Thin wrapper over ``POST /api/models/chat`` — the user-sim / judge LLM."""
 
     def __init__(self, base: Optional[str] = None, api_key: Optional[str] = None,
-                 timeout: float = 90.0) -> None:
+                 timeout: float = 90.0, max_tokens: Optional[int] = None) -> None:
         self.base = (base or os.getenv("WHISSLE_BASE") or DEFAULT_BASE).rstrip("/")
         self.api_key = api_key or os.getenv("WHISSLE_API_KEY") or ""
         if not self.api_key:
             raise RuntimeError("WHISSLE_API_KEY not set — put a wsk_ key in .env.")
         self.timeout = timeout
+        # The endpoint's DEFAULT output cap is ~512 tokens and it truncates silently —
+        # fine for a user-sim utterance, fatal for a caller that needs a long
+        # completion (PatientAgentBench's sandbox generator emits a multi-kB JSON
+        # document, which arrived unterminated and failed to parse). Send max_tokens
+        # only when a caller asks for it, so existing behaviour is byte-identical.
+        self.max_tokens = max_tokens
         self._s = requests.Session()
         self._s.headers.update({"Authorization": f"Bearer {self.api_key}"})
         self.total_cost_usd = 0.0
         self.calls = 0
 
-    def chat(self, messages: list[dict[str, str]], *, attempts: int = 6) -> str:
+    def chat(self, messages: list[dict[str, str]], *, attempts: int = 6,
+             max_tokens: Optional[int] = None) -> str:
         """POST /api/models/chat with retry. The driver LLM intermittently returns a
         transient 5xx / 502 (the backend chat worker is momentarily STARVED by a live
         voice session sharing its event loop → gateway 502) or an EMPTY completion
@@ -69,10 +76,14 @@ class WhissleModel:
         40s total) to span the busy window; a 4xx is a real client error and is NOT
         retried. Raises only after all attempts are exhausted."""
         last = ""
+        body: dict[str, Any] = {"messages": messages}
+        cap = max_tokens if max_tokens is not None else self.max_tokens
+        if cap:
+            body["max_tokens"] = int(cap)
         for i in range(max(1, attempts)):
             try:
                 r = self._s.post(f"{self.base}/api/models/chat",
-                                 json={"messages": messages}, timeout=self.timeout)
+                                 json=body, timeout=self.timeout)
             except requests.RequestException as e:  # conn/read timeout, conn reset…
                 last = f"request error: {e}"
             else:

@@ -116,12 +116,80 @@ Environment:
 WHISSLE_BASE=https://aws-gateway-backend.whissle.ai/bot
 WHISSLE_API_KEY=wsk_...                  # a key for the agent's org
 WHISSLE_AGENT_ID=<agent uuid>            # GET {WHISSLE_BASE}/api/agents to list
-ANTHROPIC_API_KEY=sk-ant-...             # patient simulator + jury
+
+# Only for --judge-provider anthropic|openai (see "Who judges" below):
+ANTHROPIC_API_KEY=sk-ant-...             # or AWS credentials for the -bedrock keys
+OPENAI_API_KEY=sk-...
 ```
 
-The patient simulator, sandbox and jury must NOT be Whissle models — they are the
-measurement apparatus. Use the paper's models (Claude Sonnet 5 / Claude Opus 4.8),
-via Bedrock (`-bedrock` keys) or the Anthropic API (`-api` keys).
+**The default run needs nothing but `WHISSLE_API_KEY` + `WHISSLE_AGENT_ID`.**
+
+---
+
+## Who judges — and what that number may be used for
+
+PatientAgentBench needs four LLMs and only one of them is the thing being measured:
+
+| role | what it does | selected by |
+|---|---|---|
+| **assistant** | the agent under test | ours, over `/api/bench/agent-turn` |
+| **patient simulator** | plays the patient, turn by turn | `--judge-provider` |
+| **jury** | the paper's LLM evaluators, 6 rubrics x K | `--judge-provider` |
+| **sandbox** | generates the simulated EHR responses | `--judge-provider` |
+
+| `--judge-provider` | needs | K | independent? | use it for |
+|---|---|:---:|:---:|---|
+| `whissle` **(default)** | `WHISSLE_API_KEY` only | 1 | **no** | internal diagnostics, regression tracking, before/after comparisons |
+| `anthropic` | Bedrock creds / `ANTHROPIC_API_KEY` | 1 | yes | a number published against the paper |
+| `openai` | `OPENAI_API_KEY` | 1 | yes | a number published against the paper |
+| explicit `--jury A B` | that provider's creds | 2 | yes | the paper's exact K=2 configuration |
+
+> **The independence caveat, in full.** Routing the patient simulator, jury and sandbox
+> through Whissle's own model API (`POST /api/models/chat`) is what makes the benchmark
+> runnable on one key. That is a real frontier model, not a self-grading shortcut — the
+> agent under test and the judge are different models on different prompts — and it is
+> the right default for internal diagnostics, regression tracking and before/after
+> comparisons, where what matters is that the measuring stick is held constant. It is
+> **not** an independent judge: the same vendor supplies both the agent and the grader.
+> A number published against the paper's leaderboard is materially stronger when the
+> judge is re-run on an independent provider. **Never present a Whissle-judged number
+> as if it were independently graded.**
+
+Two further honesty notes on the default route:
+
+* **K = 1, not 2.** The paper averages two evaluators. On the Whissle route both would
+  be the same endpoint — one grader sampled twice, not a jury — so the default is a
+  single evaluator and every report says `K = 1 (the paper uses K=2)`. Claiming K=2
+  there would fake evaluator agreement.
+* **The report refuses to guess.** A run directory with no judge record renders as
+  "Judge provider: unrecorded — do not publish these numbers".
+
+`summary.json` carries `judge_provider` / `judge_independent` at the top level and the
+full judge block (models, K, spend, caveat text) under `judge`; `REPORT.md` prints the
+provider under the headline N and the caveat in its own section.
+
+### How it plugs in without forking
+
+PatientAgentBench is CC-BY-NC-4.0 and does not accept pull requests, so nothing here
+patches their tree. `judge_model.install()` does two things:
+
+1. **adds** three keys (`whissle-judge`, `whissle-patient`, `whissle-sandbox`) to their
+   `MODEL_STORE` dict — no existing entry is touched;
+2. **wraps** `config.create_chat_model`, documented as "the single factory for all LLM
+   creation in the project". Configs whose provider is `whissle-model-api` get our
+   `BaseChatModel`; every other provider falls through to their untouched code. Their
+   six consumers import the factory *by name* at module import, so the wrapper is
+   rebound in each already-imported module too.
+
+Retries are not reimplemented: the model delegates to `tau2.flow.usersim.WhissleModel`,
+the single owner of the retry policy for this endpoint (5xx and empty completions
+retried with a long backoff; 4xx never).
+
+### Cost
+
+`/api/models/chat` is metered against our own wallet, and the jury is many calls per
+session. Every Whissle-routed run prints and records total judge calls and USD, per run
+and per case. Measured: **$0.0065 for 3 sessions** (30 calls, ~10/session).
 
 ---
 
@@ -132,13 +200,16 @@ via Bedrock (`-bedrock` keys) or the Anthropic API (`-api` keys).
 python -m tau2.health.patientagent.cli sample \
   --cases ../pab/data/sample_benchmark.json --limit 40 --seed 42
 
-# small text smoke
+# small text smoke — WHISSLE_API_KEY is the only key needed
+../pabvenv/bin/python -m tau2.health.patientagent.cli run \
+  --cases ../pab/data/sample_benchmark.json \
+  --limit 6 --seed 42 --mode harness --max-turns 15 --max-parallel 3
+
+# the same smoke with an INDEPENDENT judge (needs that provider's credentials)
 ../pabvenv/bin/python -m tau2.health.patientagent.cli run \
   --cases ../pab/data/sample_benchmark.json \
   --limit 6 --seed 42 --mode harness --max-turns 15 \
-  --jury claude-opus-4.8-api \
-  --patient-model claude-sonnet-5-api --sandbox-model claude-sonnet-5-api \
-  --max-parallel 3
+  --judge-provider anthropic --max-parallel 3
 
 # regenerate a report from an existing run directory (no cost)
 python -m tau2.health.patientagent.cli report --run-dir <run-dir> --mode harness
@@ -153,7 +224,11 @@ Generate the case set once and reuse it, so every row scores the same scenarios:
   --count 1200 --seed 42 --output data/patientagentbench_1200.json
 ```
 
-**Full text matrix** (the publishable number is row 1):
+**Full text matrix** (the publishable number is row 1). The `--jury` /
+`--patient-model` / `--sandbox-model` flags below pin the paper's own K=2 apparatus and
+need Bedrock + OpenAI credentials — that is the configuration a *published* number
+should use. **Drop all three flags to run the same matrix on `WHISSLE_API_KEY` alone**;
+the numbers are then internal-diagnostic grade, and every report will say so.
 
 ```bash
 # 1. harness tools — comparable to the paper's leaderboard

@@ -18,6 +18,7 @@ import sys
 from datetime import datetime, timezone
 from typing import Any, Optional
 
+from tau2.health.model_router import DEFAULT_JUDGE_MODELS, JUDGE_PROVIDERS, WHISSLE
 from tau2.health.patientagent.collect import (
     case_metadata_from_run,
     collect_outcomes,
@@ -32,6 +33,9 @@ from tau2.health.patientagent.sampling import (
 )
 from tau2.health.patientagent.scoring import compare_runs, summarize_run
 
+# Imported as a module (not by name) because ``judge_model`` pulls in langchain_core,
+# which only exists inside the PatientAgentBench venv. ``sample``/``report`` must keep
+# working anywhere, so the import is deferred to the functions that need it.
 DEFAULT_RESULTS_ROOT = "results/whissle/patientagentbench"
 
 MODE_TO_AGENT_CLASS = {
@@ -58,9 +62,14 @@ def build_pab_config(
 ) -> dict[str, Any]:
     """Build a PatientAgentBench config JSON with the Whissle assistant selected.
 
-    Only ``assistant_agent`` differs from their defaults. The patient simulator, the
-    sandbox and the jury stay on the paper's models so the measurement environment
-    is theirs, not ours — otherwise the number is not comparable to anything.
+    Only ``assistant_agent`` is ours by definition. Everything else — patient
+    simulator, sandbox, jury — is selected by ``--judge-provider``:
+
+    * ``whissle`` (default): those three route through our own model API, so the whole
+      benchmark runs on one ``WHISSLE_API_KEY``. Right for internal diagnostics; NOT an
+      independent evaluation (see ``model_router.INDEPENDENCE_CAVEAT``).
+    * ``anthropic`` / ``openai``: the measurement environment is a third party's, which
+      is the footing a number published against the paper's leaderboard needs.
     """
     return {
         "max_turns": max_turns,
@@ -133,12 +142,22 @@ def cmd_report(args: argparse.Namespace) -> int:
         with open(sampling_path, "r", encoding="utf-8") as handle:
             sample_report = json.load(handle)
 
+    # Which judge graded this run. Written by `run`; absent for a run produced before
+    # judge routing existed, in which case the report says "unrecorded" rather than
+    # guessing — an unlabelled judge is exactly the ambiguity this record prevents.
+    judge = None
+    judge_path = os.path.join(args.run_dir, "whissle_judge.json")
+    if os.path.exists(judge_path):
+        with open(judge_path, "r", encoding="utf-8") as handle:
+            judge = json.load(handle)
+
     paths = write_report(
         out_dir,
         summary,
         agent_label=args.label,
         sample_report=sample_report,
         comparison=comparison,
+        judge=judge,
         provenance={
             "run_dir": args.run_dir,
             "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
@@ -150,9 +169,46 @@ def cmd_report(args: argparse.Namespace) -> int:
     return 0
 
 
+def resolve_judge(args: argparse.Namespace) -> dict[str, Any]:
+    """Resolve ``--judge-provider`` into the registry keys their config wants.
+
+    On the default (``whissle``) route this also INSTALLS the Whissle model keys into
+    PatientAgentBench's registry and wraps its model factory — see
+    ``judge_model.install``. Nothing is forked or patched on disk.
+    """
+    from tau2.health import model_router
+    from tau2.health.patientagent import judge_model
+
+    provider = args.judge_provider
+    if provider == model_router.WHISSLE:
+        judge_model.install()
+    else:
+        model_router.require_provider_key(provider)
+
+    jury = list(args.jury) if args.jury else judge_model.jury_for(provider, args.judge_model)
+    patient = args.patient_model or judge_model.patient_for(provider, args.judge_model)
+    sandbox = args.sandbox_model or judge_model.sandbox_for(provider, args.judge_model)
+    return {
+        "jury": jury,
+        "patient_model": patient,
+        "sandbox_model": sandbox,
+        **model_router.judge_provenance(provider, args.judge_model),
+        # The paper averages K=2 evaluators. On the Whissle route both would be the
+        # same endpoint — one grader sampled twice, not a jury — so K=1 there, stated
+        # rather than implied.
+        "jury_k": len(jury),
+    }
+
+
 def cmd_run(args: argparse.Namespace) -> int:
     """Sample, register the Whissle agents, run their harness, then report."""
     from tau2.health.patientagent.register import register
+
+    judge = resolve_judge(args)
+    print(f"[whissle] judge provider: {judge['judge_endpoint']} "
+          f"(K={judge['jury_k']}, "
+          f"{'independent' if judge['judge_independent'] else 'NOT independent'}); "
+          f"patient={judge['patient_model']} sandbox={judge['sandbox_model']}")
 
     registered = register(include_voice=(args.mode == "voice"))
     agent_class = MODE_TO_AGENT_CLASS[args.mode]
@@ -183,18 +239,23 @@ def cmd_run(args: argparse.Namespace) -> int:
     print(f"[whissle] sampled {sample_report.n_selected}/{sample_report.n_population} "
           f"cases (seed={args.seed}, strata={'x'.join(args.strata)})")
 
-    # 2. Config: our assistant, their everything-else.
+    # 2. Config: our assistant, and the judge/simulator stack --judge-provider chose.
     config = build_pab_config(
         mode=args.mode,
         max_turns=args.max_turns,
-        jury=args.jury,
-        patient_model=args.patient_model,
-        sandbox_model=args.sandbox_model,
+        jury=judge["jury"],
+        patient_model=judge["patient_model"],
+        sandbox_model=judge["sandbox_model"],
         label=args.label,
     )
     config_path = os.path.join(work_dir, "pab_config.json")
     with open(config_path, "w", encoding="utf-8") as handle:
         json.dump(config, handle, indent=2)
+    # Which judge produced this run's numbers, written beside the config and picked up
+    # by `report` so it lands in summary.json / REPORT.md. A number must never travel
+    # without it.
+    with open(os.path.join(work_dir, "whissle_judge.json"), "w", encoding="utf-8") as handle:
+        json.dump(judge, handle, indent=2)
 
     # 3. Their runner, via their own argument parser.
     argv = [
@@ -210,6 +271,24 @@ def cmd_run(args: argparse.Namespace) -> int:
     bench_args = setup_parser().parse_args(argv)
     cmd_benchmark(bench_args)
 
+    # 3b. What the judge/simulator stack cost. On the Whissle route those calls are
+    # metered against our own wallet, and a jury is many calls per session, so the
+    # total is printed and written into the run's judge record rather than left
+    # invisible until the invoice arrives.
+    if args.judge_provider == WHISSLE:
+        from tau2.health.patientagent import judge_model
+
+        judge.update(judge_model.spend())
+        n = max(1, sample_report.n_selected)
+        judge["judge_calls_per_case"] = round(judge["judge_calls"] / n, 1)
+        judge["judge_cost_usd_per_case"] = round(judge["judge_cost_usd"] / n, 5)
+        print(f"[whissle] judge spend: {judge['judge_calls']} calls, "
+              f"${judge['judge_cost_usd']:.4f} "
+              f"({judge['judge_calls_per_case']}/case, "
+              f"${judge['judge_cost_usd_per_case']:.4f}/case)")
+        with open(os.path.join(work_dir, "whissle_judge.json"), "w", encoding="utf-8") as handle:
+            json.dump(judge, handle, indent=2)
+
     # 4. Locate the run directory their runner created and report on it.
     run_dir = _latest_run_dir(work_dir)
     if not run_dir:
@@ -222,8 +301,10 @@ def cmd_run(args: argparse.Namespace) -> int:
         label=args.label,
         compare_to=args.compare_to,
     )
-    # The sampling record lives beside the config; copy it where report expects it.
+    # The sampling + judge records live beside the config; copy them where report
+    # expects them.
     _link_sampling(work_dir, run_dir)
+    _copy_sidecar(work_dir, run_dir, "whissle_judge.json")
     return cmd_report(report_args)
 
 
@@ -238,12 +319,15 @@ def _latest_run_dir(work_dir: str) -> Optional[str]:
     return max(candidates, key=os.path.getmtime)
 
 
-def _link_sampling(work_dir: str, run_dir: str) -> None:
-    source = os.path.join(work_dir, "whissle_sampling.json")
-    target = os.path.join(run_dir, "whissle_sampling.json")
+def _copy_sidecar(work_dir: str, run_dir: str, name: str) -> None:
+    source, target = os.path.join(work_dir, name), os.path.join(run_dir, name)
     if os.path.exists(source) and not os.path.exists(target):
         with open(source, "r", encoding="utf-8") as src, open(target, "w", encoding="utf-8") as dst:
             dst.write(src.read())
+
+
+def _link_sampling(work_dir: str, run_dir: str) -> None:
+    _copy_sidecar(work_dir, run_dir, "whissle_sampling.json")
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -270,10 +354,26 @@ def build_parser() -> argparse.ArgumentParser:
     p_run.add_argument("--mode", choices=sorted(MODE_TO_AGENT_CLASS), default="harness",
                        help="harness = their tools (publishable); native/voice = our tools")
     p_run.add_argument("--max-turns", type=int, default=PAPER_MAX_TURNS)
-    p_run.add_argument("--jury", nargs="+", default=PAPER_JURY,
-                       help="evaluator model registry keys (paper uses K=2)")
-    p_run.add_argument("--patient-model", default="claude-sonnet-5-bedrock")
-    p_run.add_argument("--sandbox-model", default="claude-sonnet-5-bedrock")
+    p_run.add_argument("--judge-provider", default=WHISSLE, choices=list(JUDGE_PROVIDERS),
+                       help="who runs the benchmark's OWN LLMs — patient simulator, "
+                            "K=2 jury, sandbox. Default `whissle` routes them through "
+                            "our own model API, so the run needs ONLY WHISSLE_API_KEY "
+                            "(and is NOT an independent evaluation); `anthropic` / "
+                            "`openai` give an independent judge and are what a number "
+                            "published against the paper should use")
+    p_run.add_argument("--judge-model", default=None,
+                       help="override the model for --judge-provider "
+                            f"(external defaults: {DEFAULT_JUDGE_MODELS})")
+    p_run.add_argument("--jury", nargs="+", default=None,
+                       help="explicit evaluator registry keys, overriding "
+                            "--judge-provider (paper uses K=2: "
+                            f"{' '.join(PAPER_JURY)})")
+    p_run.add_argument("--patient-model", default=None,
+                       help="explicit patient-simulator registry key, overriding "
+                            "--judge-provider")
+    p_run.add_argument("--sandbox-model", default=None,
+                       help="explicit sandbox registry key, overriding "
+                            "--judge-provider")
     p_run.add_argument("--max-parallel", type=int, default=1)
     p_run.add_argument("--output-dir", default="output")
     p_run.add_argument("--name", help="run name (default whissle_<mode>_<timestamp>)")

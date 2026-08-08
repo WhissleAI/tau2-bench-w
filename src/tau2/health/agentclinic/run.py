@@ -20,7 +20,6 @@ from typing import Any, Optional
 
 from dotenv import load_dotenv
 
-from tau2.health.agentclinic.agents import make_support_llm
 from tau2.health.agentclinic.dataset import (
     DATASETS,
     IMAGE_DATASETS,
@@ -40,6 +39,14 @@ from tau2.health.agentclinic.runner import (
 )
 from tau2.health.agentclinic.scoring import aggregate, summary_markdown
 from tau2.health.agentclinic.vision import OFF, VISION_MODES
+from tau2.health.model_router import (
+    DEFAULT_JUDGE_MODELS,
+    JUDGE_PROVIDERS,
+    WHISSLE,
+    judge_provenance,
+    make_judge_llm,
+    require_provider_key,
+)
 
 load_dotenv()
 
@@ -78,9 +85,20 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--agent-type", default=None,
                    help="create a throwaway agent of this seeded type instead, e.g. "
                         "clinical_intake_triage")
-    p.add_argument("--support-llm", default="whissle",
-                   help="backend for the benchmark's own patient/measurement/"
-                        "moderator agents: whissle | litellm:<model>")
+    p.add_argument("--judge-provider", default=WHISSLE, choices=list(JUDGE_PROVIDERS),
+                   help="who runs the benchmark's own patient / measurement reader / "
+                        "moderator / decline classifier. Default `whissle` routes them "
+                        "through our own model API and needs ONLY WHISSLE_API_KEY; "
+                        "`openai` / `anthropic` give an INDEPENDENT judge (needs that "
+                        "provider's key) and are the stronger footing for a number "
+                        "published against the paper")
+    p.add_argument("--judge-model", default=None,
+                   help="model for an external --judge-provider "
+                        f"(defaults: {DEFAULT_JUDGE_MODELS})")
+    p.add_argument("--support-llm", default=None,
+                   help="escape hatch that overrides --judge-provider with a raw spec: "
+                        "whissle | litellm:<model>. Use to reproduce a specific "
+                        "published configuration.")
     p.add_argument("--patient-bias", default=None)
     p.add_argument("--doctor-bias", default=None)
     p.add_argument("--doctor-image-request", action="store_true",
@@ -109,7 +127,8 @@ def _run_one(scenario: Scenario, args: argparse.Namespace, cfg: DoctorConfig,
              out: Path) -> dict[str, Any]:
     """One case, end to end, never raising: an unexpected exception is recorded on
     the case (and shows up in the report) rather than killing the run."""
-    support = make_support_llm(args.support_llm)
+    support = make_judge_llm(args.support_llm or args.judge_provider,
+                             args.judge_model)
     image, image_error = (None, None)
     if args.mode == "text":
         image, image_error = load_case_image(scenario, args.vision)
@@ -164,6 +183,10 @@ def _run_one(scenario: Scenario, args: argparse.Namespace, cfg: DoctorConfig,
         }
     case["support_llm"] = getattr(support, "name", args.support_llm)
     case["support_llm_cost_usd"] = round(float(getattr(support, "cost_usd", 0.0)), 5)
+    # One support LLM is built PER CASE, so its counters are this case's spend. The
+    # run summary sums them — judge calls are the bulk of what a run costs and, on the
+    # default route, they bill our own wallet.
+    case["support_llm_calls"] = int(getattr(support, "calls", 0))
     write_case(out, case)
     (out / "transcripts").mkdir(parents=True, exist_ok=True)
     (out / "transcripts" / f"{scenario.id}.txt").write_text(
@@ -188,6 +211,11 @@ def main(argv: Optional[list[str]] = None) -> int:
     if args.vision != OFF and args.dataset not in IMAGE_DATASETS:
         print(f"warning: --vision {args.vision} on a text-only dataset "
               f"({args.dataset}); no images exist to send.", file=sys.stderr)
+
+    # Fail in the first second, not the fortieth minute: an external judge provider
+    # without its key would otherwise die on the first moderator call of case 1.
+    if not args.support_llm and args.judge_provider != WHISSLE:
+        require_provider_key(args.judge_provider)
 
     scenarios = load_scenarios(args.dataset)
     chosen = select(scenarios, limit=args.limit, sample=args.sample, seed=args.seed)
@@ -223,7 +251,11 @@ def main(argv: Optional[list[str]] = None) -> int:
         "agent_id": provisioned.agent_id,
         "agent_type": provisioned.agent_type,
         "agent_created_for_run": provisioned.created,
-        "support_llm": args.support_llm,
+        "support_llm": args.support_llm or args.judge_provider,
+        # Which judge produced these numbers, and the caveat that goes with it. Stamped
+        # on RUN.json and carried into SUMMARY.json/SUMMARY.md so a number can never be
+        # read as something it isn't.
+        **judge_provenance(args.support_llm or args.judge_provider, args.judge_model),
         "decline_judge": not args.no_decline_judge,
         "patient_bias": args.patient_bias,
         "doctor_bias": args.doctor_bias,
@@ -233,7 +265,9 @@ def main(argv: Optional[list[str]] = None) -> int:
     (out / "RUN.json").write_text(json.dumps(meta, indent=2), encoding="utf-8")
     print(f"agentclinic: {len(chosen)}/{len(scenarios)} {args.dataset} cases • "
           f"mode={args.mode} protocol={args.protocol} vision={args.vision} • "
-          f"agent={provisioned.agent_id[:8]}… → {out}", file=sys.stderr)
+          f"agent={provisioned.agent_id[:8]}… • judge={meta['judge_endpoint']}"
+          f"{'' if meta['judge_independent'] else ' (NOT independent)'}"
+          f" → {out}", file=sys.stderr)
 
     cases: list[dict[str, Any]] = []
     try:

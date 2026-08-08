@@ -89,6 +89,45 @@ def leaderboard_row(summary: dict[str, Any], agent_label: str = "Whissle") -> st
     return "| " + " | ".join(cells) + " |"
 
 
+def render_judge(judge: Optional[dict[str, Any]]) -> list[str]:
+    """The judge block. Every number on this page was produced by SOME grader; saying
+    which one, and whether it was independent of the agent's vendor, is the difference
+    between a diagnostic and a claim."""
+    lines = ["## Judge", ""]
+    if not judge:
+        lines += [
+            "> **Judge provider: unrecorded.** This run predates judge-provider "
+            "recording, so which model graded it cannot be established from the "
+            "artifacts. Do not publish these numbers — re-run.",
+            "",
+        ]
+        return lines
+    independent = bool(judge.get("judge_independent"))
+    lines += [
+        f"- **provider**: `{judge.get('judge_provider', '?')}` "
+        f"(`{judge.get('judge_endpoint', '?')}`)",
+        f"- **evaluator model(s)**: `{judge.get('judge_model', '?')}`, "
+        f"K = {judge.get('jury_k', '?')} "
+        + ("(the paper uses K=2)" if judge.get("jury_k") != 2 else ""),
+        f"- **patient simulator**: `{judge.get('patient_model', '?')}`  •  "
+        f"**sandbox**: `{judge.get('sandbox_model', '?')}`",
+        f"- **independent of the agent's vendor**: **{'yes' if independent else 'NO'}**",
+    ]
+    if judge.get("judge_calls") is not None:
+        lines.append(
+            f"- **judge spend**: {judge.get('judge_calls')} calls, "
+            f"${float(judge.get('judge_cost_usd') or 0.0):.4f} "
+            f"({judge.get('judge_calls_per_case', '?')}/case, "
+            f"${float(judge.get('judge_cost_usd_per_case') or 0.0):.4f}/case)"
+        )
+    lines += [
+        "",
+        f"> {judge.get('judge_independence_note', '')}",
+        "",
+    ]
+    return lines
+
+
 def render_markdown(
     summary: dict[str, Any],
     *,
@@ -96,6 +135,7 @@ def render_markdown(
     sample_report: Optional[dict[str, Any]] = None,
     comparison: Optional[dict[str, Any]] = None,
     provenance: Optional[dict[str, Any]] = None,
+    judge: Optional[dict[str, Any]] = None,
 ) -> str:
     """Render the full run report."""
     mode = summary.get("mode", "unknown")
@@ -107,6 +147,13 @@ def render_markdown(
     lines.append(
         f"**N = {summary['n_scored']} scored** "
         f"(of {summary['n_total']} attempted; {summary['n_excluded']} excluded)"
+    )
+    lines.append("")
+    lines.append(
+        f"**Judge:** `{(judge or {}).get('judge_provider', 'unrecorded')}` — "
+        + ("independent of the agent's vendor."
+           if (judge or {}).get("judge_independent")
+           else "NOT independent of the agent's vendor; see the Judge section below.")
     )
     lines.append("")
 
@@ -214,6 +261,8 @@ def render_markdown(
             )
         lines.append("")
 
+    lines.extend(render_judge(judge))
+
     if provenance:
         lines.append("## Provenance")
         lines.append("")
@@ -240,6 +289,7 @@ def write_report(
     sample_report: Optional[dict[str, Any]] = None,
     comparison: Optional[dict[str, Any]] = None,
     provenance: Optional[dict[str, Any]] = None,
+    judge: Optional[dict[str, Any]] = None,
 ) -> dict[str, str]:
     """Write ``summary.json`` and ``REPORT.md``. Returns the written paths."""
     os.makedirs(directory, exist_ok=True)
@@ -251,6 +301,11 @@ def write_report(
         payload["comparison"] = comparison
     if provenance:
         payload["provenance"] = provenance
+    # Flattened as well as nested: a consumer reading only the top level of
+    # summary.json must still see which judge produced the numbers next to it.
+    payload["judge"] = judge or {"judge_provider": "unrecorded"}
+    payload["judge_provider"] = (judge or {}).get("judge_provider", "unrecorded")
+    payload["judge_independent"] = (judge or {}).get("judge_independent")
     with open(summary_path, "w", encoding="utf-8") as handle:
         json.dump(payload, handle, indent=2, default=str)
 
@@ -263,6 +318,7 @@ def write_report(
                 sample_report=sample_report,
                 comparison=comparison,
                 provenance=provenance,
+                judge=judge,
             )
         )
     return {"summary": summary_path, "report": report_path}
