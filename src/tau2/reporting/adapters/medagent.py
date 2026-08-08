@@ -26,6 +26,7 @@ from ..model import (
     Provenance,
     Reproduction,
     RunReport,
+    SampleCase,
     Sampling,
     Table,
 )
@@ -39,6 +40,8 @@ def _pct(v, nd: int = 1) -> str:
     return f"{float(v):.{nd}f}%" if isinstance(v, (int, float)) else "—"
 
 PUBLISHED_N = 300
+PUBLISHED_SOURCE = "MedAgentBench, NEJM AI 2025 (Table 2)"
+PUBLISHED_URL = "https://ai.nejm.org/doi/full/10.1056/AIdbp2500144"
 
 
 class MedAgentBenchAdapter:
@@ -366,6 +369,7 @@ class MedAgentBenchAdapter:
             sampling=sampling,
             baselines=baselines,
             failures=_failures(tasks, s),
+            sample_cases=_sample_cases(tasks),
             limitations=_limitations(s, sampling, int(n_scored or 0)),
             reproduction=Reproduction(
                 commands=[
@@ -457,7 +461,17 @@ def _baselines(n_scored: int, s: dict) -> BaselineSet:
         )
     return BaselineSet(
         baselines=[
-            Baseline(name=k, values=dict(v), source="MedAgentBench, NEJM AI 2025", n=PUBLISHED_N)
+            Baseline(
+                name=k,
+                values=dict(v),
+                source=PUBLISHED_SOURCE,
+                source_url=PUBLISHED_URL,
+                protocol=(
+                    f"full {PUBLISHED_N}-task set, same action grammar, same "
+                    "deterministic grader"
+                ),
+                n=PUBLISHED_N,
+            )
             for k, v in pub.items()
         ],
         comparable=comparable,
@@ -465,7 +479,7 @@ def _baselines(n_scored: int, s: dict) -> BaselineSet:
         published_protocol=(
             f"full {PUBLISHED_N}-task set, same action grammar, same deterministic grader"
         ),
-        source="MedAgentBench, NEJM AI 2025 (Table 2)",
+        source=PUBLISHED_SOURCE,
     )
 
 
@@ -723,3 +737,35 @@ def _limitations(s: dict, sampling: Sampling, n_scored: int) -> list[Limitation]
         ),
     ]
     return [x for x in out if x]
+
+
+def _sample_cases(tasks: list[Any]) -> list[SampleCase]:
+    """Two correct and two incorrect, chosen deterministically by task id so a
+    re-publish shows the same cases rather than reshuffling them."""
+    ok = sorted(
+        (t for t in tasks if isinstance(t, dict) and t.get("correct")),
+        key=lambda t: str(t.get("task_id")),
+    )
+    bad = sorted(
+        (t for t in tasks if isinstance(t, dict) and not t.get("correct") and not t.get("infra_fail")),
+        key=lambda t: str(t.get("task_id")),
+    )
+
+    def one(t: Any, success: bool) -> SampleCase:
+        return SampleCase(
+            case_id=str(t.get("task_id")),
+            outcome="correct" if success else "incorrect",
+            is_success=success,
+            task=str(t.get("instruction") or "")[:400],
+            expected=str(dig(t, "grade", "expected", default="") or "")[:200],
+            got=str(t.get("result") or dig(t, "grade", "got", default="") or "")[:200],
+            excerpt=_last_reply(t)[:400],
+            artifact=f"tasks/{t.get('task_id')}.json",
+            why_shown=(
+                "graded correct against live chart state"
+                if success
+                else str(dig(t, "grade", "reason", default="graded incorrect"))[:160]
+            ),
+        )
+
+    return [one(t, True) for t in ok[:2]] + [one(t, False) for t in bad[:2]]

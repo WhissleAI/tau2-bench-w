@@ -26,6 +26,7 @@ from ..model import (
     Provenance,
     Reproduction,
     RunReport,
+    SampleCase,
     Sampling,
     Table,
 )
@@ -69,18 +70,40 @@ class FlowSimAdapter:
             status = "partial"
             warnings.append(f"{len(unreadable)} session file(s) unreadable: {unreadable[:5]}")
 
-        detail = s.get("sessions_detail") or []
-        n_sessions = s.get("sessions") or len(latest)
-        n_infra = s.get("sessions_infra")
-        if n_infra is None:
-            n_infra = sum(1 for x in latest if dig(x, "metadata", "infra_fail"))
-        n_ran = s.get("sessions_ran") or (n_sessions - n_infra)
-        n_success = s.get("task_success")
-        if n_success is None:
-            n_success = sum(1 for x in latest if dig(x, "outcome", "task_success"))
-        n_closed = s.get("sessions_ended_cleanly")
-        if n_closed is None:
-            n_closed = sum(1 for x in latest if dig(x, "outcome", "ended"))
+        # Counts always come from the session sidecars on disk, never from
+        # SUMMARY.json.
+        #
+        # This directory accumulates: it holds every session ever recorded for this
+        # agent type, and SUMMARY.json describes only the *most recent invocation* —
+        # which is routinely a one-scenario re-run of a single flaky case. Trusting
+        # it produced "100% task success (N = 1)" for a suite whose ten scenarios
+        # were all on disk. A headline that swings to 100% because somebody re-ran
+        # one passing scenario is worse than no headline.
+        n_sessions = len(latest)
+        n_infra = sum(1 for x in latest if dig(x, "metadata", "infra_fail"))
+        n_ran = n_sessions - n_infra
+        n_success = sum(1 for x in latest if dig(x, "outcome", "task_success"))
+        n_closed = sum(1 for x in latest if dig(x, "outcome", "ended"))
+
+        # SUMMARY.json is still the source for coverage and the analyzer's finding
+        # roll-up — but only when it describes the same set of scenarios this report
+        # covers. Where it does not, say so rather than mixing two runs' numbers.
+        summary_scope = int(s.get("sessions") or 0)
+        summary_consistent = bool(s) and summary_scope == n_sessions
+        detail = (s.get("sessions_detail") or []) if summary_consistent else []
+        if s and not summary_consistent:
+            status = "partial"
+            partial_reason = (
+                f"`SUMMARY.json` describes a {summary_scope}-session invocation "
+                f"(`{s.get('ts')}`), but {n_sessions} scenarios have sessions on disk. "
+                "This report covers the latest session of each scenario, computed from "
+                "the sidecars; the coverage and finding roll-ups that only the summary "
+                "carries are omitted rather than quoted out of scope."
+            )
+            warnings.append(
+                f"SUMMARY.json scope ({summary_scope}) != scenarios on disk ({n_sessions}); "
+                "coverage roll-up suppressed"
+            )
 
         exclusions = Exclusions(
             n_total=int(n_sessions or 0),
@@ -120,7 +143,7 @@ class FlowSimAdapter:
                 note="taken from the authoritative `flow_end` trace event",
             )
         ]
-        cov = s.get("coverage") or {}
+        cov = (s.get("coverage") or {}) if summary_consistent else {}
         if cov:
             secondary += [
                 Metric(
@@ -142,11 +165,48 @@ class FlowSimAdapter:
             ]
 
         tables: list[Table] = []
+        # Built from the sidecars rather than the summary, so the per-scenario view
+        # always covers exactly the sessions the headline is computed over.
+        if latest:
+            tables.append(
+                Table(
+                    key="scenarios",
+                    title="Per-scenario outcomes",
+                    columns=[
+                        "Scenario",
+                        "Turns",
+                        "Closed",
+                        "Goal met",
+                        "Final state",
+                        "Findings",
+                        "Session",
+                    ],
+                    rows=[
+                        [
+                            f"`{x.get('task_id')}` ({x.get('scenario', '—')})",
+                            str(len(x.get("turns") or [])),
+                            "yes" if dig(x, "outcome", "ended") else "**no**",
+                            "yes" if dig(x, "outcome", "task_success") else "**no**",
+                            f"`{dig(x, 'outcome', 'final_state', default='—')}`",
+                            str(len(x.get("analyzer_findings") or [])),
+                            f"`{x.get('ts')}`",
+                        ]
+                        for x in latest
+                    ],
+                    note=(
+                        "Each row is one scripted caller persona driven over real audio, "
+                        "taken from the most recent session recorded for that scenario. "
+                        "'Closed' and 'goal met' are independent: an agent can satisfy the "
+                        "caller and never hang up, or hang up having satisfied nobody."
+                    ),
+                    allow_context=True,
+                )
+            )
         if detail:
             tables.append(
                 Table(
                     key="sessions",
-                    title="Per-scenario outcomes",
+                    title="Per-scenario outcomes, as the harness summarised them",
                     columns=[
                         "Scenario",
                         "Turns",
@@ -215,7 +275,9 @@ class FlowSimAdapter:
             harness_commit=None,
             repo_commit=ctx.repo_commit(),
             run_dir=str(run_dir),
-            captured_at=_ts_to_iso(s.get("ts") or first.get("ts")),
+            captured_at=_ts_to_iso(
+                max((str(x.get("ts") or "") for x in latest), default="") or s.get("ts")
+            ),
             dataset=f"scripted caller personas for `{s.get('agent_type') or run_dir.name}`",
             dataset_size=int(n_sessions or 0),
             upstream="internal — no published equivalent",
@@ -329,7 +391,8 @@ class FlowSimAdapter:
                     "lives, not a leaderboard."
                 )
             ),
-            failures=_failures(s, latest),
+            failures=_failures(s if summary_consistent else {}, latest),
+            sample_cases=_sample_cases(latest),
             limitations=[
                 Limitation(
                     "tiny_n",
@@ -540,3 +603,29 @@ def _failures(s: dict, sessions: list[Any]) -> list[FailureCategory]:
             )
         )
     return out
+
+
+def _sample_cases(sessions: list[Any]) -> list[SampleCase]:
+    """One call that worked and one that did not, with the grader's reasoning.
+
+    Real audio, so the artifact list points at the recordings: a disputed verdict on
+    a voice benchmark is settled by listening, not by re-reading a transcript.
+    """
+    ok = [x for x in sessions if dig(x, "outcome", "task_success")]
+    bad = [x for x in sessions if not dig(x, "outcome", "task_success")]
+
+    def one(x: Any, success: bool) -> SampleCase:
+        return SampleCase(
+            case_id=str(x.get("task_id")),
+            outcome="goal met" if success else "goal not met",
+            is_success=success,
+            task=(
+                f"persona `{x.get('scenario', '—')}` · {len(x.get('turns') or [])} caller "
+                f"turns · final state `{dig(x, 'outcome', 'final_state', default='—')}`"
+            ),
+            excerpt=str(x.get("transcript") or "")[:500],
+            artifact=f"{x.get('task_id')}_{x.get('ts')}.mix.wav",
+            why_shown=str(dig(x, "outcome", "task_success_reason", default=""))[:250],
+        )
+
+    return [one(x, True) for x in ok[:2]] + [one(x, False) for x in bad[:2]]

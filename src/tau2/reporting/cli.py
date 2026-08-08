@@ -24,6 +24,7 @@ from typing import Iterable, Optional
 
 from . import honesty, render_md, web_export
 from . import index as index_mod
+from . import publish as publish_mod
 from .adapters import ADAPTERS, BuildContext, adapter_for
 from .model import RunReport
 
@@ -59,14 +60,14 @@ def discover(results_root: Path) -> list[Path]:
 
 def build_one(
     run_dir: Path, ctx: BuildContext, *, write: bool = True, allow_violations: bool = False
-) -> tuple[Optional[RunReport], list[honesty.Violation]]:
+) -> tuple[Optional[RunReport], list[honesty.Violation], str]:
     adapter = adapter_for(run_dir)
     if adapter is None:
         return None, [
             honesty.Violation(
                 "no_adapter", f"no adapter recognises {run_dir}", str(run_dir)
             )
-        ]
+        ], ""
     try:
         report = adapter.build(run_dir, ctx)
     except Exception as exc:  # an adapter that throws is a bug, not a reason to stop
@@ -76,17 +77,23 @@ def build_one(
                 f"{type(exc).__name__}: {exc}",
                 str(run_dir),
             )
-        ]
+        ], ""
     md = render_md.render(report)
     violations = honesty.audit(report, md)
     if violations and not allow_violations:
-        return report, violations
+        return report, violations, md
     if write:
         (run_dir / "REPORT.md").write_text(md, encoding="utf-8")
         (run_dir / "report.json").write_text(
             json.dumps(report.to_dict(), indent=2) + "\n", encoding="utf-8"
         )
-    return report, violations
+        # The wire envelope, written beside the report so the exact bytes the store
+        # receives are reviewable in a diff rather than only observable over HTTP.
+        (run_dir / "publish.json").write_text(
+            json.dumps(publish_mod.run_envelope(report, md), indent=2) + "\n",
+            encoding="utf-8",
+        )
+    return report, violations, md
 
 
 def _print_violations(run_dir: Path, violations: Iterable[honesty.Violation]) -> None:
@@ -102,7 +109,7 @@ def cmd_build(args) -> int:
     failed = 0
     for raw in args.run_dirs:
         run_dir = Path(raw).resolve()
-        report, viols = build_one(
+        report, viols, _md = build_one(
             run_dir, ctx, write=not args.dry_run, allow_violations=args.allow_violations
         )
         if report is None or (viols and not args.allow_violations):
@@ -129,11 +136,12 @@ def cmd_all(args) -> int:
         return 1
 
     reports: list[RunReport] = []
+    rendered: dict[str, str] = {}
     entries: list[dict] = []
     failed = 0
     print(f"building {len(run_dirs)} run report(s) under {results_root}")
     for run_dir in run_dirs:
-        report, viols = build_one(
+        report, viols, md = build_one(
             run_dir, ctx, write=not args.dry_run, allow_violations=args.allow_violations
         )
         if report is None or (viols and not args.allow_violations):
@@ -143,6 +151,7 @@ def cmd_all(args) -> int:
         if viols:
             _print_violations(run_dir, viols)
         reports.append(report)
+        rendered[report.run_id] = md
         entries.append(index_mod.entry_for(report))
         flag = " [PRELIMINARY]" if report.preliminary else ""
         print(
@@ -167,7 +176,59 @@ def cmd_all(args) -> int:
     out = repo / args.web_out
     web_export.write(out, export)
     print(f"  ✓ website export: {len(export['rows'])} row(s) → {out}")
+
+    if getattr(args, "publish", False):
+        failed += _publish(
+            [(r, rendered[r.run_id]) for r in publishable(reports)],
+            idx,
+            allow_violations=args.allow_violations,
+        )
     return 1 if failed else 0
+
+
+def _publish(pairs, index, *, allow_violations: bool, dry_run: bool = False) -> int:
+    """Send runs to the results store. Returns the number of failures."""
+    store = publish_mod.BenchmarkStore()
+    if not dry_run and not store.configured:
+        print(
+            f"  ✗ publish: missing {store.missing()} — set them in .env or the "
+            "environment",
+            file=sys.stderr,
+        )
+        return 1
+    results, viols = publish_mod.publish_reports(
+        pairs, index, store=store, dry_run=dry_run, allow_violations=allow_violations
+    )
+    if viols and not allow_violations:
+        print("  ✗ publish blocked — the store would reject these:", file=sys.stderr)
+        for v in viols:
+            print(f"      {v}", file=sys.stderr)
+        return 1
+    bad = 0
+    for r in results:
+        if r.ok:
+            print(f"  ✓ published {r.run_id}" + (f" ({r.detail})" if r.detail else ""))
+        else:
+            print(f"  ✗ publish {r.run_id}: HTTP {r.status} {r.detail}", file=sys.stderr)
+            bad += 1
+    return bad
+
+
+def cmd_publish(args) -> int:
+    repo = _repo_root()
+    results_root = (repo / DEFAULT_RESULTS).resolve()
+    ctx = BuildContext(repo_root=repo, results_root=results_root)
+    pairs = []
+    for raw in args.run_dirs or [str(p) for p in discover(results_root)]:
+        run_dir = Path(raw).resolve()
+        report, viols, md = build_one(
+            run_dir, ctx, write=False, allow_violations=args.allow_violations
+        )
+        if report is None or (viols and not args.allow_violations):
+            _print_violations(run_dir, viols)
+            return 1
+        pairs.append((report, md))
+    return _publish(pairs, None, allow_violations=args.allow_violations, dry_run=args.dry_run)
 
 
 def publishable(reports: list[RunReport]) -> list[RunReport]:
@@ -227,7 +288,20 @@ def main(argv: Optional[list[str]] = None) -> int:
 
     a = sub.add_parser("all", help="build every run, the index and the website export")
     a.add_argument("--web-out", default="web/benchmark_export.json")
+    a.add_argument(
+        "--publish",
+        action="store_true",
+        help="also POST the publishable runs and the history to the results store "
+        "(needs WHISSLE_BASE and WHISSLE_API_KEY); idempotent on run id",
+    )
     a.set_defaults(func=cmd_all)
+
+    pub = sub.add_parser(
+        "publish",
+        help="POST one or more runs to the results store (idempotent on run id)",
+    )
+    pub.add_argument("run_dirs", nargs="*", help="default: every recognised run")
+    pub.set_defaults(func=cmd_publish)
 
     c = sub.add_parser("check", help="audit every run without writing")
     c.add_argument("--web-out", default="web/benchmark_export.json")

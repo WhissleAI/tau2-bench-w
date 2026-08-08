@@ -21,7 +21,7 @@ from pathlib import Path
 
 import pytest
 
-from tau2.reporting import build_report, honesty, render_md, web_export
+from tau2.reporting import build_report, honesty, publish, render_md, web_export
 from tau2.reporting import index as index_mod
 from tau2.reporting.adapters import BuildContext, adapter_for
 from tau2.reporting.adapters.agentclinic import AgentClinicAdapter
@@ -813,3 +813,236 @@ def test_export_history_comes_from_the_index(flow_run):
     export = web_export.build([report], idx)
     assert "flow_sim:headache_enrollment" in export["history"]
     assert export["history"]["flow_sim:headache_enrollment"][0]["sampleSize"] == 4
+
+
+# ---------------------------------------------------------------------------
+# publishing to the results store
+# ---------------------------------------------------------------------------
+
+
+def test_envelope_carries_the_mandatory_honesty_fields(pab_with_exclusions):
+    report, md = _build(pab_with_exclusions)
+    env = publish.run_envelope(report, md)
+    for key in ("runId", "sampleSize", "attempted", "excluded", "exclusionRatePct"):
+        assert key in env, key
+    assert env["sampleSize"] == 30
+    assert env["attempted"] == 40 and env["excluded"] == 10
+    assert "independent" in env["judge"]
+    assert env["judge"]["independent"] is False
+    assert env["judge"]["note"]
+    assert not publish.validate_envelope(env)
+
+
+def test_envelope_is_idempotent_on_run_id(pab_with_exclusions):
+    report, md = _build(pab_with_exclusions)
+    a = publish.run_envelope(report, md)
+    b = publish.run_envelope(report, md)
+    assert a["runId"] == b["runId"] == "patientagentbench/run_excl"
+    # only the generation timestamp may differ between two builds of one run
+    a.pop("generatedAt"), b.pop("generatedAt")
+    assert a == b
+
+
+def test_store_rejects_a_run_with_no_sample_size(mab_full):
+    report, md = _build(mab_full)
+    env = publish.run_envelope(report, md)
+    env["sampleSize"] = None
+    assert any(v.rule == "R1_headline_requires_n" for v in publish.validate_envelope(env))
+
+
+def test_store_rejects_a_run_that_omits_exclusions_entirely(mab_full):
+    """Absent and zero must not be the same value."""
+    report, md = _build(mab_full)
+    env = publish.run_envelope(report, md)
+    assert env["excluded"] == 0  # present, and zero
+    del env["excluded"]
+    assert any(v.rule == "R3_exclusion_rate_adjacent" for v in publish.validate_envelope(env))
+
+
+def test_store_rejects_a_run_that_omits_judge_independence(mab_full):
+    report, md = _build(mab_full)
+    env = publish.run_envelope(report, md)
+    assert env["judge"]["independent"] is None  # deterministic grading, explicitly
+    assert not publish.validate_envelope(env)
+    del env["judge"]["independent"]
+    assert any(
+        v.rule == "R2_judge_independence_disclosed" for v in publish.validate_envelope(env)
+    )
+
+
+def test_store_rejects_non_closing_exclusion_arithmetic(pab_with_exclusions):
+    report, md = _build(pab_with_exclusions)
+    env = publish.run_envelope(report, md)
+    env["excluded"] = 5
+    assert any("does not close" in v.message for v in publish.validate_envelope(env))
+
+
+def test_envelope_carries_the_bounding_analysis(pab_with_exclusions):
+    report, md = _build(pab_with_exclusions)
+    env = publish.run_envelope(report, md)
+    assert env["exclusionBounds"]["floor"] == round((4.10 * 30 + 1.0 * 10) / 40, 2)
+    assert env["exclusionBounds"]["ceiling"] == round((4.10 * 30 + 5.0 * 10) / 40, 2)
+    assert "bounds, not" in env["exclusionBounds"]["note"]
+
+
+def test_envelope_carries_the_report_and_sample_cases(mab_full):
+    report, md = _build(mab_full)
+    env = publish.run_envelope(report, md)
+    assert env["reportMarkdown"] == md  # per-run detail with no frontend deploy
+    assert env["sampleCases"], "a page that cannot show a real case is a scoreboard"
+    ids = [c["case_id"] for c in env["sampleCases"]]
+    assert len(ids) == len(set(ids))
+    assert any(c["is_success"] for c in env["sampleCases"])
+    assert any(not c["is_success"] for c in env["sampleCases"])
+
+
+def test_sample_cases_are_deterministic(mab_full):
+    a, _ = _build(mab_full)
+    b, _ = _build(mab_full)
+    assert [c.case_id for c in a.sample_cases] == [c.case_id for c in b.sample_cases]
+
+
+# --- R7: a comparator is named and sourced ---------------------------------
+
+
+def test_R7_baselines_are_named_and_sourced(mab_full):
+    report, md = _build(mab_full)
+    assert not honesty.check_baseline_labels(report)
+    env = publish.run_envelope(report, md)
+    for b in env["baselines"]:
+        assert b["label"] and b["source"] and b["score"] is not None
+        assert b["display"].startswith(b["label"])
+        assert b["source"] in b["display"]
+
+
+def test_R7_a_vague_comparator_is_rejected(mab_full):
+    report, _ = _build(mab_full)
+    report.baselines.baselines[0].name = "Frontier text agent"
+    viols = honesty.check_baseline_labels(report)
+    assert any(v.rule == "R7_baseline_named" for v in viols)
+    assert "describes a comparator instead of naming one" in viols[0].message
+
+
+def test_R7_an_unsourced_comparator_is_rejected(mab_full):
+    report, _ = _build(mab_full)
+    report.baselines.baselines[0].source = ""
+    assert any(
+        "no published source" in v.message for v in honesty.check_baseline_labels(report)
+    )
+
+
+def test_R7_reaches_the_rendered_baseline_table(mab_full):
+    report, md = _build(mab_full)
+    assert "Published in" in md
+    assert "MedAgentBench, NEJM AI 2025" in md
+    assert "**unsourced**" not in md
+
+
+# --- the client ------------------------------------------------------------
+
+
+class _FakeStore(publish.BenchmarkStore):
+    def __init__(self, fail_on=None):
+        super().__init__(base="https://example.invalid", api_key="k")
+        self.sent: list[dict] = []
+        self.index_sent: list[dict] = []
+        self._fail_on = fail_on
+
+    def publish_run(self, envelope):
+        self.sent.append(envelope)
+        if self._fail_on and envelope["runId"] == self._fail_on:
+            return publish.PublishResult(envelope["runId"], False, 500, "boom")
+        return publish.PublishResult(envelope["runId"], True, 200, "upserted")
+
+    def publish_index(self, envelope):
+        self.index_sent.append(envelope)
+        return publish.PublishResult("index", True, 200, "ok")
+
+
+def test_publish_sends_each_run_and_then_the_history(mab_full, pab_with_exclusions):
+    pairs = [_build(mab_full), _build(pab_with_exclusions)]
+    store = _FakeStore()
+    idx = index_mod.merge(None, [index_mod.entry_for(r) for r, _ in pairs], Path("/nope"))
+    results, viols = publish.publish_reports(pairs, idx, store=store)
+    assert not viols
+    assert [e["runId"] for e in store.sent] == [
+        "medagentbench/run_mab",
+        "patientagentbench/run_excl",
+    ]
+    assert store.index_sent and store.index_sent[0]["schema"] == publish.INDEX_SCHEMA_WIRE
+    assert all(r.ok for r in results)
+
+
+def test_publish_does_not_send_history_when_a_run_failed(mab_full):
+    store = _FakeStore(fail_on="medagentbench/run_mab")
+    results, _ = publish.publish_reports([_build(mab_full)], {"n_runs": 1}, store=store)
+    assert not results[0].ok
+    assert store.index_sent == []
+
+
+def test_publish_sends_nothing_when_validation_fails(mab_full):
+    report, md = _build(mab_full)
+    report.baselines.baselines[0].name = "Leading commercial agent"
+    store = _FakeStore()
+    results, viols = publish.publish_reports([(report, md)], None, store=store)
+    assert results == []
+    assert store.sent == []
+    assert any(v.rule == "R7_baseline_named" for v in viols)
+
+
+def test_publish_reports_a_missing_api_key_rather_than_hanging(monkeypatch, mab_full):
+    monkeypatch.delenv("WHISSLE_API_KEY", raising=False)
+    monkeypatch.delenv("WHISSLE_BASE", raising=False)
+    results, viols = publish.publish_reports([_build(mab_full)], None)
+    assert results == []
+    assert any(v.rule == "W2_store_not_configured" for v in viols)
+
+
+def test_publish_dry_run_touches_no_network(mab_full):
+    results, viols = publish.publish_reports([_build(mab_full)], None, dry_run=True)
+    assert results and results[0].detail == "dry-run"
+    assert not viols
+
+
+def test_history_envelope_carries_the_comparability_verdicts():
+    runs = [
+        _entry("x/1", "b", "b:text", 50.0, 100, judge_independent=False),
+        _entry("x/2", "b", "b:text", 70.0, 100, judge_independent=True, date="2026-08-02"),
+    ]
+    idx = index_mod.merge(None, runs, Path("/nope"))
+    env = publish.index_envelope(idx)
+    assert env["schema"] == publish.INDEX_SCHEMA_WIRE
+    series = env["series"]["b:text"]
+    assert series[1]["delta_vs_previous"] is None
+    assert "judge independence changed" in series[1]["comparability_note"]
+
+
+# ---------------------------------------------------------------------------
+# the flow suite's accumulating directory
+# ---------------------------------------------------------------------------
+
+
+def test_flow_counts_come_from_the_sidecars_not_a_stale_summary(flow_run):
+    """The directory accumulates; SUMMARY.json describes only the last invocation.
+
+    A one-scenario re-run of a passing case must not turn a 4-scenario suite into
+    "100% (N = 1)".
+    """
+    summary = json.loads((flow_run / "SUMMARY.json").read_text())
+    summary.update({"sessions": 1, "sessions_ran": 1, "task_success": 1, "ts": "20260809T000000Z"})
+    (flow_run / "SUMMARY.json").write_text(json.dumps(summary), encoding="utf-8")
+
+    report, md = _build(flow_run)
+    assert report.headline.n == 4          # not 1
+    assert report.headline.value == pytest.approx(75.0)
+    assert report.status == "partial"
+    assert "describes a 1-session invocation" in report.partial_reason
+    # the out-of-scope coverage roll-up is withheld rather than quoted
+    assert "t2" not in md
+    assert not honesty.audit(report, md)
+
+
+def test_flow_uses_the_summary_when_it_is_in_scope(flow_run):
+    report, md = _build(flow_run)
+    assert report.status == "complete"
+    assert "`t2`" in md  # the coverage roll-up is in scope, so it renders

@@ -60,7 +60,7 @@ Whether an agent can run a diagnostic consultation: take a patient's presentatio
 | Dataset | MedQA |
 | Dataset size | 107 |
 | Upstream | github.com/SamuelSchmidgall/AgentClinic (arXiv:2405.07960) |
-| Repo commit at report time | `86b4475` |
+| Repo commit at report time | `89f2e02` |
 | Captured at | 2026-08-08 |
 | Run directory | `results/whissle/agentclinic/20260808T022625Z-boundary` |
 | Protocol | markers |
@@ -177,7 +177,7 @@ python -m tau2.reporting.cli build results/whissle/agentclinic/20260808T022625Z-
 |---|---|
 | WHISSLE_BASE | https://aws-gateway-backend.whissle.ai/bot |
 | harness commit | unknown |
-| repo commit at report time | 86b4475 |
+| repo commit at report time | 89f2e02 |
 
 - `head` selection with a fixed limit reproduces the same scenario set exactly.
 - The run provisions a throwaway agent and deletes it afterwards (`agent_deleted: None`), so the agent id in provenance will not resolve after the fact.
@@ -207,6 +207,7 @@ These rules are executed against this document, not asserted about it. A failing
 | `R4_preliminary_labelled` | pass | labelled PRELIMINARY |
 | `R5_no_provider_names` | pass | no LLM vendor named outside the published-baseline table |
 | `R6_comparability_stated` | pass | not applicable — no published baseline is registered |
+| `R7_baseline_named` | pass | not applicable — no published baseline is registered |
 
 ---
 

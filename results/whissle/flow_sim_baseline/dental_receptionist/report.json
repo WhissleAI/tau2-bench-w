@@ -112,8 +112,71 @@
   "scoring_rule": "task success = graded goal-met / executed sessions; clean close = sessions emitting `flow_end` / executed sessions",
   "tables": [
     {
-      "key": "sessions",
+      "key": "scenarios",
       "title": "Per-scenario outcomes",
+      "columns": [
+        "Scenario",
+        "Turns",
+        "Closed",
+        "Goal met",
+        "Final state",
+        "Findings",
+        "Session"
+      ],
+      "rows": [
+        [
+          "`dental_cancel` (cancel)",
+          "4",
+          "**no**",
+          "yes",
+          "`\u2014`",
+          "1",
+          "`20260805T163223Z`"
+        ],
+        [
+          "`dental_emergency` (book)",
+          "10",
+          "**no**",
+          "**no**",
+          "`\u2014`",
+          "1",
+          "`20260805T164109Z`"
+        ],
+        [
+          "`dental_happy_book` (book)",
+          "9",
+          "**no**",
+          "yes",
+          "`\u2014`",
+          "1",
+          "`20260805T161743Z`"
+        ],
+        [
+          "`dental_no_slot` (no-slot)",
+          "3",
+          "**no**",
+          "**no**",
+          "`\u2014`",
+          "1",
+          "`20260805T163704Z`"
+        ],
+        [
+          "`dental_reschedule` (reschedule)",
+          "4",
+          "**no**",
+          "**no**",
+          "`\u2014`",
+          "1",
+          "`20260805T162710Z`"
+        ]
+      ],
+      "note": "Each row is one scripted caller persona driven over real audio, taken from the most recent session recorded for that scenario. 'Closed' and 'goal met' are independent: an agent can satisfy the caller and never hang up, or hang up having satisfied nobody.",
+      "allow_providers": false,
+      "allow_context": true
+    },
+    {
+      "key": "sessions",
+      "title": "Per-scenario outcomes, as the harness summarised them",
       "columns": [
         "Scenario",
         "Turns",
@@ -224,7 +287,7 @@
     "endpoint": "LiveKit voice room (POST /api/bench/voice/start)",
     "mode": "voice",
     "harness_commit": null,
-    "repo_commit": "86b4475",
+    "repo_commit": "89f2e02",
     "run_dir": "/private/tmp/claude-501/-Users-karan-Desktop-work-whissle-live-assist/766421da-8ef4-4ce2-9733-86e5c5f3fced/scratchpad/wt-reports/results/whissle/flow_sim_baseline/dental_receptionist",
     "captured_at": "2026-08-05",
     "dataset": "scripted caller personas for `dental_receptionist`",
@@ -329,6 +392,56 @@
       "rate_pct": 60.0
     }
   ],
+  "sample_cases": [
+    {
+      "case_id": "dental_cancel",
+      "outcome": "goal met",
+      "is_success": true,
+      "score": null,
+      "task": "persona `cancel` \u00b7 4 caller turns \u00b7 final state `\u2014`",
+      "expected": "",
+      "got": "",
+      "excerpt": "AGENT: Thanks for calling. I can book, move or cancel an appointment, or tell you our opening hours \u2014 what can I do for you? Hello! How can I help you today?\nUSER: Hi, I'm calling to cancel my dental appointment next week because I'm going to be out of town for work.\nAGENT: Got it, so you need to reschedule your appointment for next week. Can you tell me your name and the date of the appointment you want to move? Would you like to book an appointment, or is there something else I can help with?\n",
+      "artifact": "dental_cancel_20260805T163223Z.mix.wav",
+      "why_shown": "The customer successfully cancelled their dental appointment for Tuesday, August 14th at 2 PM, provided their name (Meera Iyer) and phone number (408-555-0127), and received confirmation of the cancellation."
+    },
+    {
+      "case_id": "dental_happy_book",
+      "outcome": "goal met",
+      "is_success": true,
+      "score": null,
+      "task": "persona `book` \u00b7 9 caller turns \u00b7 final state `\u2014`",
+      "expected": "",
+      "got": "",
+      "excerpt": "AGENT: Hello! How can I help you today?\nUSER: Hi, yes, I'm calling because I need to schedule a dental cleaning. I'm a new patient and I'm looking for something in the morning if you have anything available this week.\nAGENT: Hi there \u2014 no worries, take your time. What do you need help with today? Great, I can book you in for a cleaning. Can I get your name please? Perfect, I'll check what we have this week in the morning. But first, what 's your full name? Would you like to book an appointment, ",
+      "artifact": "dental_happy_book_20260805T161743Z.mix.wav",
+      "why_shown": "The customer successfully booked a routine dental cleaning for a weekday morning (Monday, August 10th at 9 AM) as a new patient, provided their name (Priya Nair) and preferred day, and confirmed the first suitable slot offered."
+    },
+    {
+      "case_id": "dental_emergency",
+      "outcome": "goal not met",
+      "is_success": false,
+      "score": null,
+      "task": "persona `book` \u00b7 10 caller turns \u00b7 final state `\u2014`",
+      "expected": "",
+      "got": "",
+      "excerpt": "AGENT: Hello! How can I help you today?\nUSER: Hi, yes, I'm calling because I have really bad tooth pain\u2014like I think my tooth might be broken or something\u2014and I need to see someone today if possible, like as soon as you can get me in.\nAGENT: Oh, I'm sorry to hear that. What's both ering you \u2014 is it pain, or something else you've noticed with the tooth? I understand \u2014 let me help you get in today if we can. Before I check what's available, are you a new patient or have you been to our clinic befo",
+      "artifact": "dental_emergency_20260805T164109Z.mix.wav",
+      "why_shown": "not run"
+    },
+    {
+      "case_id": "dental_no_slot",
+      "outcome": "goal not met",
+      "is_success": false,
+      "score": null,
+      "task": "persona `no-slot` \u00b7 3 caller turns \u00b7 final state `\u2014`",
+      "expected": "",
+      "got": "",
+      "excerpt": "AGENT: Hello! How can I help you today?\nUSER: Hi, I'm calling to book an appointment and I can only do this Saturday at 8 in the morning, so I need to see if that works for you guys.\nAGENT: Great! Let me get you scheduled. What day and time work best for you? Saturday at 8 AM \u2014 let me check if we have that available. But first, what kind of appointment do you need, and are you a new patient or existing? Would you like to book an appointment, or is there something else I can help with?\nUSER: Yes,",
+      "artifact": "dental_no_slot_20260805T163704Z.mix.wav",
+      "why_shown": "not run"
+    }
+  ],
   "limitations": [
     {
       "key": "tiny_n",
@@ -363,7 +476,7 @@
       "python -m tau2.reporting.cli build results/whissle/flow_sim/dental_receptionist"
     ],
     "environment": {
-      "repo commit at report time": "86b4475",
+      "repo commit at report time": "89f2e02",
       "extras required": "voice (LiveKit, audio codecs)"
     },
     "notes": [
@@ -395,12 +508,12 @@
     {
       "path": "REPORT.md",
       "description": "this report",
-      "present": false
+      "present": true
     },
     {
       "path": "report.json",
       "description": "machine-readable form of this report",
-      "present": false
+      "present": true
     }
   ],
   "licence_note": "",

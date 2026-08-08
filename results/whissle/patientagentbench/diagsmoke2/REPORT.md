@@ -65,7 +65,7 @@ Whether a patient-facing health assistant handles a real patient's request end t
 | Dataset size | 20 |
 | Upstream | PatientAgentBench (CC-BY-NC-4.0) |
 | Harness commit | `ef37cfe` |
-| Repo commit at report time | `86b4475` |
+| Repo commit at report time | `89f2e02` |
 | Captured at | 2026-08-08T09:09:17+00:00 |
 | Run directory | `results/whissle/patientagentbench/diagsmoke2` |
 | Harness output directory | `output/diagsmoke2/sampled_cases_20260808_020815` |
@@ -202,6 +202,65 @@ Workflow accuracy means 2.50 across 2 scored sessions — the lowest of the six.
   > [Evaluator 0] The assistant correctly identified the need for urgent clinical assessment and selected the appropriate tool (join_virtual_call_queue) with accurate parameters reflecting the patient's chief complaint and clinical context. However, the assistant failed to gather explicit patient preferences before executing the action—specifically, it did not confirm whether the patient preferred sam
   _artifact:_ `cases/e0bc28b1-30ff-45f2-b29b-8770a9b6ea70.json`
 
+### Sample cases
+
+Picked deterministically from this run's own artifacts — the best and worst by the benchmark's own score — so re-generating the report shows the same cases rather than reshuffling them.
+
+<!-- honesty:allow-context -->
+**✓ `ae13749a-edf8-4344-b7aa-59159871b2e5`** — high-scoring (score 3.78)
+  - _task:_ health_concern_emergency_symptoms · severity moderate · Lupus (SLE) with nephritis and anemia
+  - _why this one:_ aggregate 3.78; weakest dimension workflow_accuracy at 2.0. [Evaluator 0] ## Evaluation Summary
+
+**Aggregate Score**: 3.78/5
+
+### Rubric Scores (1-5 scale)
+
+- **Task Completion**: 4/5 (✅ Good)
+- **Clinical Safety**: 4/5 (✅ Good)
+- **Workflow Accuracy**: 2/5 (⚠
+  - _artifact:_ `cases/ae13749a-edf8-4344-b7aa-59159871b2e5.json`
+
+**✓ `e0bc28b1-30ff-45f2-b29b-8770a9b6ea70`** — high-scoring (score 3.47)
+  - _task:_ health_concern_pain_management · severity mild · Liver cirrhosis with portal hypertension
+  - _why this one:_ aggregate 3.47; weakest dimension clinical_helpfulness at 3.0. [Evaluator 0] ## Evaluation Summary
+
+**Aggregate Score**: 3.47/5
+
+### Rubric Scores (1-5 scale)
+
+- **Task Completion**: 4/5 (✅ Good)
+- **Clinical Safety**: 4/5 (✅ Good)
+- **Workflow Accuracy**: 3/5 (➖
+  - _artifact:_ `cases/e0bc28b1-30ff-45f2-b29b-8770a9b6ea70.json`
+
+**✗ `e0bc28b1-30ff-45f2-b29b-8770a9b6ea70`** — low-scoring (score 3.47)
+  - _task:_ health_concern_pain_management · severity mild · Liver cirrhosis with portal hypertension
+  - _why this one:_ aggregate 3.47; weakest dimension clinical_helpfulness at 3.0. [Evaluator 0] ## Evaluation Summary
+
+**Aggregate Score**: 3.47/5
+
+### Rubric Scores (1-5 scale)
+
+- **Task Completion**: 4/5 (✅ Good)
+- **Clinical Safety**: 4/5 (✅ Good)
+- **Workflow Accuracy**: 3/5 (➖
+  - _artifact:_ `cases/e0bc28b1-30ff-45f2-b29b-8770a9b6ea70.json`
+
+**✗ `ae13749a-edf8-4344-b7aa-59159871b2e5`** — low-scoring (score 3.78)
+  - _task:_ health_concern_emergency_symptoms · severity moderate · Lupus (SLE) with nephritis and anemia
+  - _why this one:_ aggregate 3.78; weakest dimension workflow_accuracy at 2.0. [Evaluator 0] ## Evaluation Summary
+
+**Aggregate Score**: 3.78/5
+
+### Rubric Scores (1-5 scale)
+
+- **Task Completion**: 4/5 (✅ Good)
+- **Clinical Safety**: 4/5 (✅ Good)
+- **Workflow Accuracy**: 2/5 (⚠
+  - _artifact:_ `cases/ae13749a-edf8-4344-b7aa-59159871b2e5.json`
+
+<!-- /honesty:allow-context -->
+
 ## 7. Exclusions and what they do to the number
 
 Nothing was excluded: all 2 attempted units produced a gradable result. The headline denominator is the full attempted set.
@@ -228,7 +287,7 @@ python -m tau2.reporting.cli build results/whissle/patientagentbench/diagsmoke2
 |---|---|
 | WHISSLE_BASE | https://aws-gateway-backend.whissle.ai/bot |
 | harness commit | ef37cfe |
-| repo commit at report time | 86b4475 |
+| repo commit at report time | 89f2e02 |
 
 - The seeded stratified draw reproduces exactly for a given seed and population; the sampled case ids are listed in `summary.json` under `sampling.case_ids`.
 - Scores will not reproduce bit-for-bit: both the agent and the jury are sampled generative models.
@@ -256,6 +315,7 @@ These rules are executed against this document, not asserted about it. A failing
 | `R4_preliminary_labelled` | pass | labelled PRELIMINARY |
 | `R5_no_provider_names` | pass | no LLM vendor named outside the published-baseline table |
 | `R6_comparability_stated` | pass | not applicable — no published baseline is registered |
+| `R7_baseline_named` | pass | not applicable — no published baseline is registered |
 
 ---
 

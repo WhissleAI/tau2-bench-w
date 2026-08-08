@@ -60,7 +60,7 @@ Whether an agent can run a diagnostic consultation: take a patient's presentatio
 | Dataset | MedQA |
 | Dataset size | 107 |
 | Upstream | github.com/SamuelSchmidgall/AgentClinic (arXiv:2405.07960) |
-| Repo commit at report time | `86b4475` |
+| Repo commit at report time | `89f2e02` |
 | Captured at | 2026-08-08 |
 | Run directory | `results/whissle/agentclinic/20260808T020835Z-smoke-health` |
 | Protocol | markers |
@@ -136,6 +136,31 @@ _An empty comparison section is a result. Printing a number next to a differentl
 
 _No categorised failures were recorded for this run._
 
+### Sample cases
+
+Picked deterministically from this run's own artifacts — the best and worst by the benchmark's own score — so re-generating the report shows the same cases rather than reshuffling them.
+
+<!-- honesty:allow-context -->
+**✓ `MedQA-0`** — correct
+  - _task:_ MedQA consultation · 6/20 inferences · 1 tests ordered
+  - _reference:_ Myasthenia gravis  ·  _agent said:_ Myasthenia Gravis
+
+You have myasthenia gravis, an autoimmune condition where your body produces antibodies that interfere with communication between nerves and muscles. This explains your fatigue-rela
+  > Excellent — the test results confirm what I suspected based on your symptoms. Your acetylcholine receptor antibodies are elevated, and your electromyography shows the characteristic pattern of a neuromuscular junction disorder. Your chest CT was normal, which is good news.  DIAGNOSIS READY: Myasthenia Gravis  You have myasthenia gravis, an autoimmune condition where your body produces antibodies t
+  - _why this one:_ committed the reference diagnosis
+  - _artifact:_ `cases/MedQA-0.json`
+
+**✓ `MedQA-1`** — correct
+  - _task:_ MedQA consultation · 9/20 inferences · 2 tests ordered
+  - _reference:_ Progressive multifocal encephalopathy (PML)  ·  _agent said:_ Progressive Multifocal Leukoencephalopathy (PML) associated with natalizumab use in the setting of Crohn's disease with severe immunosuppression.
+
+You need immediate specialist care—neurology and infe
+  > Based on your clinical presentation, imaging findings, immunosuppressive therapy with natalizumab, and the characteristic neurological exam findings, I have enough evidence to make my assessment.  DIAGNOSIS READY: Progressive Multifocal Leukoencephalopathy (PML) associated with natalizumab use in the setting of Crohn's disease with severe immunosuppression.  You need immediate specialist care—neur
+  - _why this one:_ committed the reference diagnosis
+  - _artifact:_ `cases/MedQA-1.json`
+
+<!-- /honesty:allow-context -->
+
 ## 7. Exclusions and what they do to the number
 
 Nothing was excluded: all 5 attempted units produced a gradable result. The headline denominator is the full attempted set.
@@ -161,7 +186,7 @@ python -m tau2.reporting.cli build results/whissle/agentclinic/20260808T020835Z-
 |---|---|
 | WHISSLE_BASE | https://aws-gateway-backend.whissle.ai/bot |
 | harness commit | unknown |
-| repo commit at report time | 86b4475 |
+| repo commit at report time | 89f2e02 |
 
 - `head` selection with a fixed limit reproduces the same scenario set exactly.
 - The run provisions a throwaway agent and deletes it afterwards (`agent_deleted: True`), so the agent id in provenance will not resolve after the fact.
@@ -191,6 +216,7 @@ These rules are executed against this document, not asserted about it. A failing
 | `R4_preliminary_labelled` | pass | labelled PRELIMINARY |
 | `R5_no_provider_names` | pass | no LLM vendor named outside the published-baseline table |
 | `R6_comparability_stated` | pass | not applicable — no published baseline is registered |
+| `R7_baseline_named` | pass | not applicable — no published baseline is registered |
 
 ---
 

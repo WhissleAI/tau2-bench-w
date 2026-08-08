@@ -21,6 +21,7 @@ from ..model import (
     Provenance,
     Reproduction,
     RunReport,
+    SampleCase,
     Sampling,
     Table,
 )
@@ -359,6 +360,7 @@ class PatientAgentBenchAdapter:
                 source="",
             ),
             failures=failures,
+            sample_cases=_sample_cases(cases),
             limitations=_limitations(exclusions, judge, sampling, summary),
             reproduction=Reproduction(
                 commands=[
@@ -612,3 +614,61 @@ def _limitations(
         ),
     ]
     return [x for x in out if x]
+
+
+def _sample_cases(cases: list[Any]) -> list[SampleCase]:
+    """The two best and two worst scored sessions. Deterministic: ties break on
+    case id, so re-publishing a run does not reshuffle what a reader saw."""
+    scored = [
+        c
+        for c in cases
+        if isinstance(c, dict)
+        and c.get("status") == "scored"
+        and isinstance(c.get("aggregate_score"), (int, float))
+    ]
+    if not scored:
+        return []
+    ranked = sorted(scored, key=lambda c: (c["aggregate_score"], str(c.get("case_id"))))
+
+    def one(c: Any, best: bool) -> SampleCase:
+        agg = c.get("aggregate_score")
+        worst_dim = min(
+            (
+                (v, k)
+                for k, v in (c.get("rubric_scores") or {}).items()
+                if isinstance(v, (int, float))
+            ),
+            default=(None, None),
+        )
+        return SampleCase(
+            case_id=str(c.get("case_id")),
+            outcome="high-scoring" if best else "low-scoring",
+            is_success=best,
+            score=agg,
+            task=(
+                f"{dig(c, 'scenario', 'task_type', default='?')} · severity "
+                f"{dig(c, 'scenario', 'severity_level', default='?')} · "
+                f"{dig(c, 'scenario', 'condition_name', default='')}"
+            ).strip(" ·"),
+            excerpt=_first_agent_turn(c)[:400],
+            artifact=f"cases/{c.get('case_id')}.json",
+            why_shown=(
+                f"aggregate {agg}"
+                + (
+                    f"; weakest dimension {worst_dim[1]} at {worst_dim[0]}"
+                    if worst_dim[1]
+                    else ""
+                )
+                + ". "
+                + str(dig(c, "evaluation", "summary", default=""))[:200]
+            ).strip(),
+        )
+
+    return [one(c, True) for c in reversed(ranked[-2:])] + [one(c, False) for c in ranked[:2]]
+
+
+def _first_agent_turn(case: Any) -> str:
+    for t in (case or {}).get("transcript") or []:
+        if isinstance(t, dict) and t.get("role") in ("assistant", "agent"):
+            return str(t.get("content") or "").replace("\n", " ")
+    return ""

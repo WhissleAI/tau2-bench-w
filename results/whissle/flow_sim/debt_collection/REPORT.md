@@ -4,7 +4,7 @@
 
 ## Abstract
 
-Whissle was evaluated on **Whissle conversation-flow suite** in `voice` mode. The headline result is **0.0%** (N = 11 · PRELIMINARY) for task success, 95% CI [0.0%, 25.9%].
+Whissle was evaluated on **Whissle conversation-flow suite** in `voice` mode. The headline result is **9.1%** (N = 11 · PRELIMINARY) for task success, 95% CI [1.6%, 37.7%].
 
 Whether a deployed voice agent actually completes its job on a phone call: does it collect what the flow says it must collect, does it handle a caller who answers out of order or refuses to engage, and does it end the call cleanly rather than trailing off. Real audio, real speech recognition, real turn-taking — not a text transcript stand-in.
 
@@ -12,19 +12,19 @@ Whether a deployed voice agent actually completes its job on a phone call: does 
 
 | Field | Value |
 |---|---|
-| **Task success** | **0.0%** (N = 11 · PRELIMINARY) |
+| **Task success** | **9.1%** (N = 11 · PRELIMINARY) |
 <!-- honesty:allow-context -->
-| 95% CI | [0.0%, 25.9%] |
+| 95% CI | [1.6%, 37.7%] |
 | Attempted / scored / excluded | 11 / 11 / 0 (0.0%) |
 | Judge | rule analyzer + LLM grader |
 | Mode | `voice` |
-| Date | 2026-08-06 |
+| Date | 2026-08-07 |
 | Run id | `flow_sim/debt_collection` |
 | Status | **PRELIMINARY** |
 <!-- /honesty:allow-context -->
 
 <!-- honesty:allow-context -->
-- **Reached a clean close:** 0.0% [0.0%, 25.9%], N = 11 — taken from the authoritative `flow_end` trace event
+- **Reached a clean close:** 27.3% [9.7%, 56.6%], N = 11 — taken from the authoritative `flow_end` trace event
 - **Flow states visited:** 0, N = 10 — of 10 declared
 - **Flow transitions fired:** 0, N = 14 — of 14 declared
 <!-- /honesty:allow-context -->
@@ -60,8 +60,8 @@ Whether a deployed voice agent actually completes its job on a phone call: does 
 | Dataset | scripted caller personas for `debt_collection` |
 | Dataset size | 11 |
 | Upstream | internal — no published equivalent |
-| Repo commit at report time | `86b4475` |
-| Captured at | 2026-08-06 |
+| Repo commit at report time | `89f2e02` |
+| Captured at | 2026-08-07 |
 | Run directory | `results/whissle/flow_sim/debt_collection` |
 | Agent type | debt_collection |
 
@@ -90,13 +90,13 @@ Every scenario in the set was run. There is no sampling error here — but there
 
 ## 4. Results
 
-**Task success: 0.0%** (N = 11 · PRELIMINARY), 95% CI [0.0%, 25.9%].
+**Task success: 9.1%** (N = 11 · PRELIMINARY), 95% CI [1.6%, 37.7%].
 
 | Metric | Value | 95% CI | N | Qualifiers |
 |---|---:|---|---:|---|
-| **Task success** | **0.0%** | [0.0%, 25.9%] | 11 | N = 11 · PRELIMINARY |
+| **Task success** | **9.1%** | [1.6%, 37.7%] | 11 | N = 11 · PRELIMINARY |
 <!-- honesty:allow-context -->
-| Reached a clean close | 0.0% | [0.0%, 25.9%] | 11 | taken from the authoritative `flow_end` trace event |
+| Reached a clean close | 27.3% | [9.7%, 56.6%] | 11 | taken from the authoritative `flow_end` trace event |
 | Flow states visited | 0 | — | 10 | of 10 declared |
 | Flow transitions fired | 0 | — | 14 | of 14 declared |
 <!-- /honesty:allow-context -->
@@ -105,6 +105,26 @@ _The headline row is the claim and carries its qualifiers; the rest are componen
 
 <!-- honesty:allow-context -->
 **Per-scenario outcomes**
+
+| Scenario | Turns | Closed | Goal met | Final state | Findings | Session |
+|---|---|---|---|---|---|---|
+| `debt_callback_request` (refuse) | 0 | **no** | **no** | `—` | 1 | `20260806T153727Z` |
+| `debt_dispute` (dispute) | 11 | yes | **no** | `—` | 4 | `20260807T013533Z` |
+| `debt_hardship` (dispute) | 0 | **no** | **no** | `—` | 1 | `20260806T153707Z` |
+| `debt_partial_payment` (promise-to-pay) | 0 | **no** | **no** | `—` | 1 | `20260806T153625Z` |
+| `debt_probe_before_verify` (dispute) | 0 | **no** | **no** | `—` | 1 | `20260806T153604Z` |
+| `debt_promise_to_pay` (promise-to-pay) | 6 | **no** | **no** | `—` | 3 | `20260807T013012Z` |
+| `debt_refuse_verify` (refuse) | 0 | **no** | **no** | `—` | 1 | `20260806T153544Z` |
+| `debt_rightparty_pays` (right-party pays) | 13 | yes | **no** | `—` | 4 | `20260807T011838Z` |
+| `debt_verify_then_hang` (right-party pays) | 0 | **no** | **no** | `—` | 1 | `20260806T153748Z` |
+| `debt_wrong_party` (wrong-party) | 3 | yes | yes | `—` | 0 | `20260807T014650Z` |
+| `debt_wrong_person_name` (wrong-party) | 0 | **no** | **no** | `—` | 1 | `20260806T153646Z` |
+
+Each row is one scripted caller persona driven over real audio, taken from the most recent session recorded for that scenario. 'Closed' and 'goal met' are independent: an agent can satisfy the caller and never hang up, or hang up having satisfied nobody.
+<!-- /honesty:allow-context -->
+
+<!-- honesty:allow-context -->
+**Per-scenario outcomes, as the harness summarised them**
 
 | Scenario | Turns | Closed | Goal met | Final state | High-severity findings |
 |---|---|---|---|---|---|
@@ -192,6 +212,31 @@ The grader judged the caller left without what they came for. This is the headli
   > not run
   _artifact:_ `debt_hardship_20260806T153707Z.session.json`
 
+### Sample cases
+
+Picked deterministically from this run's own artifacts — the best and worst by the benchmark's own score — so re-generating the report shows the same cases rather than reshuffling them.
+
+<!-- honesty:allow-context -->
+**✓ `debt_wrong_party`** — goal met
+  - _task:_ persona `wrong-party` · 3 caller turns · final state `—`
+  > AGENT: Hello! How can I help you today? USER: Hello? Yeah, who is this and what's this call about? AGENT: Hi there! This is an automated call from Whissle. Just so you know, I'm an AI assistant and this call is recorded for quality. Before we go further, I need to confirm I'm speaking with the right person — may I ask your name? Can you hear me? USER: Yeah, I can hear you fine. Look, I think you've got the wrong number — I'm not who you're looking for, so you can just take me off your list or wh
+  - _why this one:_ The agent successfully refused to confirm any identity details, told the caller they had the wrong number, and ended the call without allowing any debt details to be disclosed.
+  - _artifact:_ `debt_wrong_party_20260807T014650Z.mix.wav`
+
+**✗ `debt_callback_request`** — goal not met
+  - _task:_ persona `refuse` · 0 caller turns · final state `—`
+  > AGENT: Hello! How can I help you today?
+  - _why this one:_ not run
+  - _artifact:_ `debt_callback_request_20260806T153727Z.mix.wav`
+
+**✗ `debt_dispute`** — goal not met
+  - _task:_ persona `dispute` · 11 caller turns · final state `—`
+  > AGENT: Hello! How can I help you today? USER: Hi, yeah, I'm calling about a debt collection notice I got in the mail — I think there's been some kind of mistake with my account. AGENT: Thank you for calling. Just so you know, I'm an AI assistant and this call is recorded for quality . Before we talk about your notice, I need to confirm who I'm speaking with — may I have your name please? I understand. Let me verify your identity first so I can help you look into it. What's your full name? Can yo
+  - _why this one:_ The customer's identity was partially verified but the agent failed to mark the debt as disputed or send a validation letter before the call ended, instead only scheduling a callback for the next day.
+  - _artifact:_ `debt_dispute_20260807T013533Z.mix.wav`
+
+<!-- /honesty:allow-context -->
+
 ## 7. Exclusions and what they do to the number
 
 Nothing was excluded: all 11 attempted units produced a gradable result. The headline denominator is the full attempted set.
@@ -216,7 +261,7 @@ python -m tau2.reporting.cli build results/whissle/flow_sim/debt_collection
 
 | Field | Value |
 |---|---|
-| repo commit at report time | 86b4475 |
+| repo commit at report time | 89f2e02 |
 | extras required | voice (LiveKit, audio codecs) |
 
 - Audio is captured per session (`*.caller.wav`, `*.bot.wav`, `*.mix.wav`) — a disputed grader verdict can be settled by listening.
@@ -230,8 +275,8 @@ python -m tau2.reporting.cli build results/whissle/flow_sim/debt_collection
 | `SUMMARY.md` | yes | the harness's own short summary |
 | `*.session.json` | **missing** | per-session sidecar: turns, flow trace, findings |
 | `*.mix.wav` | **missing** | the recorded call |
-| `REPORT.md` | **missing** | this report |
-| `report.json` | **missing** | machine-readable form of this report |
+| `REPORT.md` | yes | this report |
+| `report.json` | yes | machine-readable form of this report |
 
 Every per-case record carries a `diagnostics` block (`tau2.health.diagnostics/v1`) with flow trace, signals, metadata sidecar, tool forensics, provenance and cost — and explicit availability flags, so an absent measurement reads as absent rather than as zero. See `HEALTH_DIAGNOSTICS.md`.
 
@@ -247,5 +292,6 @@ These rules are executed against this document, not asserted about it. A failing
 | `R4_preliminary_labelled` | pass | labelled PRELIMINARY |
 | `R5_no_provider_names` | pass | no LLM vendor named outside the published-baseline table |
 | `R6_comparability_stated` | pass | not applicable — no published baseline is registered |
+| `R7_baseline_named` | pass | not applicable — no published baseline is registered |
 
 <!-- generated by tau2.reporting from flow_sim/debt_collection; schema tau2.reporting.run_report/v1 -->

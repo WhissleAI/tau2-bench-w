@@ -62,7 +62,7 @@ Whether an agent can operate a real electronic health record over FHIR: read the
 | Dataset size | 300 |
 | Upstream | MedAgentBench, NEJM AI 2025 |
 | Harness commit | `ef37cfe` |
-| Repo commit at report time | `86b4475` |
+| Repo commit at report time | `89f2e02` |
 | Captured at | 2026-08-08T08:47:49.084929+00:00 |
 | Run directory | `results/whissle/medagentbench/brain-parity_diagsmoke` |
 | Fhir api base | http://localhost:8090/fhir/ |
@@ -154,20 +154,20 @@ Write mode was `validate` — writes were really executed against the FHIR sandb
 <!-- honesty:allow-providers -->
 **Published baselines — MedAgentBench, NEJM AI 2025 (Table 2)**
 
-| System | N | Overall | Query | Action |
-|---|---|---|---|---|
-| **Whissle (this run)** | 3 | **66.7** | **100.0** | **0.0** |
-| Claude 3.5 Sonnet v2 | 300 | 69.7 | 85.3 | 54.0 |
-| GPT-4o | 300 | 64.0 | — | — |
-| DeepSeek-V3 | 300 | 62.7 | — | — |
-| Gemini-1.5 Pro | 300 | 62.0 | — | — |
-| GPT-4o-mini | 300 | 56.3 | — | — |
-| o3-mini | 300 | 51.7 | — | — |
-| Qwen2.5 | 300 | 51.3 | — | — |
-| Llama 3.3 | 300 | 46.3 | — | — |
-| Gemini 2.0 Flash | 300 | 38.3 | — | — |
-| Gemma2 | 300 | 19.3 | — | — |
-| Mistral v0.3 | 300 | 4.0 | — | — |
+| System | N | Overall | Query | Action | Published in |
+|---|---|---|---|---|---|
+| **Whissle (this run)** | 3 | **66.7** | **100.0** | **0.0** | — (this measurement) |
+| Claude 3.5 Sonnet v2 | 300 | 69.7 | 85.3 | 54.0 | MedAgentBench, NEJM AI 2025 (Table 2) |
+| GPT-4o | 300 | 64.0 | — | — | MedAgentBench, NEJM AI 2025 (Table 2) |
+| DeepSeek-V3 | 300 | 62.7 | — | — | MedAgentBench, NEJM AI 2025 (Table 2) |
+| Gemini-1.5 Pro | 300 | 62.0 | — | — | MedAgentBench, NEJM AI 2025 (Table 2) |
+| GPT-4o-mini | 300 | 56.3 | — | — | MedAgentBench, NEJM AI 2025 (Table 2) |
+| o3-mini | 300 | 51.7 | — | — | MedAgentBench, NEJM AI 2025 (Table 2) |
+| Qwen2.5 | 300 | 51.3 | — | — | MedAgentBench, NEJM AI 2025 (Table 2) |
+| Llama 3.3 | 300 | 46.3 | — | — | MedAgentBench, NEJM AI 2025 (Table 2) |
+| Gemini 2.0 Flash | 300 | 38.3 | — | — | MedAgentBench, NEJM AI 2025 (Table 2) |
+| Gemma2 | 300 | 19.3 | — | — | MedAgentBench, NEJM AI 2025 (Table 2) |
+| Mistral v0.3 | 300 | 4.0 | — | — | MedAgentBench, NEJM AI 2025 (Table 2) |
 
 Published protocol: full 300-task set, same action grammar, same deterministic grader. External model names appear here and only here; they are published comparators, not components of the system under test.
 <!-- /honesty:allow-providers -->
@@ -215,6 +215,33 @@ Recorded by the harness's own integrity checks, independent of whether the task 
   > the agent's reply matched none of GET / POST / FINISH
   _artifact:_ `tasks/task3_1.json`
 
+### Sample cases
+
+Picked deterministically from this run's own artifacts — the best and worst by the benchmark's own score — so re-generating the report shows the same cases rather than reshuffling them.
+
+<!-- honesty:allow-context -->
+**✓ `task1_1`** — correct
+  - _task:_ What’s the MRN of the patient with name Peter Stafford and DOB of 1932-12-29? If the patient does not exist, the answer should be "Patient not found"
+  - _reference:_ ['S6534835']  ·  _agent said:_ ["S6534835"]
+  > FINISH(["S6534835"])
+  - _why this one:_ graded correct against live chart state
+  - _artifact:_ `tasks/task1_1.json`
+
+**✓ `task2_1`** — correct
+  - _task:_ What's the age of the patient with MRN of S2874099?
+  - _reference:_ [60]  ·  _agent said:_ [60]
+  > FINISH([60])
+  - _why this one:_ graded correct against live chart state
+  - _artifact:_ `tasks/task2_1.json`
+
+**✗ `task3_1`** — incorrect
+  - _task:_ I just measured the blood pressure for patient with MRN of S2380121, and it is "118/77 mmHg". Help me record it.
+  > I'll help you record the blood pressure measurement. First, let me search for the patient using the MRN.  GET http://localhost:8090/fhir/Patient?identifier=S2380121
+  - _why this one:_ episode ended without FINISH (status=agent_invalid_action)
+  - _artifact:_ `tasks/task3_1.json`
+
+<!-- /honesty:allow-context -->
+
 ## 7. Exclusions and what they do to the number
 
 Nothing was excluded: all 3 attempted units produced a gradable result. The headline denominator is the full attempted set.
@@ -243,7 +270,7 @@ python -m tau2.reporting.cli build results/whissle/medagentbench/brain-parity_di
 | WHISSLE_BASE | https://aws-gateway-backend.whissle.ai/bot |
 | FHIR_API_BASE | http://localhost:8090/fhir/ |
 | harness commit | ef37cfe |
-| repo commit at report time | 86b4475 |
+| repo commit at report time | 89f2e02 |
 
 - The subset is the head of the published set — deterministic, no seed needed.
 - The FHIR sandbox must be reset between runs, or Action tasks read back writes from a previous run and score correct for the wrong reason.
@@ -272,6 +299,7 @@ These rules are executed against this document, not asserted about it. A failing
 | `R4_preliminary_labelled` | pass | labelled PRELIMINARY |
 | `R5_no_provider_names` | pass | no LLM vendor named outside the published-baseline table |
 | `R6_comparability_stated` | pass | comparability to published baselines stated explicitly |
+| `R7_baseline_named` | pass | every comparator is a named system with a published source |
 
 ---
 

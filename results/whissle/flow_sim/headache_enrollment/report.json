@@ -8,69 +8,43 @@
   "label": "Whissle",
   "mode": "voice",
   "date": "2026-08-07",
-  "status": "complete",
-  "partial_reason": "",
+  "status": "partial",
+  "partial_reason": "`SUMMARY.json` describes a 1-session invocation (`20260807T045436Z`), but 10 scenarios have sessions on disk. This report covers the latest session of each scenario, computed from the sidecars; the coverage and finding roll-ups that only the summary carries are omitted rather than quoted out of scope.",
   "preliminary": true,
-  "preliminary_reason": "N = 1 is below the 30-unit threshold for a settled number",
-  "n_scored": 1,
+  "preliminary_reason": "N = 9 is below the 30-unit threshold for a settled number; `SUMMARY.json` describes a 1-session invocation (`20260807T045436Z`), but 10 scenarios have sessions on disk. This report covers the latest session of each scenario, computed from the sidecars; the coverage and finding roll-ups that only the summary carries are omitted rather than quoted out of scope.",
+  "n_scored": 9,
   "headline": {
     "key": "task_success",
     "label": "Task success",
-    "value": 100.0,
+    "value": 77.8,
     "unit": "pct",
     "ci": [
-      20.7,
-      100.0
+      45.3,
+      93.7
     ],
-    "n": 1,
+    "n": 9,
     "floor": 0.0,
     "ceiling": 100.0,
     "higher_is_better": true,
     "note": "an LLM grader judges whether the caller's goal was met",
-    "formatted": "100.0%"
+    "formatted": "77.8%"
   },
   "secondary_metrics": [
     {
       "key": "clean_close",
       "label": "Reached a clean close",
-      "value": 100.0,
+      "value": 44.4,
       "unit": "pct",
       "ci": [
-        20.7,
-        100.0
+        18.9,
+        73.3
       ],
-      "n": 1,
+      "n": 9,
       "floor": 0.0,
       "ceiling": 100.0,
       "higher_is_better": true,
       "note": "taken from the authoritative `flow_end` trace event",
-      "formatted": "100.0%"
-    },
-    {
-      "key": "state_coverage",
-      "label": "Flow states visited",
-      "value": 9.0,
-      "unit": "count",
-      "ci": null,
-      "n": 10,
-      "floor": null,
-      "ceiling": null,
-      "higher_is_better": true,
-      "note": "of 10 declared",
-      "formatted": "9"
-    },
-    {
-      "key": "transition_coverage",
-      "label": "Flow transitions fired",
-      "value": 8.0,
-      "unit": "count",
-      "ci": null,
-      "n": 18,
-      "floor": null,
-      "ceiling": null,
-      "higher_is_better": true,
-      "note": "of 18 declared",
-      "formatted": "8"
+      "formatted": "44.4%"
     }
   ],
   "what_measured": "Whether a deployed voice agent actually completes its job on a phone call: does it collect what the flow says it must collect, does it handle a caller who answers out of order or refuses to engage, and does it end the call cleanly rather than trailing off. Real audio, real speech recognition, real turn-taking \u2014 not a text transcript stand-in.",
@@ -112,7 +86,7 @@
   "scoring_rule": "task success = graded goal-met / executed sessions; clean close = sessions emitting `flow_end` / executed sessions",
   "tables": [
     {
-      "key": "sessions",
+      "key": "scenarios",
       "title": "Per-scenario outcomes",
       "columns": [
         "Scenario",
@@ -120,60 +94,118 @@
         "Closed",
         "Goal met",
         "Final state",
-        "High-severity findings"
+        "Findings",
+        "Session"
       ],
       "rows": [
+        [
+          "`hx_cluster_signs` (autonomic)",
+          "7",
+          "**no**",
+          "yes",
+          "`\u2014`",
+          "1",
+          "`20260807T005330Z`"
+        ],
+        [
+          "`hx_happy_full` (full_intake)",
+          "0",
+          "**no**",
+          "**no**",
+          "`\u2014`",
+          "1",
+          "`20260807T044115Z`"
+        ],
+        [
+          "`hx_hormonal` (hormonal)",
+          "7",
+          "**no**",
+          "yes",
+          "`\u2014`",
+          "1",
+          "`20260807T010615Z`"
+        ],
+        [
+          "`hx_keep_it_quick` (time_pressured)",
+          "4",
+          "**no**",
+          "**no**",
+          "`\u2014`",
+          "1",
+          "`20260807T010113Z`"
+        ],
+        [
+          "`hx_med_overuse` (medication)",
+          "6",
+          "**no**",
+          "**no**",
+          "`\u2014`",
+          "1",
+          "`20260807T011410Z`"
+        ],
         [
           "`hx_migraine_classic` (migraine)",
           "18",
           "yes",
           "yes",
-          "`None`",
-          "0"
-        ]
-      ],
-      "note": "Each row is one scripted caller persona driven over real audio. 'Closed' and 'goal met' are independent: an agent can satisfy the caller and never hang up, or hang up having satisfied nobody.",
-      "allow_providers": false,
-      "allow_context": true
-    },
-    {
-      "key": "coverage",
-      "title": "Flow coverage",
-      "columns": [
-        "Measure",
-        "Covered",
-        "Declared",
-        "Uncovered"
-      ],
-      "rows": [
-        [
-          "States",
-          "9",
-          "10",
-          "`urgent`"
+          "`\u2014`",
+          "0",
+          "`20260807T044526Z`"
         ],
         [
-          "Transitions",
+          "`hx_out_of_order` (out_of_order)",
           "8",
+          "yes",
+          "yes",
+          "`\u2014`",
+          "0",
+          "`20260807T003622Z`"
+        ],
+        [
+          "`hx_red_flag_urgent` (urgent_escalation)",
+          "2",
+          "yes",
+          "yes",
+          "`\u2014`",
+          "0",
+          "`20260807T000603Z`"
+        ],
+        [
+          "`hx_skips_topics` (skips)",
+          "13",
+          "yes",
+          "yes",
+          "`\u2014`",
+          "0",
+          "`20260807T000758Z`"
+        ],
+        [
+          "`hx_unsure` (unsure)",
           "18",
-          "`t2`, `t4`, `t6`, `t7_done`, `t8`, `t9_done`, `t10`, `t11_done`, `t12_done`, `t14`"
+          "**no**",
+          "yes",
+          "`\u2014`",
+          "1",
+          "`20260807T002014Z`"
         ]
       ],
-      "note": "An unfired transition is an untested branch. It is not a failure \u2014 it is the part of the flow this scenario set never reached, and therefore the part no result here speaks to.",
+      "note": "Each row is one scripted caller persona driven over real audio, taken from the most recent session recorded for that scenario. 'Closed' and 'goal met' are independent: an agent can satisfy the caller and never hang up, or hang up having satisfied nobody.",
       "allow_providers": false,
       "allow_context": true
     }
   ],
   "exclusions": {
-    "n_total": 1,
-    "n_scored": 1,
-    "n_excluded": 0,
-    "breakdown": {},
+    "n_total": 10,
+    "n_scored": 9,
+    "n_excluded": 1,
+    "breakdown": {
+      "infra_fail": 1
+    },
     "reason_examples": [
       "VoiceInfraError: bot audio is flowing but no transcript events arrived (data channel dead) \u2014 after one ready-handshake retry"
     ],
     "excluded_ids": [],
-    "rate_pct": 0.0
+    "rate_pct": 10.0
   },
   "judge": {
     "kind": "rule_analyzer",
@@ -194,11 +226,11 @@
     "endpoint": "LiveKit voice room (POST /api/bench/voice/start)",
     "mode": "voice",
     "harness_commit": null,
-    "repo_commit": "86b4475",
+    "repo_commit": "89f2e02",
     "run_dir": "/private/tmp/claude-501/-Users-karan-Desktop-work-whissle-live-assist/766421da-8ef4-4ce2-9733-86e5c5f3fced/scratchpad/wt-reports/results/whissle/flow_sim/headache_enrollment",
     "captured_at": "2026-08-07",
     "dataset": "scripted caller personas for `headache_enrollment`",
-    "dataset_size": 1,
+    "dataset_size": 10,
     "upstream": "internal \u2014 no published equivalent",
     "extra": {
       "agent_type": "headache_enrollment"
@@ -206,9 +238,9 @@
   },
   "sampling": {
     "method": "hand-authored scenario set, exhaustive (not sampled)",
-    "n_population": 1,
-    "n_requested": 1,
-    "n_selected": 1,
+    "n_population": 10,
+    "n_requested": 10,
+    "n_selected": 10,
     "seed": null,
     "strata_keys": [],
     "strata_tables": [],
@@ -224,27 +256,67 @@
   },
   "failures": [
     {
-      "key": "finding_coverage",
-      "label": "`coverage`",
-      "count": 2,
-      "severity": "info",
-      "description": "branches the scenario set never exercised",
+      "key": "finding_agent_no_close",
+      "label": "`agent_no_close`",
+      "count": 3,
+      "severity": "high",
+      "description": "the caller's goal was met and the agent never hung up; the call ends because the harness stops driving it, which on a real line is a caller waiting in silence",
       "denominator": 10,
       "examples": [
         {
-          "case_id": "run-level",
-          "summary": "state `\u2014`",
-          "evidence": "1/10 states never entered across the session set: ['urgent'].",
-          "artifact": "SUMMARY.json"
+          "case_id": "hx_cluster_signs",
+          "summary": "state `patterns_symptoms` \u00b7 7 turns",
+          "evidence": "goal met and the simulated user stayed cooperative for 4 post-goal turn(s), but the agent never delivered its closing / reached flow_end; the agent replied EMPTY on turn(s) [7]; final state 'patterns_symptoms' with 3 outgoing edge(s) un-fired.",
+          "artifact": "hx_cluster_signs_20260807T005330Z.session.json"
         },
         {
-          "case_id": "run-level",
-          "summary": "state `\u2014`",
-          "evidence": "10/18 transitions never fired across the session set: ['t2', 't4', 't6', 't7_done', 't8', 't9_done', 't10', 't11_done', 't12_done', 't14'].",
-          "artifact": "SUMMARY.json"
+          "case_id": "hx_hormonal",
+          "summary": "state `medications` \u00b7 7 turns",
+          "evidence": "goal met and the simulated user stayed cooperative for 4 post-goal turn(s), but the agent never delivered its closing / reached flow_end; final state 'medications' with 1 outgoing edge(s) un-fired.",
+          "artifact": "hx_hormonal_20260807T010615Z.session.json"
+        }
+      ],
+      "rate_pct": 30.0
+    },
+    {
+      "key": "finding_stuck_termination",
+      "label": "`stuck_termination`",
+      "count": 2,
+      "severity": "medium",
+      "description": "the session stalled without a classified cause",
+      "denominator": 10,
+      "examples": [
+        {
+          "case_id": "hx_keep_it_quick",
+          "summary": "state `about_you` \u00b7 4 turns",
+          "evidence": "session never reached an end state (cap/stuck); final state 'about_you' with 3 outgoing edge(s) un-fired.",
+          "artifact": "hx_keep_it_quick_20260807T010113Z.session.json"
+        },
+        {
+          "case_id": "hx_med_overuse",
+          "summary": "state `about_you` \u00b7 6 turns",
+          "evidence": "session never reached an end state (cap/stuck); final state 'about_you' with 3 outgoing edge(s) un-fired.",
+          "artifact": "hx_med_overuse_20260807T011410Z.session.json"
         }
       ],
       "rate_pct": 20.0
+    },
+    {
+      "key": "finding_infra_fail",
+      "label": "`infra_fail`",
+      "count": 1,
+      "severity": "medium",
+      "description": "",
+      "denominator": 10,
+      "examples": [
+        {
+          "case_id": "hx_happy_full",
+          "summary": "state `\u2014`",
+          "evidence": "infrastructure failure \u2014 the session could not be measured (attempt 1): VoiceInfraError: bot audio is flowing but no transcript events arrived (data channel dead) \u2014 after one ready-handshake retry",
+          "artifact": "hx_happy_full_20260807T044115Z.session.json"
+        }
+      ],
+      "rate_pct": 10.0
     },
     {
       "key": "goal_not_met",
@@ -276,10 +348,60 @@
       "rate_pct": 30.0
     }
   ],
+  "sample_cases": [
+    {
+      "case_id": "hx_cluster_signs",
+      "outcome": "goal met",
+      "is_success": true,
+      "score": null,
+      "task": "persona `autonomic` \u00b7 7 caller turns \u00b7 final state `\u2014`",
+      "expected": "",
+      "got": "",
+      "excerpt": "AGENT: Hi, I'm Ember. I'd love to understand your headaches a little better. I'll ask you a few questions by voice \u2014 it takes about five minutes, and you can skip anything or pause and come back anytime. Ready to start?\nUSER: Hi, yes, I'm calling because I've been having these really bad headaches on one side of my head, right around my eye, and I need to figure out what's going on.\nAGENT: Got it \u2014 pain on one side around your eye sounds really uncomfortable. Just so you know, I 'm an AI assista",
+      "artifact": "hx_cluster_signs_20260807T005330Z.mix.wav",
+      "why_shown": "Ember successfully captured all key features: severe one-sided eye pain (9/10), autonomic signs (tearing, droopy lid, stuffy nose), restlessness/pacing, and confirmed these symptoms occur together during attacks, explicitly stating 'I'm saving all of"
+    },
+    {
+      "case_id": "hx_hormonal",
+      "outcome": "goal met",
+      "is_success": true,
+      "score": null,
+      "task": "persona `hormonal` \u00b7 7 caller turns \u00b7 final state `\u2014`",
+      "expected": "",
+      "got": "",
+      "excerpt": "AGENT: Hi, I'm Ember. I'd love to understand your headaches a little better. I'll ask you a few questions by voice \u2014 it takes about five minutes, and you can skip anything or pause and come back anytime. Ready to start?\nUSER: Hi, I'm calling because I've been getting these really bad headaches and I'm not sure what's causing them, so I'm hoping you can help me figure it out.\nAGENT: I hear you \u2014 headaches like that can be really frustrating. Just so you know, I'm an AI assistant and this call is ",
+      "artifact": "hx_hormonal_20260807T010615Z.mix.wav",
+      "why_shown": "The user successfully raised that headaches relate to their cycle and that they take hormonal birth control (the pill for 5 years), and Ember captured this information sensitively by acknowledging it, saving it, and continuing with relevant follow-up"
+    },
+    {
+      "case_id": "hx_happy_full",
+      "outcome": "goal not met",
+      "is_success": false,
+      "score": null,
+      "task": "persona `full_intake` \u00b7 0 caller turns \u00b7 final state `\u2014`",
+      "expected": "",
+      "got": "",
+      "excerpt": "",
+      "artifact": "hx_happy_full_20260807T044115Z.mix.wav",
+      "why_shown": "not run"
+    },
+    {
+      "case_id": "hx_keep_it_quick",
+      "outcome": "goal not met",
+      "is_success": false,
+      "score": null,
+      "task": "persona `time_pressured` \u00b7 4 caller turns \u00b7 final state `\u2014`",
+      "expected": "",
+      "got": "",
+      "excerpt": "AGENT: Hi, I'm Ember. I'd love to understand your headaches a little better. I'll ask you a few questions by voice \u2014 it takes about five minutes, and you can skip anything or pause and come back anytime. Ready to start?\nUSER: Hi, yeah, I'm Nina Park \u2014 I'm actually in a bit of a rush, so can we keep this quick?\nAGENT: Got it, Nina. I'll keep it brief \u2014 just the essentials. When did your headaches start, roughly? I'm here whenever you're ready \u2014 no rush at all.\nUSER: Wait, headaches? I think you'v",
+      "artifact": "hx_keep_it_quick_20260807T010113Z.mix.wav",
+      "why_shown": "The goal was not achieved because Ember did not keep answers short and concise as requested; instead, Ember provided lengthy, repetitive responses with multiple clarifications that violated the customer's explicit request to 'keep this quick' and con"
+    }
+  ],
   "limitations": [
     {
       "key": "tiny_n",
-      "text": "N = 1. At this size a single scenario flipping moves the headline by ten points. Every figure here is directional and is labelled PRELIMINARY for that reason.",
+      "text": "N = 9. At this size a single scenario flipping moves the headline by ten points. Every figure here is directional and is labelled PRELIMINARY for that reason.",
       "severity": "high"
     },
     {
@@ -310,7 +432,7 @@
       "python -m tau2.reporting.cli build results/whissle/flow_sim/headache_enrollment"
     ],
     "environment": {
-      "repo commit at report time": "86b4475",
+      "repo commit at report time": "89f2e02",
       "extras required": "voice (LiveKit, audio codecs)"
     },
     "notes": [
@@ -342,14 +464,16 @@
     {
       "path": "REPORT.md",
       "description": "this report",
-      "present": false
+      "present": true
     },
     {
       "path": "report.json",
       "description": "machine-readable form of this report",
-      "present": false
+      "present": true
     }
   ],
   "licence_note": "",
-  "warnings": []
+  "warnings": [
+    "SUMMARY.json scope (1) != scenarios on disk (10); coverage roll-up suppressed"
+  ]
 }

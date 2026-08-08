@@ -11,6 +11,8 @@ unless the caller explicitly passes ``--allow-violations``.
   R4  anything below the sample-size threshold is labelled preliminary
   R5  the underlying LLM providers are never named in agent-facing text
       (published external baselines are expected, and exempt)
+  R6  a baseline table carries an explicit statement of what is not comparable
+  R7  a comparator is named and sourced, never described
 
 The mechanism for R1–R4 is a single machine-checkable **qualifier**: every place
 the headline value is stated, the qualifier must be on the same line. The renderer
@@ -353,6 +355,64 @@ def check_providers_structured(report: RunReport) -> list[Violation]:
 # --------------------------------------------------------------------------
 
 
+#: Labels that describe a comparator without identifying one. "Frontier text agent"
+#: is unfalsifiable — a reader cannot go and check it, and it quietly invites them to
+#: imagine whichever system makes us look best.
+VAGUE_BASELINE_TOKENS: tuple[str, ...] = (
+    "frontier",
+    "leading",
+    "state of the art",
+    "state-of-the-art",
+    "sota",
+    "competitor",
+    "industry standard",
+    "typical",
+    "generic",
+    "other agents",
+    "commercial",
+    "a strong baseline",
+)
+
+
+def check_baseline_labels(report: RunReport) -> list[Violation]:
+    """R7. A comparator must be a named system with a published source.
+
+    The failure this prevents is a chart that says "Frontier text agent — 0.60"
+    beside our number. That is not a comparison; it is a shape that looks like one.
+    """
+    out: list[Violation] = []
+    for b in report.baselines.baselines:
+        label = (b.name or "").strip()
+        if not label:
+            out.append(Violation("R7_baseline_named", "a baseline with no name", "baselines"))
+            continue
+        low = label.lower()
+        hit = next((t for t in VAGUE_BASELINE_TOKENS if t in low), None)
+        if hit:
+            out.append(
+                Violation(
+                    "R7_baseline_named",
+                    f"{label!r} describes a comparator instead of naming one "
+                    f"(matched {hit!r}); say which system, from which publication",
+                    f"baselines[{label}]",
+                )
+            )
+        if not (b.source or "").strip():
+            out.append(
+                Violation(
+                    "R7_baseline_named",
+                    f"baseline {label!r} carries no published source; a number a "
+                    "reader cannot go and check is not evidence",
+                    f"baselines[{label}]",
+                )
+            )
+        if not b.values:
+            out.append(
+                Violation("R7_baseline_named", f"baseline {label!r} has no values", f"baselines[{label}]")
+            )
+    return out
+
+
 def check_structure(report: RunReport) -> list[Violation]:
     out: list[Violation] = []
     if report.headline.value is not None and not report.headline.n:
@@ -406,6 +466,7 @@ ALL_RULES = (
     "R4_preliminary_labelled",
     "R5_no_provider_names",
     "R6_comparability_stated",
+    "R7_baseline_named",
 )
 
 
@@ -413,6 +474,7 @@ def audit(report: RunReport, markdown: Optional[str] = None) -> list[Violation]:
     """Run every rule. ``markdown`` omitted runs only the source-level half."""
     out: list[Violation] = []
     out += check_structure(report)
+    out += check_baseline_labels(report)
     out += check_providers_structured(report)
     if markdown is not None:
         out += check_headline_annotations(markdown, report)
@@ -449,6 +511,11 @@ def compliance_table(report: RunReport, markdown: Optional[str] = None) -> list[
         "R5_no_provider_names": "no LLM vendor named outside the published-baseline table",
         "R6_comparability_stated": (
             "comparability to published baselines stated explicitly"
+            if report.baselines.any
+            else "not applicable — no published baseline is registered"
+        ),
+        "R7_baseline_named": (
+            "every comparator is a named system with a published source"
             if report.baselines.any
             else "not applicable — no published baseline is registered"
         ),

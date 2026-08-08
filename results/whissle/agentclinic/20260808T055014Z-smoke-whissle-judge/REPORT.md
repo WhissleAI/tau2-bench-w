@@ -62,7 +62,7 @@ Whether an agent can run a diagnostic consultation: take a patient's presentatio
 | Dataset | MedQA |
 | Dataset size | 107 |
 | Upstream | github.com/SamuelSchmidgall/AgentClinic (arXiv:2405.07960) |
-| Repo commit at report time | `86b4475` |
+| Repo commit at report time | `89f2e02` |
 | Captured at | 2026-08-08 |
 | Run directory | `results/whissle/agentclinic/20260808T055014Z-smoke-whissle-judge` |
 | Protocol | markers |
@@ -146,6 +146,31 @@ _An empty comparison section is a result. Printing a number next to a differentl
 
 _No categorised failures were recorded for this run._
 
+### Sample cases
+
+Picked deterministically from this run's own artifacts — the best and worst by the benchmark's own score — so re-generating the report shows the same cases rather than reshuffling them.
+
+<!-- honesty:allow-context -->
+**✓ `MedQA-0`** — correct
+  - _task:_ MedQA consultation · 7/12 inferences · 1 tests ordered
+  - _reference:_ Myasthenia gravis  ·  _agent said:_ Myasthenia Gravis
+
+Based on your clinical presentation—fatigable weakness that worsens with activity and heat but improves with rest, ptosis, double vision, positive acetylcholine receptor antibodies,
+  > DIAGNOSIS READY: Myasthenia Gravis  Based on your clinical presentation—fatigable weakness that worsens with activity and heat but improves with rest, ptosis, double vision, positive acetylcholine receptor antibodies, and the characteristic pattern of symptom exacerbation with physical exertion and temperature—you have myasthenia gravis. This is an autoimmune condition affecting the neuromuscular
+  - _why this one:_ committed the reference diagnosis
+  - _artifact:_ `cases/MedQA-0.json`
+
+**✓ `MedQA-1`** — correct
+  - _task:_ MedQA consultation · 5/12 inferences · 1 tests ordered
+  - _reference:_ Progressive multifocal encephalopathy (PML)  ·  _agent said:_ Progressive Multifocal Leukoencephalopathy (PML)
+
+I strongly recommend you go to the nearest emergency department right now or contact your neurologist and infectious disease specialist immediately. T
+  > I appreciate you providing those results. Based on the MRI findings showing multifocal demyelinating lesions without gadolinium enhancement, combined with your clinical presentation of progressive ataxia, right-sided weakness, and visual changes over the past two weeks—all in the context of your immunosuppressive therapy for Crohn's disease—this is consistent with Progressive Multifocal Leukoencep
+  - _why this one:_ committed the reference diagnosis
+  - _artifact:_ `cases/MedQA-1.json`
+
+<!-- /honesty:allow-context -->
+
 ## 7. Exclusions and what they do to the number
 
 Nothing was excluded: all 5 attempted units produced a gradable result. The headline denominator is the full attempted set.
@@ -172,7 +197,7 @@ python -m tau2.reporting.cli build results/whissle/agentclinic/20260808T055014Z-
 |---|---|
 | WHISSLE_BASE | https://aws-gateway-backend.whissle.ai/bot |
 | harness commit | unknown |
-| repo commit at report time | 86b4475 |
+| repo commit at report time | 89f2e02 |
 
 - `head` selection with a fixed limit reproduces the same scenario set exactly.
 - The run provisions a throwaway agent and deletes it afterwards (`agent_deleted: None`), so the agent id in provenance will not resolve after the fact.
@@ -202,6 +227,7 @@ These rules are executed against this document, not asserted about it. A failing
 | `R4_preliminary_labelled` | pass | labelled PRELIMINARY |
 | `R5_no_provider_names` | pass | no LLM vendor named outside the published-baseline table |
 | `R6_comparability_stated` | pass | not applicable — no published baseline is registered |
+| `R7_baseline_named` | pass | not applicable — no published baseline is registered |
 
 ---
 

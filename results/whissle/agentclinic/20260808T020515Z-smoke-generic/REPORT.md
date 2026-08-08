@@ -60,7 +60,7 @@ Whether an agent can run a diagnostic consultation: take a patient's presentatio
 | Dataset | MedQA |
 | Dataset size | 107 |
 | Upstream | github.com/SamuelSchmidgall/AgentClinic (arXiv:2405.07960) |
-| Repo commit at report time | `86b4475` |
+| Repo commit at report time | `89f2e02` |
 | Captured at | 2026-08-08 |
 | Run directory | `results/whissle/agentclinic/20260808T020515Z-smoke-generic` |
 | Protocol | markers |
@@ -134,6 +134,27 @@ _An empty comparison section is a result. Printing a number next to a differentl
 
 _No categorised failures were recorded for this run._
 
+### Sample cases
+
+Picked deterministically from this run's own artifacts — the best and worst by the benchmark's own score — so re-generating the report shows the same cases rather than reshuffling them.
+
+<!-- honesty:allow-context -->
+**✓ `MedQA-0`** — correct
+  - _task:_ MedQA consultation · 6/20 inferences · 1 tests ordered
+  - _reference:_ Myasthenia gravis  ·  _agent said:_ Myasthenia Gravis
+  > Thank you for that result. Given your classic presentation—the drooping eyelids and double vision that worsen with activity, upper limb weakness with repetitive tasks, and improvement with rest—combined with the diagnostic tests we have on file showing acetylcholine receptor antibodies and characteristic EMG findings, I have sufficient information to make my diagnosis.  DIAGNOSIS READY: Myasthenia
+  - _why this one:_ committed the reference diagnosis
+  - _artifact:_ `cases/MedQA-0.json`
+
+**✓ `MedQA-1`** — correct
+  - _task:_ MedQA consultation · 11/20 inferences · 2 tests ordered
+  - _reference:_ Progressive multifocal encephalopathy (PML)  ·  _agent said:_ Progressive Multifocal Leukoencephalopathy (PML)
+  > Based on your clinical presentation, imaging findings, and medical history with natalizumab use for Crohn's disease, the evidence is quite compelling. The sudden onset of ataxic gait, right-sided weakness, and the characteristic demyelinating lesions on MRI are classic for PML. Even with the normal CSF result, the MRI findings combined with your natalizumab exposure make this diagnosis clear.  DIA
+  - _why this one:_ committed the reference diagnosis
+  - _artifact:_ `cases/MedQA-1.json`
+
+<!-- /honesty:allow-context -->
+
 ## 7. Exclusions and what they do to the number
 
 Nothing was excluded: all 5 attempted units produced a gradable result. The headline denominator is the full attempted set.
@@ -159,7 +180,7 @@ python -m tau2.reporting.cli build results/whissle/agentclinic/20260808T020515Z-
 |---|---|
 | WHISSLE_BASE | https://aws-gateway-backend.whissle.ai/bot |
 | harness commit | unknown |
-| repo commit at report time | 86b4475 |
+| repo commit at report time | 89f2e02 |
 
 - `head` selection with a fixed limit reproduces the same scenario set exactly.
 - The run provisions a throwaway agent and deletes it afterwards (`agent_deleted: None`), so the agent id in provenance will not resolve after the fact.
@@ -189,6 +210,7 @@ These rules are executed against this document, not asserted about it. A failing
 | `R4_preliminary_labelled` | pass | labelled PRELIMINARY |
 | `R5_no_provider_names` | pass | no LLM vendor named outside the published-baseline table |
 | `R6_comparability_stated` | pass | not applicable — no published baseline is registered |
+| `R7_baseline_named` | pass | not applicable — no published baseline is registered |
 
 ---
 

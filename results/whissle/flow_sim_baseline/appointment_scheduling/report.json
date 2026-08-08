@@ -112,8 +112,71 @@
   "scoring_rule": "task success = graded goal-met / executed sessions; clean close = sessions emitting `flow_end` / executed sessions",
   "tables": [
     {
-      "key": "sessions",
+      "key": "scenarios",
       "title": "Per-scenario outcomes",
+      "columns": [
+        "Scenario",
+        "Turns",
+        "Closed",
+        "Goal met",
+        "Final state",
+        "Findings",
+        "Session"
+      ],
+      "rows": [
+        [
+          "`appt_cancel` (cancel)",
+          "7",
+          "yes",
+          "**no**",
+          "`\u2014`",
+          "1",
+          "`20260805T175103Z`"
+        ],
+        [
+          "`appt_double_booking` (new)",
+          "7",
+          "**no**",
+          "yes",
+          "`\u2014`",
+          "1",
+          "`20260805T180858Z`"
+        ],
+        [
+          "`appt_new` (new)",
+          "3",
+          "**no**",
+          "**no**",
+          "`\u2014`",
+          "1",
+          "`20260805T173908Z`"
+        ],
+        [
+          "`appt_out_of_hours` (out-of-hours)",
+          "9",
+          "**no**",
+          "**no**",
+          "`\u2014`",
+          "1",
+          "`20260805T175846Z`"
+        ],
+        [
+          "`appt_reschedule` (reschedule)",
+          "8",
+          "yes",
+          "**no**",
+          "`\u2014`",
+          "1",
+          "`20260805T174254Z`"
+        ]
+      ],
+      "note": "Each row is one scripted caller persona driven over real audio, taken from the most recent session recorded for that scenario. 'Closed' and 'goal met' are independent: an agent can satisfy the caller and never hang up, or hang up having satisfied nobody.",
+      "allow_providers": false,
+      "allow_context": true
+    },
+    {
+      "key": "sessions",
+      "title": "Per-scenario outcomes, as the harness summarised them",
       "columns": [
         "Scenario",
         "Turns",
@@ -224,7 +287,7 @@
     "endpoint": "LiveKit voice room (POST /api/bench/voice/start)",
     "mode": "voice",
     "harness_commit": null,
-    "repo_commit": "86b4475",
+    "repo_commit": "89f2e02",
     "run_dir": "/private/tmp/claude-501/-Users-karan-Desktop-work-whissle-live-assist/766421da-8ef4-4ce2-9733-86e5c5f3fced/scratchpad/wt-reports/results/whissle/flow_sim_baseline/appointment_scheduling",
     "captured_at": "2026-08-05",
     "dataset": "scripted caller personas for `appointment_scheduling`",
@@ -352,6 +415,44 @@
       "rate_pct": 80.0
     }
   ],
+  "sample_cases": [
+    {
+      "case_id": "appt_double_booking",
+      "outcome": "goal met",
+      "is_success": true,
+      "score": null,
+      "task": "persona `new` \u00b7 7 caller turns \u00b7 final state `\u2014`",
+      "expected": "",
+      "got": "",
+      "excerpt": "AGENT: Hello! How can I help you today?\nUSER: Hi, I'm trying to book an appointment and I heard you have some slots available next week?\nAGENT: Hi there! I'm listening \u2014 go ahead, what can I help you with? Hi there! I'm here to help you book an appointment. What service would you like to schedule? That's great! What type of appointment are you looking to book \u2014 is it for the dental clinic, tut oring, or car rental? That's right, we do have availability next week. What type of appointment would y",
+      "artifact": "appt_double_booking_20260805T180858Z.mix.wav",
+      "why_shown": "The customer asked for a popular slot (2 PM Wednesday afternoon), the agent confirmed it was available, and the customer accepted and confirmed the booking for Wednesday, August 13th at 2 PM."
+    },
+    {
+      "case_id": "appt_cancel",
+      "outcome": "goal not met",
+      "is_success": false,
+      "score": null,
+      "task": "persona `cancel` \u00b7 7 caller turns \u00b7 final state `\u2014`",
+      "expected": "",
+      "got": "",
+      "excerpt": "AGENT: Hello! How can I help you today?\nUSER: Hi, yeah, I need to cancel an appointment I have coming up. Can you help me with that?\nAGENT: I'm here to help \u2014 what do you need? I can help you with that. Can you tell me the date or time of the appointment you'd like to cancel? Of course, I can help you cancel it. What's the phone number the appointment was booked under? Would you like to book an appointment, or is there something else I can help with?\nUSER: It's booked under 555-0147, and the app",
+      "artifact": "appt_cancel_20260805T175103Z.mix.wav",
+      "why_shown": "The appointment was not cancelled; instead, the customer was transferred to another team without confirmation that the cancellation would be completed."
+    },
+    {
+      "case_id": "appt_new",
+      "outcome": "goal not met",
+      "is_success": false,
+      "score": null,
+      "task": "persona `new` \u00b7 3 caller turns \u00b7 final state `\u2014`",
+      "expected": "",
+      "got": "",
+      "excerpt": "AGENT: Hello! How can I help you today?\nUSER: Hi, yeah, I'm calling because I'd like to schedule a consultation appointment for next week if you have anything available.\nAGENT: Great! I'd be happy to help you book a consultation. Which service would you like to schedule \u2014 is it for the dental clinic, the tutoring service, or the car rental business? Got it, next week works. But I still need to know which service you'd like to cons ult about \u2014 is it the dental clinic in Patiala, the online tutori",
+      "artifact": "appt_new_20260805T173908Z.mix.wav",
+      "why_shown": "not run"
+    }
+  ],
   "limitations": [
     {
       "key": "tiny_n",
@@ -386,7 +487,7 @@
       "python -m tau2.reporting.cli build results/whissle/flow_sim/appointment_scheduling"
     ],
     "environment": {
-      "repo commit at report time": "86b4475",
+      "repo commit at report time": "89f2e02",
       "extras required": "voice (LiveKit, audio codecs)"
     },
     "notes": [
@@ -418,12 +519,12 @@
     {
       "path": "REPORT.md",
       "description": "this report",
-      "present": false
+      "present": true
     },
     {
       "path": "report.json",
       "description": "machine-readable form of this report",
-      "present": false
+      "present": true
     }
   ],
   "licence_note": "",

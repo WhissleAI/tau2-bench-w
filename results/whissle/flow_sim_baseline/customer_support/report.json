@@ -84,7 +84,44 @@
     ]
   ],
   "scoring_rule": "task success = graded goal-met / executed sessions; clean close = sessions emitting `flow_end` / executed sessions",
-  "tables": [],
+  "tables": [
+    {
+      "key": "scenarios",
+      "title": "Per-scenario outcomes",
+      "columns": [
+        "Scenario",
+        "Turns",
+        "Closed",
+        "Goal met",
+        "Final state",
+        "Findings",
+        "Session"
+      ],
+      "rows": [
+        [
+          "`cs_needs_escalation` (needs-escalation)",
+          "5",
+          "yes",
+          "yes",
+          "`\u2014`",
+          "0",
+          "`20260805T182228Z`"
+        ],
+        [
+          "`cs_resolvable_login` (resolvable)",
+          "6",
+          "yes",
+          "**no**",
+          "`\u2014`",
+          "1",
+          "`20260805T181604Z`"
+        ]
+      ],
+      "note": "Each row is one scripted caller persona driven over real audio, taken from the most recent session recorded for that scenario. 'Closed' and 'goal met' are independent: an agent can satisfy the caller and never hang up, or hang up having satisfied nobody.",
+      "allow_providers": false,
+      "allow_context": true
+    }
+  ],
   "exclusions": {
     "n_total": 2,
     "n_scored": 2,
@@ -113,7 +150,7 @@
     "endpoint": "LiveKit voice room (POST /api/bench/voice/start)",
     "mode": "voice",
     "harness_commit": null,
-    "repo_commit": "86b4475",
+    "repo_commit": "89f2e02",
     "run_dir": "/private/tmp/claude-501/-Users-karan-Desktop-work-whissle-live-assist/766421da-8ef4-4ce2-9733-86e5c5f3fced/scratchpad/wt-reports/results/whissle/flow_sim_baseline/customer_support",
     "captured_at": "2026-08-05",
     "dataset": "scripted caller personas for `customer_support`",
@@ -177,6 +214,32 @@
       "rate_pct": 50.0
     }
   ],
+  "sample_cases": [
+    {
+      "case_id": "cs_needs_escalation",
+      "outcome": "goal met",
+      "is_success": true,
+      "score": null,
+      "task": "persona `needs-escalation` \u00b7 5 caller turns \u00b7 final state `\u2014`",
+      "expected": "",
+      "got": "",
+      "excerpt": "AGENT: Hello! How can I help you today?\nUSER: Yeah, hi, I'm calling because I've got a serious problem with my account\u2014I uploaded a bunch of important files to your cloud storage last week and now they're just... gone. I need to figure out what happened to them.\nAGENT: Hi there! What can I do for you? I'm sorry to hear that. What's happening with your account? I'm really sorry to hear that \u2014 that sounds stressful. Let me get some information so I can help you track this down.\n\nPlease say or ente",
+      "artifact": "cs_needs_escalation_20260805T182228Z.mix.wav",
+      "why_shown": "The agent escalated the data-loss issue to a specialist with backend access and confirmed that a ticket would be created with a reference number provided by the next agent."
+    },
+    {
+      "case_id": "cs_resolvable_login",
+      "outcome": "goal not met",
+      "is_success": false,
+      "score": null,
+      "task": "persona `resolvable` \u00b7 6 caller turns \u00b7 final state `\u2014`",
+      "expected": "",
+      "got": "",
+      "excerpt": "AGENT: Hello! How can I help you today?\nUSER: Hi, yeah, I'm having trouble logging into my account and I'm not sure what's going on. I've tried a few times already and it's just not working.\nAGENT: I'm sorry to hear that. Which service are you trying to log into \u2014 is it the dental clinic, the car rental, or the tutoring service? I understand. Can you tell me which of your businesses you're trying to access \u2014 the dental clinic in Patiala, the car rental in Europe, or the online tutoring service? ",
+      "artifact": "cs_resolvable_login_20260805T181604Z.mix.wav",
+      "why_shown": "The customer's login issue was not resolved during the call; instead, the agent scheduled a callback for technical support to handle the password reset in the future."
+    }
+  ],
   "limitations": [
     {
       "key": "tiny_n",
@@ -211,7 +274,7 @@
       "python -m tau2.reporting.cli build results/whissle/flow_sim/customer_support"
     ],
     "environment": {
-      "repo commit at report time": "86b4475",
+      "repo commit at report time": "89f2e02",
       "extras required": "voice (LiveKit, audio codecs)"
     },
     "notes": [
@@ -243,12 +306,12 @@
     {
       "path": "REPORT.md",
       "description": "this report",
-      "present": false
+      "present": true
     },
     {
       "path": "report.json",
       "description": "machine-readable form of this report",
-      "present": false
+      "present": true
     }
   ],
   "licence_note": "",

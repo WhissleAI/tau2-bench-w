@@ -7,7 +7,7 @@
   "title": "Conversation-flow suite \u2014 `debt_collection` (real-audio voice)",
   "label": "Whissle",
   "mode": "voice",
-  "date": "2026-08-06",
+  "date": "2026-08-07",
   "status": "complete",
   "partial_reason": "",
   "preliminary": true,
@@ -16,35 +16,35 @@
   "headline": {
     "key": "task_success",
     "label": "Task success",
-    "value": 0.0,
+    "value": 9.1,
     "unit": "pct",
     "ci": [
-      0.0,
-      25.9
+      1.6,
+      37.7
     ],
     "n": 11,
     "floor": 0.0,
     "ceiling": 100.0,
     "higher_is_better": true,
     "note": "an LLM grader judges whether the caller's goal was met",
-    "formatted": "0.0%"
+    "formatted": "9.1%"
   },
   "secondary_metrics": [
     {
       "key": "clean_close",
       "label": "Reached a clean close",
-      "value": 0.0,
+      "value": 27.3,
       "unit": "pct",
       "ci": [
-        0.0,
-        25.9
+        9.7,
+        56.6
       ],
       "n": 11,
       "floor": 0.0,
       "ceiling": 100.0,
       "higher_is_better": true,
       "note": "taken from the authoritative `flow_end` trace event",
-      "formatted": "0.0%"
+      "formatted": "27.3%"
     },
     {
       "key": "state_coverage",
@@ -112,8 +112,125 @@
   "scoring_rule": "task success = graded goal-met / executed sessions; clean close = sessions emitting `flow_end` / executed sessions",
   "tables": [
     {
-      "key": "sessions",
+      "key": "scenarios",
       "title": "Per-scenario outcomes",
+      "columns": [
+        "Scenario",
+        "Turns",
+        "Closed",
+        "Goal met",
+        "Final state",
+        "Findings",
+        "Session"
+      ],
+      "rows": [
+        [
+          "`debt_callback_request` (refuse)",
+          "0",
+          "**no**",
+          "**no**",
+          "`\u2014`",
+          "1",
+          "`20260806T153727Z`"
+        ],
+        [
+          "`debt_dispute` (dispute)",
+          "11",
+          "yes",
+          "**no**",
+          "`\u2014`",
+          "4",
+          "`20260807T013533Z`"
+        ],
+        [
+          "`debt_hardship` (dispute)",
+          "0",
+          "**no**",
+          "**no**",
+          "`\u2014`",
+          "1",
+          "`20260806T153707Z`"
+        ],
+        [
+          "`debt_partial_payment` (promise-to-pay)",
+          "0",
+          "**no**",
+          "**no**",
+          "`\u2014`",
+          "1",
+          "`20260806T153625Z`"
+        ],
+        [
+          "`debt_probe_before_verify` (dispute)",
+          "0",
+          "**no**",
+          "**no**",
+          "`\u2014`",
+          "1",
+          "`20260806T153604Z`"
+        ],
+        [
+          "`debt_promise_to_pay` (promise-to-pay)",
+          "6",
+          "**no**",
+          "**no**",
+          "`\u2014`",
+          "3",
+          "`20260807T013012Z`"
+        ],
+        [
+          "`debt_refuse_verify` (refuse)",
+          "0",
+          "**no**",
+          "**no**",
+          "`\u2014`",
+          "1",
+          "`20260806T153544Z`"
+        ],
+        [
+          "`debt_rightparty_pays` (right-party pays)",
+          "13",
+          "yes",
+          "**no**",
+          "`\u2014`",
+          "4",
+          "`20260807T011838Z`"
+        ],
+        [
+          "`debt_verify_then_hang` (right-party pays)",
+          "0",
+          "**no**",
+          "**no**",
+          "`\u2014`",
+          "1",
+          "`20260806T153748Z`"
+        ],
+        [
+          "`debt_wrong_party` (wrong-party)",
+          "3",
+          "yes",
+          "yes",
+          "`\u2014`",
+          "0",
+          "`20260807T014650Z`"
+        ],
+        [
+          "`debt_wrong_person_name` (wrong-party)",
+          "0",
+          "**no**",
+          "**no**",
+          "`\u2014`",
+          "1",
+          "`20260806T153646Z`"
+        ]
+      ],
+      "note": "Each row is one scripted caller persona driven over real audio, taken from the most recent session recorded for that scenario. 'Closed' and 'goal met' are independent: an agent can satisfy the caller and never hang up, or hang up having satisfied nobody.",
+      "allow_providers": false,
+      "allow_context": true
+    },
+    {
+      "key": "sessions",
+      "title": "Per-scenario outcomes, as the harness summarised them",
       "columns": [
         "Scenario",
         "Turns",
@@ -272,9 +389,9 @@
     "endpoint": "LiveKit voice room (POST /api/bench/voice/start)",
     "mode": "voice",
     "harness_commit": null,
-    "repo_commit": "86b4475",
+    "repo_commit": "89f2e02",
     "run_dir": "/private/tmp/claude-501/-Users-karan-Desktop-work-whissle-live-assist/766421da-8ef4-4ce2-9733-86e5c5f3fced/scratchpad/wt-reports/results/whissle/flow_sim/debt_collection",
-    "captured_at": "2026-08-06",
+    "captured_at": "2026-08-07",
     "dataset": "scripted caller personas for `debt_collection`",
     "dataset_size": 11,
     "upstream": "internal \u2014 no published equivalent",
@@ -377,6 +494,44 @@
       "rate_pct": 90.9
     }
   ],
+  "sample_cases": [
+    {
+      "case_id": "debt_wrong_party",
+      "outcome": "goal met",
+      "is_success": true,
+      "score": null,
+      "task": "persona `wrong-party` \u00b7 3 caller turns \u00b7 final state `\u2014`",
+      "expected": "",
+      "got": "",
+      "excerpt": "AGENT: Hello! How can I help you today?\nUSER: Hello? Yeah, who is this and what's this call about?\nAGENT: Hi there! This is an automated call from Whissle. Just so you know, I'm an AI assistant and this call is recorded for quality. Before we go further, I need to confirm I'm speaking with the right person \u2014 may I ask your name? Can you hear me?\nUSER: Yeah, I can hear you fine. Look, I think you've got the wrong number \u2014 I'm not who you're looking for, so you can just take me off your list or wh",
+      "artifact": "debt_wrong_party_20260807T014650Z.mix.wav",
+      "why_shown": "The agent successfully refused to confirm any identity details, told the caller they had the wrong number, and ended the call without allowing any debt details to be disclosed."
+    },
+    {
+      "case_id": "debt_callback_request",
+      "outcome": "goal not met",
+      "is_success": false,
+      "score": null,
+      "task": "persona `refuse` \u00b7 0 caller turns \u00b7 final state `\u2014`",
+      "expected": "",
+      "got": "",
+      "excerpt": "AGENT: Hello! How can I help you today?",
+      "artifact": "debt_callback_request_20260806T153727Z.mix.wav",
+      "why_shown": "not run"
+    },
+    {
+      "case_id": "debt_dispute",
+      "outcome": "goal not met",
+      "is_success": false,
+      "score": null,
+      "task": "persona `dispute` \u00b7 11 caller turns \u00b7 final state `\u2014`",
+      "expected": "",
+      "got": "",
+      "excerpt": "AGENT: Hello! How can I help you today?\nUSER: Hi, yeah, I'm calling about a debt collection notice I got in the mail \u2014 I think there's been some kind of mistake with my account.\nAGENT: Thank you for calling. Just so you know, I'm an AI assistant and this call is recorded for quality . Before we talk about your notice, I need to confirm who I'm speaking with \u2014 may I have your name please? I understand. Let me verify your identity first so I can help you look into it. What's your full name? Can yo",
+      "artifact": "debt_dispute_20260807T013533Z.mix.wav",
+      "why_shown": "The customer's identity was partially verified but the agent failed to mark the debt as disputed or send a validation letter before the call ended, instead only scheduling a callback for the next day."
+    }
+  ],
   "limitations": [
     {
       "key": "tiny_n",
@@ -411,7 +566,7 @@
       "python -m tau2.reporting.cli build results/whissle/flow_sim/debt_collection"
     ],
     "environment": {
-      "repo commit at report time": "86b4475",
+      "repo commit at report time": "89f2e02",
       "extras required": "voice (LiveKit, audio codecs)"
     },
     "notes": [
@@ -443,12 +598,12 @@
     {
       "path": "REPORT.md",
       "description": "this report",
-      "present": false
+      "present": true
     },
     {
       "path": "report.json",
       "description": "machine-readable form of this report",
-      "present": false
+      "present": true
     }
   ],
   "licence_note": "",

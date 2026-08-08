@@ -1,0 +1,418 @@
+{
+  "schema": "whissle.benchmark.run/v1",
+  "generator": "tau2.reporting (tau2.reporting.run_report/v1)",
+  "generatedAt": "2026-08-08T16:51:41+00:00",
+  "runId": "agentclinic/20260808T092952Z-ac_override_100",
+  "benchmark": "agentclinic",
+  "benchmarkTitle": "AgentClinic",
+  "seriesKey": "agentclinic:MedQA:text:override:off",
+  "title": "AgentClinic \u2014 Whissle as the doctor (MedQA)",
+  "label": "Whissle",
+  "mode": "text",
+  "modality": "text",
+  "date": "2026-08-08",
+  "status": "complete",
+  "partialReason": "",
+  "sampleSize": 100,
+  "attempted": 100,
+  "excluded": 0,
+  "exclusionRatePct": 0.0,
+  "exclusionBreakdown": {},
+  "exclusionReasons": [],
+  "excludedIds": [],
+  "exclusionBounds": null,
+  "preliminary": false,
+  "preliminaryReason": "",
+  "judge": {
+    "kind": "llm_jury",
+    "independent": false,
+    "provider": "whissle",
+    "model": "default",
+    "endpoint": "whissle:/api/models/chat",
+    "k": 1,
+    "note": "Judge independence: this run's simulators and graders were routed through Whissle's own model API (`POST /api/models/chat`). That is a real frontier model, not a self-grading shortcut \u2014 the agent under test and the judge are different models on different prompts \u2014 and it is the right default for internal diagnostics, regression tracking and before/after comparisons, where what matters is that the measuring stick is held constant. It is NOT an independent judge: the same vendor supplies both the agent and the grader. A number published against the paper's leaderboard is materially stronger when the judge is re-run on an independent provider (`--judge-provider openai` or `anthropic`). Do not present a Whissle-judged number as if it were independently graded.",
+    "calls": 1183,
+    "costUsd": 0.06434,
+    "summary": "whissle (NOT independent)"
+  },
+  "qualifier": "N = 100 \u00b7 judge not independent",
+  "headline": {
+    "key": "accuracy",
+    "label": "Diagnostic accuracy",
+    "unit": "pct",
+    "value": 75.0,
+    "valueFormatted": "75.0%",
+    "ci": [
+      65.7,
+      82.5
+    ],
+    "n": 100,
+    "floor": 0.0,
+    "ceiling": 100.0,
+    "higherIsBetter": true,
+    "note": "upstream's formula, unmodified: correct / presented",
+    "score0to100": 75.0,
+    "scoreKind": "pass_rate"
+  },
+  "secondaryMetrics": [
+    {
+      "key": "accuracy_when_committed",
+      "label": "Accuracy when a diagnosis was actually given",
+      "unit": "pct",
+      "value": 83.3,
+      "valueFormatted": "83.3%",
+      "ci": [
+        74.3,
+        89.6
+      ],
+      "n": 90,
+      "floor": 0.0,
+      "ceiling": 100.0,
+      "higherIsBetter": true,
+      "note": "refusals and non-commits removed from the denominator"
+    },
+    {
+      "key": "commit_rate",
+      "label": "Commit rate",
+      "unit": "pct",
+      "value": 90.0,
+      "valueFormatted": "90.0%",
+      "ci": [
+        82.6,
+        94.5
+      ],
+      "n": 100,
+      "floor": 0.0,
+      "ceiling": 100.0,
+      "higherIsBetter": true,
+      "note": "how often the agent named a diagnosis at all"
+    }
+  ],
+  "tables": [
+    {
+      "key": "outcomes",
+      "title": "Outcome distribution",
+      "columns": [
+        "Outcome",
+        "N",
+        "Share",
+        "Reading"
+      ],
+      "rows": [
+        [
+          "correct",
+          "75",
+          "75.0%",
+          "named the right diagnosis"
+        ],
+        [
+          "incorrect",
+          "15",
+          "15.0%",
+          "named a diagnosis; it was wrong"
+        ],
+        [
+          "no_commit",
+          "10",
+          "10.0%",
+          "ran out of inferences without committing"
+        ]
+      ],
+      "note": "`declined` and `no_commit` both count as incorrect in the headline accuracy, which is upstream's rule. Separating them is how you tell a cautious agent from a lost one.",
+      "allow_providers": false,
+      "allow_context": true
+    },
+    {
+      "key": "effort",
+      "title": "Diagnostic effort",
+      "columns": [
+        "Measure",
+        "Mean",
+        "Max",
+        "Budget"
+      ],
+      "rows": [
+        [
+          "Inferences used",
+          "11.7",
+          "20",
+          "20"
+        ],
+        [
+          "Tests ordered",
+          "2.8",
+          "11",
+          "unbounded"
+        ]
+      ],
+      "note": "An agent that hits the inference budget is being cut off mid-workup, and its `no_commit` count is a budget artefact rather than a capability finding.",
+      "allow_providers": false,
+      "allow_context": true
+    }
+  ],
+  "baselines": [],
+  "baselineComparability": {
+    "comparable": false,
+    "note": "No published AgentClinic baseline is registered in this harness, so no comparison table is printed. The upstream paper reports accuracies on this dataset, but under a different moderator and with a different inference budget; transcribing those numbers here without re-running under a matched protocol would produce a comparison that looks rigorous and is not. This section stays empty until the protocol is matched.",
+    "publishedProtocol": "see arXiv:2405.07960 \u2014 not replicated here",
+    "source": ""
+  },
+  "failures": [
+    {
+      "key": "incorrect",
+      "label": "Committed to the wrong diagnosis",
+      "count": 15,
+      "severity": "high",
+      "description": "The agent named a diagnosis and it was not the reference one. These are the cases worth reading: a confident wrong answer is the failure mode with clinical consequences, and the transcript shows which question was never asked.",
+      "denominator": 100,
+      "examples": [
+        {
+          "case_id": "MedQA-1",
+          "summary": "said \u201cMultiple Sclerosis (MS) with natalizumab-associated neuroinflammation\u201d, reference \u201cProgressive multifocal encephalopathy (PML)\u201d \u00b7 12 inferences \u00b7 2 tests",
+          "evidence": "Based on your presentation\u2014progressive ataxia and arm weakness over three weeks, demyelinating lesions on MRI, and your immunosuppressed state on natalizumab\u2014the clinical picture is most consistent with MS, likely unmasked or accelerated by the natalizumab treatment. You need urgent neurology referr",
+          "artifact": "cases/MedQA-1.json"
+        },
+        {
+          "case_id": "MedQA-15",
+          "summary": "said \u201cBenign Subcutaneous Cyst or Lipoma of the Neck\n\nYou can follow up with your primary care doctor, and if the swelling continues to grow or becomes bothersome, we can discuss removal options with a surgeon. Take care!\u201d, reference \u201cEpidermoid cyst\u201d \u00b7 8 inferences \u00b7 1 tests",
+          "evidence": "I'm glad the imaging is reassuring for you. Based on the ultrasound showing a cystic lesion, the normal CT, the firm mobile nodule on examination, and your lack of systemic symptoms, this appears to be a benign lesion\u2014most likely either a simple cyst or a lipoma, which are both common and harmless g",
+          "artifact": "cases/MedQA-15.json"
+        },
+        {
+          "case_id": "MedQA-24",
+          "summary": "said \u201cBenign Ovarian Tumor (likely mature cystic teratoma or serous cystadenoma) with Secondary Ascites and Pleural Effusion due to mechanical obstruction and fluid redistribution\u201d, reference \u201cMeigs syndrome\u201d \u00b7 13 inferences \u00b7 2 tests",
+          "evidence": "I've gathered substantial information, and based on the clinical picture\u2014a large ovarian mass with ascites, right-sided pleural effusion, normal CA-125, normal pelvic MRI imaging, normal liver function, no family cancer history, and your presentation of progressive dyspnea with orthopnea\u2014I believe w",
+          "artifact": "cases/MedQA-24.json"
+        }
+      ],
+      "rate_pct": 15.0
+    },
+    {
+      "key": "no_commit",
+      "label": "Never committed \u2014 ran out of budget",
+      "count": 10,
+      "severity": "medium",
+      "description": "The inference budget expired before the agent named a diagnosis. Scored as incorrect, but it is a different defect from being wrong: it is an agent that gathers indefinitely and never concludes. Where these cluster, the accuracy number is partly a measure of pacing.",
+      "denominator": 100,
+      "examples": [
+        {
+          "case_id": "MedQA-44",
+          "summary": "used 20/20 inferences \u00b7 4 tests ordered",
+          "evidence": "That\u2019s good to know, because the coughing and the tightness in my chest are what's really bothering me right now. I\u2019m ready to start the inhaler if it means I can finally sleep through the night and walk up my stairs without stopping. What should I do first to get this under control?",
+          "artifact": "cases/MedQA-44.json"
+        },
+        {
+          "case_id": "MedQA-48",
+          "summary": "used 20/20 inferences \u00b7 5 tests ordered",
+          "evidence": "It's a relief to hear you might be narrowing it down to something, even if it's rare. Does this rare thing explain why my uncle's joints get so big and why I'm still bleeding so much from my mouth? I just want to know if there's a specific treatment once you figure out which one it is.",
+          "artifact": "cases/MedQA-48.json"
+        },
+        {
+          "case_id": "MedQA-52",
+          "summary": "used 20/20 inferences \u00b7 5 tests ordered",
+          "evidence": "I see, it's strange to think something could be there my whole life and only start acting up now. Will the next steps tell us for sure if that's what's causing the weight loss and this yellow skin?",
+          "artifact": "cases/MedQA-52.json"
+        }
+      ],
+      "rate_pct": 10.0
+    }
+  ],
+  "sampleCases": [
+    {
+      "case_id": "MedQA-0",
+      "outcome": "correct",
+      "is_success": true,
+      "score": null,
+      "task": "MedQA consultation \u00b7 9/20 inferences \u00b7 1 tests ordered",
+      "expected": "Myasthenia gravis",
+      "got": "Myasthenia Gravis",
+      "excerpt": "These test results are highly diagnostic and align perfectly with your clinical presentation. The combination of decreased muscle response on repetitive stimulation, positive acetylcholine receptor antibodies, and your characteristic pattern of fatigable weakness with ocular involvement is conclusive.\n\nDIAGNOSIS READY: Myasthenia Gravis",
+      "artifact": "cases/MedQA-0.json",
+      "why_shown": "committed the reference diagnosis"
+    },
+    {
+      "case_id": "MedQA-10",
+      "outcome": "correct",
+      "is_success": true,
+      "score": null,
+      "task": "MedQA consultation \u00b7 10/20 inferences \u00b7 1 tests ordered",
+      "expected": "Hemorrhoids",
+      "got": "Internal Hemorrhoids (Prolapsed)\n\nWishing you well with your colonoscopy procedure and your recovery ahead.",
+      "excerpt": "That was the right approach. Based on everything we've gathered\u2014your examination showing prolapsed internal hemorrhoids on anoscopy, normal blood work, the characteristic bright red bleeding with bowel movements, no systemic symptoms, and the mass being easily reducible\u2014I'm confident in my diagnosis. The colonoscopy will still proceed to ensure there are no other lesions higher in the colon, but I",
+      "artifact": "cases/MedQA-10.json",
+      "why_shown": "committed the reference diagnosis"
+    },
+    {
+      "case_id": "MedQA-1",
+      "outcome": "incorrect",
+      "is_success": false,
+      "score": null,
+      "task": "MedQA consultation \u00b7 12/20 inferences \u00b7 2 tests ordered",
+      "expected": "Progressive multifocal encephalopathy (PML)",
+      "got": "Multiple Sclerosis (MS) with natalizumab-associated neuroinflammation",
+      "excerpt": "Based on your presentation\u2014progressive ataxia and arm weakness over three weeks, demyelinating lesions on MRI, and your immunosuppressed state on natalizumab\u2014the clinical picture is most consistent with MS, likely unmasked or accelerated by the natalizumab treatment. You need urgent neurology referral and likely an urgent MRI of your spinal cord to assess for additional lesions, and your natalizum",
+      "artifact": "cases/MedQA-1.json",
+      "why_shown": "committed a different diagnosis, or never committed at all"
+    },
+    {
+      "case_id": "MedQA-15",
+      "outcome": "incorrect",
+      "is_success": false,
+      "score": null,
+      "task": "MedQA consultation \u00b7 8/20 inferences \u00b7 1 tests ordered",
+      "expected": "Epidermoid cyst",
+      "got": "Benign Subcutaneous Cyst or Lipoma of the Neck\n\nYou can follow up with your primary care doctor, and if the swelling continues to grow or becomes bothersome, we can discuss removal options with a surg",
+      "excerpt": "I'm glad the imaging is reassuring for you. Based on the ultrasound showing a cystic lesion, the normal CT, the firm mobile nodule on examination, and your lack of systemic symptoms, this appears to be a benign lesion\u2014most likely either a simple cyst or a lipoma, which are both common and harmless growths in the subcutaneous tissue.\n\nDIAGNOSIS READY: Benign Subcutaneous Cyst or Lipoma of the Neck\n",
+      "artifact": "cases/MedQA-15.json",
+      "why_shown": "committed a different diagnosis, or never committed at all"
+    }
+  ],
+  "limitations": [
+    {
+      "key": "judge_independence",
+      "text": "The moderator, the patient simulator and the decline-judge all ran on the same vendor's model API as the agent under test. Constant across runs it measures change honestly; against an external leaderboard it does not.",
+      "severity": "high"
+    },
+    {
+      "key": "moderator_leniency",
+      "text": "Accuracy depends on a moderator model deciding whether free text matches a reference diagnosis. The strict and lenient counts differ, and the headline uses the strict one \u2014 but the boundary is a model's judgement, not a string match.",
+      "severity": "medium"
+    },
+    {
+      "key": "answer_options_leak",
+      "text": "The upstream dataset presents the reference diagnosis among a small set of options in some configurations, which inflates accuracy for every model equally. It is left as-is so the number stays comparable, but it is not a measure of open-ended diagnostic ability.",
+      "severity": "medium"
+    },
+    {
+      "key": "head_selection",
+      "text": "100 scenarios were taken from the head of a 107-scenario dataset rather than drawn at random.",
+      "severity": "medium"
+    },
+    {
+      "key": "simulated_patient",
+      "text": "The patient is a language model following a case card. It answers questions more cooperatively, more fluently and more consistently than a person in a waiting room, so the intake task here is easier than the product's real one.",
+      "severity": "high"
+    }
+  ],
+  "whatMeasured": "Whether an agent can run a diagnostic consultation: take a patient's presentation, ask the questions that discriminate between the candidate diagnoses, order the tests it needs, and commit to an answer within a bounded number of inferences. The agent plays the doctor; a simulated patient and a simulated measurement device play the other side.",
+  "whyMeasured": "A single-turn medical QA score says whether a model knows the answer. This says whether it can *get* to the answer through a conversation where the information arrives only if it asks \u2014 which is the shape of every real intake.",
+  "methodology": [
+    {
+      "term": "Agent under test",
+      "detail": "the deployed Whissle agent brain, unmodified"
+    },
+    {
+      "term": "Mode",
+      "detail": "`text` transport, `markers` action protocol, vision `off`"
+    },
+    {
+      "term": "Endpoint",
+      "detail": "`POST /api/bench/agent-turn`"
+    },
+    {
+      "term": "Prompt handling",
+      "detail": "`override` \u2014 the benchmark's doctor prompt is used verbatim, which is what keeps the number in the same units as the published table"
+    },
+    {
+      "term": "Turn limit",
+      "detail": "20 inferences per case; a case that has not committed by then is scored `no_commit`, and `no_commit` counts as incorrect"
+    },
+    {
+      "term": "Tools bound",
+      "detail": "the benchmark's own action markers (ask / order test / commit diagnosis), parsed by the harness"
+    },
+    {
+      "term": "Judge",
+      "detail": "a moderator model decides whether the committed free-text diagnosis matches the reference, and a decline-judge separates a refusal from a wrong answer"
+    },
+    {
+      "term": "Scoring rule",
+      "detail": "accuracy = correct / presented, upstream's formula unmodified"
+    }
+  ],
+  "scoringRule": "accuracy = total_correct / total_presents (upstream formula)",
+  "provenance": {
+    "agent_id": "c8aa2355-9fd7-46da-9993-07ea566ec3d6",
+    "base_url": "https://aws-gateway-backend.whissle.ai/bot",
+    "endpoint": "POST /api/bench/agent-turn",
+    "mode": "text",
+    "harness_commit": "86b4475",
+    "repo_commit": "89f2e02",
+    "run_dir": "/private/tmp/claude-501/-Users-karan-Desktop-work-whissle-live-assist/766421da-8ef4-4ce2-9733-86e5c5f3fced/scratchpad/wt-reports/results/whissle/agentclinic/20260808T092952Z-ac_override_100",
+    "captured_at": "2026-08-08T09:30:16+00:00",
+    "dataset": "MedQA",
+    "dataset_size": 107,
+    "upstream": "github.com/SamuelSchmidgall/AgentClinic (arXiv:2405.07960)",
+    "extra": {
+      "protocol": "markers",
+      "history": "native",
+      "prompt_mode": "override",
+      "vision": "off",
+      "agent_type": null,
+      "agent_created_for_run": false,
+      "agent_deleted": null
+    }
+  },
+  "sampling": {
+    "method": "head-of-set selection",
+    "n_population": 107,
+    "n_requested": 100,
+    "n_selected": 100,
+    "seed": 42,
+    "strata_keys": [],
+    "strata_tables": [],
+    "note": "`head` selection takes the leading N scenarios of the dataset. It is deterministic and it is not random \u2014 any ordering structure in the dataset is inherited wholesale."
+  },
+  "reproduction": {
+    "commands": [
+      "uv sync --extra dev",
+      "python -m tau2.health.agentclinic.run --dataset MedQA --limit 100 --prompt-mode override --seed 42",
+      "python -m tau2.reporting.cli build results/whissle/agentclinic/20260808T092952Z-ac_override_100"
+    ],
+    "environment": {
+      "WHISSLE_BASE": "https://aws-gateway-backend.whissle.ai/bot",
+      "harness commit": "86b4475",
+      "repo commit at report time": "89f2e02"
+    },
+    "notes": [
+      "`head` selection with a fixed limit reproduces the same scenario set exactly.",
+      "The run provisions a throwaway agent and deletes it afterwards (`agent_deleted: None`), so the agent id in provenance will not resolve after the fact."
+    ]
+  },
+  "artifacts": [
+    {
+      "path": "RUN.json",
+      "description": "run configuration, written before the first case",
+      "present": true
+    },
+    {
+      "path": "SUMMARY.json",
+      "description": "run-level aggregation, written on completion",
+      "present": true
+    },
+    {
+      "path": "cases/",
+      "description": "100 per-case records with `diagnostics`",
+      "present": true
+    },
+    {
+      "path": "transcripts/",
+      "description": "human-readable consultation transcripts",
+      "present": true
+    },
+    {
+      "path": "REPORT.md",
+      "description": "this report",
+      "present": true
+    },
+    {
+      "path": "report.json",
+      "description": "machine-readable form of this report",
+      "present": true
+    }
+  ],
+  "licenceNote": "AgentClinic, arXiv:2405.07960. Research measurement only \u2014 not a clinical evaluation of anything.",
+  "warnings": [],
+  "reportMarkdown": "# AgentClinic \u2014 Whissle as the doctor (MedQA)\n\n## Abstract\n\nWhissle was evaluated on **AgentClinic** in `text` mode. The headline result is **75.0%** (N = 100 \u00b7 judge not independent) for diagnostic accuracy, 95% CI [65.7%, 82.5%].\n\nWhether an agent can run a diagnostic consultation: take a patient's presentation, ask the questions that discriminate between the candidate diagnoses, order the tests it needs, and commit to an answer within a bounded number of inferences. The agent plays the doctor; a simulated patient and a simulated measurement device play the other side.\n\n**The judge is not independent of the agent's vendor.** This number is a sound internal regression instrument and is not a leaderboard result; \u00a73 says exactly why.\n\n## At a glance\n\n| Field | Value |\n|---|---|\n| **Diagnostic accuracy** | **75.0%** (N = 100 \u00b7 judge not independent) |\n<!-- honesty:allow-context -->\n| 95% CI | [65.7%, 82.5%] |\n| Attempted / scored / excluded | 100 / 100 / 0 (0.0%) |\n| Judge | whissle (NOT independent) |\n| Mode | `text` |\n| Date | 2026-08-08 |\n| Harness commit | `86b4475` |\n| Run id | `agentclinic/20260808T092952Z-ac_override_100` |\n| Status | complete |\n<!-- /honesty:allow-context -->\n\n<!-- honesty:allow-context -->\n- **Accuracy when a diagnosis was actually given:** 83.3% [74.3%, 89.6%], N = 90 \u2014 refusals and non-commits removed from the denominator\n- **Commit rate:** 90.0% [82.6%, 94.5%], N = 100 \u2014 how often the agent named a diagnosis at all\n<!-- /honesty:allow-context -->\n\n## 1. What was measured, and why\n\nWhether an agent can run a diagnostic consultation: take a patient's presentation, ask the questions that discriminate between the candidate diagnoses, order the tests it needs, and commit to an answer within a bounded number of inferences. The agent plays the doctor; a simulated patient and a simulated measurement device play the other side.\n\n**Why this benchmark.** A single-turn medical QA score says whether a model knows the answer. This says whether it can *get* to the answer through a conversation where the information arrives only if it asks \u2014 which is the shape of every real intake.\n\n## 2. Methodology\n\n| Field | Value |\n|---|---|\n| Agent under test | the deployed Whissle agent brain, unmodified |\n| Mode | `text` transport, `markers` action protocol, vision `off` |\n| Endpoint | `POST /api/bench/agent-turn` |\n| Prompt handling | `override` \u2014 the benchmark's doctor prompt is used verbatim, which is what keeps the number in the same units as the published table |\n| Turn limit | 20 inferences per case; a case that has not committed by then is scored `no_commit`, and `no_commit` counts as incorrect |\n| Tools bound | the benchmark's own action markers (ask / order test / commit diagnosis), parsed by the harness |\n| Judge | a moderator model decides whether the committed free-text diagnosis matches the reference, and a decline-judge separates a refusal from a wrong answer |\n| Scoring rule | accuracy = correct / presented, upstream's formula unmodified |\n\n**Scoring rule.** accuracy = total_correct / total_presents (upstream formula)\n\n## 3. Setup and provenance\n\n| Field | Value |\n|---|---|\n| Agent id | `c8aa2355-9fd7-46da-9993-07ea566ec3d6` |\n| Base URL | `https://aws-gateway-backend.whissle.ai/bot` |\n| Transport endpoint | `POST /api/bench/agent-turn` |\n| Mode | `text` |\n| Dataset | MedQA |\n| Dataset size | 107 |\n| Upstream | github.com/SamuelSchmidgall/AgentClinic (arXiv:2405.07960) |\n| Harness commit | `86b4475` |\n| Repo commit at report time | `89f2e02` |\n| Captured at | 2026-08-08T09:30:16+00:00 |\n| Run directory | `results/whissle/agentclinic/20260808T092952Z-ac_override_100` |\n| Protocol | markers |\n| History | native |\n| Prompt mode | override |\n| Vision | off |\n| Agent created for run | False |\n\n### 3.1 Judge and its independence\n\n| Field | Value |\n|---|---|\n| Grading kind | llm jury |\n| Provider | `whissle` |\n| Model | `default` |\n| Endpoint | `whissle:/api/models/chat` |\n| Independent of the agent's vendor | **NO** |\n| K (grading passes) | 1 |\n| Judge calls | 1183 |\n| Judge spend | $0.0643 |\n\n<!-- honesty:allow-providers -->\n> Judge independence: this run's simulators and graders were routed through Whissle's own model API (`POST /api/models/chat`). That is a real frontier model, not a self-grading shortcut \u2014 the agent under test and the judge are different models on different prompts \u2014 and it is the right default for internal diagnostics, regression tracking and before/after comparisons, where what matters is that the measuring stick is held constant. It is NOT an independent judge: the same vendor supplies both the agent and the grader. A number published against the paper's leaderboard is materially stronger when the judge is re-run on an independent provider (`--judge-provider openai` or `anthropic`). Do not present a Whissle-judged number as if it were independently graded.\n<!-- /honesty:allow-providers -->\n\n### 3.2 Sampling and population\n\n| Field | Value |\n|---|---|\n| Method | head-of-set selection |\n| Population | 107 |\n| Requested | 100 |\n| Selected | 100 |\n| Scored | 100 |\n| Seed | 42 |\n\n`head` selection takes the leading N scenarios of the dataset. It is deterministic and it is not random \u2014 any ordering structure in the dataset is inherited wholesale.\n\n## 4. Results\n\n**Diagnostic accuracy: 75.0%** (N = 100 \u00b7 judge not independent), 95% CI [65.7%, 82.5%].\n\n| Metric | Value | 95% CI | N | Qualifiers |\n|---|---:|---|---:|---|\n| **Diagnostic accuracy** | **75.0%** | [65.7%, 82.5%] | 100 | N = 100 \u00b7 judge not independent |\n<!-- honesty:allow-context -->\n| Accuracy when a diagnosis was actually given | 83.3% | [74.3%, 89.6%] | 90 | refusals and non-commits removed from the denominator |\n| Commit rate | 90.0% | [82.6%, 94.5%] | 100 | how often the agent named a diagnosis at all |\n<!-- /honesty:allow-context -->\n\n_The headline row is the claim and carries its qualifiers; the rest are components of it and inherit them._\n\n<!-- honesty:allow-context -->\n**Outcome distribution**\n\n| Outcome | N | Share | Reading |\n|---|---|---|---|\n| correct | 75 | 75.0% | named the right diagnosis |\n| incorrect | 15 | 15.0% | named a diagnosis; it was wrong |\n| no_commit | 10 | 10.0% | ran out of inferences without committing |\n\n`declined` and `no_commit` both count as incorrect in the headline accuracy, which is upstream's rule. Separating them is how you tell a cautious agent from a lost one.\n<!-- /honesty:allow-context -->\n\n<!-- honesty:allow-context -->\n**Diagnostic effort**\n\n| Measure | Mean | Max | Budget |\n|---|---|---|---|\n| Inferences used | 11.7 | 20 | 20 |\n| Tests ordered | 2.8 | 11 | unbounded |\n\nAn agent that hits the inference budget is being cut off mid-workup, and its `no_commit` count is a budget artefact rather than a capability finding.\n<!-- /honesty:allow-context -->\n\n## 5. Comparison to published baselines\n\nNo published AgentClinic baseline is registered in this harness, so no comparison table is printed. The upstream paper reports accuracies on this dataset, but under a different moderator and with a different inference budget; transcribing those numbers here without re-running under a matched protocol would produce a comparison that looks rigorous and is not. This section stays empty until the protocol is matched.\n\n_An empty comparison section is a result. Printing a number next to a differently-measured one would not be._\n\n## 6. Failure analysis\n\n| Category | Count | Rate | Severity |\n|---|---:|---:|---|\n<!-- honesty:allow-context -->\n| Committed to the wrong diagnosis | 15 | 15.0% | high |\n| Never committed \u2014 ran out of budget | 10 | 10.0% | medium |\n<!-- /honesty:allow-context -->\n\n### 6.1 Committed to the wrong diagnosis \u2014 15 of 100\n\n<!-- honesty:allow-context -->\nThe agent named a diagnosis and it was not the reference one. These are the cases worth reading: a confident wrong answer is the failure mode with clinical consequences, and the transcript shows which question was never asked.\n<!-- /honesty:allow-context -->\n\n- **`MedQA-1`** \u2014 said \u201cMultiple Sclerosis (MS) with natalizumab-associated neuroinflammation\u201d, reference \u201cProgressive multifocal encephalopathy (PML)\u201d \u00b7 12 inferences \u00b7 2 tests\n  > Based on your presentation\u2014progressive ataxia and arm weakness over three weeks, demyelinating lesions on MRI, and your immunosuppressed state on natalizumab\u2014the clinical picture is most consistent with MS, likely unmasked or accelerated by the natalizumab treatment. You need urgent neurology referr\n  _artifact:_ `cases/MedQA-1.json`\n- **`MedQA-15`** \u2014 said \u201cBenign Subcutaneous Cyst or Lipoma of the Neck\n\nYou can follow up with your primary care doctor, and if the swelling continues to grow or becomes bothersome, we can discuss removal options with a surgeon. Take care!\u201d, reference \u201cEpidermoid cyst\u201d \u00b7 8 inferences \u00b7 1 tests\n  > I'm glad the imaging is reassuring for you. Based on the ultrasound showing a cystic lesion, the normal CT, the firm mobile nodule on examination, and your lack of systemic symptoms, this appears to be a benign lesion\u2014most likely either a simple cyst or a lipoma, which are both common and harmless g\n  _artifact:_ `cases/MedQA-15.json`\n- **`MedQA-24`** \u2014 said \u201cBenign Ovarian Tumor (likely mature cystic teratoma or serous cystadenoma) with Secondary Ascites and Pleural Effusion due to mechanical obstruction and fluid redistribution\u201d, reference \u201cMeigs syndrome\u201d \u00b7 13 inferences \u00b7 2 tests\n  > I've gathered substantial information, and based on the clinical picture\u2014a large ovarian mass with ascites, right-sided pleural effusion, normal CA-125, normal pelvic MRI imaging, normal liver function, no family cancer history, and your presentation of progressive dyspnea with orthopnea\u2014I believe w\n  _artifact:_ `cases/MedQA-24.json`\n\n### 6.2 Never committed \u2014 ran out of budget \u2014 10 of 100\n\n<!-- honesty:allow-context -->\nThe inference budget expired before the agent named a diagnosis. Scored as incorrect, but it is a different defect from being wrong: it is an agent that gathers indefinitely and never concludes. Where these cluster, the accuracy number is partly a measure of pacing.\n<!-- /honesty:allow-context -->\n\n- **`MedQA-44`** \u2014 used 20/20 inferences \u00b7 4 tests ordered\n  > That\u2019s good to know, because the coughing and the tightness in my chest are what's really bothering me right now. I\u2019m ready to start the inhaler if it means I can finally sleep through the night and walk up my stairs without stopping. What should I do first to get this under control?\n  _artifact:_ `cases/MedQA-44.json`\n- **`MedQA-48`** \u2014 used 20/20 inferences \u00b7 5 tests ordered\n  > It's a relief to hear you might be narrowing it down to something, even if it's rare. Does this rare thing explain why my uncle's joints get so big and why I'm still bleeding so much from my mouth? I just want to know if there's a specific treatment once you figure out which one it is.\n  _artifact:_ `cases/MedQA-48.json`\n- **`MedQA-52`** \u2014 used 20/20 inferences \u00b7 5 tests ordered\n  > I see, it's strange to think something could be there my whole life and only start acting up now. Will the next steps tell us for sure if that's what's causing the weight loss and this yellow skin?\n  _artifact:_ `cases/MedQA-52.json`\n\n### Sample cases\n\nPicked deterministically from this run's own artifacts \u2014 the best and worst by the benchmark's own score \u2014 so re-generating the report shows the same cases rather than reshuffling them.\n\n<!-- honesty:allow-context -->\n**\u2713 `MedQA-0`** \u2014 correct\n  - _task:_ MedQA consultation \u00b7 9/20 inferences \u00b7 1 tests ordered\n  - _reference:_ Myasthenia gravis  \u00b7  _agent said:_ Myasthenia Gravis\n  > These test results are highly diagnostic and align perfectly with your clinical presentation. The combination of decreased muscle response on repetitive stimulation, positive acetylcholine receptor antibodies, and your characteristic pattern of fatigable weakness with ocular involvement is conclusive.  DIAGNOSIS READY: Myasthenia Gravis\n  - _why this one:_ committed the reference diagnosis\n  - _artifact:_ `cases/MedQA-0.json`\n\n**\u2713 `MedQA-10`** \u2014 correct\n  - _task:_ MedQA consultation \u00b7 10/20 inferences \u00b7 1 tests ordered\n  - _reference:_ Hemorrhoids  \u00b7  _agent said:_ Internal Hemorrhoids (Prolapsed)\n\nWishing you well with your colonoscopy procedure and your recovery ahead.\n  > That was the right approach. Based on everything we've gathered\u2014your examination showing prolapsed internal hemorrhoids on anoscopy, normal blood work, the characteristic bright red bleeding with bowel movements, no systemic symptoms, and the mass being easily reducible\u2014I'm confident in my diagnosis. The colonoscopy will still proceed to ensure there are no other lesions higher in the colon, but I\n  - _why this one:_ committed the reference diagnosis\n  - _artifact:_ `cases/MedQA-10.json`\n\n**\u2717 `MedQA-1`** \u2014 incorrect\n  - _task:_ MedQA consultation \u00b7 12/20 inferences \u00b7 2 tests ordered\n  - _reference:_ Progressive multifocal encephalopathy (PML)  \u00b7  _agent said:_ Multiple Sclerosis (MS) with natalizumab-associated neuroinflammation\n  > Based on your presentation\u2014progressive ataxia and arm weakness over three weeks, demyelinating lesions on MRI, and your immunosuppressed state on natalizumab\u2014the clinical picture is most consistent with MS, likely unmasked or accelerated by the natalizumab treatment. You need urgent neurology referral and likely an urgent MRI of your spinal cord to assess for additional lesions, and your natalizum\n  - _why this one:_ committed a different diagnosis, or never committed at all\n  - _artifact:_ `cases/MedQA-1.json`\n\n**\u2717 `MedQA-15`** \u2014 incorrect\n  - _task:_ MedQA consultation \u00b7 8/20 inferences \u00b7 1 tests ordered\n  - _reference:_ Epidermoid cyst  \u00b7  _agent said:_ Benign Subcutaneous Cyst or Lipoma of the Neck\n\nYou can follow up with your primary care doctor, and if the swelling continues to grow or becomes bothersome, we can discuss removal options with a surg\n  > I'm glad the imaging is reassuring for you. Based on the ultrasound showing a cystic lesion, the normal CT, the firm mobile nodule on examination, and your lack of systemic symptoms, this appears to be a benign lesion\u2014most likely either a simple cyst or a lipoma, which are both common and harmless growths in the subcutaneous tissue.  DIAGNOSIS READY: Benign Subcutaneous Cyst or Lipoma of the Neck\n  - _why this one:_ committed a different diagnosis, or never committed at all\n  - _artifact:_ `cases/MedQA-15.json`\n\n<!-- /honesty:allow-context -->\n\n## 7. Exclusions and what they do to the number\n\nNothing was excluded: all 100 attempted units produced a gradable result. The headline denominator is the full attempted set.\n\n## 8. Limitations and threats to validity\n\n- **judge independence** (high) \u2014 The moderator, the patient simulator and the decline-judge all ran on the same vendor's model API as the agent under test. Constant across runs it measures change honestly; against an external leaderboard it does not.\n- **moderator leniency** (medium) \u2014 Accuracy depends on a moderator model deciding whether free text matches a reference diagnosis. The strict and lenient counts differ, and the headline uses the strict one \u2014 but the boundary is a model's judgement, not a string match.\n- **answer options leak** (medium) \u2014 The upstream dataset presents the reference diagnosis among a small set of options in some configurations, which inflates accuracy for every model equally. It is left as-is so the number stays comparable, but it is not a measure of open-ended diagnostic ability.\n- **head selection** (medium) \u2014 100 scenarios were taken from the head of a 107-scenario dataset rather than drawn at random.\n- **simulated patient** (high) \u2014 The patient is a language model following a case card. It answers questions more cooperatively, more fluently and more consistently than a person in a waiting room, so the intake task here is easier than the product's real one.\n\n## 9. Reproduction\n\n```bash\nuv sync --extra dev\npython -m tau2.health.agentclinic.run --dataset MedQA --limit 100 --prompt-mode override --seed 42\npython -m tau2.reporting.cli build results/whissle/agentclinic/20260808T092952Z-ac_override_100\n```\n\n| Field | Value |\n|---|---|\n| WHISSLE_BASE | https://aws-gateway-backend.whissle.ai/bot |\n| harness commit | 86b4475 |\n| repo commit at report time | 89f2e02 |\n\n- `head` selection with a fixed limit reproduces the same scenario set exactly.\n- The run provisions a throwaway agent and deletes it afterwards (`agent_deleted: None`), so the agent id in provenance will not resolve after the fact.\n\n## Appendix A \u2014 raw artifacts\n\n| Path | Present | What it is |\n|---|:---:|---|\n| `RUN.json` | yes | run configuration, written before the first case |\n| `SUMMARY.json` | yes | run-level aggregation, written on completion |\n| `cases/` | yes | 100 per-case records with `diagnostics` |\n| `transcripts/` | yes | human-readable consultation transcripts |\n| `REPORT.md` | yes | this report |\n| `report.json` | yes | machine-readable form of this report |\n\nEvery per-case record carries a `diagnostics` block (`tau2.health.diagnostics/v1`) with flow trace, signals, metadata sidecar, tool forensics, provenance and cost \u2014 and explicit availability flags, so an absent measurement reads as absent rather than as zero. See `HEALTH_DIAGNOSTICS.md`.\n\n## Appendix B \u2014 honesty-rule compliance\n\nThese rules are executed against this document, not asserted about it. A failing rule blocks generation.\n\n| Rule | Verdict | Checked |\n|---|:---:|---|\n| `R1_headline_requires_n` | pass | headline carries N = 100 everywhere it is stated |\n| `R2_judge_independence_disclosed` | pass | non-independent judge disclosed beside the number |\n| `R3_exclusion_rate_adjacent` | pass | not applicable \u2014 nothing was excluded |\n| `R4_preliminary_labelled` | pass | not applicable \u2014 N = 100 \u2265 30 and the run is complete |\n| `R5_no_provider_names` | pass | no LLM vendor named outside the published-baseline table |\n| `R6_comparability_stated` | pass | not applicable \u2014 no published baseline is registered |\n| `R7_baseline_named` | pass | not applicable \u2014 no published baseline is registered |\n\n---\n\n_AgentClinic, arXiv:2405.07960. Research measurement only \u2014 not a clinical evaluation of anything._\n\n<!-- generated by tau2.reporting from agentclinic/20260808T092952Z-ac_override_100; schema tau2.reporting.run_report/v1 -->\n",
+  "reportPath": "results/whissle/agentclinic/20260808T092952Z-ac_override_100/REPORT.md"
+}

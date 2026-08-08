@@ -60,7 +60,7 @@ Whether a deployed voice agent actually completes its job on a phone call: does 
 | Dataset | scripted caller personas for `customer_support` |
 | Dataset size | 2 |
 | Upstream | internal — no published equivalent |
-| Repo commit at report time | `86b4475` |
+| Repo commit at report time | `89f2e02` |
 | Captured at | 2026-08-05 |
 | Run directory | `results/whissle/flow_sim_baseline/customer_support` |
 | Agent type | customer_support |
@@ -101,6 +101,17 @@ Every scenario in the set was run. There is no sampling error here — but there
 
 _The headline row is the claim and carries its qualifiers; the rest are components of it and inherit them._
 
+<!-- honesty:allow-context -->
+**Per-scenario outcomes**
+
+| Scenario | Turns | Closed | Goal met | Final state | Findings | Session |
+|---|---|---|---|---|---|---|
+| `cs_needs_escalation` (needs-escalation) | 5 | yes | yes | `—` | 0 | `20260805T182228Z` |
+| `cs_resolvable_login` (resolvable) | 6 | yes | **no** | `—` | 1 | `20260805T181604Z` |
+
+Each row is one scripted caller persona driven over real audio, taken from the most recent session recorded for that scenario. 'Closed' and 'goal met' are independent: an agent can satisfy the caller and never hang up, or hang up having satisfied nobody.
+<!-- /honesty:allow-context -->
+
 ## 5. Comparison to published baselines
 
 There is no external comparator and there cannot be one: this suite tests our own flow definitions on our own agents. Its value is longitudinal — the same scenario set re-run after a change — and the regression view in the cross-run index is where that comparison lives, not a leaderboard.
@@ -136,6 +147,25 @@ The grader judged the caller left without what they came for. This is the headli
   > The customer's login issue was not resolved during the call; instead, the agent scheduled a callback for technical support to handle the password reset in the future.
   _artifact:_ `cs_resolvable_login_20260805T181604Z.session.json`
 
+### Sample cases
+
+Picked deterministically from this run's own artifacts — the best and worst by the benchmark's own score — so re-generating the report shows the same cases rather than reshuffling them.
+
+<!-- honesty:allow-context -->
+**✓ `cs_needs_escalation`** — goal met
+  - _task:_ persona `needs-escalation` · 5 caller turns · final state `—`
+  > AGENT: Hello! How can I help you today? USER: Yeah, hi, I'm calling because I've got a serious problem with my account—I uploaded a bunch of important files to your cloud storage last week and now they're just... gone. I need to figure out what happened to them. AGENT: Hi there! What can I do for you? I'm sorry to hear that. What's happening with your account? I'm really sorry to hear that — that sounds stressful. Let me get some information so I can help you track this down.  Please say or ente
+  - _why this one:_ The agent escalated the data-loss issue to a specialist with backend access and confirmed that a ticket would be created with a reference number provided by the next agent.
+  - _artifact:_ `cs_needs_escalation_20260805T182228Z.mix.wav`
+
+**✗ `cs_resolvable_login`** — goal not met
+  - _task:_ persona `resolvable` · 6 caller turns · final state `—`
+  > AGENT: Hello! How can I help you today? USER: Hi, yeah, I'm having trouble logging into my account and I'm not sure what's going on. I've tried a few times already and it's just not working. AGENT: I'm sorry to hear that. Which service are you trying to log into — is it the dental clinic, the car rental, or the tutoring service? I understand. Can you tell me which of your businesses you're trying to access — the dental clinic in Patiala, the car rental in Europe, or the online tutoring service?
+  - _why this one:_ The customer's login issue was not resolved during the call; instead, the agent scheduled a callback for technical support to handle the password reset in the future.
+  - _artifact:_ `cs_resolvable_login_20260805T181604Z.mix.wav`
+
+<!-- /honesty:allow-context -->
+
 ## 7. Exclusions and what they do to the number
 
 Nothing was excluded: all 2 attempted units produced a gradable result. The headline denominator is the full attempted set.
@@ -160,7 +190,7 @@ python -m tau2.reporting.cli build results/whissle/flow_sim/customer_support
 
 | Field | Value |
 |---|---|
-| repo commit at report time | 86b4475 |
+| repo commit at report time | 89f2e02 |
 | extras required | voice (LiveKit, audio codecs) |
 
 - Audio is captured per session (`*.caller.wav`, `*.bot.wav`, `*.mix.wav`) — a disputed grader verdict can be settled by listening.
@@ -174,8 +204,8 @@ python -m tau2.reporting.cli build results/whissle/flow_sim/customer_support
 | `SUMMARY.md` | **missing** | the harness's own short summary |
 | `*.session.json` | **missing** | per-session sidecar: turns, flow trace, findings |
 | `*.mix.wav` | **missing** | the recorded call |
-| `REPORT.md` | **missing** | this report |
-| `report.json` | **missing** | machine-readable form of this report |
+| `REPORT.md` | yes | this report |
+| `report.json` | yes | machine-readable form of this report |
 
 Every per-case record carries a `diagnostics` block (`tau2.health.diagnostics/v1`) with flow trace, signals, metadata sidecar, tool forensics, provenance and cost — and explicit availability flags, so an absent measurement reads as absent rather than as zero. See `HEALTH_DIAGNOSTICS.md`.
 
@@ -191,5 +221,6 @@ These rules are executed against this document, not asserted about it. A failing
 | `R4_preliminary_labelled` | pass | labelled PRELIMINARY |
 | `R5_no_provider_names` | pass | no LLM vendor named outside the published-baseline table |
 | `R6_comparability_stated` | pass | not applicable — no published baseline is registered |
+| `R7_baseline_named` | pass | not applicable — no published baseline is registered |
 
 <!-- generated by tau2.reporting from flow_sim_baseline/customer_support; schema tau2.reporting.run_report/v1 -->

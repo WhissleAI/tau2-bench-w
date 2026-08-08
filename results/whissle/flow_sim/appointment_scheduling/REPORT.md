@@ -60,7 +60,7 @@ Whether a deployed voice agent actually completes its job on a phone call: does 
 | Dataset | scripted caller personas for `appointment_scheduling` |
 | Dataset size | 11 |
 | Upstream | internal — no published equivalent |
-| Repo commit at report time | `86b4475` |
+| Repo commit at report time | `89f2e02` |
 | Captured at | 2026-08-06 |
 | Run directory | `results/whissle/flow_sim/appointment_scheduling` |
 | Agent type | appointment_scheduling |
@@ -105,6 +105,26 @@ _The headline row is the claim and carries its qualifiers; the rest are componen
 
 <!-- honesty:allow-context -->
 **Per-scenario outcomes**
+
+| Scenario | Turns | Closed | Goal met | Final state | Findings | Session |
+|---|---|---|---|---|---|---|
+| `appt_cancel` (cancel) | 12 | yes | **no** | `—` | 1 | `20260806T215650Z` |
+| `appt_cancel_and_rebook` (reschedule) | 11 | yes | **no** | `—` | 1 | `20260806T220743Z` |
+| `appt_double_booking` (new) | 4 | **no** | **no** | `—` | 1 | `20260806T222751Z` |
+| `appt_group` (new) | 9 | **no** | yes | `—` | 1 | `20260806T224006Z` |
+| `appt_just_hours` (out-of-hours) | 3 | **no** | yes | `—` | 1 | `20260806T222510Z` |
+| `appt_new` (new) | 9 | **no** | yes | `—` | 1 | `20260806T212458Z` |
+| `appt_new_specific` (new) | 7 | **no** | yes | `—` | 1 | `20260806T213327Z` |
+| `appt_out_of_hours` (out-of-hours) | 8 | **no** | yes | `—` | 1 | `20260806T221747Z` |
+| `appt_reschedule` (reschedule) | 6 | **no** | **no** | `—` | 1 | `20260806T214029Z` |
+| `appt_reschedule_earlier` (reschedule) | 11 | yes | **no** | `—` | 1 | `20260806T214638Z` |
+| `appt_wrong_details` (reschedule) | 8 | **no** | **no** | `—` | 1 | `20260806T223214Z` |
+
+Each row is one scripted caller persona driven over real audio, taken from the most recent session recorded for that scenario. 'Closed' and 'goal met' are independent: an agent can satisfy the caller and never hang up, or hang up having satisfied nobody.
+<!-- /honesty:allow-context -->
+
+<!-- honesty:allow-context -->
+**Per-scenario outcomes, as the harness summarised them**
 
 | Scenario | Turns | Closed | Goal met | Final state | High-severity findings |
 |---|---|---|---|---|---|
@@ -217,6 +237,37 @@ The grader judged the caller left without what they came for. This is the headli
   > The customer called the wrong business (a salon instead of a service that doesn't offer haircuts) and was unable to book any appointment, let alone accept an alternative slot option.
   _artifact:_ `appt_double_booking_20260806T222751Z.session.json`
 
+### Sample cases
+
+Picked deterministically from this run's own artifacts — the best and worst by the benchmark's own score — so re-generating the report shows the same cases rather than reshuffling them.
+
+<!-- honesty:allow-context -->
+**✓ `appt_group`** — goal met
+  - _task:_ persona `new` · 9 caller turns · final state `—`
+  > AGENT: Hello! How can I help you today? USER: Hi, I'm calling to schedule an appointment for two people, and I was wondering if you could get us in back-to-back so we don't have to wait around separately. AGENT: Great! I'd be happy to help you book appointments for two people. Are you looking to book two separate appointments, or do you need them both at the same time? Perfect, I can arrange that for you back to back. What type of appointment are you both looking to schedule? Would you like to b
+  - _why this one:_ The agent successfully scheduled two back-to-back dental cleaning appointments (Zoe Bennett at 2 PM and Emma Bennett at 2:30 PM on Monday, August 10th) and the customer confirmed the arrangement.
+  - _artifact:_ `appt_group_20260806T224006Z.mix.wav`
+
+**✓ `appt_just_hours`** — goal met
+  - _task:_ persona `out-of-hours` · 3 caller turns · final state `—`
+  > AGENT: Hello! How can I help you today? USER: Hi, I'm calling to check what days and times you have available for appointments? AGENT: I'd be happy to help! Let me pull up our opening hours for you. We're open Monday to Friday, 9 AM to 6 PM. What day and time would work best for you? Would you like to book an appointment, or is there something else I can help with? USER: Oh perfect, thanks for that. So you're open Monday through Friday, 9 to 6 — that's really helpful to know.  I appreciate it, t
+  - _why this one:_ The agent provided the available appointment hours (Monday to Friday, 9 AM to 6 PM), the customer confirmed they had the information they needed, and the call ended without booking an appointment.
+  - _artifact:_ `appt_just_hours_20260806T222510Z.mix.wav`
+
+**✗ `appt_cancel`** — goal not met
+  - _task:_ persona `cancel` · 12 caller turns · final state `—`
+  > AGENT: Hello! How can I help you today? USER: Hi, I need to cancel my appointment that I have coming up. AGENT: I'd be happy to help you cancel that appointment. Can you tell me which appointment you'd like to cancel — do you remember the date and time? Would you like to book an appointment, or is there something else I can help with? USER: Yeah, it's for next Tuesday at 2 PM. And no, I don't want to reschedule or anything — I just need to cancel it outright. AGENT: Got it, next Tuesday at 2 PM.
+  - _why this one:_ The appointment was never actually canceled; the agent failed to locate it under either phone number provided and then transferred the call without confirming the cancellation or even acknowledging the customer's name.
+  - _artifact:_ `appt_cancel_20260806T215650Z.mix.wav`
+
+**✗ `appt_cancel_and_rebook`** — goal not met
+  - _task:_ persona `reschedule` · 11 caller turns · final state `—`
+  > AGENT: Hello! How can I help you today? USER: Hi, yeah I need to cancel my appointment that I have scheduled for next Tuesday. AGENT: Got it, I can help you cancel that. Just to clarify, which business is your appointment with — is it the dental clinic, the tutoring service, or the car rental? Would you like to book an appointment, or is there something else I can help with? USER: It's the dental clinic, the one on Main Street. And actually, you know what, before you cancel it — can I reschedule
+  - _why this one:_ The customer did not complete the goal because the appointment was never cancelled and the new booking was never completed; the call ended with the customer hanging up while on hold during a transfer.
+  - _artifact:_ `appt_cancel_and_rebook_20260806T220743Z.mix.wav`
+
+<!-- /honesty:allow-context -->
+
 ## 7. Exclusions and what they do to the number
 
 Nothing was excluded: all 11 attempted units produced a gradable result. The headline denominator is the full attempted set.
@@ -241,7 +292,7 @@ python -m tau2.reporting.cli build results/whissle/flow_sim/appointment_scheduli
 
 | Field | Value |
 |---|---|
-| repo commit at report time | 86b4475 |
+| repo commit at report time | 89f2e02 |
 | extras required | voice (LiveKit, audio codecs) |
 
 - Audio is captured per session (`*.caller.wav`, `*.bot.wav`, `*.mix.wav`) — a disputed grader verdict can be settled by listening.
@@ -255,8 +306,8 @@ python -m tau2.reporting.cli build results/whissle/flow_sim/appointment_scheduli
 | `SUMMARY.md` | yes | the harness's own short summary |
 | `*.session.json` | **missing** | per-session sidecar: turns, flow trace, findings |
 | `*.mix.wav` | **missing** | the recorded call |
-| `REPORT.md` | **missing** | this report |
-| `report.json` | **missing** | machine-readable form of this report |
+| `REPORT.md` | yes | this report |
+| `report.json` | yes | machine-readable form of this report |
 
 Every per-case record carries a `diagnostics` block (`tau2.health.diagnostics/v1`) with flow trace, signals, metadata sidecar, tool forensics, provenance and cost — and explicit availability flags, so an absent measurement reads as absent rather than as zero. See `HEALTH_DIAGNOSTICS.md`.
 
@@ -272,5 +323,6 @@ These rules are executed against this document, not asserted about it. A failing
 | `R4_preliminary_labelled` | pass | labelled PRELIMINARY |
 | `R5_no_provider_names` | pass | no LLM vendor named outside the published-baseline table |
 | `R6_comparability_stated` | pass | not applicable — no published baseline is registered |
+| `R7_baseline_named` | pass | not applicable — no published baseline is registered |
 
 <!-- generated by tau2.reporting from flow_sim/appointment_scheduling; schema tau2.reporting.run_report/v1 -->

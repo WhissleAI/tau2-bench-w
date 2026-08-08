@@ -62,7 +62,7 @@ Whether a deployed voice agent actually completes its job on a phone call: does 
 | Dataset | scripted caller personas for `dental_receptionist` |
 | Dataset size | 11 |
 | Upstream | internal — no published equivalent |
-| Repo commit at report time | `86b4475` |
+| Repo commit at report time | `89f2e02` |
 | Captured at | 2026-08-07 |
 | Run directory | `results/whissle/flow_sim/dental_receptionist` |
 | Agent type | dental_receptionist |
@@ -107,6 +107,26 @@ _The headline row is the claim and carries its qualifiers; the rest are componen
 
 <!-- honesty:allow-context -->
 **Per-scenario outcomes**
+
+| Scenario | Turns | Closed | Goal met | Final state | Findings | Session |
+|---|---|---|---|---|---|---|
+| `dental_book_specific_time` (book) | 8 | yes | yes | `—` | 0 | `20260807T000631Z` |
+| `dental_cancel` (cancel) | 15 | yes | **no** | `—` | 2 | `20260807T002323Z` |
+| `dental_cancel_no_reason` (cancel) | 8 | **no** | **no** | `—` | 1 | `20260807T003801Z` |
+| `dental_emergency` (book) | 7 | **no** | **no** | `—` | 1 | `20260807T010659Z` |
+| `dental_happy_book` (book) | 0 | **no** | **no** | `—` | 1 | `20260807T000534Z` |
+| `dental_hours_only` (just-asking) | 2 | yes | yes | `—` | 0 | `20260807T005435Z` |
+| `dental_message_for_staff` (just-asking) | 4 | yes | yes | `—` | 0 | `20260807T011420Z` |
+| `dental_no_slot` (no-slot) | 9 | **no** | yes | `—` | 1 | `20260807T004551Z` |
+| `dental_reschedule` (reschedule) | 0 | **no** | **no** | `—` | 1 | `20260807T001435Z` |
+| `dental_reschedule_then_cancel` (reschedule) | 8 | **no** | yes | `—` | 1 | `20260807T001533Z` |
+| `dental_wrong_info` (wrong info) | 10 | **no** | **no** | `—` | 1 | `20260807T005632Z` |
+
+Each row is one scripted caller persona driven over real audio, taken from the most recent session recorded for that scenario. 'Closed' and 'goal met' are independent: an agent can satisfy the caller and never hang up, or hang up having satisfied nobody.
+<!-- /honesty:allow-context -->
+
+<!-- honesty:allow-context -->
+**Per-scenario outcomes, as the harness summarised them**
 
 | Scenario | Turns | Closed | Goal met | Final state | High-severity findings |
 |---|---|---|---|---|---|
@@ -236,6 +256,37 @@ The grader judged the caller left without what they came for. This is the headli
   > The agent never explicitly confirmed the appointment was booked; the call ends with the agent still verifying details rather than providing final confirmation of the 2 PM emergency appointment.
   _artifact:_ `dental_emergency_20260807T010659Z.session.json`
 
+### Sample cases
+
+Picked deterministically from this run's own artifacts — the best and worst by the benchmark's own score — so re-generating the report shows the same cases rather than reshuffling them.
+
+<!-- honesty:allow-context -->
+**✓ `dental_book_specific_time`** — goal met
+  - _task:_ persona `book` · 8 caller turns · final state `—`
+  > AGENT: Thanks for calling. I can book, move or cancel an appointment, or tell you our opening hours — what can I do for you? USER: Hi, I'm calling to book a check-up appointment — I'm an existing patient and I need something in the late afternoon, like after 4pm ideally. AGENT: Great! I'll Perfect. I have you as an existing patient looking for a late afternoon slot after 4 PM. What's your full name and date of birth so I can pull up your record Would you like to book an appointment, or is there
+  - _why this one:_ The customer successfully booked a check-up appointment for Monday, August 10th at 4 PM, which is after 4pm on a weekday as required, and confirmed the booking.
+  - _artifact:_ `dental_book_specific_time_20260807T000631Z.mix.wav`
+
+**✓ `dental_hours_only`** — goal met
+  - _task:_ persona `just-asking` · 2 caller turns · final state `—`
+  > AGENT: Thanks for calling. I can book, move or cancel an appointment, or tell you our opening hours — what can I do for you? USER: Hi, yes, I'm calling to find out your clinic's opening hours and where you're located. AGENT: We're open Monday to Friday, 9 AM to 6 PM, and we're located in Patiala. Is there anything else I can help with today? You're all set. If anything else comes up, just call us back. Take care — goodbye. USER: Great, thanks so much for that information. That's really helpful.
+  - _why this one:_ The customer successfully obtained the clinic's opening hours (Monday to Friday, 9 AM to 6 PM) and location (Patiala), thanked the agent, and the call ended without any appointment booking.
+  - _artifact:_ `dental_hours_only_20260807T005435Z.mix.wav`
+
+**✗ `dental_cancel`** — goal not met
+  - _task:_ persona `cancel` · 15 caller turns · final state `—`
+  > AGENT: Thanks for calling. I can book, move or cancel an appointment, or tell you our opening hours — what can I do for you? USER: Hi, I need to cancel my dental appointment coming up because I'm going to be out of town for work. AGENT: I'll help you cancel your appointment. To locate it, I need a bit more information:  **Do you have your appointment ID, or can you provide your phone number?**  Once I have that, I can pull up your appointment details and process the cancellation right away. Woul
+  - _why this one:_ The customer's appointment was never actually cancelled in the system; instead, the agent could only pass information to the clinic for a callback, and the call ended with the customer frustrated and uncertain whether their cancellation request would
+  - _artifact:_ `dental_cancel_20260807T002323Z.mix.wav`
+
+**✗ `dental_cancel_no_reason`** — goal not met
+  - _task:_ persona `cancel` · 8 caller turns · final state `—`
+  > AGENT: Thanks for calling. I can book, move or cancel an appointment, or tell you our opening hours — what can I do for you? USER: Yeah, hi, I need to cancel my appointment. AGENT: Sure, I can help with that. What's the name on the appointment? Would you like to book an appointment, or is there something else I can help with? USER: Vikram Rao. And no, I just want to cancel it—no rescheduling. AGENT: Got it, Vikram. Before we cancel, would you like to reschedule instead — maybe a different day or
+  - _why this one:_ The appointment was not cancelled; the agent determined it was at a different facility (Riverside Medical Center) and directed the customer to contact them directly instead.
+  - _artifact:_ `dental_cancel_no_reason_20260807T003801Z.mix.wav`
+
+<!-- /honesty:allow-context -->
+
 ## 7. Exclusions and what they do to the number
 
 <!-- honesty:allow-context -->
@@ -284,7 +335,7 @@ python -m tau2.reporting.cli build results/whissle/flow_sim/dental_receptionist
 
 | Field | Value |
 |---|---|
-| repo commit at report time | 86b4475 |
+| repo commit at report time | 89f2e02 |
 | extras required | voice (LiveKit, audio codecs) |
 
 - Audio is captured per session (`*.caller.wav`, `*.bot.wav`, `*.mix.wav`) — a disputed grader verdict can be settled by listening.
@@ -298,8 +349,8 @@ python -m tau2.reporting.cli build results/whissle/flow_sim/dental_receptionist
 | `SUMMARY.md` | yes | the harness's own short summary |
 | `*.session.json` | **missing** | per-session sidecar: turns, flow trace, findings |
 | `*.mix.wav` | **missing** | the recorded call |
-| `REPORT.md` | **missing** | this report |
-| `report.json` | **missing** | machine-readable form of this report |
+| `REPORT.md` | yes | this report |
+| `report.json` | yes | machine-readable form of this report |
 
 Every per-case record carries a `diagnostics` block (`tau2.health.diagnostics/v1`) with flow trace, signals, metadata sidecar, tool forensics, provenance and cost — and explicit availability flags, so an absent measurement reads as absent rather than as zero. See `HEALTH_DIAGNOSTICS.md`.
 
@@ -315,5 +366,6 @@ These rules are executed against this document, not asserted about it. A failing
 | `R4_preliminary_labelled` | pass | labelled PRELIMINARY |
 | `R5_no_provider_names` | pass | no LLM vendor named outside the published-baseline table |
 | `R6_comparability_stated` | pass | not applicable — no published baseline is registered |
+| `R7_baseline_named` | pass | not applicable — no published baseline is registered |
 
 <!-- generated by tau2.reporting from flow_sim/dental_receptionist; schema tau2.reporting.run_report/v1 -->

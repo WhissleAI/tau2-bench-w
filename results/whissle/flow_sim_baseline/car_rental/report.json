@@ -112,8 +112,71 @@
   "scoring_rule": "task success = graded goal-met / executed sessions; clean close = sessions emitting `flow_end` / executed sessions",
   "tables": [
     {
-      "key": "sessions",
+      "key": "scenarios",
       "title": "Per-scenario outcomes",
+      "columns": [
+        "Scenario",
+        "Turns",
+        "Closed",
+        "Goal met",
+        "Final state",
+        "Findings",
+        "Session"
+      ],
+      "rows": [
+        [
+          "`car_change_vehicle` (change vehicle)",
+          "9",
+          "**no**",
+          "yes",
+          "`\u2014`",
+          "1",
+          "`20260805T170833Z`"
+        ],
+        [
+          "`car_happy_suv` (book)",
+          "11",
+          "**no**",
+          "yes",
+          "`\u2014`",
+          "1",
+          "`20260805T165230Z`"
+        ],
+        [
+          "`car_no_availability` (no-availability)",
+          "4",
+          "yes",
+          "yes",
+          "`\u2014`",
+          "0",
+          "`20260805T170402Z`"
+        ],
+        [
+          "`car_one_way` (book)",
+          "9",
+          "**no**",
+          "**no**",
+          "`\u2014`",
+          "1",
+          "`20260805T172934Z`"
+        ],
+        [
+          "`car_price_too_high` (just-asking)",
+          "10",
+          "**no**",
+          "**no**",
+          "`\u2014`",
+          "1",
+          "`20260805T171842Z`"
+        ]
+      ],
+      "note": "Each row is one scripted caller persona driven over real audio, taken from the most recent session recorded for that scenario. 'Closed' and 'goal met' are independent: an agent can satisfy the caller and never hang up, or hang up having satisfied nobody.",
+      "allow_providers": false,
+      "allow_context": true
+    },
+    {
+      "key": "sessions",
+      "title": "Per-scenario outcomes, as the harness summarised them",
       "columns": [
         "Scenario",
         "Turns",
@@ -224,7 +287,7 @@
     "endpoint": "LiveKit voice room (POST /api/bench/voice/start)",
     "mode": "voice",
     "harness_commit": null,
-    "repo_commit": "86b4475",
+    "repo_commit": "89f2e02",
     "run_dir": "/private/tmp/claude-501/-Users-karan-Desktop-work-whissle-live-assist/766421da-8ef4-4ce2-9733-86e5c5f3fced/scratchpad/wt-reports/results/whissle/flow_sim_baseline/car_rental",
     "captured_at": "2026-08-05",
     "dataset": "scripted caller personas for `car_rental`",
@@ -323,6 +386,56 @@
       "rate_pct": 40.0
     }
   ],
+  "sample_cases": [
+    {
+      "case_id": "car_change_vehicle",
+      "outcome": "goal met",
+      "is_success": true,
+      "score": null,
+      "task": "persona `change vehicle` \u00b7 9 caller turns \u00b7 final state `\u2014`",
+      "expected": "",
+      "got": "",
+      "excerpt": "AGENT: Hello! How can I help you today?\nUSER: Hi, yeah, I'm looking to rent a car for next week and I think I want a sedan, something reliable and good on gas.\nAGENT: Great! Are you looking to book a car right now, or would you like a quote first? Perfect! Where will you be picking up the car \u2014 which city or office? Perfect, next week works. Which city or office location are you picking up from? Got it \u2014 you want something reliable and fuel-efficient. What city will you be picking up from? Can y",
+      "artifact": "car_change_vehicle_20260805T170833Z.mix.wav",
+      "why_shown": "The customer successfully began by requesting a sedan, changed their mind to request an SUV instead, and completed the booking for the Mahindra Thar SUV with all details confirmed."
+    },
+    {
+      "case_id": "car_happy_suv",
+      "outcome": "goal met",
+      "is_success": true,
+      "score": null,
+      "task": "persona `book` \u00b7 11 caller turns \u00b7 final state `\u2014`",
+      "expected": "",
+      "got": "",
+      "excerpt": "AGENT: Hello! How can I help you today?\nUSER: Hey, yeah, I'm calling to rent an SUV for a road trip this Friday. Do you guys have anything available?\nAGENT: Great, I can help you book an SUV for Friday! Let me just ask \u2014 is this Friday coming up, or a Friday further ahead? We do have SUVs available \u2014 I've got the Hyundai Creta and the Mahindra Thar. Before I check dates and availability, what city or office location would you be picking up from? Can you hear me?\nUSER: Yeah, yeah, I can hear you ",
+      "artifact": "car_happy_suv_20260805T165230Z.mix.wav",
+      "why_shown": "The agent successfully booked an SUV (Hyundai Creta) for a one-week rental with confirmed pickup date (this Friday at 9 AM in Denver), duration (one week, returning following Friday at 5 PM), and provided all necessary details including customer name"
+    },
+    {
+      "case_id": "car_one_way",
+      "outcome": "goal not met",
+      "is_success": false,
+      "score": null,
+      "task": "persona `book` \u00b7 9 caller turns \u00b7 final state `\u2014`",
+      "expected": "",
+      "got": "",
+      "excerpt": "AGENT: Hello! How can I help you today?\nUSER: Hi, yeah, I'm looking to rent a car but I need to drop it off in a different city than where I pick it up\u2014is that something you guys can do?\nAGENT: Great! Are you looking to book a car, get a quote, or do you have a question about our fleet? Great! What kind of car are you looking for, or would you like me to suggest something? Got it \u2014 so you'll be picking up in one city and returning in another. Where would you like to pick up the car? That's no pr",
+      "artifact": "car_one_way_20260805T172934Z.mix.wav",
+      "why_shown": "The booking was not completed; the agent failed to finalize the reservation and only collected contact information with a promise of a future callback for pricing details."
+    },
+    {
+      "case_id": "car_price_too_high",
+      "outcome": "goal not met",
+      "is_success": false,
+      "score": null,
+      "task": "persona `just-asking` \u00b7 10 caller turns \u00b7 final state `\u2014`",
+      "expected": "",
+      "got": "",
+      "excerpt": "AGENT: Hello! How can I help you today?\nUSER: Hey, I'm looking to rent an SUV for next weekend, starting Friday the 15th through Sunday the 17th.\nAGENT: Great! Are you looking for a quote, or would you like to go ahead and book one? Great, I'd be happy to help you book an SUV for next weekend! Where will you be picking up the car? Just to confirm \u2014 you want to pick up on Friday the fifteenth and return on Sunday the seventeenth, is that right? Can you hear me?\nUSER: Yeah, I can hear you fine. I'",
+      "artifact": "car_price_too_high_20260805T171842Z.mix.wav",
+      "why_shown": "The customer declined to book due to uncertainty about the total price (damage waiver cost), but this was not a reaction to hearing an expensive price quote\u2014the base price of $145 was actually deemed 'reasonable' by the customer, so the goal scenario"
+    }
+  ],
   "limitations": [
     {
       "key": "tiny_n",
@@ -357,7 +470,7 @@
       "python -m tau2.reporting.cli build results/whissle/flow_sim/car_rental"
     ],
     "environment": {
-      "repo commit at report time": "86b4475",
+      "repo commit at report time": "89f2e02",
       "extras required": "voice (LiveKit, audio codecs)"
     },
     "notes": [
@@ -389,12 +502,12 @@
     {
       "path": "REPORT.md",
       "description": "this report",
-      "present": false
+      "present": true
     },
     {
       "path": "report.json",
       "description": "machine-readable form of this report",
-      "present": false
+      "present": true
     }
   ],
   "licence_note": "",

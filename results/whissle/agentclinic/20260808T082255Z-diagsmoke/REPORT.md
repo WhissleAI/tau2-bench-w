@@ -64,7 +64,7 @@ Whether an agent can run a diagnostic consultation: take a patient's presentatio
 | Dataset size | 107 |
 | Upstream | github.com/SamuelSchmidgall/AgentClinic (arXiv:2405.07960) |
 | Harness commit | `ef37cfe` |
-| Repo commit at report time | `86b4475` |
+| Repo commit at report time | `89f2e02` |
 | Captured at | 2026-08-08T08:23:13+00:00 |
 | Run directory | `results/whissle/agentclinic/20260808T082255Z-diagsmoke` |
 | Protocol | markers |
@@ -150,6 +150,29 @@ _An empty comparison section is a result. Printing a number next to a differentl
 
 _No categorised failures were recorded for this run._
 
+### Sample cases
+
+Picked deterministically from this run's own artifacts — the best and worst by the benchmark's own score — so re-generating the report shows the same cases rather than reshuffling them.
+
+<!-- honesty:allow-context -->
+**✓ `MedQA-0`** — correct
+  - _task:_ MedQA consultation · 5/6 inferences · 1 tests ordered
+  - _reference:_ Myasthenia gravis  ·  _agent said:_ Myasthenia Gravis
+
+You'll need to begin treatment promptly and follow up with a neurologist for management options, which may include medications and further evaluation. Take care.
+  > Based on your clinical presentation, the test results, and the characteristic pattern you've described—the progressive fatigue with activity that improves with rest, the eye symptoms worsening with upward gaze, the upper limb weakness, and crucially, the positive acetylcholine receptor antibodies along with the decremental response on electromyography—I have reached my diagnosis.  DIAGNOSIS READY:
+  - _why this one:_ committed the reference diagnosis
+  - _artifact:_ `cases/MedQA-0.json`
+
+**✓ `MedQA-1`** — correct
+  - _task:_ MedQA consultation · 6/6 inferences · 2 tests ordered
+  - _reference:_ Progressive multifocal encephalopathy (PML)  ·  _agent said:_ Progressive Multifocal Leukoencephalopathy (PML) secondary to natalizumab immunosuppression
+  > I understand—the CSF came back normal, which is unusual but doesn't rule out PML, particularly in immunocompromised patients where CSF can sometimes be negative despite active disease. Combined with your natalizumab use, progressive ataxic gait, right arm weakness, and the MRI findings showing multifocal demyelinating lesions characteristic of PML, the clinical and radiological picture is clear.
+  - _why this one:_ committed the reference diagnosis
+  - _artifact:_ `cases/MedQA-1.json`
+
+<!-- /honesty:allow-context -->
+
 ## 7. Exclusions and what they do to the number
 
 Nothing was excluded: all 2 attempted units produced a gradable result. The headline denominator is the full attempted set.
@@ -176,7 +199,7 @@ python -m tau2.reporting.cli build results/whissle/agentclinic/20260808T082255Z-
 |---|---|
 | WHISSLE_BASE | https://aws-gateway-backend.whissle.ai/bot |
 | harness commit | ef37cfe |
-| repo commit at report time | 86b4475 |
+| repo commit at report time | 89f2e02 |
 
 - `head` selection with a fixed limit reproduces the same scenario set exactly.
 - The run provisions a throwaway agent and deletes it afterwards (`agent_deleted: True`), so the agent id in provenance will not resolve after the fact.
@@ -206,6 +229,7 @@ These rules are executed against this document, not asserted about it. A failing
 | `R4_preliminary_labelled` | pass | labelled PRELIMINARY |
 | `R5_no_provider_names` | pass | no LLM vendor named outside the published-baseline table |
 | `R6_comparability_stated` | pass | not applicable — no published baseline is registered |
+| `R7_baseline_named` | pass | not applicable — no published baseline is registered |
 
 ---
 

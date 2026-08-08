@@ -7,7 +7,7 @@
   "title": "Conversation-flow suite \u2014 `car_rental` (real-audio voice)",
   "label": "Whissle",
   "mode": "voice",
-  "date": "2026-08-06",
+  "date": "2026-08-07",
   "status": "complete",
   "partial_reason": "",
   "preliminary": true,
@@ -16,35 +16,35 @@
   "headline": {
     "key": "task_success",
     "label": "Task success",
-    "value": 0.0,
+    "value": 45.5,
     "unit": "pct",
     "ci": [
-      0.0,
-      25.9
+      21.3,
+      72.0
     ],
     "n": 11,
     "floor": 0.0,
     "ceiling": 100.0,
     "higher_is_better": true,
     "note": "an LLM grader judges whether the caller's goal was met",
-    "formatted": "0.0%"
+    "formatted": "45.5%"
   },
   "secondary_metrics": [
     {
       "key": "clean_close",
       "label": "Reached a clean close",
-      "value": 0.0,
+      "value": 18.2,
       "unit": "pct",
       "ci": [
-        0.0,
-        25.9
+        5.1,
+        47.7
       ],
       "n": 11,
       "floor": 0.0,
       "ceiling": 100.0,
       "higher_is_better": true,
       "note": "taken from the authoritative `flow_end` trace event",
-      "formatted": "0.0%"
+      "formatted": "18.2%"
     },
     {
       "key": "state_coverage",
@@ -112,8 +112,125 @@
   "scoring_rule": "task success = graded goal-met / executed sessions; clean close = sessions emitting `flow_end` / executed sessions",
   "tables": [
     {
-      "key": "sessions",
+      "key": "scenarios",
       "title": "Per-scenario outcomes",
+      "columns": [
+        "Scenario",
+        "Turns",
+        "Closed",
+        "Goal met",
+        "Final state",
+        "Findings",
+        "Session"
+      ],
+      "rows": [
+        [
+          "`car_add_driver` (change vehicle)",
+          "0",
+          "**no**",
+          "**no**",
+          "`\u2014`",
+          "1",
+          "`20260806T153253Z`"
+        ],
+        [
+          "`car_change_vehicle` (change vehicle)",
+          "8",
+          "yes",
+          "yes",
+          "`\u2014`",
+          "0",
+          "`20260807T032126Z`"
+        ],
+        [
+          "`car_happy_economy` (book)",
+          "8",
+          "**no**",
+          "yes",
+          "`\u2014`",
+          "1",
+          "`20260807T031038Z`"
+        ],
+        [
+          "`car_happy_suv` (book)",
+          "11",
+          "yes",
+          "yes",
+          "`\u2014`",
+          "0",
+          "`20260807T030037Z`"
+        ],
+        [
+          "`car_just_asking` (just-asking)",
+          "7",
+          "**no**",
+          "yes",
+          "`\u2014`",
+          "1",
+          "`20260807T032908Z`"
+        ],
+        [
+          "`car_long_term` (book)",
+          "0",
+          "**no**",
+          "**no**",
+          "`\u2014`",
+          "1",
+          "`20260806T153212Z`"
+        ],
+        [
+          "`car_luxury_upgrade` (book)",
+          "0",
+          "**no**",
+          "**no**",
+          "`\u2014`",
+          "1",
+          "`20260806T153355Z`"
+        ],
+        [
+          "`car_no_availability` (no-availability)",
+          "3",
+          "**no**",
+          "yes",
+          "`\u2014`",
+          "1",
+          "`20260807T031852Z`"
+        ],
+        [
+          "`car_one_way` (book)",
+          "0",
+          "**no**",
+          "**no**",
+          "`\u2014`",
+          "1",
+          "`20260806T153232Z`"
+        ],
+        [
+          "`car_price_too_high` (just-asking)",
+          "0",
+          "**no**",
+          "**no**",
+          "`\u2014`",
+          "1",
+          "`20260806T153313Z`"
+        ],
+        [
+          "`car_wrong_dates` (no-availability)",
+          "0",
+          "**no**",
+          "**no**",
+          "`\u2014`",
+          "1",
+          "`20260806T153334Z`"
+        ]
+      ],
+      "note": "Each row is one scripted caller persona driven over real audio, taken from the most recent session recorded for that scenario. 'Closed' and 'goal met' are independent: an agent can satisfy the caller and never hang up, or hang up having satisfied nobody.",
+      "allow_providers": false,
+      "allow_context": true
+    },
+    {
+      "key": "sessions",
+      "title": "Per-scenario outcomes, as the harness summarised them",
       "columns": [
         "Scenario",
         "Turns",
@@ -272,9 +389,9 @@
     "endpoint": "LiveKit voice room (POST /api/bench/voice/start)",
     "mode": "voice",
     "harness_commit": null,
-    "repo_commit": "86b4475",
+    "repo_commit": "89f2e02",
     "run_dir": "/private/tmp/claude-501/-Users-karan-Desktop-work-whissle-live-assist/766421da-8ef4-4ce2-9733-86e5c5f3fced/scratchpad/wt-reports/results/whissle/flow_sim/car_rental",
-    "captured_at": "2026-08-06",
+    "captured_at": "2026-08-07",
     "dataset": "scripted caller personas for `car_rental`",
     "dataset_size": 11,
     "upstream": "internal \u2014 no published equivalent",
@@ -377,6 +494,56 @@
       "rate_pct": 54.5
     }
   ],
+  "sample_cases": [
+    {
+      "case_id": "car_change_vehicle",
+      "outcome": "goal met",
+      "is_success": true,
+      "score": null,
+      "task": "persona `change vehicle` \u00b7 8 caller turns \u00b7 final state `\u2014`",
+      "expected": "",
+      "got": "",
+      "excerpt": "AGENT: Hello! How can I help you today?\nUSER: Hi, yes, I'm calling because I'd like to book a sedan for next weekend. Do you have anything available?\nAGENT: Great! I'd be happy to help you book a sedan for next weekend. Can you tell me which dates you need the car \u2014 what day would you like to pick it up and what day would you drop it off? Yes, we have a Honda City sedan available \u2014 it's automatic, seats five, and costs 3400 rupees per day with a 10000 rupee deposit. Would that work for you? Can ",
+      "artifact": "car_change_vehicle_20260807T032126Z.mix.wav",
+      "why_shown": "The customer successfully began booking a sedan, changed to wanting an SUV (Hyundai Creta) midway through, and completed the full booking for the SUV with all necessary details confirmed and a reference number provided."
+    },
+    {
+      "case_id": "car_happy_economy",
+      "outcome": "goal met",
+      "is_success": true,
+      "score": null,
+      "task": "persona `book` \u00b7 8 caller turns \u00b7 final state `\u2014`",
+      "expected": "",
+      "got": "",
+      "excerpt": "AGENT: Hello! How can I help you today?\nUSER: Hi, I'm looking to rent an economy car for a weekend trip \u2014 three days starting this Friday. What's your cheapest option?\nAGENT: Great! I can help you with that. When are you planning to pick up the car? Perfect. So that's this Friday through Sunday \u2014 what time would you like to pick up on Friday? Our cheapest option is the Maruti Swift at 1800 rupees per day with a 5000 rupee deposit \u2014 that's a manual hatchback with 150 free kilometers daily. Does t",
+      "artifact": "car_happy_economy_20260807T031038Z.mix.wav",
+      "why_shown": "The customer successfully booked the cheapest economy car option (Maruti Swift at 1800 rupees per day) for a 3-day weekend rental (Friday to Sunday) and received a booking confirmation with reference number BK-772963."
+    },
+    {
+      "case_id": "car_add_driver",
+      "outcome": "goal not met",
+      "is_success": false,
+      "score": null,
+      "task": "persona `change vehicle` \u00b7 0 caller turns \u00b7 final state `\u2014`",
+      "expected": "",
+      "got": "",
+      "excerpt": "AGENT: Hello! How can I help you today?",
+      "artifact": "car_add_driver_20260806T153253Z.mix.wav",
+      "why_shown": "not run"
+    },
+    {
+      "case_id": "car_long_term",
+      "outcome": "goal not met",
+      "is_success": false,
+      "score": null,
+      "task": "persona `book` \u00b7 0 caller turns \u00b7 final state `\u2014`",
+      "expected": "",
+      "got": "",
+      "excerpt": "AGENT: Hello! How can I help you today?",
+      "artifact": "car_long_term_20260806T153212Z.mix.wav",
+      "why_shown": "not run"
+    }
+  ],
   "limitations": [
     {
       "key": "tiny_n",
@@ -411,7 +578,7 @@
       "python -m tau2.reporting.cli build results/whissle/flow_sim/car_rental"
     ],
     "environment": {
-      "repo commit at report time": "86b4475",
+      "repo commit at report time": "89f2e02",
       "extras required": "voice (LiveKit, audio codecs)"
     },
     "notes": [
@@ -443,12 +610,12 @@
     {
       "path": "REPORT.md",
       "description": "this report",
-      "present": false
+      "present": true
     },
     {
       "path": "report.json",
       "description": "machine-readable form of this report",
-      "present": false
+      "present": true
     }
   ],
   "licence_note": "",

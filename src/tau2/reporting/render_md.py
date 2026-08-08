@@ -317,13 +317,14 @@ def render(report: RunReport) -> str:  # noqa: C901 - a document, not a branch t
             for k in b.values:
                 if k not in keys:
                     keys.append(k)
-        cols = ["System", "N"] + [k.title() for k in keys]
+        cols = ["System", "N"] + [k.title() for k in keys] + ["Published in"]
         rows = [
             [
                 f"**{report.label} (this run)**",
                 str(report.n_scored),
             ]
             + [_our_value(report, k) for k in keys]
+            + ["— (this measurement)"]
         ]
         for b in sorted(
             report.baselines.baselines,
@@ -332,6 +333,9 @@ def render(report: RunReport) -> str:  # noqa: C901 - a document, not a branch t
             rows.append(
                 [b.name, str(b.n or "—")]
                 + [f"{b.values[k]:.1f}" if k in b.values else "—" for k in keys]
+                # Every comparator names its publication. A row a reader cannot go
+                # and check is not a comparison, and R7 rejects one.
+                + [b.source or "**unsourced**"]
             )
         L += _table(
             Table(
@@ -407,6 +411,37 @@ def render(report: RunReport) -> str:  # noqa: C901 - a document, not a branch t
                     W(f"  _artifact:_ `{ex.artifact}`")
             if f.examples:
                 W("")
+
+    # ---------------------------------------------------- 6.x sample cases
+    if report.sample_cases:
+        W("### Sample cases")
+        W("")
+        W(
+            "Picked deterministically from this run's own artifacts — the best and "
+            "worst by the benchmark's own score — so re-generating the report shows "
+            "the same cases rather than reshuffling them."
+        )
+        W("")
+        W(ALLOW_CONTEXT_OPEN)
+        for c in report.sample_cases:
+            mark = "✓" if c.is_success else "✗"
+            head = f"**{mark} `{c.case_id}`** — {c.outcome}"
+            if c.score is not None:
+                head += f" (score {c.score})"
+            W(head)
+            if c.task:
+                W(f"  - _task:_ {redact_providers(c.task)}")
+            if c.expected or c.got:
+                W(f"  - _reference:_ {c.expected or '—'}  ·  _agent said:_ {c.got or '—'}")
+            if c.excerpt:
+                W(f"  > {redact_providers(c.excerpt.replace(chr(10), ' ').strip())}")
+            if c.why_shown:
+                W(f"  - _why this one:_ {redact_providers(c.why_shown)}")
+            if c.artifact:
+                W(f"  - _artifact:_ `{c.artifact}`")
+            W("")
+        W(ALLOW_CONTEXT_CLOSE)
+        W("")
 
     # ------------------------------------------------------- 7. exclusions
     W("## 7. Exclusions and what they do to the number")

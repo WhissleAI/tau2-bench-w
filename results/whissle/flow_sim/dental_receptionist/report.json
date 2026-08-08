@@ -112,8 +112,125 @@
   "scoring_rule": "task success = graded goal-met / executed sessions; clean close = sessions emitting `flow_end` / executed sessions",
   "tables": [
     {
-      "key": "sessions",
+      "key": "scenarios",
       "title": "Per-scenario outcomes",
+      "columns": [
+        "Scenario",
+        "Turns",
+        "Closed",
+        "Goal met",
+        "Final state",
+        "Findings",
+        "Session"
+      ],
+      "rows": [
+        [
+          "`dental_book_specific_time` (book)",
+          "8",
+          "yes",
+          "yes",
+          "`\u2014`",
+          "0",
+          "`20260807T000631Z`"
+        ],
+        [
+          "`dental_cancel` (cancel)",
+          "15",
+          "yes",
+          "**no**",
+          "`\u2014`",
+          "2",
+          "`20260807T002323Z`"
+        ],
+        [
+          "`dental_cancel_no_reason` (cancel)",
+          "8",
+          "**no**",
+          "**no**",
+          "`\u2014`",
+          "1",
+          "`20260807T003801Z`"
+        ],
+        [
+          "`dental_emergency` (book)",
+          "7",
+          "**no**",
+          "**no**",
+          "`\u2014`",
+          "1",
+          "`20260807T010659Z`"
+        ],
+        [
+          "`dental_happy_book` (book)",
+          "0",
+          "**no**",
+          "**no**",
+          "`\u2014`",
+          "1",
+          "`20260807T000534Z`"
+        ],
+        [
+          "`dental_hours_only` (just-asking)",
+          "2",
+          "yes",
+          "yes",
+          "`\u2014`",
+          "0",
+          "`20260807T005435Z`"
+        ],
+        [
+          "`dental_message_for_staff` (just-asking)",
+          "4",
+          "yes",
+          "yes",
+          "`\u2014`",
+          "0",
+          "`20260807T011420Z`"
+        ],
+        [
+          "`dental_no_slot` (no-slot)",
+          "9",
+          "**no**",
+          "yes",
+          "`\u2014`",
+          "1",
+          "`20260807T004551Z`"
+        ],
+        [
+          "`dental_reschedule` (reschedule)",
+          "0",
+          "**no**",
+          "**no**",
+          "`\u2014`",
+          "1",
+          "`20260807T001435Z`"
+        ],
+        [
+          "`dental_reschedule_then_cancel` (reschedule)",
+          "8",
+          "**no**",
+          "yes",
+          "`\u2014`",
+          "1",
+          "`20260807T001533Z`"
+        ],
+        [
+          "`dental_wrong_info` (wrong info)",
+          "10",
+          "**no**",
+          "**no**",
+          "`\u2014`",
+          "1",
+          "`20260807T005632Z`"
+        ]
+      ],
+      "note": "Each row is one scripted caller persona driven over real audio, taken from the most recent session recorded for that scenario. 'Closed' and 'goal met' are independent: an agent can satisfy the caller and never hang up, or hang up having satisfied nobody.",
+      "allow_providers": false,
+      "allow_context": true
+    },
+    {
+      "key": "sessions",
+      "title": "Per-scenario outcomes, as the harness summarised them",
       "columns": [
         "Scenario",
         "Turns",
@@ -276,7 +393,7 @@
     "endpoint": "LiveKit voice room (POST /api/bench/voice/start)",
     "mode": "voice",
     "harness_commit": null,
-    "repo_commit": "86b4475",
+    "repo_commit": "89f2e02",
     "run_dir": "/private/tmp/claude-501/-Users-karan-Desktop-work-whissle-live-assist/766421da-8ef4-4ce2-9733-86e5c5f3fced/scratchpad/wt-reports/results/whissle/flow_sim/dental_receptionist",
     "captured_at": "2026-08-07",
     "dataset": "scripted caller personas for `dental_receptionist`",
@@ -461,6 +578,56 @@
       "rate_pct": 54.5
     }
   ],
+  "sample_cases": [
+    {
+      "case_id": "dental_book_specific_time",
+      "outcome": "goal met",
+      "is_success": true,
+      "score": null,
+      "task": "persona `book` \u00b7 8 caller turns \u00b7 final state `\u2014`",
+      "expected": "",
+      "got": "",
+      "excerpt": "AGENT: Thanks for calling. I can book, move or cancel an appointment, or tell you our opening hours \u2014 what can I do for you?\nUSER: Hi, I'm calling to book a check-up appointment \u2014 I'm an existing patient and I need something in the late afternoon, like after 4pm ideally.\nAGENT: Great! I'll Perfect. I have you as an existing patient looking for a late afternoon slot after 4 PM. What's your full name and date of birth so I can pull up your record Would you like to book an appointment, or is there ",
+      "artifact": "dental_book_specific_time_20260807T000631Z.mix.wav",
+      "why_shown": "The customer successfully booked a check-up appointment for Monday, August 10th at 4 PM, which is after 4pm on a weekday as required, and confirmed the booking."
+    },
+    {
+      "case_id": "dental_hours_only",
+      "outcome": "goal met",
+      "is_success": true,
+      "score": null,
+      "task": "persona `just-asking` \u00b7 2 caller turns \u00b7 final state `\u2014`",
+      "expected": "",
+      "got": "",
+      "excerpt": "AGENT: Thanks for calling. I can book, move or cancel an appointment, or tell you our opening hours \u2014 what can I do for you?\nUSER: Hi, yes, I'm calling to find out your clinic's opening hours and where you're located.\nAGENT: We're open Monday to Friday, 9 AM to 6 PM, and we're located in Patiala. Is there anything else I can help with today? You're all set. If anything else comes up, just call us back. Take care \u2014 goodbye.\nUSER: Great, thanks so much for that information. That's really helpful. ",
+      "artifact": "dental_hours_only_20260807T005435Z.mix.wav",
+      "why_shown": "The customer successfully obtained the clinic's opening hours (Monday to Friday, 9 AM to 6 PM) and location (Patiala), thanked the agent, and the call ended without any appointment booking."
+    },
+    {
+      "case_id": "dental_cancel",
+      "outcome": "goal not met",
+      "is_success": false,
+      "score": null,
+      "task": "persona `cancel` \u00b7 15 caller turns \u00b7 final state `\u2014`",
+      "expected": "",
+      "got": "",
+      "excerpt": "AGENT: Thanks for calling. I can book, move or cancel an appointment, or tell you our opening hours \u2014 what can I do for you?\nUSER: Hi, I need to cancel my dental appointment coming up because I'm going to be out of town for work.\nAGENT: I'll help you cancel your appointment. To locate it, I need a bit more information:\n\n**Do you have your appointment ID, or can you provide your phone number?**\n\nOnce I have that, I can pull up your appointment details and process the cancellation right away. Woul",
+      "artifact": "dental_cancel_20260807T002323Z.mix.wav",
+      "why_shown": "The customer's appointment was never actually cancelled in the system; instead, the agent could only pass information to the clinic for a callback, and the call ended with the customer frustrated and uncertain whether their cancellation request would"
+    },
+    {
+      "case_id": "dental_cancel_no_reason",
+      "outcome": "goal not met",
+      "is_success": false,
+      "score": null,
+      "task": "persona `cancel` \u00b7 8 caller turns \u00b7 final state `\u2014`",
+      "expected": "",
+      "got": "",
+      "excerpt": "AGENT: Thanks for calling. I can book, move or cancel an appointment, or tell you our opening hours \u2014 what can I do for you?\nUSER: Yeah, hi, I need to cancel my appointment.\nAGENT: Sure, I can help with that. What's the name on the appointment? Would you like to book an appointment, or is there something else I can help with?\nUSER: Vikram Rao. And no, I just want to cancel it\u2014no rescheduling.\nAGENT: Got it, Vikram. Before we cancel, would you like to reschedule instead \u2014 maybe a different day or",
+      "artifact": "dental_cancel_no_reason_20260807T003801Z.mix.wav",
+      "why_shown": "The appointment was not cancelled; the agent determined it was at a different facility (Riverside Medical Center) and directed the customer to contact them directly instead."
+    }
+  ],
   "limitations": [
     {
       "key": "tiny_n",
@@ -495,7 +662,7 @@
       "python -m tau2.reporting.cli build results/whissle/flow_sim/dental_receptionist"
     ],
     "environment": {
-      "repo commit at report time": "86b4475",
+      "repo commit at report time": "89f2e02",
       "extras required": "voice (LiveKit, audio codecs)"
     },
     "notes": [
@@ -527,12 +694,12 @@
     {
       "path": "REPORT.md",
       "description": "this report",
-      "present": false
+      "present": true
     },
     {
       "path": "report.json",
       "description": "machine-readable form of this report",
-      "present": false
+      "present": true
     }
   ],
   "licence_note": "",

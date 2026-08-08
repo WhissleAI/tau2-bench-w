@@ -27,6 +27,7 @@ from ..model import (
     Provenance,
     Reproduction,
     RunReport,
+    SampleCase,
     Sampling,
     Table,
 )
@@ -335,6 +336,7 @@ class AgentClinicAdapter:
                 published_protocol="see arXiv:2405.07960 — not replicated here",
             ),
             failures=_failures(scored, infra),
+            sample_cases=_sample_cases(scored),
             limitations=_limitations(meta, exclusions, sampling, n_scored, status, partial_reason),
             reproduction=Reproduction(
                 commands=[
@@ -618,3 +620,42 @@ def _limitations(
         ),
     ]
     return [x for x in out if x]
+
+
+def _sample_cases(scored: list[Any]) -> list[SampleCase]:
+    """Two consultations that landed and two that did not, in scenario order.
+
+    The wrong ones are the point: a confident wrong diagnosis, with the reference
+    beside it, is the single most informative thing this benchmark produces.
+    """
+    right = sorted(
+        (c for c in scored if dig(c, "score", "outcome") == "correct"),
+        key=lambda c: str(c.get("scenario_id")),
+    )
+    wrong = sorted(
+        (c for c in scored if dig(c, "score", "outcome") in ("incorrect", "no_commit")),
+        key=lambda c: str(c.get("scenario_id")),
+    )
+
+    def one(c: Any, success: bool) -> SampleCase:
+        return SampleCase(
+            case_id=str(c.get("scenario_id")),
+            outcome=str(dig(c, "score", "outcome", default="?")),
+            is_success=success,
+            task=(
+                f"{c.get('dataset', 'MedQA')} consultation · "
+                f"{c.get('inferences_used', '?')}/{c.get('max_inferences', '?')} inferences · "
+                f"{len(c.get('tests_ordered') or [])} tests ordered"
+            ),
+            expected=str(c.get("correct_diagnosis") or "")[:200],
+            got=str(dig(c, "score", "doctor_diagnosis", default="") or "(never committed)")[:200],
+            excerpt=str(dig(c, "score", "doctor_final_text", default=""))[:400],
+            artifact=f"cases/{c.get('scenario_id')}.json",
+            why_shown=(
+                "committed the reference diagnosis"
+                if success
+                else "committed a different diagnosis, or never committed at all"
+            ),
+        )
+
+    return [one(c, True) for c in right[:2]] + [one(c, False) for c in wrong[:2]]

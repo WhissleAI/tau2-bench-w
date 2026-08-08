@@ -118,12 +118,33 @@ def _baselines(report: RunReport) -> tuple[list[dict], list[dict]]:
         if key is None:
             continue
         val = b.values.get("overall", b.values.get(key))
+        # Named and sourced, always. "Frontier text agent — 0.60" is a shape that
+        # looks like a comparison; a reader cannot go and check it, and R7 rejects it.
+        display = f"{b.name}, {b.source}" if b.source else b.name
+        if b.n:
+            display += f", N = {b.n}"
         everything.append(
-            {"label": b.name, "score": round(float(val), 1), "n": b.n, "source": b.source}
+            {
+                "label": b.name,
+                "score": round(float(val), 1),
+                "n": b.n,
+                "source": b.source,
+                "sourceUrl": b.source_url,
+                "protocol": b.protocol,
+                "display": f"{display} — {float(val):.1f}",
+            }
         )
         mapped = BASELINE_LABEL_MAP.get(b.name.strip().lower())
         if mapped:
-            allowed.append({"label": mapped, "score": round(float(val), 1)})
+            allowed.append(
+                {
+                    "label": mapped,
+                    "score": round(float(val), 1),
+                    "source": b.source,
+                    "sourceUrl": b.source_url,
+                    "n": b.n,
+                }
+            )
     return allowed, everything
 
 
@@ -473,6 +494,28 @@ def validate(export: dict) -> list[Violation]:
                             str(item.get("title"))[:40],
                         )
                     )
+    from .honesty import VAGUE_BASELINE_TOKENS
+
+    for row in export.get("rows", []):
+        for b in (row.get("baselines") or []) + (row.get("baselinesAll") or []):
+            label = str(b.get("label") or "")
+            if any(t in label.lower() for t in VAGUE_BASELINE_TOKENS):
+                out.append(
+                    Violation(
+                        "R7_baseline_named",
+                        f"{label!r} describes a comparator instead of naming one",
+                        str(row.get("id")),
+                    )
+                )
+            if not (b.get("source") or "").strip():
+                out.append(
+                    Violation(
+                        "R7_baseline_named",
+                        f"comparator {label!r} reaches the page with no published source",
+                        str(row.get("id")),
+                    )
+                )
+
     ids = [r.get("id") for r in export.get("rows", [])]
     if len(ids) != len(set(ids)):
         out.append(Violation("R9_unique_ids", "duplicate row ids", ""))

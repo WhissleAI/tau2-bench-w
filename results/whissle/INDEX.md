@@ -2,7 +2,7 @@
 
 Every benchmark run this repository has recorded — **27 runs**. Entries accumulate: a regeneration adds and updates, it never drops a run, so a figure quoted six months ago can still be traced to the artifacts that produced it.
 
-_Generated 2026-08-08T16:04:05+00:00._
+_Generated 2026-08-08T16:51:42+00:00._
 
 ## How to read a row
 
@@ -28,11 +28,11 @@ _Generated 2026-08-08T16:04:05+00:00._
 | Whissle conversation-flow suite | `flow_sim_baseline/dental_receptionist` | 2026-08-05 | `voice` | 40.0% | 5 | 0 | n/a | **yes** | `—` | [REPORT](flow_sim_baseline/dental_receptionist/REPORT.md) |
 | Whissle conversation-flow suite | `flow_sim_baseline/headache_enrollment` | 2026-08-05 | `voice` | 50.0% | 10 | 0 | n/a | **yes** | `—` | [REPORT](flow_sim_baseline/headache_enrollment/REPORT.md) |
 | Whissle conversation-flow suite | `flow_sim/appointment_scheduling` | 2026-08-06 | `voice` | 45.5% | 11 | 0 | n/a | **yes** | `—` | [REPORT](flow_sim/appointment_scheduling/REPORT.md) |
-| Whissle conversation-flow suite | `flow_sim/car_rental` | 2026-08-06 | `voice` | 0.0% | 11 | 0 | n/a | **yes** | `—` | [REPORT](flow_sim/car_rental/REPORT.md) |
-| Whissle conversation-flow suite | `flow_sim/debt_collection` | 2026-08-06 | `voice` | 0.0% | 11 | 0 | n/a | **yes** | `—` | [REPORT](flow_sim/debt_collection/REPORT.md) |
+| Whissle conversation-flow suite | `flow_sim/car_rental` | 2026-08-07 | `voice` | 45.5% | 11 | 0 | n/a | **yes** | `—` | [REPORT](flow_sim/car_rental/REPORT.md) |
 | Whissle conversation-flow suite | `flow_sim/customer_support` | 2026-08-07 | `voice` | 63.6% | 11 | 0 | n/a | **yes** | `—` | [REPORT](flow_sim/customer_support/REPORT.md) |
+| Whissle conversation-flow suite | `flow_sim/debt_collection` | 2026-08-07 | `voice` | 9.1% | 11 | 0 | n/a | **yes** | `—` | [REPORT](flow_sim/debt_collection/REPORT.md) |
 | Whissle conversation-flow suite | `flow_sim/dental_receptionist` | 2026-08-07 | `voice` | 55.6% | 9 | 2 (18.2%) | n/a | **yes** | `—` | [REPORT](flow_sim/dental_receptionist/REPORT.md) |
-| Whissle conversation-flow suite | `flow_sim/headache_enrollment` | 2026-08-07 | `voice` | 100.0% | 1 | 0 | n/a | **yes** | `—` | [REPORT](flow_sim/headache_enrollment/REPORT.md) |
+| Whissle conversation-flow suite | `flow_sim/headache_enrollment` | 2026-08-07 | `voice` | 77.8% | 9 | 1 (10.0%) | n/a | **yes** | `—` | [REPORT](flow_sim/headache_enrollment/REPORT.md) |
 | MedAgentBench | `medagentbench/brain-parity_diagsmoke` | 2026-08-08 | `brain-parity` | 66.7% | 3 | 0 | n/a | **yes** | `ef37cfe` | [REPORT](medagentbench/brain-parity_diagsmoke/REPORT.md) |
 | MedAgentBench | `medagentbench/brain-parity_diagsmoke_write` | 2026-08-08 | `brain-parity` | 0.0% | 1 | 0 | n/a | **yes** | `ef37cfe` | [REPORT](medagentbench/brain-parity_diagsmoke_write/REPORT.md) |
 | MedAgentBench | `medagentbench/brain-parity_mab_100` | 2026-08-08 | `brain-parity` | 54.0% | 100 | 0 | n/a | no | `86b4475` | [REPORT](medagentbench/brain-parity_mab_100/REPORT.md) |
@@ -86,7 +86,7 @@ A delta is printed only when the two runs measured the same thing the same way. 
 | Date | Run | Metric | Value | N | Excl. | Δ vs previous | Note |
 |---|---|---|---:|---:|---:|---:|---|
 | 2026-08-05 | `flow_sim_baseline/car_rental` | `task_success` | 60.0% | 5 | 0 | — | PRELIMINARY. |
-| 2026-08-06 | `flow_sim/car_rental` | `task_success` | 0.0% | 11 | 0 | -60.0pp | PRELIMINARY. vs `flow_sim_baseline/car_rental` |
+| 2026-08-07 | `flow_sim/car_rental` | `task_success` | 45.5% | 11 | 0 | -14.5pp | PRELIMINARY. vs `flow_sim_baseline/car_rental` |
 
 ### Whissle conversation-flow suite — `flow_sim:customer_support`
 
@@ -99,7 +99,7 @@ A delta is printed only when the two runs measured the same thing the same way. 
 
 | Date | Run | Metric | Value | N | Excl. | Δ vs previous | Note |
 |---|---|---|---:|---:|---:|---:|---|
-| 2026-08-06 | `flow_sim/debt_collection` | `task_success` | 0.0% | 11 | 0 | — | PRELIMINARY. |
+| 2026-08-07 | `flow_sim/debt_collection` | `task_success` | 9.1% | 11 | 0 | — | PRELIMINARY. |
 
 ### Whissle conversation-flow suite — `flow_sim:dental_receptionist`
 
@@ -113,7 +113,7 @@ A delta is printed only when the two runs measured the same thing the same way. 
 | Date | Run | Metric | Value | N | Excl. | Δ vs previous | Note |
 |---|---|---|---:|---:|---:|---:|---|
 | 2026-08-05 | `flow_sim_baseline/headache_enrollment` | `task_success` | 50.0% | 10 | 0 | — | PRELIMINARY. |
-| 2026-08-07 | `flow_sim/headache_enrollment` | `task_success` | 100.0% | 1 | 0 | — | PRELIMINARY. not comparable to the previous run: sample sizes are not of the same order (N = 10 → N = 1); the difference would be mostly sampling noise |
+| 2026-08-07 | `flow_sim/headache_enrollment` | `task_success` | 77.8% | 9 | 1 (10.0%) | +27.8pp | PRELIMINARY. vs `flow_sim_baseline/headache_enrollment` |
 
 ### MedAgentBench — `medagentbench:brain-parity`
 

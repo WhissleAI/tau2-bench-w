@@ -60,7 +60,7 @@ Whether an agent can run a diagnostic consultation: take a patient's presentatio
 | Dataset | NEJM |
 | Dataset size | 15 |
 | Upstream | github.com/SamuelSchmidgall/AgentClinic (arXiv:2405.07960) |
-| Repo commit at report time | `86b4475` |
+| Repo commit at report time | `89f2e02` |
 | Captured at | 2026-08-08 |
 | Run directory | `results/whissle/agentclinic/20260808T022841Z-vision` |
 | Protocol | markers |
@@ -153,6 +153,36 @@ The agent named a diagnosis and it was not the reference one. These are the case
   > Based on all the clinical evidence—peripheral eosinophilia, bilateral cervical lymphadenopathy, freshwater exposure in Brazil, constitutional symptoms, nocturnal pruritus, exertional dyspnea, and normal infectious disease workup for fungal and viral pathogens—along with the normal chest imaging, thi
   _artifact:_ `cases/NEJM-1.json`
 
+### Sample cases
+
+Picked deterministically from this run's own artifacts — the best and worst by the benchmark's own score — so re-generating the report shows the same cases rather than reshuffling them.
+
+<!-- honesty:allow-context -->
+**✓ `NEJM-2`** — correct
+  - _task:_ NEJM consultation · 7/20 inferences · 1 tests ordered
+  - _reference:_ Pulmonary Sarcoidosis  ·  _agent said:_ Pulmonary Sarcoidosis
+
+Based on your clinical presentation of a six-month persistent dry cough with exertional dyspnea, combined with the high-resolution CT findings of mediastinal lymphadenopathy, gr
+  > DIAGNOSIS READY: Pulmonary Sarcoidosis  Based on your clinical presentation of a six-month persistent dry cough with exertional dyspnea, combined with the high-resolution CT findings of mediastinal lymphadenopathy, ground-glass opacities, and the characteristic crazy paving pattern, along with the definitive histopathological evidence of noncaseating granulomas and negative infectious workup, you
+  - _why this one:_ committed the reference diagnosis
+  - _artifact:_ `cases/NEJM-2.json`
+
+**✗ `NEJM-0`** — incorrect
+  - _task:_ NEJM consultation · 7/20 inferences · 1 tests ordered
+  - _reference:_ Exogenous ochronosis  ·  _agent said:_ Melasma with secondary dermal involvement and possible phototoxic reaction from hydroquinone use
+  > Based on the biopsy findings showing those characteristic banana-shaped bodies in the dermis, along with your clinical presentation of progressive hyperpigmentation, family history of melasma, photosensitivity, and the thickened skin texture—this is consistent with a specific condition.  DIAGNOSIS READY: Melasma with secondary dermal involvement and possible phototoxic reaction from hydroquinone u
+  - _why this one:_ committed a different diagnosis, or never committed at all
+  - _artifact:_ `cases/NEJM-0.json`
+
+**✗ `NEJM-1`** — incorrect
+  - _task:_ NEJM consultation · 13/20 inferences · 5 tests ordered
+  - _reference:_ Paracoccidiomycosis  ·  _agent said:_ Toxoplasmosis with cervical lymphadenopathy (or alternatively, acute schistosomiasis/cercarial dermatitis with systemic involvement from freshwater exposure in Brazil)
+  > Based on all the clinical evidence—peripheral eosinophilia, bilateral cervical lymphadenopathy, freshwater exposure in Brazil, constitutional symptoms, nocturnal pruritus, exertional dyspnea, and normal infectious disease workup for fungal and viral pathogens—along with the normal chest imaging, this presentation is classic for a parasitic infection acquired through freshwater exposure.  DIAGNOSIS
+  - _why this one:_ committed a different diagnosis, or never committed at all
+  - _artifact:_ `cases/NEJM-1.json`
+
+<!-- /honesty:allow-context -->
+
 ## 7. Exclusions and what they do to the number
 
 Nothing was excluded: all 3 attempted units produced a gradable result. The headline denominator is the full attempted set.
@@ -178,7 +208,7 @@ python -m tau2.reporting.cli build results/whissle/agentclinic/20260808T022841Z-
 |---|---|
 | WHISSLE_BASE | https://aws-gateway-backend.whissle.ai/bot |
 | harness commit | unknown |
-| repo commit at report time | 86b4475 |
+| repo commit at report time | 89f2e02 |
 
 - `head` selection with a fixed limit reproduces the same scenario set exactly.
 - The run provisions a throwaway agent and deletes it afterwards (`agent_deleted: None`), so the agent id in provenance will not resolve after the fact.
@@ -208,6 +238,7 @@ These rules are executed against this document, not asserted about it. A failing
 | `R4_preliminary_labelled` | pass | labelled PRELIMINARY |
 | `R5_no_provider_names` | pass | no LLM vendor named outside the published-baseline table |
 | `R6_comparability_stated` | pass | not applicable — no published baseline is registered |
+| `R7_baseline_named` | pass | not applicable — no published baseline is registered |
 
 ---
 

@@ -198,11 +198,19 @@ class Sampling:
 @dataclass
 class Baseline:
     """A published external comparator. Vendor model names are expected here and
-    only here."""
+    only here.
+
+    ``name`` and ``source`` are both required in practice: "Frontier text agent" is
+    not a comparator, it is a way of avoiding one. A reader has to be able to go and
+    check the number, which means knowing *which* system, from *which* publication,
+    under *which* protocol.
+    """
 
     name: str
     values: dict[str, float]
     source: str = ""
+    source_url: str = ""
+    protocol: str = ""
     n: Optional[int] = None
 
     def to_dict(self) -> dict[str, Any]:
@@ -260,6 +268,33 @@ class FailureCategory:
         d["rate_pct"] = (
             _round(100.0 * self.count / self.denominator, 1) if self.denominator else None
         )
+        return d
+
+
+@dataclass
+class SampleCase:
+    """One representative unit, good or bad, quoted from the run's own artifacts.
+
+    The reporting page shows these so a reader can see what the benchmark actually
+    asked and what the agent actually said, without cloning the repo. They are
+    picked deterministically (best/worst by the run's own score) so re-publishing a
+    run does not reshuffle them.
+    """
+
+    case_id: str
+    outcome: str
+    is_success: Optional[bool] = None
+    score: Optional[float] = None
+    task: str = ""
+    expected: str = ""
+    got: str = ""
+    excerpt: str = ""
+    artifact: str = ""
+    why_shown: str = ""
+
+    def to_dict(self) -> dict[str, Any]:
+        d = asdict(self)
+        d["score"] = _round(self.score)
         return d
 
 
@@ -331,6 +366,7 @@ class RunReport:
     sampling: Sampling = field(default_factory=Sampling)
     baselines: BaselineSet = field(default_factory=BaselineSet)
     failures: list[FailureCategory] = field(default_factory=list)
+    sample_cases: list[SampleCase] = field(default_factory=list)
     limitations: list[Limitation] = field(default_factory=list)
     reproduction: Reproduction = field(default_factory=Reproduction)
     artifacts: list[Artifact] = field(default_factory=list)
@@ -393,6 +429,7 @@ class RunReport:
             "sampling": self.sampling.to_dict(),
             "baselines": self.baselines.to_dict(),
             "failures": [f.to_dict() for f in self.failures],
+            "sample_cases": [c.to_dict() for c in self.sample_cases],
             "limitations": [x.to_dict() for x in self.limitations],
             "reproduction": self.reproduction.to_dict(),
             "artifacts": [a.to_dict() for a in self.artifacts],

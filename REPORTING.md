@@ -8,6 +8,8 @@ python -m tau2.reporting all         # every run + INDEX.md + web/benchmark_expo
 python -m tau2.reporting build results/whissle/medagentbench/brain-parity_mab_100
 python -m tau2.reporting check       # audit everything, write nothing (the CI shape)
 python -m tau2.reporting list        # which run dirs are recognised, by which adapter
+python -m tau2.reporting all --publish   # …and POST it all to the results store
+python -m tau2.reporting publish <run>   # push one run (idempotent on run id)
 ```
 
 Nothing here runs a benchmark. Every command is a pure function of the artifacts
@@ -88,6 +90,7 @@ that cannot fail is decoration.
 | **R4** `preliminary_labelled` | presenting a small or unfinished run as settled | `N < 30` **or** an incomplete run directory forces `PRELIMINARY` into the qualifier, the banner and the index |
 | **R5** `no_provider_names` | naming the underlying LLM vendor in agent-facing text | a vendor-name regex over the whole document, with two sanctioned exemptions: the published-baseline table and the judge-independence note, both wrapped in explicit HTML-comment spans. Vendor names quoted verbatim from error payloads are **redacted with a visible marker**, not dropped |
 | **R6** `comparability_stated` | a baseline table with no statement of what does not transfer | `baselines.comparability_note` must be non-empty whenever baselines are shown |
+| **R7** `baseline_named` | a comparator that is described rather than identified | every baseline must be a named system with a published source and a score. "Frontier text agent — 0.60" is unfalsifiable: the reader cannot go and check it, and it invites them to imagine whichever system flatters us. A vague-label blocklist (`frontier`, `leading`, `state of the art`, `competitor`, …) is checked in the report, in the export and in the wire envelope |
 
 The mechanism for R1–R4 is one machine-checkable **qualifier**:
 
@@ -135,6 +138,47 @@ of N all agree. Otherwise the reason appears where the arrow would be:
 
 > not comparable to the previous run: sample sizes are not of the same order
 > (N = 2 → N = 100); the difference would be mostly sampling noise
+
+---
+
+## Publishing to the results store
+
+Benchmark results live in the database, written from here, so the public page shows
+history, per-run detail and sample cases without a frontend deploy for every run.
+
+```bash
+export WHISSLE_BASE=https://aws-gateway-backend.whissle.ai/bot
+export WHISSLE_API_KEY=...
+make reports-publish
+```
+
+| | |
+|---|---|
+| run upsert | `POST {WHISSLE_BASE}/api/bench/results` |
+| history | `PUT {WHISSLE_BASE}/api/bench/results/index` |
+| auth | `Authorization: Bearer $WHISSLE_API_KEY` |
+| idempotency key | `runId` (also sent as `X-Bench-Run-Id`) |
+| run schema | `whissle.benchmark.run/v1` |
+| history schema | `whissle.benchmark.history/v1` |
+
+`publish.run_envelope()` is the **single definition of the wire format** — the same
+object is written to `publish.json` beside every report, so the exact bytes the
+store receives are reviewable in a diff rather than only observable over HTTP.
+
+**The honesty rules are the schema, not a convention.** `sampleSize`, `attempted`,
+`excluded`, `exclusionRatePct` and `judge.independent` are mandatory top-level keys,
+always present and never implied — `judge.independent: null` means *deterministic
+grading, no judge model*, which is a different fact from `false`, and a missing key
+is neither. `validate_envelope()` runs the store's rejection rules locally so a bad
+run fails our tests instead of a POST.
+
+Nothing is sent if anything fails validation, and the history document is sent only
+after every run has landed. A partial publish is worse than none: it leaves the
+store holding some runs from this generation and some from the last, and the history
+view cannot tell.
+
+Re-publishing a run **updates** it. A run gets re-reported every time the generator
+improves, and a store that appended would grow a fake history of one measurement.
 
 ---
 
@@ -216,3 +260,9 @@ adapter test rather than quietly reshaping every expectation. Covered:
 * index accumulation, regeneration without duplication, and every refusal-to-diff
 * export validation, rubric rescaling, baseline label mapping, and the website
   publishing gate's requirements
+* the wire envelope: mandatory-field rejection for each of N, exclusions and judge
+  independence; non-closing exclusion arithmetic; idempotence on `runId`;
+  vague and unsourced comparators; no partial publish when a run fails; a missing
+  API key reported rather than hung on
+* the flow suite's accumulating directory: counts come from the session sidecars,
+  so a one-scenario re-run cannot turn a ten-scenario suite into "100% (N = 1)"

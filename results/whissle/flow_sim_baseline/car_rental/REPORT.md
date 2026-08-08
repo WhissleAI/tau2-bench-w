@@ -60,7 +60,7 @@ Whether a deployed voice agent actually completes its job on a phone call: does 
 | Dataset | scripted caller personas for `car_rental` |
 | Dataset size | 5 |
 | Upstream | internal — no published equivalent |
-| Repo commit at report time | `86b4475` |
+| Repo commit at report time | `89f2e02` |
 | Captured at | 2026-08-05 |
 | Run directory | `results/whissle/flow_sim_baseline/car_rental` |
 | Agent type | car_rental |
@@ -105,6 +105,20 @@ _The headline row is the claim and carries its qualifiers; the rest are componen
 
 <!-- honesty:allow-context -->
 **Per-scenario outcomes**
+
+| Scenario | Turns | Closed | Goal met | Final state | Findings | Session |
+|---|---|---|---|---|---|---|
+| `car_change_vehicle` (change vehicle) | 9 | **no** | yes | `—` | 1 | `20260805T170833Z` |
+| `car_happy_suv` (book) | 11 | **no** | yes | `—` | 1 | `20260805T165230Z` |
+| `car_no_availability` (no-availability) | 4 | yes | yes | `—` | 0 | `20260805T170402Z` |
+| `car_one_way` (book) | 9 | **no** | **no** | `—` | 1 | `20260805T172934Z` |
+| `car_price_too_high` (just-asking) | 10 | **no** | **no** | `—` | 1 | `20260805T171842Z` |
+
+Each row is one scripted caller persona driven over real audio, taken from the most recent session recorded for that scenario. 'Closed' and 'goal met' are independent: an agent can satisfy the caller and never hang up, or hang up having satisfied nobody.
+<!-- /honesty:allow-context -->
+
+<!-- honesty:allow-context -->
+**Per-scenario outcomes, as the harness summarised them**
 
 | Scenario | Turns | Closed | Goal met | Final state | High-severity findings |
 |---|---|---|---|---|---|
@@ -183,6 +197,37 @@ The grader judged the caller left without what they came for. This is the headli
   > The customer declined to book due to uncertainty about the total price (damage waiver cost), but this was not a reaction to hearing an expensive price quote—the base price of $145 was actually deemed 'reasonable' by the customer, so the goal scenario was not fulfilled as specified.
   _artifact:_ `car_price_too_high_20260805T171842Z.session.json`
 
+### Sample cases
+
+Picked deterministically from this run's own artifacts — the best and worst by the benchmark's own score — so re-generating the report shows the same cases rather than reshuffling them.
+
+<!-- honesty:allow-context -->
+**✓ `car_change_vehicle`** — goal met
+  - _task:_ persona `change vehicle` · 9 caller turns · final state `—`
+  > AGENT: Hello! How can I help you today? USER: Hi, yeah, I'm looking to rent a car for next week and I think I want a sedan, something reliable and good on gas. AGENT: Great! Are you looking to book a car right now, or would you like a quote first? Perfect! Where will you be picking up the car — which city or office? Perfect, next week works. Which city or office location are you picking up from? Got it — you want something reliable and fuel-efficient. What city will you be picking up from? Can y
+  - _why this one:_ The customer successfully began by requesting a sedan, changed their mind to request an SUV instead, and completed the booking for the Mahindra Thar SUV with all details confirmed.
+  - _artifact:_ `car_change_vehicle_20260805T170833Z.mix.wav`
+
+**✓ `car_happy_suv`** — goal met
+  - _task:_ persona `book` · 11 caller turns · final state `—`
+  > AGENT: Hello! How can I help you today? USER: Hey, yeah, I'm calling to rent an SUV for a road trip this Friday. Do you guys have anything available? AGENT: Great, I can help you book an SUV for Friday! Let me just ask — is this Friday coming up, or a Friday further ahead? We do have SUVs available — I've got the Hyundai Creta and the Mahindra Thar. Before I check dates and availability, what city or office location would you be picking up from? Can you hear me? USER: Yeah, yeah, I can hear you
+  - _why this one:_ The agent successfully booked an SUV (Hyundai Creta) for a one-week rental with confirmed pickup date (this Friday at 9 AM in Denver), duration (one week, returning following Friday at 5 PM), and provided all necessary details including customer name
+  - _artifact:_ `car_happy_suv_20260805T165230Z.mix.wav`
+
+**✗ `car_one_way`** — goal not met
+  - _task:_ persona `book` · 9 caller turns · final state `—`
+  > AGENT: Hello! How can I help you today? USER: Hi, yeah, I'm looking to rent a car but I need to drop it off in a different city than where I pick it up—is that something you guys can do? AGENT: Great! Are you looking to book a car, get a quote, or do you have a question about our fleet? Great! What kind of car are you looking for, or would you like me to suggest something? Got it — so you'll be picking up in one city and returning in another. Where would you like to pick up the car? That's no pr
+  - _why this one:_ The booking was not completed; the agent failed to finalize the reservation and only collected contact information with a promise of a future callback for pricing details.
+  - _artifact:_ `car_one_way_20260805T172934Z.mix.wav`
+
+**✗ `car_price_too_high`** — goal not met
+  - _task:_ persona `just-asking` · 10 caller turns · final state `—`
+  > AGENT: Hello! How can I help you today? USER: Hey, I'm looking to rent an SUV for next weekend, starting Friday the 15th through Sunday the 17th. AGENT: Great! Are you looking for a quote, or would you like to go ahead and book one? Great, I'd be happy to help you book an SUV for next weekend! Where will you be picking up the car? Just to confirm — you want to pick up on Friday the fifteenth and return on Sunday the seventeenth, is that right? Can you hear me? USER: Yeah, I can hear you fine. I'
+  - _why this one:_ The customer declined to book due to uncertainty about the total price (damage waiver cost), but this was not a reaction to hearing an expensive price quote—the base price of $145 was actually deemed 'reasonable' by the customer, so the goal scenario
+  - _artifact:_ `car_price_too_high_20260805T171842Z.mix.wav`
+
+<!-- /honesty:allow-context -->
+
 ## 7. Exclusions and what they do to the number
 
 Nothing was excluded: all 5 attempted units produced a gradable result. The headline denominator is the full attempted set.
@@ -207,7 +252,7 @@ python -m tau2.reporting.cli build results/whissle/flow_sim/car_rental
 
 | Field | Value |
 |---|---|
-| repo commit at report time | 86b4475 |
+| repo commit at report time | 89f2e02 |
 | extras required | voice (LiveKit, audio codecs) |
 
 - Audio is captured per session (`*.caller.wav`, `*.bot.wav`, `*.mix.wav`) — a disputed grader verdict can be settled by listening.
@@ -221,8 +266,8 @@ python -m tau2.reporting.cli build results/whissle/flow_sim/car_rental
 | `SUMMARY.md` | yes | the harness's own short summary |
 | `*.session.json` | **missing** | per-session sidecar: turns, flow trace, findings |
 | `*.mix.wav` | **missing** | the recorded call |
-| `REPORT.md` | **missing** | this report |
-| `report.json` | **missing** | machine-readable form of this report |
+| `REPORT.md` | yes | this report |
+| `report.json` | yes | machine-readable form of this report |
 
 Every per-case record carries a `diagnostics` block (`tau2.health.diagnostics/v1`) with flow trace, signals, metadata sidecar, tool forensics, provenance and cost — and explicit availability flags, so an absent measurement reads as absent rather than as zero. See `HEALTH_DIAGNOSTICS.md`.
 
@@ -238,5 +283,6 @@ These rules are executed against this document, not asserted about it. A failing
 | `R4_preliminary_labelled` | pass | labelled PRELIMINARY |
 | `R5_no_provider_names` | pass | no LLM vendor named outside the published-baseline table |
 | `R6_comparability_stated` | pass | not applicable — no published baseline is registered |
+| `R7_baseline_named` | pass | not applicable — no published baseline is registered |
 
 <!-- generated by tau2.reporting from flow_sim_baseline/car_rental; schema tau2.reporting.run_report/v1 -->

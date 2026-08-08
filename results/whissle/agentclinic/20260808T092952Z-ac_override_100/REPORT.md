@@ -62,7 +62,7 @@ Whether an agent can run a diagnostic consultation: take a patient's presentatio
 | Dataset size | 107 |
 | Upstream | github.com/SamuelSchmidgall/AgentClinic (arXiv:2405.07960) |
 | Harness commit | `86b4475` |
-| Repo commit at report time | `86b4475` |
+| Repo commit at report time | `89f2e02` |
 | Captured at | 2026-08-08T09:30:16+00:00 |
 | Run directory | `results/whissle/agentclinic/20260808T092952Z-ac_override_100` |
 | Protocol | markers |
@@ -187,6 +187,45 @@ The inference budget expired before the agent named a diagnosis. Scored as incor
   > I see, it's strange to think something could be there my whole life and only start acting up now. Will the next steps tell us for sure if that's what's causing the weight loss and this yellow skin?
   _artifact:_ `cases/MedQA-52.json`
 
+### Sample cases
+
+Picked deterministically from this run's own artifacts — the best and worst by the benchmark's own score — so re-generating the report shows the same cases rather than reshuffling them.
+
+<!-- honesty:allow-context -->
+**✓ `MedQA-0`** — correct
+  - _task:_ MedQA consultation · 9/20 inferences · 1 tests ordered
+  - _reference:_ Myasthenia gravis  ·  _agent said:_ Myasthenia Gravis
+  > These test results are highly diagnostic and align perfectly with your clinical presentation. The combination of decreased muscle response on repetitive stimulation, positive acetylcholine receptor antibodies, and your characteristic pattern of fatigable weakness with ocular involvement is conclusive.  DIAGNOSIS READY: Myasthenia Gravis
+  - _why this one:_ committed the reference diagnosis
+  - _artifact:_ `cases/MedQA-0.json`
+
+**✓ `MedQA-10`** — correct
+  - _task:_ MedQA consultation · 10/20 inferences · 1 tests ordered
+  - _reference:_ Hemorrhoids  ·  _agent said:_ Internal Hemorrhoids (Prolapsed)
+
+Wishing you well with your colonoscopy procedure and your recovery ahead.
+  > That was the right approach. Based on everything we've gathered—your examination showing prolapsed internal hemorrhoids on anoscopy, normal blood work, the characteristic bright red bleeding with bowel movements, no systemic symptoms, and the mass being easily reducible—I'm confident in my diagnosis. The colonoscopy will still proceed to ensure there are no other lesions higher in the colon, but I
+  - _why this one:_ committed the reference diagnosis
+  - _artifact:_ `cases/MedQA-10.json`
+
+**✗ `MedQA-1`** — incorrect
+  - _task:_ MedQA consultation · 12/20 inferences · 2 tests ordered
+  - _reference:_ Progressive multifocal encephalopathy (PML)  ·  _agent said:_ Multiple Sclerosis (MS) with natalizumab-associated neuroinflammation
+  > Based on your presentation—progressive ataxia and arm weakness over three weeks, demyelinating lesions on MRI, and your immunosuppressed state on natalizumab—the clinical picture is most consistent with MS, likely unmasked or accelerated by the natalizumab treatment. You need urgent neurology referral and likely an urgent MRI of your spinal cord to assess for additional lesions, and your natalizum
+  - _why this one:_ committed a different diagnosis, or never committed at all
+  - _artifact:_ `cases/MedQA-1.json`
+
+**✗ `MedQA-15`** — incorrect
+  - _task:_ MedQA consultation · 8/20 inferences · 1 tests ordered
+  - _reference:_ Epidermoid cyst  ·  _agent said:_ Benign Subcutaneous Cyst or Lipoma of the Neck
+
+You can follow up with your primary care doctor, and if the swelling continues to grow or becomes bothersome, we can discuss removal options with a surg
+  > I'm glad the imaging is reassuring for you. Based on the ultrasound showing a cystic lesion, the normal CT, the firm mobile nodule on examination, and your lack of systemic symptoms, this appears to be a benign lesion—most likely either a simple cyst or a lipoma, which are both common and harmless growths in the subcutaneous tissue.  DIAGNOSIS READY: Benign Subcutaneous Cyst or Lipoma of the Neck
+  - _why this one:_ committed a different diagnosis, or never committed at all
+  - _artifact:_ `cases/MedQA-15.json`
+
+<!-- /honesty:allow-context -->
+
 ## 7. Exclusions and what they do to the number
 
 Nothing was excluded: all 100 attempted units produced a gradable result. The headline denominator is the full attempted set.
@@ -211,7 +250,7 @@ python -m tau2.reporting.cli build results/whissle/agentclinic/20260808T092952Z-
 |---|---|
 | WHISSLE_BASE | https://aws-gateway-backend.whissle.ai/bot |
 | harness commit | 86b4475 |
-| repo commit at report time | 86b4475 |
+| repo commit at report time | 89f2e02 |
 
 - `head` selection with a fixed limit reproduces the same scenario set exactly.
 - The run provisions a throwaway agent and deletes it afterwards (`agent_deleted: None`), so the agent id in provenance will not resolve after the fact.
@@ -241,6 +280,7 @@ These rules are executed against this document, not asserted about it. A failing
 | `R4_preliminary_labelled` | pass | not applicable — N = 100 ≥ 30 and the run is complete |
 | `R5_no_provider_names` | pass | no LLM vendor named outside the published-baseline table |
 | `R6_comparability_stated` | pass | not applicable — no published baseline is registered |
+| `R7_baseline_named` | pass | not applicable — no published baseline is registered |
 
 ---
 

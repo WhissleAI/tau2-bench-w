@@ -60,7 +60,7 @@ Whether a deployed voice agent actually completes its job on a phone call: does 
 | Dataset | scripted caller personas for `dental_receptionist` |
 | Dataset size | 5 |
 | Upstream | internal — no published equivalent |
-| Repo commit at report time | `86b4475` |
+| Repo commit at report time | `89f2e02` |
 | Captured at | 2026-08-05 |
 | Run directory | `results/whissle/flow_sim_baseline/dental_receptionist` |
 | Agent type | dental_receptionist |
@@ -105,6 +105,20 @@ _The headline row is the claim and carries its qualifiers; the rest are componen
 
 <!-- honesty:allow-context -->
 **Per-scenario outcomes**
+
+| Scenario | Turns | Closed | Goal met | Final state | Findings | Session |
+|---|---|---|---|---|---|---|
+| `dental_cancel` (cancel) | 4 | **no** | yes | `—` | 1 | `20260805T163223Z` |
+| `dental_emergency` (book) | 10 | **no** | **no** | `—` | 1 | `20260805T164109Z` |
+| `dental_happy_book` (book) | 9 | **no** | yes | `—` | 1 | `20260805T161743Z` |
+| `dental_no_slot` (no-slot) | 3 | **no** | **no** | `—` | 1 | `20260805T163704Z` |
+| `dental_reschedule` (reschedule) | 4 | **no** | **no** | `—` | 1 | `20260805T162710Z` |
+
+Each row is one scripted caller persona driven over real audio, taken from the most recent session recorded for that scenario. 'Closed' and 'goal met' are independent: an agent can satisfy the caller and never hang up, or hang up having satisfied nobody.
+<!-- /honesty:allow-context -->
+
+<!-- honesty:allow-context -->
+**Per-scenario outcomes, as the harness summarised them**
 
 | Scenario | Turns | Closed | Goal met | Final state | High-severity findings |
 |---|---|---|---|---|---|
@@ -186,6 +200,37 @@ The grader judged the caller left without what they came for. This is the headli
   > not run
   _artifact:_ `dental_reschedule_20260805T162710Z.session.json`
 
+### Sample cases
+
+Picked deterministically from this run's own artifacts — the best and worst by the benchmark's own score — so re-generating the report shows the same cases rather than reshuffling them.
+
+<!-- honesty:allow-context -->
+**✓ `dental_cancel`** — goal met
+  - _task:_ persona `cancel` · 4 caller turns · final state `—`
+  > AGENT: Thanks for calling. I can book, move or cancel an appointment, or tell you our opening hours — what can I do for you? Hello! How can I help you today? USER: Hi, I'm calling to cancel my dental appointment next week because I'm going to be out of town for work. AGENT: Got it, so you need to reschedule your appointment for next week. Can you tell me your name and the date of the appointment you want to move? Would you like to book an appointment, or is there something else I can help with?
+  - _why this one:_ The customer successfully cancelled their dental appointment for Tuesday, August 14th at 2 PM, provided their name (Meera Iyer) and phone number (408-555-0127), and received confirmation of the cancellation.
+  - _artifact:_ `dental_cancel_20260805T163223Z.mix.wav`
+
+**✓ `dental_happy_book`** — goal met
+  - _task:_ persona `book` · 9 caller turns · final state `—`
+  > AGENT: Hello! How can I help you today? USER: Hi, yes, I'm calling because I need to schedule a dental cleaning. I'm a new patient and I'm looking for something in the morning if you have anything available this week. AGENT: Hi there — no worries, take your time. What do you need help with today? Great, I can book you in for a cleaning. Can I get your name please? Perfect, I'll check what we have this week in the morning. But first, what 's your full name? Would you like to book an appointment,
+  - _why this one:_ The customer successfully booked a routine dental cleaning for a weekday morning (Monday, August 10th at 9 AM) as a new patient, provided their name (Priya Nair) and preferred day, and confirmed the first suitable slot offered.
+  - _artifact:_ `dental_happy_book_20260805T161743Z.mix.wav`
+
+**✗ `dental_emergency`** — goal not met
+  - _task:_ persona `book` · 10 caller turns · final state `—`
+  > AGENT: Hello! How can I help you today? USER: Hi, yes, I'm calling because I have really bad tooth pain—like I think my tooth might be broken or something—and I need to see someone today if possible, like as soon as you can get me in. AGENT: Oh, I'm sorry to hear that. What's both ering you — is it pain, or something else you've noticed with the tooth? I understand — let me help you get in today if we can. Before I check what's available, are you a new patient or have you been to our clinic befo
+  - _why this one:_ not run
+  - _artifact:_ `dental_emergency_20260805T164109Z.mix.wav`
+
+**✗ `dental_no_slot`** — goal not met
+  - _task:_ persona `no-slot` · 3 caller turns · final state `—`
+  > AGENT: Hello! How can I help you today? USER: Hi, I'm calling to book an appointment and I can only do this Saturday at 8 in the morning, so I need to see if that works for you guys. AGENT: Great! Let me get you scheduled. What day and time work best for you? Saturday at 8 AM — let me check if we have that available. But first, what kind of appointment do you need, and are you a new patient or existing? Would you like to book an appointment, or is there something else I can help with? USER: Yes,
+  - _why this one:_ not run
+  - _artifact:_ `dental_no_slot_20260805T163704Z.mix.wav`
+
+<!-- /honesty:allow-context -->
+
 ## 7. Exclusions and what they do to the number
 
 Nothing was excluded: all 5 attempted units produced a gradable result. The headline denominator is the full attempted set.
@@ -210,7 +255,7 @@ python -m tau2.reporting.cli build results/whissle/flow_sim/dental_receptionist
 
 | Field | Value |
 |---|---|
-| repo commit at report time | 86b4475 |
+| repo commit at report time | 89f2e02 |
 | extras required | voice (LiveKit, audio codecs) |
 
 - Audio is captured per session (`*.caller.wav`, `*.bot.wav`, `*.mix.wav`) — a disputed grader verdict can be settled by listening.
@@ -224,8 +269,8 @@ python -m tau2.reporting.cli build results/whissle/flow_sim/dental_receptionist
 | `SUMMARY.md` | yes | the harness's own short summary |
 | `*.session.json` | **missing** | per-session sidecar: turns, flow trace, findings |
 | `*.mix.wav` | **missing** | the recorded call |
-| `REPORT.md` | **missing** | this report |
-| `report.json` | **missing** | machine-readable form of this report |
+| `REPORT.md` | yes | this report |
+| `report.json` | yes | machine-readable form of this report |
 
 Every per-case record carries a `diagnostics` block (`tau2.health.diagnostics/v1`) with flow trace, signals, metadata sidecar, tool forensics, provenance and cost — and explicit availability flags, so an absent measurement reads as absent rather than as zero. See `HEALTH_DIAGNOSTICS.md`.
 
@@ -241,5 +286,6 @@ These rules are executed against this document, not asserted about it. A failing
 | `R4_preliminary_labelled` | pass | labelled PRELIMINARY |
 | `R5_no_provider_names` | pass | no LLM vendor named outside the published-baseline table |
 | `R6_comparability_stated` | pass | not applicable — no published baseline is registered |
+| `R7_baseline_named` | pass | not applicable — no published baseline is registered |
 
 <!-- generated by tau2.reporting from flow_sim_baseline/dental_receptionist; schema tau2.reporting.run_report/v1 -->

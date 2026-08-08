@@ -112,8 +112,116 @@
   "scoring_rule": "task success = graded goal-met / executed sessions; clean close = sessions emitting `flow_end` / executed sessions",
   "tables": [
     {
-      "key": "sessions",
+      "key": "scenarios",
       "title": "Per-scenario outcomes",
+      "columns": [
+        "Scenario",
+        "Turns",
+        "Closed",
+        "Goal met",
+        "Final state",
+        "Findings",
+        "Session"
+      ],
+      "rows": [
+        [
+          "`hx_cluster_signs` (autonomic)",
+          "9",
+          "**no**",
+          "yes",
+          "`\u2014`",
+          "1",
+          "`20260805T153944Z`"
+        ],
+        [
+          "`hx_happy_full` (full_intake)",
+          "2",
+          "**no**",
+          "**no**",
+          "`\u2014`",
+          "1",
+          "`20260805T150123Z`"
+        ],
+        [
+          "`hx_hormonal` (hormonal)",
+          "9",
+          "**no**",
+          "yes",
+          "`\u2014`",
+          "1",
+          "`20260805T155655Z`"
+        ],
+        [
+          "`hx_keep_it_quick` (time_pressured)",
+          "5",
+          "**no**",
+          "**no**",
+          "`\u2014`",
+          "1",
+          "`20260805T155105Z`"
+        ],
+        [
+          "`hx_med_overuse` (medication)",
+          "8",
+          "**no**",
+          "**no**",
+          "`\u2014`",
+          "1",
+          "`20260805T160803Z`"
+        ],
+        [
+          "`hx_migraine_classic` (migraine)",
+          "13",
+          "yes",
+          "**no**",
+          "`\u2014`",
+          "1",
+          "`20260805T152556Z`"
+        ],
+        [
+          "`hx_out_of_order` (out_of_order)",
+          "5",
+          "**no**",
+          "yes",
+          "`\u2014`",
+          "1",
+          "`20260805T151940Z`"
+        ],
+        [
+          "`hx_red_flag_urgent` (urgent_escalation)",
+          "2",
+          "yes",
+          "yes",
+          "`\u2014`",
+          "0",
+          "`20260805T150407Z`"
+        ],
+        [
+          "`hx_skips_topics` (skips)",
+          "7",
+          "yes",
+          "yes",
+          "`\u2014`",
+          "0",
+          "`20260805T150552Z`"
+        ],
+        [
+          "`hx_unsure` (unsure)",
+          "5",
+          "**no**",
+          "**no**",
+          "`\u2014`",
+          "1",
+          "`20260805T151350Z`"
+        ]
+      ],
+      "note": "Each row is one scripted caller persona driven over real audio, taken from the most recent session recorded for that scenario. 'Closed' and 'goal met' are independent: an agent can satisfy the caller and never hang up, or hang up having satisfied nobody.",
+      "allow_providers": false,
+      "allow_context": true
+    },
+    {
+      "key": "sessions",
+      "title": "Per-scenario outcomes, as the harness summarised them",
       "columns": [
         "Scenario",
         "Turns",
@@ -264,7 +372,7 @@
     "endpoint": "LiveKit voice room (POST /api/bench/voice/start)",
     "mode": "voice",
     "harness_commit": null,
-    "repo_commit": "86b4475",
+    "repo_commit": "89f2e02",
     "run_dir": "/private/tmp/claude-501/-Users-karan-Desktop-work-whissle-live-assist/766421da-8ef4-4ce2-9733-86e5c5f3fced/scratchpad/wt-reports/results/whissle/flow_sim_baseline/headache_enrollment",
     "captured_at": "2026-08-05",
     "dataset": "scripted caller personas for `headache_enrollment`",
@@ -380,6 +488,56 @@
       "rate_pct": 50.0
     }
   ],
+  "sample_cases": [
+    {
+      "case_id": "hx_cluster_signs",
+      "outcome": "goal met",
+      "is_success": true,
+      "score": null,
+      "task": "persona `autonomic` \u00b7 9 caller turns \u00b7 final state `\u2014`",
+      "expected": "",
+      "got": "",
+      "excerpt": "AGENT: Hello! How can I help you today?\nUSER: Yeah, hi, I've been having these really bad headaches on one side of my head, like around my eye, and I need to figure out what's going on because they're getting worse.\nAGENT: I'm here, take your time. Got it \u2014 pain around one eye on one side. Let me start by recording what brings you in today. Just so you know, I'm an AI assistant and this call is recorded for quality. How long have you been getting these headaches? I hear you \u2014 that sounds really ",
+      "artifact": "hx_cluster_signs_20260805T153944Z.mix.wav",
+      "why_shown": "The agent successfully captured the severe eye-centered attacks with one-sided autonomic signs (tearing, drooping lid, stuffy nose) and restlessness/agitation, and explicitly confirmed documentation of these symptoms including the pain picture and au"
+    },
+    {
+      "case_id": "hx_hormonal",
+      "outcome": "goal met",
+      "is_success": true,
+      "score": null,
+      "task": "persona `hormonal` \u00b7 9 caller turns \u00b7 final state `\u2014`",
+      "expected": "",
+      "got": "",
+      "excerpt": "AGENT: Hi, I'm Ember. I'd love to understand your headaches a little better. I'll ask you a few questions by voice \u2014 it takes about five minutes, and you can skip anything or pause and come back anytime. Ready to start? Hello! How can I help you today?\nUSER: Yeah, hi, I'm calling because I've been getting these really bad headaches and I'm not sure what's going on with them. I'm hoping you can help me figure out what's causing it.\nAGENT: Hi there! Just so you know, I'm an AI assistant and Got it",
+      "artifact": "hx_hormonal_20260805T155655Z.mix.wav",
+      "why_shown": "The customer successfully raised that headaches relate to their cycle and that they take hormonal birth control, and the agent confirmed multiple times that it is capturing and recording this hormonal context sensitively before continuing with the as"
+    },
+    {
+      "case_id": "hx_happy_full",
+      "outcome": "goal not met",
+      "is_success": false,
+      "score": null,
+      "task": "persona `full_intake` \u00b7 2 caller turns \u00b7 final state `\u2014`",
+      "expected": "",
+      "got": "",
+      "excerpt": "AGENT: Hello! How can I help you today?\nUSER: Hi, yes, I'm calling about these headaches I've been getting and I'm hoping you can help me figure out what's going on.\nAGENT: I'm here whenever you're ready \u2014 no rush at all. Great, thanks for calling. Just so you know, I'm an AI assistant and this call is recorded for quality. What brings you in today? I hear you \u2014 headaches, got it. Just\nUSER: Yeah, so I've been dealing with these pretty intense headaches for about two weeks now and they're really",
+      "artifact": "hx_happy_full_20260805T150123Z.mix.wav",
+      "why_shown": "not run"
+    },
+    {
+      "case_id": "hx_keep_it_quick",
+      "outcome": "goal not met",
+      "is_success": false,
+      "score": null,
+      "task": "persona `time_pressured` \u00b7 5 caller turns \u00b7 final state `\u2014`",
+      "expected": "",
+      "got": "",
+      "excerpt": "AGENT: Hi, I'm Ember. I'd love to understand your headaches a little better. I'll ask you a few questions by voice \u2014 it takes about five minutes, and you can skip anything or pause and come back anytime. Ready to start?\nUSER: Hey, hi, I'm in kind of a rush here\u2014can we make this quick? What do you need from me?\nAGENT: Got it \u2014 take your time. What's going on? Hello! How can I help you today? No problem. Let me keep this quick for you. Of course, I'll keep it quick. What's the main thing bringing ",
+      "artifact": "hx_keep_it_quick_20260805T155105Z.mix.wav",
+      "why_shown": "Ember acknowledged the customer's request to keep it quick but failed to deliver concise answers, instead asking repetitive and rambling questions that frustrated the customer, and did not reach a clean close within the turn budget."
+    }
+  ],
   "limitations": [
     {
       "key": "tiny_n",
@@ -414,7 +572,7 @@
       "python -m tau2.reporting.cli build results/whissle/flow_sim/headache_enrollment"
     ],
     "environment": {
-      "repo commit at report time": "86b4475",
+      "repo commit at report time": "89f2e02",
       "extras required": "voice (LiveKit, audio codecs)"
     },
     "notes": [
@@ -446,12 +604,12 @@
     {
       "path": "REPORT.md",
       "description": "this report",
-      "present": false
+      "present": true
     },
     {
       "path": "report.json",
       "description": "machine-readable form of this report",
-      "present": false
+      "present": true
     }
   ],
   "licence_note": "",
