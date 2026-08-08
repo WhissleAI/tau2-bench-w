@@ -24,6 +24,7 @@ from pathlib import Path
 from typing import Any, Optional
 
 from tau2.flow.analyze import DEFAULT_SEVERITY, Finding
+from tau2.health.diagnostics import attach as diag_attach
 from tau2.health.medagent.data import (
     ACTION_CATEGORIES,
     ALL_CATEGORIES,
@@ -214,15 +215,29 @@ def write_artifacts(
     root: Path = RESULTS_ROOT,
     run_name: Optional[str] = None,
 ) -> Path:
-    """Write per-task artifacts + the summary. Returns the run directory."""
+    """Write per-task artifacts + the summary. Returns the run directory.
+
+    Each task record also carries the shared ``diagnostics`` envelope
+    (``tau2.health.diagnostics``) so one reader works across all three health
+    benchmarks: tool forensics with resolved arguments and the said-vs-emitted-vs-
+    landed write verdict, per-case provenance, and explicit unavailability markers
+    for the flow trace and voice signals this transport does not produce."""
+    from tau2.health.medagent import diagnostics as case_diag
+
     stamp = run_name or datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     run_dir = root / f"{summary['mode']}_{stamp}"
     tasks_dir = run_dir / "tasks"
     tasks_dir.mkdir(parents=True, exist_ok=True)
 
+    run_meta = summary.get("run") or {}
     for r in results:
+        record = r.as_dict()
+        case_diag_envelope = case_diag.build(
+            record, run_meta=run_meta, run_dir=str(run_dir))
         (tasks_dir / f"{r.task_id}.json").write_text(
-            json.dumps(r.as_dict(), indent=2, ensure_ascii=False), encoding="utf-8"
+            json.dumps(diag_attach(record, case_diag_envelope),
+                       indent=2, ensure_ascii=False, default=str),
+            encoding="utf-8",
         )
 
     (run_dir / "SUMMARY.json").write_text(

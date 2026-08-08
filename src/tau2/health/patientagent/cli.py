@@ -20,6 +20,7 @@ from typing import Any, Optional
 
 from tau2.health.model_router import DEFAULT_JUDGE_MODELS, JUDGE_PROVIDERS, WHISSLE
 from tau2.health.patientagent.collect import (
+    DiagnosticsContext,
     case_metadata_from_run,
     collect_outcomes,
     find_experiment_dirs,
@@ -114,6 +115,36 @@ def cmd_report(args: argparse.Namespace) -> int:
     out_dir = args.out or os.path.join(DEFAULT_RESULTS_ROOT, os.path.basename(args.run_dir.rstrip("/")))
     metadata = case_metadata_from_run(args.run_dir)
 
+    sample_report = _read_sidecar(args.run_dir, "whissle_sampling.json")
+    # Which judge graded this run. Written by `run`; absent for a run produced before
+    # judge routing existed, in which case the report says "unrecorded" rather than
+    # guessing — an unlabelled judge is exactly the ambiguity this record prevents.
+    judge = _read_sidecar(args.run_dir, "whissle_judge.json")
+
+    provenance = {
+        "run_dir": args.run_dir,
+        "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        "whissle_base": os.getenv("WHISSLE_BASE", ""),
+        "whissle_agent_id": os.getenv("WHISSLE_AGENT_ID", "")[:8] + "…",
+    }
+
+    # Per-case diagnostics: the run-level facts (mode, judge + independence, seed and
+    # strata, agent, base URL, judge spend) copied down onto every case file so one
+    # case travels self-describing. A voice run additionally gets its flow trace
+    # fetched — it is the only mode that can have one.
+    diagnostics_ctx = DiagnosticsContext(
+        mode=args.mode,
+        judge=judge,
+        sampling=sample_report,
+        provenance={"agent_id": os.getenv("WHISSLE_AGENT_ID", "") or None,
+                    "base_url": os.getenv("WHISSLE_BASE", "") or None,
+                    "label": args.label,
+                    "voice_subset": bool(getattr(args, "voice_subset_run", False))},
+        run_dir=args.run_dir,
+        n_cases=max(1, int((sample_report or {}).get("n_selected") or 1)),
+        fetch_flow_trace=(args.mode == "voice"),
+    )
+
     outcomes = []
     for experiment_dir in experiment_dirs:
         outcomes.extend(
@@ -121,6 +152,7 @@ def cmd_report(args: argparse.Namespace) -> int:
                 experiment_dir,
                 artifact_dir=os.path.join(out_dir, "cases"),
                 case_metadata=metadata,
+                diagnostics=diagnostics_ctx,
             )
         )
 
@@ -136,21 +168,6 @@ def cmd_report(args: argparse.Namespace) -> int:
         # The delta only means something when both runs used the same tool surface.
         comparison = compare_runs(other, summary) if args.mode == "voice" else compare_runs(summary, other)
 
-    sample_report = None
-    sampling_path = os.path.join(args.run_dir, "whissle_sampling.json")
-    if os.path.exists(sampling_path):
-        with open(sampling_path, "r", encoding="utf-8") as handle:
-            sample_report = json.load(handle)
-
-    # Which judge graded this run. Written by `run`; absent for a run produced before
-    # judge routing existed, in which case the report says "unrecorded" rather than
-    # guessing — an unlabelled judge is exactly the ambiguity this record prevents.
-    judge = None
-    judge_path = os.path.join(args.run_dir, "whissle_judge.json")
-    if os.path.exists(judge_path):
-        with open(judge_path, "r", encoding="utf-8") as handle:
-            judge = json.load(handle)
-
     paths = write_report(
         out_dir,
         summary,
@@ -158,15 +175,22 @@ def cmd_report(args: argparse.Namespace) -> int:
         sample_report=sample_report,
         comparison=comparison,
         judge=judge,
-        provenance={
-            "run_dir": args.run_dir,
-            "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
-            "whissle_base": os.getenv("WHISSLE_BASE", ""),
-            "whissle_agent_id": os.getenv("WHISSLE_AGENT_ID", "")[:8] + "…",
-        },
+        provenance=provenance,
     )
     print(json.dumps({"summary": summary, "paths": paths}, indent=2, default=str))
     return 0
+
+
+def _read_sidecar(run_dir: str, name: str) -> Optional[dict[str, Any]]:
+    """A run sidecar (sampling / judge record), or None when the run predates it."""
+    path = os.path.join(run_dir, name)
+    if not os.path.exists(path):
+        return None
+    with open(path, "r", encoding="utf-8") as handle:
+        try:
+            return json.load(handle)
+        except ValueError:
+            return None
 
 
 def resolve_judge(args: argparse.Namespace) -> dict[str, Any]:
@@ -305,7 +329,90 @@ def cmd_run(args: argparse.Namespace) -> int:
     # expects them.
     _link_sampling(work_dir, run_dir)
     _copy_sidecar(work_dir, run_dir, "whissle_judge.json")
-    return cmd_report(report_args)
+    rc = cmd_report(report_args)
+
+    # 5. Optional voice slice — the same cases over the real spoken pipeline.
+    rc_voice = cmd_voice_subset(args, selected, judge, run_name)
+    return rc or rc_voice
+
+
+def cmd_voice_subset(args: argparse.Namespace, selected: list,
+                     judge: dict[str, Any], run_name: str) -> int:
+    """Re-run the head N of the sampled set through the REAL voice pipeline.
+
+    The trade this exists to make: a 100-case text run is what produces a score
+    (parallel, cheap, deterministic), but the per-turn signals that make a bad score
+    explainable — hesitation, shadow/eager-reply activity, speculative tools,
+    emotion/intent, barge-in, real spoken latency — exist ONLY over audio. A small
+    voice slice of the SAME cases buys those signals without paying for 100 live
+    calls, and because the slice is the head of an already-seeded stratified sample
+    it is reproducible.
+
+    The slice runs as its OWN PatientAgentBench run, into ``<work>/voice``, and is
+    reported separately. A voice number carries ASR and TTS error a text number does
+    not; averaging the two would destroy the only thing that makes the comparison
+    interesting."""
+    n = int(getattr(args, "voice_subset", 0) or 0)
+    if n <= 0:
+        return 0
+    if args.mode == "voice":
+        print("[whissle] --voice-subset is a no-op in --mode voice (the whole run is "
+              "already voice)", file=sys.stderr)
+        return 0
+
+    from tau2.health.patientagent.register import register
+
+    registered = register(include_voice=True)
+    if MODE_TO_AGENT_CLASS["voice"] not in registered:
+        print("[whissle] --voice-subset skipped: the voice agent is unavailable "
+              "(install the tau2 voice extras)", file=sys.stderr)
+        return 0
+
+    from patient_agent_bench.run import cmd_benchmark, setup_parser
+
+    slice_ = list(selected[:n])
+    work_dir = os.path.join(args.output_dir, run_name, "voice")
+    os.makedirs(work_dir, exist_ok=True)
+    cases_path = os.path.join(work_dir, "sampled_cases.json")
+    write_cases(cases_path, slice_)
+
+    config = build_pab_config(
+        mode="voice", max_turns=args.max_turns, jury=judge["jury"],
+        patient_model=judge["patient_model"], sandbox_model=judge["sandbox_model"],
+        label=f"{args.label} (voice)",
+    )
+    config_path = os.path.join(work_dir, "pab_config.json")
+    with open(config_path, "w", encoding="utf-8") as handle:
+        json.dump(config, handle, indent=2)
+    with open(os.path.join(work_dir, "whissle_judge.json"), "w", encoding="utf-8") as handle:
+        json.dump(judge, handle, indent=2)
+    with open(os.path.join(work_dir, "whissle_sampling.json"), "w", encoding="utf-8") as handle:
+        json.dump({"n_requested": n, "n_selected": len(slice_),
+                   "n_population": len(selected), "seed": args.seed,
+                   "strata_keys": list(args.strata),
+                   "selection": "head of the seeded stratified sample (reproducible)",
+                   "voice_subset_of": run_name}, handle, indent=2)
+
+    print(f"[whissle] voice subset: {len(slice_)} case(s) over the real voice "
+          f"pipeline → {work_dir}", file=sys.stderr)
+    argv = ["benchmark", "--cases", cases_path, "--config", config_path,
+            "--output-dir", work_dir, "--max-parallel", "1"]
+    if args.log_level:
+        argv += ["--log-level", args.log_level]
+    cmd_benchmark(setup_parser().parse_args(argv))
+
+    run_dir = _latest_run_dir(work_dir)
+    if not run_dir:
+        print("[whissle] voice subset produced no run directory", file=sys.stderr)
+        return 0
+    _link_sampling(work_dir, run_dir)
+    _copy_sidecar(work_dir, run_dir, "whissle_judge.json")
+    return cmd_report(argparse.Namespace(
+        run_dir=run_dir,
+        out=os.path.join(DEFAULT_RESULTS_ROOT, run_name, "voice"),
+        mode="voice", label=f"{args.label} (voice)", compare_to=None,
+        voice_subset_run=True,
+    ))
 
 
 def _latest_run_dir(work_dir: str) -> Optional[str]:
@@ -380,6 +487,17 @@ def build_parser() -> argparse.ArgumentParser:
     p_run.add_argument("--label", default="Whissle")
     p_run.add_argument("--log-level", default="INFO")
     p_run.add_argument("--compare-to", help="a previous summary.json to diff against")
+    p_run.add_argument("--voice-subset", type=int, default=0, metavar="N",
+                       help="after the run, RE-RUN N of the same cases through the "
+                            "REAL voice pipeline as a separate PatientAgentBench run "
+                            "(<output-dir>/<name>/voice). Scale and depth at once: the "
+                            "text pass gives the score at N=100, the voice slice gives "
+                            "the per-turn signals — hesitation, shadow/eager reply, "
+                            "speculative tools, emotion/intent, barge-in, spoken "
+                            "latency — that exist only over audio. The slice is the "
+                            "head of the seeded stratified sample, so it reproduces; "
+                            "it is scored and reported SEPARATELY and never averaged "
+                            "into the text number.")
     p_run.set_defaults(func=cmd_run)
 
     p_report = sub.add_parser("report", help="regenerate the report from a run directory")

@@ -182,19 +182,36 @@ def build_voice_agent_class() -> type:
                     f"(boundary={raw.get('boundary')})"
                 )
 
+            self._turn_no += 1
             new_messages.append(
                 AIMessage(
                     content=reply,
                     response_metadata={
                         "channel": "voice",
+                        "turn": self._turn_no,
                         "latency_ms": raw.get("latency_ms"),
                         "bot_audio_bytes": raw.get("bot_audio_bytes"),
                         "boundary": raw.get("boundary"),
                         "room": self.session_meta.get("room"),
+                        "conversation_id": self.session_meta.get("conversation_id"),
+                        # The per-turn VOICE signals + whissle-large metadata frames
+                        # the transport drained off the data channel this turn
+                        # (hesitation / shadow / speculative predictions, and the
+                        # acoustic emotion/intent head). These exist ONLY here — the
+                        # text channel emits none — and without carrying them on the
+                        # message they never reach a persisted artifact, which is
+                        # exactly how the voice arm ended up scored but unexplainable.
+                        "signals": raw.get("signals") or [],
+                        "user_metadata": raw.get("user_metadata") or [],
+                        "hesitant_input": bool(raw.get("hesitant_input")),
+                        "current_state": getattr(result, "current_state", None),
+                        "flow_steps": getattr(result, "steps", None),
                     },
                 )
             )
             return {"messages": list(messages) + new_messages}
+
+        _turn_no = 0
 
         _greeting_emitted = False
 

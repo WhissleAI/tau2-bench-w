@@ -216,6 +216,32 @@ Differences from text mode — a voice number is not a text number:
 Sessions that die on transport (dead data channel, provider outage, credit exhaustion)
 raise `VoiceInfraError`, are classified `infra_fail`, and are excluded.
 
+### `--voice-subset N` — scale and depth in one run
+
+Voice is where the per-turn signals (hesitation, shadow/eager reply, speculative
+tools, emotion/intent, barge-in, real spoken latency) actually exist; text is where
+100 cases are affordable. `--voice-subset N` runs the text pass over everything, then
+re-drives the **seeded head N of the same cases** through the real voice pipeline
+into `<out>/voice/`, with its own `SUMMARY.voice.{json,md}`. The two are never
+averaged — a voice number carries ASR and TTS error a text number does not.
+
+```bash
+python -m tau2.health.agentclinic.run --dataset MedQA --limit 100 --voice-subset 3
+```
+
+### Diagnostics on every case
+
+Every case file carries a `diagnostics` envelope in the shape all three health
+benchmarks share (**[HEALTH_DIAGNOSTICS.md](HEALTH_DIAGNOSTICS.md)**): tool
+forensics pairing each doctor action with the result it got back, per-case
+provenance and cost, and explicit availability markers. Text mode is driven over
+`POST /api/bench/agent-turn`, which runs no flow engine and exposes no trace, so the
+flow and signal sections read `available: false` with a reason and `null` payloads.
+Voice mode captures the signals and metadata frames for real — with one honest
+caveat recorded in the record itself: bench voice connects `real=false`, so the
+pipeline runs *our* doctor prompt, not the deployed agent's conversation flow, and
+the flow section says exactly that rather than reporting an empty trace.
+
 **Status: unit-tested against a fake room provider, not yet run live.** The voice matrix
 was deliberately not run as part of the adapter PR.
 
