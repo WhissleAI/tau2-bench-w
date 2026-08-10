@@ -16,6 +16,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Optional
 
+from .ablation import MetadataAblationAdapter
 from .agentclinic import AgentClinicAdapter
 from .base import BuildContext, RunAdapter
 from .flow_sim import FlowSimAdapter
@@ -25,6 +26,7 @@ from .patientagent import PatientAgentBenchAdapter
 #: Order matters only for ambiguous directories; the more specific detectors come
 #: first so a generic ``cases/`` directory does not win over a benchmark marker.
 ADAPTERS: tuple[type, ...] = (
+    MetadataAblationAdapter,
     MedAgentBenchAdapter,
     AgentClinicAdapter,
     FlowSimAdapter,
@@ -59,5 +61,6 @@ __all__ = [
     "AgentClinicAdapter",
     "FlowSimAdapter",
     "MedAgentBenchAdapter",
+    "MetadataAblationAdapter",
     "PatientAgentBenchAdapter",
 ]
