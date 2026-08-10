@@ -62,7 +62,7 @@ Whether a deployed voice agent actually completes its job on a phone call: does 
 | Dataset | scripted caller personas for `dental_receptionist` |
 | Dataset size | 11 |
 | Upstream | internal — no published equivalent |
-| Repo commit at report time | `89f2e02` |
+| Repo commit at report time | `bfcb460` |
 | Captured at | 2026-08-07 |
 | Run directory | `results/whissle/flow_sim/dental_receptionist` |
 | Agent type | dental_receptionist |
@@ -300,7 +300,7 @@ Picked deterministically from this run's own artifacts — the best and worst by
 | Reason | Count | Share of attempted |
 |---|---:|---:|
 <!-- honesty:allow-context -->
-| `infra_fail` | 2 | 18.2% |
+| `voice_transport` | 2 | 18.2% |
 <!-- /honesty:allow-context -->
 
 Verbatim, from the artifacts:
@@ -335,7 +335,7 @@ python -m tau2.reporting.cli build results/whissle/flow_sim/dental_receptionist
 
 | Field | Value |
 |---|---|
-| repo commit at report time | 89f2e02 |
+| repo commit at report time | bfcb460 |
 | extras required | voice (LiveKit, audio codecs) |
 
 - Audio is captured per session (`*.caller.wav`, `*.bot.wav`, `*.mix.wav`) — a disputed grader verdict can be settled by listening.

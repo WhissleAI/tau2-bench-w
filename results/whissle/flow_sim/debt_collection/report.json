@@ -11,40 +11,40 @@
   "status": "complete",
   "partial_reason": "",
   "preliminary": true,
-  "preliminary_reason": "N = 11 is below the 30-unit threshold for a settled number",
-  "n_scored": 11,
+  "preliminary_reason": "N = 4 is below the 30-unit threshold for a settled number",
+  "n_scored": 4,
   "headline": {
     "key": "task_success",
     "label": "Task success",
-    "value": 9.1,
+    "value": 25.0,
     "unit": "pct",
     "ci": [
-      1.6,
-      37.7
+      4.6,
+      69.9
     ],
-    "n": 11,
+    "n": 4,
     "floor": 0.0,
     "ceiling": 100.0,
     "higher_is_better": true,
     "note": "an LLM grader judges whether the caller's goal was met",
-    "formatted": "9.1%"
+    "formatted": "25.0%"
   },
   "secondary_metrics": [
     {
       "key": "clean_close",
       "label": "Reached a clean close",
-      "value": 27.3,
+      "value": 75.0,
       "unit": "pct",
       "ci": [
-        9.7,
-        56.6
+        30.1,
+        95.4
       ],
-      "n": 11,
+      "n": 4,
       "floor": 0.0,
       "ceiling": 100.0,
       "higher_is_better": true,
       "note": "taken from the authoritative `flow_end` trace event",
-      "formatted": "27.3%"
+      "formatted": "75.0%"
     },
     {
       "key": "state_coverage",
@@ -363,12 +363,16 @@
   ],
   "exclusions": {
     "n_total": 11,
-    "n_scored": 11,
-    "n_excluded": 0,
-    "breakdown": {},
-    "reason_examples": [],
+    "n_scored": 4,
+    "n_excluded": 7,
+    "breakdown": {
+      "credit_exhausted": 7
+    },
+    "reason_examples": [
+      "ModelError: models/chat -> HTTP 402: {\"detail\":\"Insufficient credit. Top up your workspace wallet to use the model API.\"}"
+    ],
     "excluded_ids": [],
-    "rate_pct": 0.0
+    "rate_pct": 63.6
   },
   "judge": {
     "kind": "rule_analyzer",
@@ -389,8 +393,8 @@
     "endpoint": "LiveKit voice room (POST /api/bench/voice/start)",
     "mode": "voice",
     "harness_commit": null,
-    "repo_commit": "89f2e02",
-    "run_dir": "/private/tmp/claude-501/-Users-karan-Desktop-work-whissle-live-assist/766421da-8ef4-4ce2-9733-86e5c5f3fced/scratchpad/wt-reports/results/whissle/flow_sim/debt_collection",
+    "repo_commit": "bfcb460",
+    "run_dir": "/Users/karan/Desktop/work/whissle/tau2-bench-w/results/whissle/flow_sim/debt_collection",
     "captured_at": "2026-08-07",
     "dataset": "scripted caller personas for `debt_collection`",
     "dataset_size": 11,
@@ -535,7 +539,7 @@
   "limitations": [
     {
       "key": "tiny_n",
-      "text": "N = 11. At this size a single scenario flipping moves the headline by ten points. Every figure here is directional and is labelled PRELIMINARY for that reason.",
+      "text": "N = 4. At this size a single scenario flipping moves the headline by ten points. Every figure here is directional and is labelled PRELIMINARY for that reason.",
       "severity": "high"
     },
     {
@@ -566,7 +570,7 @@
       "python -m tau2.reporting.cli build results/whissle/flow_sim/debt_collection"
     ],
     "environment": {
-      "repo commit at report time": "89f2e02",
+      "repo commit at report time": "bfcb460",
       "extras required": "voice (LiveKit, audio codecs)"
     },
     "notes": [

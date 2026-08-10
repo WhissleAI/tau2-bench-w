@@ -62,7 +62,7 @@ Whether a deployed voice agent actually completes its job on a phone call: does 
 | Dataset | scripted caller personas for `headache_enrollment` |
 | Dataset size | 10 |
 | Upstream | internal — no published equivalent |
-| Repo commit at report time | `89f2e02` |
+| Repo commit at report time | `bfcb460` |
 | Captured at | 2026-08-07 |
 | Run directory | `results/whissle/flow_sim/headache_enrollment` |
 | Agent type | headache_enrollment |
@@ -230,7 +230,7 @@ Picked deterministically from this run's own artifacts — the best and worst by
 | Reason | Count | Share of attempted |
 |---|---:|---:|
 <!-- honesty:allow-context -->
-| `infra_fail` | 1 | 10.0% |
+| `voice_transport` | 1 | 10.0% |
 <!-- /honesty:allow-context -->
 
 Verbatim, from the artifacts:
@@ -265,7 +265,7 @@ python -m tau2.reporting.cli build results/whissle/flow_sim/headache_enrollment
 
 | Field | Value |
 |---|---|
-| repo commit at report time | 89f2e02 |
+| repo commit at report time | bfcb460 |
 | extras required | voice (LiveKit, audio codecs) |
 
 - Audio is captured per session (`*.caller.wav`, `*.bot.wav`, `*.mix.wav`) — a disputed grader verdict can be settled by listening.

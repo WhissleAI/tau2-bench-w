@@ -60,7 +60,7 @@ Whether a deployed voice agent actually completes its job on a phone call: does 
 | Dataset | scripted caller personas for `customer_support` |
 | Dataset size | 2 |
 | Upstream | internal — no published equivalent |
-| Repo commit at report time | `89f2e02` |
+| Repo commit at report time | `bfcb460` |
 | Captured at | 2026-08-05 |
 | Run directory | `results/whissle/flow_sim_baseline/customer_support` |
 | Agent type | customer_support |
@@ -190,7 +190,7 @@ python -m tau2.reporting.cli build results/whissle/flow_sim/customer_support
 
 | Field | Value |
 |---|---|
-| repo commit at report time | 89f2e02 |
+| repo commit at report time | bfcb460 |
 | extras required | voice (LiveKit, audio codecs) |
 
 - Audio is captured per session (`*.caller.wav`, `*.bot.wav`, `*.mix.wav`) — a disputed grader verdict can be settled by listening.
