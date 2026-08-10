@@ -1,8 +1,8 @@
 # Whissle benchmark index
 
-Every benchmark run this repository has recorded — **27 runs**. Entries accumulate: a regeneration adds and updates, it never drops a run, so a figure quoted six months ago can still be traced to the artifacts that produced it.
+Every benchmark run this repository has recorded — **34 runs**. Entries accumulate: a regeneration adds and updates, it never drops a run, so a figure quoted six months ago can still be traced to the artifacts that produced it.
 
-_Generated 2026-08-08T16:51:42+00:00._
+_Generated 2026-08-10T06:36:49+00:00._
 
 ## How to read a row
 
@@ -28,15 +28,22 @@ _Generated 2026-08-08T16:51:42+00:00._
 | Whissle conversation-flow suite | `flow_sim_baseline/dental_receptionist` | 2026-08-05 | `voice` | 40.0% | 5 | 0 | n/a | **yes** | `—` | [REPORT](flow_sim_baseline/dental_receptionist/REPORT.md) |
 | Whissle conversation-flow suite | `flow_sim_baseline/headache_enrollment` | 2026-08-05 | `voice` | 50.0% | 10 | 0 | n/a | **yes** | `—` | [REPORT](flow_sim_baseline/headache_enrollment/REPORT.md) |
 | Whissle conversation-flow suite | `flow_sim/appointment_scheduling` | 2026-08-06 | `voice` | 45.5% | 11 | 0 | n/a | **yes** | `—` | [REPORT](flow_sim/appointment_scheduling/REPORT.md) |
-| Whissle conversation-flow suite | `flow_sim/car_rental` | 2026-08-07 | `voice` | 45.5% | 11 | 0 | n/a | **yes** | `—` | [REPORT](flow_sim/car_rental/REPORT.md) |
+| Whissle conversation-flow suite | `flow_sim/car_rental` | 2026-08-07 | `voice` | 100.0% | 5 | 6 (54.5%) | n/a | **yes** | `—` | [REPORT](flow_sim/car_rental/REPORT.md) |
 | Whissle conversation-flow suite | `flow_sim/customer_support` | 2026-08-07 | `voice` | 63.6% | 11 | 0 | n/a | **yes** | `—` | [REPORT](flow_sim/customer_support/REPORT.md) |
-| Whissle conversation-flow suite | `flow_sim/debt_collection` | 2026-08-07 | `voice` | 9.1% | 11 | 0 | n/a | **yes** | `—` | [REPORT](flow_sim/debt_collection/REPORT.md) |
+| Whissle conversation-flow suite | `flow_sim/debt_collection` | 2026-08-07 | `voice` | 25.0% | 4 | 7 (63.6%) | n/a | **yes** | `—` | [REPORT](flow_sim/debt_collection/REPORT.md) |
 | Whissle conversation-flow suite | `flow_sim/dental_receptionist` | 2026-08-07 | `voice` | 55.6% | 9 | 2 (18.2%) | n/a | **yes** | `—` | [REPORT](flow_sim/dental_receptionist/REPORT.md) |
 | Whissle conversation-flow suite | `flow_sim/headache_enrollment` | 2026-08-07 | `voice` | 77.8% | 9 | 1 (10.0%) | n/a | **yes** | `—` | [REPORT](flow_sim/headache_enrollment/REPORT.md) |
 | MedAgentBench | `medagentbench/brain-parity_diagsmoke` | 2026-08-08 | `brain-parity` | 66.7% | 3 | 0 | n/a | **yes** | `ef37cfe` | [REPORT](medagentbench/brain-parity_diagsmoke/REPORT.md) |
 | MedAgentBench | `medagentbench/brain-parity_diagsmoke_write` | 2026-08-08 | `brain-parity` | 0.0% | 1 | 0 | n/a | **yes** | `ef37cfe` | [REPORT](medagentbench/brain-parity_diagsmoke_write/REPORT.md) |
 | MedAgentBench | `medagentbench/brain-parity_mab_100` | 2026-08-08 | `brain-parity` | 54.0% | 100 | 0 | n/a | no | `86b4475` | [REPORT](medagentbench/brain-parity_mab_100/REPORT.md) |
 | MedAgentBench | `medagentbench/brain-parity_smoke` | 2026-08-08 | `brain-parity` | 60.0% | 10 | 0 | n/a | **yes** | `—` | [REPORT](medagentbench/brain-parity_smoke/REPORT.md) |
+| MedAgentBench | `medagentbench/brain-parity_sweep25_fable5` | 2026-08-08 | `brain-parity` | 75.0% | 20 | 5 (20.0%) | n/a | **yes** | `86b4475` | [REPORT](medagentbench/brain-parity_sweep25_fable5/REPORT.md) |
+| MedAgentBench | `medagentbench/brain-parity_sweep25_g35f` | 2026-08-08 | `brain-parity` | 72.0% | 25 | 0 | n/a | **yes** | `86b4475` | [REPORT](medagentbench/brain-parity_sweep25_g35f/REPORT.md) |
+| MedAgentBench | `medagentbench/brain-parity_sweep25_g35fl` | 2026-08-08 | `brain-parity` | 68.0% | 25 | 0 | n/a | **yes** | `86b4475` | [REPORT](medagentbench/brain-parity_sweep25_g35fl/REPORT.md) |
+| MedAgentBench | `medagentbench/brain-parity_sweep25_g3fp` | 2026-08-08 | `brain-parity` | 52.0% | 25 | 0 | n/a | **yes** | `86b4475` | [REPORT](medagentbench/brain-parity_sweep25_g3fp/REPORT.md) |
+| MedAgentBench | `medagentbench/brain-parity_sweep25_haiku` | 2026-08-08 | `brain-parity` | 68.0% | 25 | 0 | n/a | **yes** | `86b4475` | [REPORT](medagentbench/brain-parity_sweep25_haiku/REPORT.md) |
+| MedAgentBench | `medagentbench/brain-parity_sweep25_opus5` | 2026-08-08 | `brain-parity` | 72.0% | 25 | 0 | n/a | **yes** | `86b4475` | [REPORT](medagentbench/brain-parity_sweep25_opus5/REPORT.md) |
+| MedAgentBench | `medagentbench/brain-parity_sweep25_sonnet5` | 2026-08-08 | `brain-parity` | 52.0% | 25 | 0 | n/a | **yes** | `86b4475` | [REPORT](medagentbench/brain-parity_sweep25_sonnet5/REPORT.md) |
 | PatientAgentBench | `patientagentbench/diagsmoke2` | 2026-08-08 | `harness_tools` | 3.62 | 2 | 0 | **no** | **yes** | `ef37cfe` | [REPORT](patientagentbench/diagsmoke2/REPORT.md) |
 | PatientAgentBench | `patientagentbench/pab_text_100` | 2026-08-08 | `harness_tools` | 4.25 | 87 | 13 (13.0%) | **no** | no | `86b4475` | [REPORT](patientagentbench/pab_text_100/REPORT.md) |
 | PatientAgentBench | `patientagentbench/smoke3_whissle_judge` | 2026-08-08 | `harness_tools` | 3.77 | 3 | 0 | **no** | **yes** | `—` | [REPORT](patientagentbench/smoke3_whissle_judge/REPORT.md) |
@@ -86,7 +93,7 @@ A delta is printed only when the two runs measured the same thing the same way. 
 | Date | Run | Metric | Value | N | Excl. | Δ vs previous | Note |
 |---|---|---|---:|---:|---:|---:|---|
 | 2026-08-05 | `flow_sim_baseline/car_rental` | `task_success` | 60.0% | 5 | 0 | — | PRELIMINARY. |
-| 2026-08-07 | `flow_sim/car_rental` | `task_success` | 45.5% | 11 | 0 | -14.5pp | PRELIMINARY. vs `flow_sim_baseline/car_rental` |
+| 2026-08-07 | `flow_sim/car_rental` | `task_success` | 100.0% | 5 | 6 (54.5%) | +40.0pp | PRELIMINARY. vs `flow_sim_baseline/car_rental` |
 
 ### Whissle conversation-flow suite — `flow_sim:customer_support`
 
@@ -99,7 +106,7 @@ A delta is printed only when the two runs measured the same thing the same way. 
 
 | Date | Run | Metric | Value | N | Excl. | Δ vs previous | Note |
 |---|---|---|---:|---:|---:|---:|---|
-| 2026-08-07 | `flow_sim/debt_collection` | `task_success` | 9.1% | 11 | 0 | — | PRELIMINARY. |
+| 2026-08-07 | `flow_sim/debt_collection` | `task_success` | 25.0% | 4 | 7 (63.6%) | — | PRELIMINARY. |
 
 ### Whissle conversation-flow suite — `flow_sim:dental_receptionist`
 
@@ -123,6 +130,13 @@ A delta is printed only when the two runs measured the same thing the same way. 
 | 2026-08-08 | `medagentbench/brain-parity_diagsmoke_write` | `success_rate` | 0.0% | 1 | 0 | -66.67pp | PRELIMINARY. vs `medagentbench/brain-parity_diagsmoke` |
 | 2026-08-08 | `medagentbench/brain-parity_mab_100` | `success_rate` | 54.0% | 100 | 0 | — | not comparable to the previous run: sample sizes are not of the same order (N = 1 → N = 100); the difference would be mostly sampling noise |
 | 2026-08-08 | `medagentbench/brain-parity_smoke` | `success_rate` | 60.0% | 10 | 0 | — | PRELIMINARY. not comparable to the previous run: sample sizes are not of the same order (N = 100 → N = 10); the difference would be mostly sampling noise |
+| 2026-08-08 | `medagentbench/brain-parity_sweep25_fable5` | `success_rate` | 75.0% | 20 | 5 (20.0%) | +15.0pp | PRELIMINARY. vs `medagentbench/brain-parity_smoke` |
+| 2026-08-08 | `medagentbench/brain-parity_sweep25_g35f` | `success_rate` | 72.0% | 25 | 0 | -3.0pp | PRELIMINARY. vs `medagentbench/brain-parity_sweep25_fable5` |
+| 2026-08-08 | `medagentbench/brain-parity_sweep25_g35fl` | `success_rate` | 68.0% | 25 | 0 | -4.0pp | PRELIMINARY. vs `medagentbench/brain-parity_sweep25_g35f` |
+| 2026-08-08 | `medagentbench/brain-parity_sweep25_g3fp` | `success_rate` | 52.0% | 25 | 0 | -16.0pp | PRELIMINARY. vs `medagentbench/brain-parity_sweep25_g35fl` |
+| 2026-08-08 | `medagentbench/brain-parity_sweep25_haiku` | `success_rate` | 68.0% | 25 | 0 | +16.0pp | PRELIMINARY. vs `medagentbench/brain-parity_sweep25_g3fp` |
+| 2026-08-08 | `medagentbench/brain-parity_sweep25_opus5` | `success_rate` | 72.0% | 25 | 0 | +4.0pp | PRELIMINARY. vs `medagentbench/brain-parity_sweep25_haiku` |
+| 2026-08-08 | `medagentbench/brain-parity_sweep25_sonnet5` | `success_rate` | 52.0% | 25 | 0 | -20.0pp | PRELIMINARY. vs `medagentbench/brain-parity_sweep25_opus5` |
 
 ### PatientAgentBench — `patientagentbench:harness_tools`
 

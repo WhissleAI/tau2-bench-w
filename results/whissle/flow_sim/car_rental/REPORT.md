@@ -1,21 +1,23 @@
 # Conversation-flow suite — `car_rental` (real-audio voice)
 
-> **PRELIMINARY** — N = 11 is below the 30-unit threshold for a settled number. Treat every figure below as directional.
+> **PRELIMINARY** — N = 5 is below the 30-unit threshold for a settled number. Treat every figure below as directional.
 
 ## Abstract
 
-Whissle was evaluated on **Whissle conversation-flow suite** in `voice` mode. The headline result is **45.5%** (N = 11 · PRELIMINARY) for task success, 95% CI [21.3%, 72.0%].
+Whissle was evaluated on **Whissle conversation-flow suite** in `voice` mode. The headline result is **100.0%** (N = 5 · 6/11 excluded (54.5%) · PRELIMINARY) for task success, 95% CI [56.6%, 100.0%].
 
 Whether a deployed voice agent actually completes its job on a phone call: does it collect what the flow says it must collect, does it handle a caller who answers out of order or refuses to engage, and does it end the call cleanly rather than trailing off. Real audio, real speech recognition, real turn-taking — not a text transcript stand-in.
+
+**6 of 11 units (54.5%) were excluded** before scoring — see §7. Had every excluded unit been scored at the floor of the scale the figure would be 45.45; at the ceiling, 100.0. The true all-11 value lies in that interval, and the headline is not it.
 
 ## At a glance
 
 | Field | Value |
 |---|---|
-| **Task success** | **45.5%** (N = 11 · PRELIMINARY) |
+| **Task success** | **100.0%** (N = 5 · 6/11 excluded (54.5%) · PRELIMINARY) |
 <!-- honesty:allow-context -->
-| 95% CI | [21.3%, 72.0%] |
-| Attempted / scored / excluded | 11 / 11 / 0 (0.0%) |
+| 95% CI | [56.6%, 100.0%] |
+| Attempted / scored / excluded | 11 / 5 / 6 (54.5%) |
 | Judge | rule analyzer + LLM grader |
 | Mode | `voice` |
 | Date | 2026-08-07 |
@@ -24,7 +26,7 @@ Whether a deployed voice agent actually completes its job on a phone call: does 
 <!-- /honesty:allow-context -->
 
 <!-- honesty:allow-context -->
-- **Reached a clean close:** 18.2% [5.1%, 47.7%], N = 11 — taken from the authoritative `flow_end` trace event
+- **Reached a clean close:** 40.0% [11.8%, 76.9%], N = 5 — taken from the authoritative `flow_end` trace event
 - **Flow states visited:** 0, N = 11 — of 11 declared
 - **Flow transitions fired:** 0, N = 12 — of 12 declared
 <!-- /honesty:allow-context -->
@@ -60,7 +62,7 @@ Whether a deployed voice agent actually completes its job on a phone call: does 
 | Dataset | scripted caller personas for `car_rental` |
 | Dataset size | 11 |
 | Upstream | internal — no published equivalent |
-| Repo commit at report time | `89f2e02` |
+| Repo commit at report time | `bfcb460` |
 | Captured at | 2026-08-07 |
 | Run directory | `results/whissle/flow_sim/car_rental` |
 | Agent type | car_rental |
@@ -84,19 +86,19 @@ Whether a deployed voice agent actually completes its job on a phone call: does 
 | Population | 11 |
 | Requested | 11 |
 | Selected | 11 |
-| Scored | 11 |
+| Scored | 5 |
 
 Every scenario in the set was run. There is no sampling error here — but there is selection: the set is what we thought to write down, and the transition-coverage table is the honest measure of what it misses.
 
 ## 4. Results
 
-**Task success: 45.5%** (N = 11 · PRELIMINARY), 95% CI [21.3%, 72.0%].
+**Task success: 100.0%** (N = 5 · 6/11 excluded (54.5%) · PRELIMINARY), 95% CI [56.6%, 100.0%].
 
 | Metric | Value | 95% CI | N | Qualifiers |
 |---|---:|---|---:|---|
-| **Task success** | **45.5%** | [21.3%, 72.0%] | 11 | N = 11 · PRELIMINARY |
+| **Task success** | **100.0%** | [56.6%, 100.0%] | 5 | N = 5 · 6/11 excluded (54.5%) · PRELIMINARY |
 <!-- honesty:allow-context -->
-| Reached a clean close | 18.2% | [5.1%, 47.7%] | 11 | taken from the authoritative `flow_end` trace event |
+| Reached a clean close | 40.0% | [11.8%, 76.9%] | 5 | taken from the authoritative `flow_end` trace event |
 | Flow states visited | 0 | — | 11 | of 11 declared |
 | Flow transitions fired | 0 | — | 12 | of 12 declared |
 <!-- /honesty:allow-context -->
@@ -245,17 +247,41 @@ Picked deterministically from this run's own artifacts — the best and worst by
 
 ## 7. Exclusions and what they do to the number
 
-Nothing was excluded: all 11 attempted units produced a gradable result. The headline denominator is the full attempted set.
+<!-- honesty:allow-context -->
+| Attempted | Scored | Excluded | Exclusion rate |
+|---:|---:|---:|---:|
+| 11 | 5 | 6 | **54.5%** |
+<!-- /honesty:allow-context -->
+
+**Why each unit was excluded**
+
+| Reason | Count | Share of attempted |
+|---|---:|---:|
+<!-- honesty:allow-context -->
+| `credit_exhausted` | 6 | 54.5% |
+<!-- /honesty:allow-context -->
+
+Verbatim, from the artifacts:
+
+> `ModelError: models/chat -> HTTP 402: {"detail":"Insufficient credit. Top up your workspace wallet to use the model API."}`
+
+**Effect on interpretation.**
+
+An exclusion rate of 54.5% is not a rounding detail. The headline describes 5 units; it is silent about 6.
+
+Bounding it: if every excluded unit had scored at the floor of the scale, the all-11 figure would be **45.45**; at the ceiling, **100.0**. That interval is wider than the sampling confidence interval, which means the exclusions — not the sample size — are the dominant uncertainty in this run. These are bounds, not estimates: nobody knows how the excluded units would have scored.
+
+The excluded set is also unlikely to be random with respect to difficulty. Transport failures accumulate over turns, so longer and harder units are more exposed to them, and the scored set is plausibly the easier half of what was drawn.
 
 ## 8. Limitations and threats to validity
 
-- **tiny n** (high) — N = 11. At this size a single scenario flipping moves the headline by ten points. Every figure here is directional and is labelled PRELIMINARY for that reason.
+- **tiny n** (high) — N = 5. At this size a single scenario flipping moves the headline by ten points. Every figure here is directional and is labelled PRELIMINARY for that reason.
 - **not comparable** (high) — The scenario set is ours, the flows are ours, and the grader is ours. Nothing here can be compared to any published number, and it should never be presented alongside one as if it could.
 - **simulated caller** (high) — The caller is a language model speaking through text-to-speech. It has cleaner prosody, no background noise and more patience than a person on a mobile in a car — so recognition error here is a floor, not an estimate.
 - **coverage** (medium) — 12 declared transitions never fired across the whole set. Those branches are untested, and a green result says nothing about them.
 - **run to run** (medium) — Speech recognition, generation and turn-taking are all stochastic. Two runs of the same scenario set differ; a one-scenario change between runs is noise until it repeats.
 
-- **sample size** (high) — N = 11 is below the 30-unit threshold this reporting layer uses to call a figure settled. The report is labelled PRELIMINARY throughout.
+- **sample size** (high) — N = 5 is below the 30-unit threshold this reporting layer uses to call a figure settled. The report is labelled PRELIMINARY throughout.
 
 ## 9. Reproduction
 
@@ -267,7 +293,7 @@ python -m tau2.reporting.cli build results/whissle/flow_sim/car_rental
 
 | Field | Value |
 |---|---|
-| repo commit at report time | 89f2e02 |
+| repo commit at report time | bfcb460 |
 | extras required | voice (LiveKit, audio codecs) |
 
 - Audio is captured per session (`*.caller.wav`, `*.bot.wav`, `*.mix.wav`) — a disputed grader verdict can be settled by listening.
@@ -292,9 +318,9 @@ These rules are executed against this document, not asserted about it. A failing
 
 | Rule | Verdict | Checked |
 |---|:---:|---|
-| `R1_headline_requires_n` | pass | headline carries N = 11 everywhere it is stated |
+| `R1_headline_requires_n` | pass | headline carries N = 5 everywhere it is stated |
 | `R2_judge_independence_disclosed` | pass | not applicable — judge is independent or deterministic |
-| `R3_exclusion_rate_adjacent` | pass | not applicable — nothing was excluded |
+| `R3_exclusion_rate_adjacent` | pass | 6/11 exclusion rate shown beside the score |
 | `R4_preliminary_labelled` | pass | labelled PRELIMINARY |
 | `R5_no_provider_names` | pass | no LLM vendor named outside the published-baseline table |
 | `R6_comparability_stated` | pass | not applicable — no published baseline is registered |

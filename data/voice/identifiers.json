@@ -1,0 +1,154 @@
+{
+  "schema": "tau2.voice.identifier_corpus/v1",
+  "description": "Identifiers a caller says out loud, for the spelled-identifier robustness suite. Each case is one string the agent has to end up holding exactly, because an identifier is a database key and a near miss returns nothing rather than something worse.",
+  "design_notes": [
+    "SEEDED FROM A REAL FAILURE. `name_yusuf_rossi` is the exact identifier that failed in the published half-duplex retail run (results/whissle/HD_RETAIL_2026-08-06.md): the agent called find_user_id_by_name_zip with first_name Youssef against a customer whose record reads yusuf_rossi_9620, and the lookup returned nothing. The postcode in that same call was heard correctly. The name alone was enough to lose the task, so it is case one.",
+    "NAMES ARE OVER-REPRESENTED ON PURPOSE. The published voice run used a single simulated customer, so its name failure is one sample repeated rather than several independent ones — a limitation the benchmark page states about itself. The corpus answers that directly with distinct names across several orthographic traditions, since a recogniser tuned on one distribution fails unevenly across them and a single Anglo name would never show it.",
+    "HOMOPHONE PAIRS ARE INCLUDED AS SEPARATE CASES so the suite can distinguish 'the recogniser cannot hear this class of sound' from 'the recogniser picked the wrong member of a pair it heard fine'. Those have different fixes: one is acoustic, the other wants a constrained vocabulary or a readback.",
+    "ALPHANUMERIC CASES USE CONFUSABLE CHARACTERS deliberately — B/P/D/V/E, M/N, S/F, 5/9, 0/O. An order-id benchmark made of unambiguous characters would report a healthy number and predict nothing about production.",
+    "`spoken_as` is what the simulated caller is instructed to say. It is not a second ground truth: the agent is scored against `truth` only, so a case where the caller spells it out and a case where the caller says it naturally are different difficulties of the same target."
+  ],
+  "cases": [
+    {
+      "id": "name_yusuf_rossi",
+      "category": "person_name",
+      "truth": "Yusuf Rossi",
+      "spoken_as": "say your name naturally, do not spell it unless asked",
+      "note": "The exact failure from the published voice retail run. Heard as 'Youssef Rossi'; the lookup returned no customer and the task was lost.",
+      "provenance": "results/whissle/HD_RETAIL_2026-08-06.md"
+    },
+    {
+      "id": "name_siobhan_mcgrath",
+      "category": "person_name",
+      "truth": "Siobhan McGrath",
+      "spoken_as": "say your name naturally; spell the first name only if asked",
+      "note": "Orthography and pronunciation diverge sharply. A recogniser that has not seen the spelling will not reconstruct it from the sound."
+    },
+    {
+      "id": "name_nguyen_thi_ha",
+      "category": "person_name",
+      "truth": "Nguyen Thi Ha",
+      "spoken_as": "say your full name naturally",
+      "note": "Three short syllables with no redundancy — nothing for a language model to recover a mis-heard token from."
+    },
+    {
+      "id": "name_krzysztof_wojcik",
+      "category": "person_name",
+      "truth": "Krzysztof Wojcik",
+      "spoken_as": "say your name, then spell the first name",
+      "note": "Consonant cluster plus a spell-out. Tests the spelling path, not just the name path."
+    },
+    {
+      "id": "name_aisha_al_rashid",
+      "category": "person_name",
+      "truth": "Aisha Al-Rashid",
+      "spoken_as": "say your name naturally",
+      "note": "Hyphenated surname: normalisation must not let 'Al Rashid' and 'Al-Rashid' diverge, while keeping 'Al-Rasheed' a genuine miss."
+    },
+    {
+      "id": "name_homophone_sara",
+      "category": "person_name",
+      "truth": "Sarah Cohen",
+      "spoken_as": "say your name naturally",
+      "note": "Half of a homophone pair with `name_homophone_sara_alt`. Same sound, different key."
+    },
+    {
+      "id": "name_homophone_sara_alt",
+      "category": "person_name",
+      "truth": "Sara Kohen",
+      "spoken_as": "say your name naturally",
+      "note": "The other half. If both cases pass, the agent is not guessing from a prior."
+    },
+    {
+      "id": "order_confusable_bpd",
+      "category": "order_id",
+      "truth": "W2378-BPD9",
+      "spoken_as": "read the order number out character by character",
+      "note": "B/P/D are the classic confusable set; 9 sits next to 5 acoustically."
+    },
+    {
+      "id": "order_confusable_mn",
+      "category": "order_id",
+      "truth": "ORD-4M7N-05",
+      "spoken_as": "read the order number out character by character",
+      "note": "M/N, plus a leading zero that is routinely dropped."
+    },
+    {
+      "id": "order_natural_read",
+      "category": "order_id",
+      "truth": "A1029384756",
+      "spoken_as": "read the order number naturally, at your own pace",
+      "note": "The same task without a spell-out instruction. The delta against the spelled cases is the value of asking callers to spell."
+    },
+    {
+      "id": "order_grouped_digits",
+      "category": "order_id",
+      "truth": "88-3300-7719",
+      "spoken_as": "read it in groups, as it is printed",
+      "note": "Repeated digits: 'double eight' and 'eight eight' must both land on 88."
+    },
+    {
+      "id": "postcode_us_19122",
+      "category": "postcode",
+      "truth": "19122",
+      "spoken_as": "read the postcode digit by digit",
+      "note": "The postcode from the published failing run. It was heard correctly there — kept as a control, so a regression on the easy case is visible."
+    },
+    {
+      "id": "postcode_uk_sw1a",
+      "category": "postcode",
+      "truth": "SW1A 2AA",
+      "spoken_as": "read the postcode as you would to a courier",
+      "note": "Mixed letters and digits with an internal space that carries no information."
+    },
+    {
+      "id": "postcode_ca_k1a0b1",
+      "category": "postcode",
+      "truth": "K1A 0B1",
+      "spoken_as": "read the postal code character by character",
+      "note": "Alternating letters and digits, with 0/O adjacent."
+    },
+    {
+      "id": "email_dotted",
+      "category": "email",
+      "truth": "j.okafor@example.com",
+      "spoken_as": "give your email address; say 'dot' and 'at' where they appear",
+      "note": "Spoken punctuation must normalise; the local part must not."
+    },
+    {
+      "id": "email_underscore_digits",
+      "category": "email",
+      "truth": "m_rivera_88@example.co.uk",
+      "spoken_as": "give your email address, spelling the part before the at sign",
+      "note": "Underscore, digits and a two-part suffix in one string."
+    },
+    {
+      "id": "phone_us_grouped",
+      "category": "phone",
+      "truth": "+12155550147",
+      "spoken_as": "give your phone number as you would say it out loud",
+      "note": "Separators are formatting; the country code is not. Normalisation keeps the plus and drops the rest."
+    },
+    {
+      "id": "phone_in_local",
+      "category": "phone",
+      "truth": "+919845012345",
+      "spoken_as": "give your phone number, in pairs",
+      "note": "Indian numbers are commonly read in pairs, which is where digit-pair mishearing shows up."
+    },
+    {
+      "id": "reference_case_mixed",
+      "category": "reference",
+      "truth": "case-2026-AB-0091",
+      "spoken_as": "read the case reference exactly as printed",
+      "note": "Mixed case plus hyphens plus a leading-zero run."
+    },
+    {
+      "id": "reference_spelled_alpha",
+      "category": "reference",
+      "truth": "ZEBRA-ECHO-7",
+      "spoken_as": "read the reference using the phonetic alphabet if you know it",
+      "note": "Tests whether a phonetic-alphabet read-out helps or hurts. Nobody has measured which."
+    }
+  ]
+}

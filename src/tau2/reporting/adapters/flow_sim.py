@@ -80,7 +80,8 @@ class FlowSimAdapter:
         # were all on disk. A headline that swings to 100% because somebody re-ran
         # one passing scenario is worse than no headline.
         n_sessions = len(latest)
-        n_infra = sum(1 for x in latest if dig(x, "metadata", "infra_fail"))
+        infra = [x for x in latest if _infra_reason(x)]
+        n_infra = len(infra)
         n_ran = n_sessions - n_infra
         n_success = sum(1 for x in latest if dig(x, "outcome", "task_success"))
         n_closed = sum(1 for x in latest if dig(x, "outcome", "ended"))
@@ -105,16 +106,20 @@ class FlowSimAdapter:
                 "coverage roll-up suppressed"
             )
 
+        breakdown: dict[str, int] = defaultdict(int)
+        for x in infra:
+            breakdown[_infra_reason(x)] += 1
+
         exclusions = Exclusions(
             n_total=int(n_sessions or 0),
             n_scored=int(n_ran or 0),
             n_excluded=int(n_infra or 0),
-            breakdown={"infra_fail": int(n_infra)} if n_infra else {},
+            breakdown=dict(breakdown),
             reason_examples=sorted(
                 {
                     str(dig(x, "metadata", "setup_error"))
-                    for x in latest
-                    if dig(x, "metadata", "infra_fail") and dig(x, "metadata", "setup_error")
+                    for x in infra
+                    if dig(x, "metadata", "setup_error")
                 }
             ),
         )
@@ -484,6 +489,66 @@ def _ts_to_iso(ts: Any) -> str:
     s = str(ts or "")
     if len(s) >= 8 and s[:8].isdigit():
         return f"{s[0:4]}-{s[4:6]}-{s[6:8]}"
+    return ""
+
+
+def _infra_reason(session: Any) -> str:
+    """Why this session cannot be scored, or "" if it can be.
+
+    WHY THIS IS DERIVED RATHER THAN READ OFF ``metadata.infra_fail``
+    ---------------------------------------------------------------
+    It used to be read off the flag, and the flag lies by omission on every
+    session written before it was added. Those sidecars carry
+    ``infra_fail: null``, which is falsey, so a session that never exchanged a
+    single word was counted as a scored failure of the agent.
+
+    That was not a rounding error. In the published 2026-08-06/07 sweep it put
+    debt collection on the page at 9.1% when 7 of its 11 sessions were a payment
+    error against our own workspace and only 4 were conversations, and car
+    rental at 45.5% when 6 of 11 never started. Two other domains in the same
+    sweep were unaffected purely because their sessions happened to be written
+    after the flag existed.
+
+    ``simulate.py`` already states the rule this restores, in its own words: a
+    session that never executed a turn is an infrastructure failure by
+    definition, because nothing about the flow was measured. Zero turns is the
+    load-bearing signal and it is present in every sidecar ever written; the
+    flag is an optimisation on top of it, not the source of truth.
+
+    Returns a stable bucket key so the report can say WHICH kind of failure,
+    rather than lumping a billing outage in with a dead audio channel — those
+    have different owners and different fixes.
+    """
+    if not isinstance(session, dict):
+        return ""
+    md = session.get("metadata") or {}
+    turns = md.get("num_turns")
+    if turns is None:
+        turns = len(session.get("turns") or [])
+    err = str(md.get("setup_error") or "")
+
+    # A turn was exchanged, and the flag was not raised: this is a real session
+    # and its outcome is the agent's to own.
+    if turns and not md.get("infra_fail"):
+        return ""
+    if not turns or md.get("infra_fail"):
+        low = err.lower()
+        if "402" in err or "insufficient credit" in low:
+            return "credit_exhausted"
+        if "voiceinfraerror" in low or "data channel" in low:
+            return "voice_transport"
+        if "timeout" in low:
+            return "timeout"
+        if "502" in err or "503" in err or "provider" in low:
+            return "provider_failure"
+        if err or md.get("infra_fail"):
+            return "infra_fail"
+        # No turns AND no recorded reason. Still not a measurement — but it is
+        # also not a diagnosed outage, and folding it into `infra_fail` would
+        # let a malformed sidecar quietly leave the denominator wearing the
+        # costume of a known cause. Its own bucket, so a reader can see that
+        # something was dropped for a reason nobody can name.
+        return "unmeasurable"
     return ""
 
 
