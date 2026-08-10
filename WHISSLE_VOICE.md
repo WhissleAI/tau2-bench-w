@@ -53,11 +53,15 @@ their own text.
    every task fails with `No module named 'livekit'`.
 
 ```bash
-export WHISSLE_BASE=https://aws-gateway-backend.whissle.ai/bot   # or the gw host
+export WHISSLE_BASE=https://aws-gateway-backend.whissle.ai/bot   # or the gw host — keep /bot
 export WHISSLE_AGENT_ID=<agent uuid in your org>
 export WHISSLE_API_KEY=<wsk_ key>
 export OPENAI_API_KEY=<for the gpt-4o user simulator + its TTS/ASR>
 ```
+
+`WHISSLE_BASE` must carry the `/bot` path prefix — the gateway serves the pipecat
+backend there, and the same routes without it 404. Whatever host you point at, keep
+the prefix (`.../bot`, not `...whissle.ai`).
 
 ## Run
 

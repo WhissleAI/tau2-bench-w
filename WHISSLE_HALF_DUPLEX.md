@@ -143,6 +143,9 @@ Domains: `retail`, `airline`, `telecom` (the standard tau2 suites).
 
 The `WHISSLE_BASE` you point at must have:
 
+- the `/bot` path prefix in the URL itself — the gateway serves the pipecat backend
+  under `/bot`, and the same routes without it 404 (this is the most common setup
+  failure; `/health` answers either way, so test `/bot/api/agents` → 401 instead),
 - `/api/bench/*` deployed, and
 - `LIVEKIT_ENABLED=1` with LiveKit configured (the half-duplex path joins a real
   LiveKit room).
