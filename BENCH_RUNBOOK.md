@@ -53,12 +53,23 @@ uv sync --extra voice        # the voice extra is REQUIRED for any --mode voice 
                              # (plain `uv sync` → "livekit.rtc is required" mid-run)
 cp .env.example .env         # then edit:
 #   WHISSLE_API_KEY=wsk_...                                   (required, all suites)
-#   WHISSLE_BASE=https://aws-gateway-backend.whissle.ai/bot   (default; leave as is)
+#   WHISSLE_BASE=https://aws-gateway-backend.whissle.ai/bot   (default; leave as is —
+#                                                              the /bot prefix is REQUIRED)
 #   WHISSLE_AGENT_ID=<agent uuid>                             (half-duplex suite only)
 #   OPENAI_API_KEY / ELEVENLABS_API_KEY                       (voice suites)
 ```
 
 Sanity check: `uv run python -c "import livekit.rtc; print('voice ok')"`.
+
+Sanity check the backend too — `WHISSLE_BASE` **must** keep the `/bot` path prefix
+(the gateway serves the pipecat backend under `/bot`; without it every route 404s):
+
+```bash
+curl -o /dev/null -w '%{http_code}\n' "$WHISSLE_BASE/api/agents"   # 401 = right, 404 = missing /bot
+```
+
+Use that route, not `/health` — `/health` answers with or without the prefix, so it
+cannot tell you whether `WHISSLE_BASE` is correct.
 
 ---
 
