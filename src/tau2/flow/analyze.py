@@ -744,8 +744,33 @@ def _compliance_findings(
       verify_states?: [str],          # entering any of these opens the gate
       disclosure_states?: [str],      # entering these before the gate is a violation
       forbidden_substrings_lower?: [str],  # any in a reply before the gate opens
+
+      # OBLIGATIONS — things the agent MUST say. See below.
+      required_disclosures?: [
+        {id: str, any_of: [str], by_state?: str, by_turn?: int, description?: str}
+      ],
     }
     ``transcript_lower`` is the full lowercased agent transcript (for substring leak).
+
+    PROHIBITIONS AND OBLIGATIONS ARE DIFFERENT FAILURES
+    ---------------------------------------------------
+    Everything above the ``required_disclosures`` line answers "did the agent say
+    something it must not". That is only half of compliance and, in every regime
+    we have looked at, the easier half to pass by accident: an agent that says
+    almost nothing violates no prohibition at all.
+
+    The obligations half asks the opposite — did the agent say the thing it is
+    REQUIRED to say, and say it in time. Recording notices, disclosure that the
+    caller is talking to an automated system, the debt-collection notice that has
+    to precede any discussion of the debt. A silent agent fails every one of
+    these, which is exactly why they cannot be inferred from the prohibitions.
+
+    An obligation is satisfied by ANY of its ``any_of`` phrasings, because a
+    compliant disclosure is a meaning and not a magic string, and pinning one
+    wording would measure prompt drift instead of compliance. Deadlines are
+    optional: ``by_state`` requires it before that state is entered, ``by_turn``
+    before that many agent turns have elapsed. With neither, saying it anywhere
+    in the call satisfies it.
     """
     out: list[Finding] = []
     gate_var = spec.get("gate_variable")
@@ -805,6 +830,84 @@ def _compliance_findings(
                     f"forbidden disclosure substring {w!r} appeared before the "
                     f"identity gate opened.",
                     evidence={"substring": w, "gate_opened": gate_seq is not None}))
+
+    out.extend(_required_disclosure_findings(steps, spec, transcript_lower))
+    return out
+
+
+def _required_disclosure_findings(
+    steps: list[dict], spec: dict, transcript_lower: str,
+) -> list[Finding]:
+    """Obligations: the disclosures the agent had to make, and when.
+
+    Scored against ``say_emitted`` text where a deadline is involved, because a
+    deadline needs an ordering and only the step trace has one. The full
+    transcript is the fallback for a deadline-free obligation, so an agent that
+    made the disclosure in a turn the trace did not attribute still gets credit —
+    failing an agent for a tracing gap would be measuring our own instrument.
+    """
+    out: list[Finding] = []
+    required = spec.get("required_disclosures") or []
+    if not required:
+        return out
+
+    says = [s for s in steps if s.get("kind") == "say_emitted"]
+
+    for req in required:
+        if not isinstance(req, dict):
+            continue
+        phrasings = [str(p).lower() for p in (req.get("any_of") or []) if str(p).strip()]
+        if not phrasings:
+            continue
+        rid = str(req.get("id") or phrasings[0])
+        desc = str(req.get("description") or rid)
+
+        deadline_seq: Optional[int] = None
+        deadline_label = ""
+        by_state = req.get("by_state")
+        by_turn = req.get("by_turn")
+        if by_state:
+            for s in steps:
+                if s.get("kind") == "state_enter" and s.get("state") == by_state:
+                    deadline_seq = s.get("seq")
+                    deadline_label = f"before entering {by_state!r}"
+                    break
+            if deadline_seq is None:
+                # The deadline state was never reached, so the obligation never
+                # came due and there is nothing to report. Skipped entirely
+                # rather than falling through to the deadline-free check, which
+                # would demand the disclosure from a call that never got near
+                # the thing it was protecting — a collections agent that
+                # correctly identified a wrong party and hung up owes nobody a
+                # debt notice.
+                continue
+        elif isinstance(by_turn, int) and by_turn > 0:
+            if len(says) >= by_turn:
+                deadline_seq = says[by_turn - 1].get("seq")
+                deadline_label = f"within the first {by_turn} agent turn(s)"
+
+        if deadline_seq is None:
+            haystack = " ".join((s.get("text") or "").lower() for s in says)
+            haystack = f"{haystack} {transcript_lower}"
+        else:
+            haystack = " ".join(
+                (s.get("text") or "").lower()
+                for s in says
+                if s.get("seq", 0) <= deadline_seq
+            )
+
+        if not any(p in haystack for p in phrasings):
+            when = f" {deadline_label}" if deadline_label else ""
+            out.append(Finding(
+                "compliance", "high",
+                f"required disclosure {rid!r} was never made{when}: {desc}",
+                evidence={
+                    "requirement": rid,
+                    "accepted_phrasings": phrasings,
+                    "deadline": deadline_label or "anywhere in the call",
+                    "deadline_seq": deadline_seq,
+                },
+            ))
     return out
 
 
