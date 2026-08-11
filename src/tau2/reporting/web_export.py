@@ -96,10 +96,13 @@ def _note(report: RunReport) -> str:
             "0–100 here; it is a quality score, not a pass rate"
         )
     if report.exclusions.any:
+        # Why they were excluded comes from the run's own per-cause breakdown. The
+        # clause used to assert "transport failure" for every cause, which quietly
+        # relabelled our own billing outage as somebody else's network.
         bits.append(
             f"{report.exclusions.n_excluded} of {report.exclusions.n_total} runs "
-            f"({report.exclusions.rate_pct:.0f}%) were excluded for transport failure "
-            "and are not in this figure"
+            f"({report.exclusions.rate_pct:.0f}%) were excluded — {_cause_clause(report)} "
+            "— and are not in this figure"
         )
     if report.judge.independent is False:
         bits.append("graded by our own grader, not an independent one")
@@ -361,22 +364,83 @@ def _methodology(reports: list[RunReport]) -> list[dict[str, str]]:
     ]
 
 
-def _honest_negatives(reports: list[RunReport]) -> list[dict[str, str]]:
+#: How many caveats the page carries. Every negative the runs generate fits inside
+#: this today (11 of them), so nothing is dropped; the cap is a guard against an
+#: unbounded list, not an editorial filter. It sits above the generated count on
+#: purpose — a cap that bites is a cap that decides what a reader is allowed to see.
+HONEST_NEGATIVES_CAP = 12
+
+#: Severity tiers, worst first. Only the ordering matters; the numbers are labels.
+#:
+#: An exclusion outranks the rest because it is a defect *we* caused in *this* run and
+#: it is measured — so it also sorts by size, and the worst outage in a suite can never
+#: be truncated in favour of a milder one from the same suite. Non-independence comes
+#: next: it qualifies the number without shrinking the sample, and every affected row
+#: carries it in ``note`` regardless of this list. The construct limitations come last —
+#: not because they are minor, but because they are properties of the benchmark that
+#: hold for every run of it, so they are the least surprising thing a reader loses if
+#: the list ever has to be cut.
+_SEV_EXCLUSION = 300
+_SEV_JUDGE = 200
+_SEV_LIMITATION = 100
+
+#: What each exclusion bucket actually was, in the reader's language. Read from the
+#: per-cause breakdown rather than asserted: "failed at the transport layer" was true
+#: of the voice outages and flatly untrue of the sessions our own billing gate killed,
+#: and a caveat that misnames its own cause is not a caveat.
+_EXCLUSION_CAUSE_PHRASE: dict[str, str] = {
+    "credit_exhausted": "our billing gate cut off our own simulated caller mid-call",
+    "voice_transport": "the audio transport died before the agent could answer",
+    "timeout": "the session timed out before the agent could answer",
+    "provider_failure": "an upstream service we depend on returned an error",
+    "infra_fail": "our infrastructure failed before the agent could answer",
+    "unmeasurable": "the session recorded no turns and no reason anyone can name",
+}
+
+
+def _cause_clause(report: RunReport) -> str:
+    """"6 because our own billing gate cut the call off" — one clause per cause."""
+    ex = report.exclusions
+    parts: list[str] = []
+    for key, count in sorted(ex.breakdown.items(), key=lambda kv: (-kv[1], kv[0])):
+        phrase = _EXCLUSION_CAUSE_PHRASE.get(key, f"of `{key}`")
+        parts.append(f"{count} because {phrase}")
+    if not parts:
+        return "no per-cause breakdown was recorded, which is its own defect"
+    if len(parts) == 1 and ex.n_excluded:
+        # One cause covering the whole set: say so, rather than repeat the count.
+        key, _count = next(iter(sorted(ex.breakdown.items(), key=lambda kv: -kv[1])))
+        return _EXCLUSION_CAUSE_PHRASE.get(key, f"of `{key}`")
+    return "; ".join(parts)
+
+
+def _honest_negatives(reports: list[RunReport]) -> list[dict[str, Any]]:
     """The things we would rather not put on a marketing page, generated from the
-    runs so they cannot quietly stop being generated."""
-    out: list[dict[str, str]] = []
+    runs so they cannot quietly stop being generated.
+
+    Ordered worst-first before the cap is applied. In report order the list published
+    car rental's 55% exclusion rate and truncated debt collection's 63.6% — the cap was
+    silently choosing the *milder* of the two admissions. Sorting by severity means a
+    cap can only ever drop the mildest caveats.
+    """
+    out: list[dict[str, Any]] = []
     for r in reports:
         if r.exclusions.rate_pct >= 5.0:
             out.append(
                 {
                     "title": f"{r.benchmark_title}: {r.exclusions.rate_pct:.0f}% of runs never completed",
                     "body": (
-                        f"{r.exclusions.n_excluded} of {r.exclusions.n_total} sessions "
-                        "failed at the transport layer before the agent could answer, and "
-                        "are excluded from the score. That is an availability defect on "
-                        "our side, it is the largest single finding in that run, and the "
-                        f"headline describes the {r.n_scored} that survived."
+                        # Named, because several runs of one suite can each carry this
+                        # caveat and "the conversation-flow suite" does not say which.
+                        f"In `{r.run_id}`, {r.exclusions.n_excluded} of "
+                        f"{r.exclusions.n_total} sessions never produced a gradable "
+                        f"conversation and are excluded from the score — {_cause_clause(r)}"
+                        ". That is a defect on our side, it is the largest single finding "
+                        f"in that run, and the headline describes the {r.n_scored} that "
+                        "survived."
                     ),
+                    "kind": "exclusion",
+                    "severity": _SEV_EXCLUSION + round(r.exclusions.rate_pct, 2),
                 }
             )
         if r.judge.independent is False:
@@ -389,6 +453,8 @@ def _honest_negatives(reports: list[RunReport]) -> list[dict[str, str]]:
                         "is not the same as an independent evaluation, and we do not "
                         "present it as one."
                     ),
+                    "kind": "judge",
+                    "severity": _SEV_JUDGE,
                 }
             )
         for lim in r.limitations:
@@ -398,7 +464,14 @@ def _honest_negatives(reports: list[RunReport]) -> list[dict[str, str]]:
                 "simulated_caller",
                 "tiny_n",
             }:
-                out.append({"title": f"{r.benchmark_title}: {lim.key.replace('_', ' ')}", "body": lim.text})
+                out.append(
+                    {
+                        "title": f"{r.benchmark_title}: {lim.key.replace('_', ' ')}",
+                        "body": lim.text,
+                        "kind": "limitation",
+                        "severity": _SEV_LIMITATION,
+                    }
+                )
     seen = set()
     unique = []
     for item in out:
@@ -406,7 +479,10 @@ def _honest_negatives(reports: list[RunReport]) -> list[dict[str, str]]:
             continue
         seen.add(item["title"])
         unique.append(item)
-    return unique[:8]
+    # Stable within a severity, so equal-severity caveats keep report order and the
+    # file stays byte-identical across regenerations of unchanged runs.
+    unique.sort(key=lambda item: -item["severity"])
+    return unique[:HONEST_NEGATIVES_CAP]
 
 
 # --------------------------------------------------------------------------

@@ -100,9 +100,26 @@ class Violation:
 # --------------------------------------------------------------------------
 
 
+def headline_n(report: RunReport) -> int:
+    """The N the headline **value** was computed over.
+
+    Usually that is the whole scored sample, and for most runs ``headline.n`` and
+    ``n_scored`` are the same integer. They are not when the headline is a metric over
+    a *subset* of the run — accuracy restricted to the cases that are not the majority
+    class, say, which is 25 of 100 scored cases.
+
+    ``n_scored`` sizes the *run*; ``headline.n`` sizes the *number*. Quoting the run's
+    size beside a subset metric overstates the sample, and it overstates it in our
+    favour — which is precisely the error R1 exists to prevent. So the qualifier
+    states the N the claim was actually computed on, and says what it is a subset of.
+    """
+    n = report.headline.n
+    return int(n) if n else report.n_scored
+
+
 def required_tokens(report: RunReport) -> list[str]:
     """The substrings that must accompany every statement of the headline value."""
-    toks = [f"N = {report.n_scored}"]
+    toks = [f"N = {headline_n(report)}"]
     if report.exclusions.any:
         toks.append(f"{report.exclusions.n_excluded}/{report.exclusions.n_total} excluded")
     if report.judge.needs_disclosure:
@@ -114,7 +131,10 @@ def required_tokens(report: RunReport) -> list[str]:
 
 def qualifier(report: RunReport) -> str:
     """The compliant annotation. Rendered next to every statement of the number."""
-    bits = [f"N = {report.n_scored}"]
+    n = headline_n(report)
+    # A subset headline states its own N *and* what it is a subset of: "N = 25" alone
+    # would understate the run, "N = 100" overstates the claim. Both facts, one string.
+    bits = [f"N = {n}" if n == report.n_scored else f"N = {n} of {report.n_scored} scored"]
     if report.exclusions.any:
         bits.append(
             f"{report.exclusions.n_excluded}/{report.exclusions.n_total} excluded "
@@ -491,7 +511,15 @@ def compliance_table(report: RunReport, markdown: Optional[str] = None) -> list[
     for v in viols:
         by_rule[v.rule] = by_rule.get(v.rule, 0) + 1
     what = {
-        "R1_headline_requires_n": f"headline carries N = {report.n_scored} everywhere it is stated",
+        "R1_headline_requires_n": (
+            f"headline carries N = {headline_n(report)} everywhere it is stated"
+            + (
+                f" (the value is computed over {headline_n(report)} of the "
+                f"{report.n_scored} scored units)"
+                if headline_n(report) != report.n_scored
+                else ""
+            )
+        ),
         "R2_judge_independence_disclosed": (
             "non-independent judge disclosed beside the number"
             if report.judge.needs_disclosure

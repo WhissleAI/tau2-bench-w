@@ -18,7 +18,6 @@ does not help" are the same zero and completely different findings.
 
 from __future__ import annotations
 
-import re
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any, Optional

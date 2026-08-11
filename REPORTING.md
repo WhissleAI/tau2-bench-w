@@ -102,6 +102,18 @@ The renderer can only emit the headline through the helper that builds it; the
 linter then re-derives the requirement from the report rather than trusting the
 renderer, so an edit that bypasses the helper fails a test instead of shipping.
 
+The N in that string is the N the **value** was computed over (`headline.n`), which
+is not always the size of the run. A headline restricted to a subset — accuracy on
+the 25 cases that are not the majority class, out of a 100-case corpus — states its
+own denominator and then says what it is a subset of:
+
+```
+40.0% (N = 25 of 100 scored)
+```
+
+Quoting the run's size there would overstate the sample fourfold, and it would
+overstate it in our favour, which is the failure R1 exists to catch.
+
 The two exemption spans are marked in the file itself:
 
 ```html
@@ -197,6 +209,15 @@ rubric is not a pass rate.
 `publishable()` picks one run per benchmark by *authority* — largest scored N, latest
 date breaking ties — so a two-case smoke run written five minutes ago cannot displace
 the hundred-case result it was smoke-testing.
+
+`honestNegatives` — the caveats we would rather not print — are generated from the
+runs and **ordered worst-first before the cap is applied**, each carrying its `kind`
+and a `severity`. An exclusion sorts by its measured rate, above non-independence,
+above the standing construct limitations. Ordering is the whole point of the cap: a
+list in report order truncates by iteration accident, and once did exactly that,
+publishing one suite's 55% exclusion rate while cutting another's 64%. Each
+exclusion caveat names its cause from the run's own per-cause breakdown, so a
+session our billing gate killed is not published as somebody else's network.
 
 ---
 
