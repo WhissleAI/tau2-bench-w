@@ -1,6 +1,6 @@
 {
   "schema": "whissle.benchmark.web/v1",
-  "generatedAt": "2026-08-10T06:36:49+00:00",
+  "generatedAt": "2026-08-10T23:51:48+00:00",
   "placeholder": false,
   "lastUpdated": "8 August 2026",
   "benchmarkRepoUrl": "https://github.com/WhissleAI/tau2-bench-w",
@@ -14,7 +14,7 @@
       "sampleSize": 87,
       "language": "en",
       "preliminary": false,
-      "note": "Weighted rubric aggregate 4.25 on a 1\u20135 scale, rescaled to 0\u2013100 here; it is a quality score, not a pass rate; 13 of 100 runs (13%) were excluded for transport failure and are not in this figure; graded by our own grader, not an independent one.",
+      "note": "Weighted rubric aggregate 4.25 on a 1\u20135 scale, rescaled to 0\u2013100 here; it is a quality score, not a pass rate; 13 of 100 runs (13%) were excluded \u2014 our infrastructure failed before the agent could answer \u2014 and are not in this figure; graded by our own grader, not an independent one.",
       "artifact": "results/whissle/patientagentbench/pab_text_100/REPORT.md",
       "scoreKind": "normalised_rubric",
       "scoreNative": 4.25,
@@ -214,6 +214,49 @@
           "sourceUrl": "https://ai.nejm.org/doi/full/10.1056/AIdbp2500144",
           "protocol": "full 300-task set, same action grammar, same deterministic grader",
           "display": "Mistral v0.3, MedAgentBench, NEJM AI 2025 (Table 2), N = 300 \u2014 4.0"
+        }
+      ]
+    },
+    {
+      "id": "metadata-ablation-text",
+      "suite": "Metadata ablation \u2014 what the cascade layer contributes",
+      "task": "Metadata ablation \u2014 what the cascade layer contributes",
+      "modality": "text",
+      "score": 0.0,
+      "sampleSize": 100,
+      "language": "en",
+      "preliminary": false,
+      "note": "Graded deterministically against database state, not by a grader model.",
+      "artifact": "results/whissle/ablation/ablation_AB_v1/REPORT.md",
+      "scoreKind": "pass_rate",
+      "scoreNative": 0.0,
+      "scoreNativeFormatted": "0.0%",
+      "scoreNativeScale": "-100\u2013100",
+      "ci": [
+        0.0,
+        0.0
+      ],
+      "attempted": 100,
+      "excluded": 0,
+      "exclusionRatePct": 0.0,
+      "judgeIndependent": null,
+      "judgeKind": "deterministic",
+      "comparable": true,
+      "comparabilityNote": "The comparator is the system itself without the variable \u2014 the only baseline an ablation can honestly have.",
+      "date": "2026-08-08",
+      "runId": "ablation/ablation_AB_v1",
+      "harnessCommit": null,
+      "status": "complete",
+      "passed": 0,
+      "baselinesAll": [
+        {
+          "label": "Arm A \u2014 the same system with the metadata block removed",
+          "score": 0.0,
+          "n": null,
+          "source": "this run; the paired within-subject control",
+          "sourceUrl": "",
+          "protocol": "identical cases, model, prompt and transcript",
+          "display": "Arm A \u2014 the same system with the metadata block removed, this run; the paired within-subject control \u2014 0.0"
         }
       ]
     }
@@ -830,37 +873,71 @@
   ],
   "honestNegatives": [
     {
-      "title": "AgentClinic: we graded our own homework",
-      "body": "The graders and simulators for this run were our own models. Held constant it is a fair way to measure change over time; it is not the same as an independent evaluation, and we do not present it as one."
-    },
-    {
-      "title": "AgentClinic: simulated patient",
-      "body": "The patient is a language model following a case card. It answers questions more cooperatively, more fluently and more consistently than a person in a waiting room, so the intake task here is easier than the product's real one."
-    },
-    {
-      "title": "MedAgentBench: sandbox not a hospital",
-      "body": "Writes go to a FHIR sandbox that accepts resources a production EHR would reject \u2014 7 of 35 emitted writes in this run were non-conformant and still scored correct. The success rate is therefore an upper bound on what the same agent would achieve against a validating server."
-    },
-    {
-      "title": "PatientAgentBench: 13% of runs never completed",
-      "body": "13 of 100 sessions failed at the transport layer before the agent could answer, and are excluded from the score. That is an availability defect on our side, it is the largest single finding in that run, and the headline describes the 87 that survived."
-    },
-    {
-      "title": "PatientAgentBench: we graded our own homework",
-      "body": "The graders and simulators for this run were our own models. Held constant it is a fair way to measure change over time; it is not the same as an independent evaluation, and we do not present it as one."
-    },
-    {
-      "title": "Whissle conversation-flow suite: tiny n",
-      "body": "N = 11. At this size a single scenario flipping moves the headline by ten points. Every figure here is directional and is labelled PRELIMINARY for that reason."
-    },
-    {
-      "title": "Whissle conversation-flow suite: simulated caller",
-      "body": "The caller is a language model speaking through text-to-speech. It has cleaner prosody, no background noise and more patience than a person on a mobile in a car \u2014 so recognition error here is a floor, not an estimate."
+      "title": "Whissle conversation-flow suite: 64% of runs never completed",
+      "body": "In `flow_sim/debt_collection`, 7 of 11 sessions never produced a gradable conversation and are excluded from the score \u2014 our billing gate cut off our own simulated caller mid-call. That is a defect on our side, it is the largest single finding in that run, and the headline describes the 4 that survived.",
+      "kind": "exclusion",
+      "severity": 363.64
     },
     {
       "title": "Whissle conversation-flow suite: 55% of runs never completed",
-      "body": "6 of 11 sessions failed at the transport layer before the agent could answer, and are excluded from the score. That is an availability defect on our side, it is the largest single finding in that run, and the headline describes the 5 that survived."
+      "body": "In `flow_sim/car_rental`, 6 of 11 sessions never produced a gradable conversation and are excluded from the score \u2014 our billing gate cut off our own simulated caller mid-call. That is a defect on our side, it is the largest single finding in that run, and the headline describes the 5 that survived.",
+      "kind": "exclusion",
+      "severity": 354.55
+    },
+    {
+      "title": "Whissle conversation-flow suite: 18% of runs never completed",
+      "body": "In `flow_sim/dental_receptionist`, 2 of 11 sessions never produced a gradable conversation and are excluded from the score \u2014 the audio transport died before the agent could answer. That is a defect on our side, it is the largest single finding in that run, and the headline describes the 9 that survived.",
+      "kind": "exclusion",
+      "severity": 318.18
+    },
+    {
+      "title": "PatientAgentBench: 13% of runs never completed",
+      "body": "In `patientagentbench/pab_text_100`, 13 of 100 sessions never produced a gradable conversation and are excluded from the score \u2014 our infrastructure failed before the agent could answer. That is a defect on our side, it is the largest single finding in that run, and the headline describes the 87 that survived.",
+      "kind": "exclusion",
+      "severity": 313.0
+    },
+    {
+      "title": "Whissle conversation-flow suite: 10% of runs never completed",
+      "body": "In `flow_sim/headache_enrollment`, 1 of 10 sessions never produced a gradable conversation and are excluded from the score \u2014 the audio transport died before the agent could answer. That is a defect on our side, it is the largest single finding in that run, and the headline describes the 9 that survived.",
+      "kind": "exclusion",
+      "severity": 310.0
+    },
+    {
+      "title": "AgentClinic: we graded our own homework",
+      "body": "The graders and simulators for this run were our own models. Held constant it is a fair way to measure change over time; it is not the same as an independent evaluation, and we do not present it as one.",
+      "kind": "judge",
+      "severity": 200
+    },
+    {
+      "title": "PatientAgentBench: we graded our own homework",
+      "body": "The graders and simulators for this run were our own models. Held constant it is a fair way to measure change over time; it is not the same as an independent evaluation, and we do not present it as one.",
+      "kind": "judge",
+      "severity": 200
+    },
+    {
+      "title": "AgentClinic: simulated patient",
+      "body": "The patient is a language model following a case card. It answers questions more cooperatively, more fluently and more consistently than a person in a waiting room, so the intake task here is easier than the product's real one.",
+      "kind": "limitation",
+      "severity": 100
+    },
+    {
+      "title": "MedAgentBench: sandbox not a hospital",
+      "body": "Writes go to a FHIR sandbox that accepts resources a production EHR would reject \u2014 7 of 35 emitted writes in this run were non-conformant and still scored correct. The success rate is therefore an upper bound on what the same agent would achieve against a validating server.",
+      "kind": "limitation",
+      "severity": 100
+    },
+    {
+      "title": "Whissle conversation-flow suite: tiny n",
+      "body": "N = 11. At this size a single scenario flipping moves the headline by ten points. Every figure here is directional and is labelled PRELIMINARY for that reason.",
+      "kind": "limitation",
+      "severity": 100
+    },
+    {
+      "title": "Whissle conversation-flow suite: simulated caller",
+      "body": "The caller is a language model speaking through text-to-speech. It has cleaner prosody, no background noise and more patience than a person on a mobile in a car \u2014 so recognition error here is a floor, not an estimate.",
+      "kind": "limitation",
+      "severity": 100
     }
   ],
-  "runCount": 9
+  "runCount": 10
 }

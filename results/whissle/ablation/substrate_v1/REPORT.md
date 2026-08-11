@@ -2,7 +2,7 @@
 
 ## Abstract
 
-Whissle was evaluated on **Metadata ablation — what the cascade layer contributes** in `text` mode. The headline result is **40.0%** (N = 100) for emotion head accuracy on cases that are not the majority class.
+Whissle was evaluated on **Metadata ablation — what the cascade layer contributes** in `text` mode. The headline result is **40.0%** (N = 25 of 100 scored) for emotion head accuracy on cases that are not the majority class.
 
 The whissle-large metadata head's probability substrate — emotion probs, intent probs and the per-interim probability timeline — against pre-declared gold labels, upstream of every consumer and without the LLM.
 
@@ -10,7 +10,7 @@ The whissle-large metadata head's probability substrate — emotion probs, inten
 
 | Field | Value |
 |---|---|
-| **Emotion head accuracy on cases that are not the majority class** | **40.0%** (N = 100) |
+| **Emotion head accuracy on cases that are not the majority class** | **40.0%** (N = 25 of 100 scored) |
 <!-- honesty:allow-context -->
 | Attempted / scored / excluded | 100 / 100 / 0 (0.0%) |
 | Judge | deterministic grader (no judge model) |
@@ -52,7 +52,7 @@ The whissle-large metadata head's probability substrate — emotion probs, inten
 | Mode | `text` |
 | Dataset | metadata_ablation_v1 |
 | Dataset size | 100 |
-| Repo commit at report time | `dc810ac` |
+| Repo commit at report time | `6dd8b7a` |
 | Captured at | 2026-08-08T21:01:06.787849+00:00 |
 | Run directory | `results/whissle/ablation/substrate_v1` |
 | Corpus digest | 3d8d5831954e2a71 |
@@ -87,11 +87,11 @@ The whissle-large metadata head's probability substrate — emotion probs, inten
 
 ## 4. Results
 
-**Emotion head accuracy on cases that are not the majority class: 40.0%** (N = 100).
+**Emotion head accuracy on cases that are not the majority class: 40.0%** (N = 25 of 100 scored).
 
 | Metric | Value | 95% CI | N | Qualifiers |
 |---|---:|---|---:|---|
-| **Emotion head accuracy on cases that are not the majority class** | **40.0%** | — | 25 | N = 100 |
+| **Emotion head accuracy on cases that are not the majority class** | **40.0%** | — | 25 | N = 25 of 100 scored |
 <!-- honesty:allow-context -->
 | emotion: mutual information vs gold | 0.40 | — | 100 | bias floor 0.1731 bits at n=100; verdict: informative |
 | emotion: top-1 accuracy | 78.0% | — | 100 | majority-class baseline 75% |
@@ -196,7 +196,7 @@ These rules are executed against this document, not asserted about it. A failing
 
 | Rule | Verdict | Checked |
 |---|:---:|---|
-| `R1_headline_requires_n` | pass | headline carries N = 100 everywhere it is stated |
+| `R1_headline_requires_n` | pass | headline carries N = 25 everywhere it is stated (the value is computed over 25 of the 100 scored units) |
 | `R2_judge_independence_disclosed` | pass | not applicable — judge is independent or deterministic |
 | `R3_exclusion_rate_adjacent` | pass | not applicable — nothing was excluded |
 | `R4_preliminary_labelled` | pass | not applicable — N = 100 ≥ 30 and the run is complete |

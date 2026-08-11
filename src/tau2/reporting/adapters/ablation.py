@@ -20,8 +20,19 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any, Optional
 
-from ..model import (Baseline, BaselineSet, Exclusions, Judge, Limitation, Metric,
-                     Provenance, Reproduction, RunReport, Sampling, Table)
+from ..model import (
+    Baseline,
+    BaselineSet,
+    Exclusions,
+    Judge,
+    Limitation,
+    Metric,
+    Provenance,
+    Reproduction,
+    RunReport,
+    Sampling,
+    Table,
+)
 from .base import BuildContext, artifacts_for, dig, read_json
 
 

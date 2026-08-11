@@ -482,6 +482,51 @@ def test_R1_bare_headline_number_is_rejected(pab_with_exclusions):
     assert any(v.rule == "R1_headline_requires_n" for v in viols)
 
 
+def test_R1_a_subset_headline_states_the_N_it_was_actually_computed_on(pab_with_exclusions):
+    """A headline over a *subset* of the run must not quote the run's size.
+
+    The metadata ablation's headline is accuracy on the 25 cases that are not the
+    majority class, out of a 100-case corpus. Rendered from ``n_scored`` it read
+    "40.0% (N = 100)" — a fourfold overstatement of the sample, in our favour, which
+    is the exact failure R1 exists to catch. The N belongs to the number, not the run.
+    """
+    report, _ = _build(pab_with_exclusions)
+    assert report.n_scored == 30
+    report.headline.n = 12  # the headline is now a metric over 12 of those 30
+
+    assert honesty.headline_n(report) == 12
+    q = honesty.qualifier(report)
+    assert q.startswith("N = 12")
+    assert "N = 30" not in q  # the run's size is never offered as the claim's N
+    assert "of 30 scored" in q  # but it is still stated, so 12 cannot read as the run
+    assert honesty.required_tokens(report)[0] == "N = 12"
+
+    md = render_md.render(report)
+    assert "**4.10** (N = 12 of 30 scored" in md
+    assert not honesty.check_headline_annotations(md, report)
+
+
+def test_R1_qualifier_is_untouched_when_the_headline_covers_the_whole_sample(
+    pab_with_exclusions,
+):
+    """The subset case must not perturb the ordinary one, which is every other run."""
+    report, md = _build(pab_with_exclusions)
+    assert report.headline.n == report.n_scored == 30
+    assert honesty.qualifier(report) == (
+        "N = 30 · 10/40 excluded (25.0%) · judge not independent"
+    )
+    assert honesty.required_tokens(report)[0] == "N = 30"
+    assert not honesty.audit(report, md)
+
+
+def test_R1_a_headline_with_no_N_of_its_own_falls_back_to_the_scored_sample(mab_full):
+    report, md = _build(mab_full)
+    report.headline.n = None
+    assert honesty.headline_n(report) == report.n_scored
+    assert honesty.qualifier(report).startswith(f"N = {report.n_scored}")
+    assert not honesty.check_headline_annotations(md, report)
+
+
 def test_R1_a_report_that_never_states_its_number_is_rejected(pab_with_exclusions):
     report, _ = _build(pab_with_exclusions)
     viols = honesty.check_headline_annotations("# A report with no number\n", report)
@@ -804,6 +849,103 @@ def test_export_honest_negatives_are_generated_from_the_runs(pab_with_exclusions
     titles = " ".join(n["title"] for n in export["honestNegatives"])
     assert "never completed" in titles
     assert "graded our own homework" in titles
+
+
+def _excluded_run(name: str, n_excluded: int, n_total: int, cause: str = "voice_transport"):
+    """A minimal report whose only interesting property is its exclusion rate."""
+    from tau2.reporting.model import Exclusions, Metric, RunReport
+
+    return RunReport(
+        run_id=f"flow_sim/{name}",
+        benchmark="flow_sim",
+        benchmark_title=f"Conversation-flow suite {name}",
+        title=name,
+        mode="voice",
+        headline=Metric(
+            key="goal_completion",
+            label="Goal completion",
+            value=50.0,
+            unit="pct",
+            n=n_total - n_excluded,
+        ),
+        exclusions=Exclusions(
+            n_total=n_total,
+            n_scored=n_total - n_excluded,
+            n_excluded=n_excluded,
+            breakdown={cause: n_excluded},
+        ),
+    )
+
+
+def test_export_honest_negatives_put_the_worst_exclusion_first():
+    """The published page carried car rental's 55% and truncated debt collection's 64%.
+
+    The list was in report order, so the cap was choosing which admission to make on
+    the basis of iteration order — and it chose the milder one.
+    """
+    car = _excluded_run("car_rental", 6, 11, cause="credit_exhausted")
+    debt = _excluded_run("debt_collection", 7, 11, cause="credit_exhausted")
+    items = web_export._honest_negatives([car, debt])  # report order: the milder first
+    assert items[0]["title"].endswith("64% of runs never completed")
+    assert items[1]["title"].endswith("55% of runs never completed")
+    assert items[0]["severity"] > items[1]["severity"]
+
+
+def test_export_honest_negatives_truncation_can_only_drop_the_mildest():
+    """The invariant the cap has to satisfy: nothing dropped outranks anything kept."""
+    reports = [_excluded_run(f"run{i}", i, 100) for i in range(5, 40)]
+    kept = web_export._honest_negatives(reports)
+    assert len(kept) == web_export.HONEST_NEGATIVES_CAP  # the cap really did bite
+    assert [n["severity"] for n in kept] == sorted(
+        (n["severity"] for n in kept), reverse=True
+    )
+
+    kept_titles = {n["title"] for n in kept}
+    dropped = [
+        f"Conversation-flow suite run{i}: {i}% of runs never completed"
+        for i in range(5, 40)
+        if f"Conversation-flow suite run{i}: {i}% of runs never completed" not in kept_titles
+    ]
+    assert dropped, "the fixture must overflow the cap for this test to mean anything"
+    worst_dropped = max(int(t.split(": ")[1].split("%")[0]) for t in dropped)
+    mildest_kept = min(int(t.split(": ")[1].split("%")[0]) for t in kept_titles)
+    assert mildest_kept > worst_dropped
+
+
+def test_export_honest_negatives_rank_a_measured_defect_above_a_standing_caveat(
+    pab_with_exclusions,
+):
+    """Ordering across kinds is defined, not incidental, so the cap is predictable."""
+    report, _ = _build(pab_with_exclusions)
+    items = web_export._honest_negatives([report])
+    kinds = [n["kind"] for n in items]
+    assert kinds == sorted(kinds, key=lambda k: {"exclusion": 0, "judge": 1, "limitation": 2}[k])
+    assert [n["severity"] for n in items] == sorted(
+        (n["severity"] for n in items), reverse=True
+    )
+
+
+def test_export_honest_negatives_name_the_cause_they_actually_had():
+    """"Failed at the transport layer" was untrue of the sessions our own billing gate
+    killed, and a caveat that misnames its own cause is not a caveat."""
+    billing = web_export._honest_negatives(
+        [_excluded_run("debt_collection", 7, 11, cause="credit_exhausted")]
+    )[0]
+    assert "billing gate" in billing["body"]
+    assert "transport" not in billing["body"]
+    assert "`flow_sim/debt_collection`" in billing["body"]
+
+    voice = web_export._honest_negatives(
+        [_excluded_run("dental_receptionist", 2, 11, cause="voice_transport")]
+    )[0]
+    assert "audio transport" in voice["body"]
+    assert "billing" not in voice["body"]
+
+    mixed = _excluded_run("mixed", 4, 11, cause="credit_exhausted")
+    mixed.exclusions.breakdown = {"credit_exhausted": 3, "timeout": 1}
+    body = web_export._honest_negatives([mixed])[0]["body"]
+    assert "3 because our billing gate" in body
+    assert "1 because the session timed out" in body
 
 
 def test_export_history_comes_from_the_index(flow_run):

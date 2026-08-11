@@ -20,7 +20,6 @@ from tau2.ablation import stats as S
 from tau2.ablation import substrate as SUB
 from tau2.ablation.perception import Perception
 
-
 # ---------------------------------------------------------------------------
 # corpus
 # ---------------------------------------------------------------------------

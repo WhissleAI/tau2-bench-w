@@ -30,7 +30,6 @@ from __future__ import annotations
 import json
 import os
 import time
-from dataclasses import asdict
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Optional
@@ -41,11 +40,21 @@ import typer
 from tau2.health import diagnostics as diag
 
 from . import SCHEMA
-from .arms import (ALL_ARMS, ArmMismatch, Decoding, arm_by_key, assert_arms_differ,
-                   assert_served_model, assert_single_variable, build_messages,
-                   speech_analysis_block, user_content)
+from .arms import (
+    ArmMismatch,
+    Decoding,
+    arm_by_key,
+    assert_arms_differ,
+    assert_served_model,
+    assert_single_variable,
+    build_messages,
+    speech_analysis_block,
+    user_content,
+)
 from .audit import find_backend_root, run_audit
-from .corpus import CORPUS_PATH, Case, corpus_digest, freeze as freeze_corpus, load as load_corpus
+from .corpus import CORPUS_PATH, Case, corpus_digest
+from .corpus import freeze as freeze_corpus
+from .corpus import load as load_corpus
 from .grade import grade_asr, grade_case
 from .perception import Ear, PerceptionError
 from .stats import mcnemar_exact, summarise, wilcoxon
@@ -713,7 +722,6 @@ def regrade_cmd(run_dir: str) -> None:
     on disk, so a grader fix never requires re-running the arms — and never gets
     the chance to be quietly avoided because re-running would cost money.
     """
-    from .corpus import Case
 
     d = Path(run_dir)
     records = json.loads((d / "records.json").read_text())
