@@ -1,0 +1,251 @@
+# Support-side database for the appliance_care domain.
+#
+# Synthetic throughout. Northwind, Larkfield and Vantis are invented brands; the
+# customers, serial numbers and dates are invented. The manual_id values match
+# the filenames in manuals/ (stem, with '-' stripped).
+#
+# Dates are fixed. The frozen 'today' is 2026-03-02 (see utils.get_today).
+
+# ---------------------------------------------------------------------------
+# Customers
+# ---------------------------------------------------------------------------
+[[customers]]
+customer_id = "CUST-001"
+name = "Dana Whitfield"
+phone = "+14155550101"
+email = "dana.whitfield@example.com"
+
+[[customers]]
+customer_id = "CUST-002"
+name = "Marco Ferreira"
+phone = "+14155550102"
+email = "marco.ferreira@example.com"
+
+[[customers]]
+customer_id = "CUST-003"
+name = "Priya Raman"
+phone = "+14155550103"
+email = "priya.raman@example.com"
+
+[[customers]]
+customer_id = "CUST-004"
+name = "Tomas Lindqvist"
+phone = "+14155550104"
+email = "tomas.lindqvist@example.com"
+
+[[customers]]
+customer_id = "CUST-005"
+name = "Aisha Bello"
+phone = "+14155550105"
+email = "aisha.bello@example.com"
+
+# ---------------------------------------------------------------------------
+# Appliance models  (error_codes are per-model on purpose — E24 differs)
+# ---------------------------------------------------------------------------
+[[appliance_models]]
+model_id = "NW-2200"
+brand = "Northwind"
+category = "washing_machine"
+manual_id = "northwindnw2200washer"
+display_name = "Northwind NW-2200 Front-Load Washer"
+user_serviceable_parts = ["drain filter NW-F22", "inlet screen NW-S10", "detergent drawer", "levelling feet"]
+reset_supported = true
+drain_filter_customer_accessible = true
+
+[appliance_models.error_codes]
+E11 = "Not filling with water. Check the inlet taps are open and clean the inlet screen."
+E24 = "Drain fault - the machine cannot pump water out. Clean the drain filter, then check the drain hose."
+E45 = "Door lock fault - the door is not latched. Open and firmly re-close it."
+E52 = "Unbalanced load. Redistribute the laundry and restart."
+F03 = "Motor thermal cut-out. Service required - stop using the machine."
+F07 = "Water detected in the base tray. Service required - unplug and arrange a visit."
+
+[[appliance_models]]
+model_id = "NW-2200X"
+brand = "Northwind"
+category = "washing_machine"
+manual_id = "northwindnw2200xwasher"
+display_name = "Northwind NW-2200X Front-Load Washer"
+user_serviceable_parts = ["main drain filter NW-F22X", "secondary lint filter NW-L05", "inlet screen NW-S10", "detergent drawer", "levelling feet"]
+reset_supported = true
+drain_filter_customer_accessible = true
+
+[appliance_models.error_codes]
+E11 = "Not filling with water. Check the taps and clean the inlet screen."
+E24 = "Drain fault. Clean BOTH filters - the secondary lint filter must come out first - then check the drain hose."
+E45 = "Door lock fault. Re-close the door firmly."
+E52 = "Unbalanced load. Redistribute the laundry."
+F03 = "Motor thermal cut-out. Service required - stop using the machine."
+F07 = "Water in the base tray. Service required - unplug and arrange a visit."
+
+[[appliance_models]]
+model_id = "NW-2400"
+brand = "Northwind"
+category = "washing_machine"
+manual_id = "northwindnw2400washer"
+display_name = "Northwind NW-2400 Front-Load Washer"
+user_serviceable_parts = ["drain filter NW-F24", "inlet screen NW-S10", "detergent drawer", "levelling feet"]
+reset_supported = false
+drain_filter_customer_accessible = true
+
+[appliance_models.error_codes]
+E12 = "Not filling with water. Check the taps are open; clean the inlet screen."
+E24 = "Door lock fault - the latch has not engaged. Open the door and re-close it firmly."
+E31 = "Drain fault - water cannot be pumped out. Clean the drain filter, then check the drain hose."
+E55 = "Unbalanced load. Redistribute the laundry and restart."
+F09 = "Motor or control fault. Service required - stop using the machine."
+F14 = "Water in the base tray. Service required - stop using the machine and unplug it."
+
+[[appliance_models]]
+model_id = "LF-W70"
+brand = "Larkfield"
+category = "washing_machine"
+manual_id = "larkfieldlfw70washer"
+display_name = "Larkfield LF-W70 Top-Load Washer"
+user_serviceable_parts = ["lint trap LF-LT7", "inlet screens LF-S04", "softener cup", "levelling feet"]
+reset_supported = false
+drain_filter_customer_accessible = true
+
+[appliance_models.error_codes]
+LE = "Lid not closed or lid switch not engaged. Close the lid firmly."
+"1E" = "Not filling with water. Check both taps are open; clean the inlet screens."
+"4E" = "Not draining. Clear the lint trap inside the tub and check the drain hose."
+UE = "Unbalanced load. Redistribute the laundry."
+OE = "Overflow - too much water in the tub. Service required."
+HE = "Heater fault. Service required - stop using the machine."
+
+[[appliance_models]]
+model_id = "VT-500"
+brand = "Vantis"
+category = "washing_machine"
+manual_id = "vantisvt500washer"
+display_name = "Vantis VT-500 Compact Front-Load Washer"
+user_serviceable_parts = ["detergent drawer", "inlet screen VT-S02", "levelling feet"]
+reset_supported = false
+drain_filter_customer_accessible = false
+
+[appliance_models.error_codes]
+dE = "Door not closed. Open the door and re-close it firmly."
+"1E" = "Not filling with water. Check the tap is open and the inlet hose is not kinked."
+"5E" = "Not draining. Service required - the drain filter is internal and there is no customer procedure."
+Ub = "Unbalanced load. Redistribute the laundry."
+tE = "Temperature sensor fault. Service required - stop using the machine."
+cE = "Control fault. Service required - switch off and unplug."
+
+# ---------------------------------------------------------------------------
+# Owned appliances
+# ---------------------------------------------------------------------------
+[[owned_appliances]]
+appliance_id = "APP-001"
+customer_id = "CUST-001"
+model_id = "NW-2200"
+serial_number = "NW22-4471-8890"
+purchase_date = 2025-06-14
+install_date = 2025-06-20
+
+[[owned_appliances]]
+appliance_id = "APP-002"
+customer_id = "CUST-002"
+model_id = "NW-2200X"
+serial_number = "NW22X-5512-3307"
+purchase_date = 2025-09-02
+install_date = 2025-09-08
+
+[[owned_appliances]]
+appliance_id = "APP-003"
+customer_id = "CUST-003"
+model_id = "NW-2400"
+serial_number = "NW24-7781-2214"
+purchase_date = 2023-01-19
+install_date = 2023-01-25
+
+[[owned_appliances]]
+appliance_id = "APP-004"
+customer_id = "CUST-004"
+model_id = "LF-W70"
+serial_number = "LFW7-3390-5561"
+purchase_date = 2025-11-11
+install_date = 2025-11-15
+
+[[owned_appliances]]
+appliance_id = "APP-005"
+customer_id = "CUST-005"
+model_id = "VT-500"
+serial_number = "VT50-6604-1128"
+purchase_date = 2022-08-30
+install_date = 2022-09-03
+
+# Same model as APP-001, different warranty status. That is what lets the
+# warranty task pair differ by exactly one fact instead of also changing model.
+[[owned_appliances]]
+appliance_id = "APP-006"
+customer_id = "CUST-003"
+model_id = "NW-2200"
+serial_number = "NW22-9903-4417"
+purchase_date = 2022-11-05
+install_date = 2022-11-12
+
+# ---------------------------------------------------------------------------
+# Warranties  (today = 2026-03-02)
+# ---------------------------------------------------------------------------
+[[warranties]]
+warranty_id = "WAR-001"
+appliance_id = "APP-001"
+status = "active"
+expires_on = 2027-06-14
+covers = ["drainage", "electrical", "motor", "control board"]
+
+[[warranties]]
+warranty_id = "WAR-002"
+appliance_id = "APP-002"
+status = "active"
+expires_on = 2027-09-02
+covers = ["drainage", "electrical", "motor", "control board"]
+
+[[warranties]]
+warranty_id = "WAR-003"
+appliance_id = "APP-003"
+status = "expired"
+expires_on = 2025-01-19
+covers = ["drainage", "electrical", "motor", "control board"]
+
+[[warranties]]
+warranty_id = "WAR-004"
+appliance_id = "APP-004"
+status = "active"
+expires_on = 2027-11-11
+covers = ["drainage", "electrical", "motor"]
+
+[[warranties]]
+warranty_id = "WAR-005"
+appliance_id = "APP-005"
+status = "expired"
+expires_on = 2024-08-30
+covers = ["drainage", "electrical", "motor"]
+
+[[warranties]]
+warranty_id = "WAR-006"
+appliance_id = "APP-006"
+status = "expired"
+expires_on = 2024-11-05
+covers = ["drainage", "electrical", "motor", "control board"]
+
+# ---------------------------------------------------------------------------
+# Service history
+# ---------------------------------------------------------------------------
+[[service_history]]
+record_id = "SVC-001"
+appliance_id = "APP-003"
+date = 2024-05-12
+summary = "Replaced door latch assembly under warranty."
+
+[[service_history]]
+record_id = "SVC-002"
+appliance_id = "APP-005"
+date = 2024-02-08
+summary = "Cleared internal drain blockage; advised on detergent dosing."
+
+# support_cases, service_appointments and resolutions are intentionally absent:
+# they start empty on every task and default to []. They cannot be written here
+# as bare keys — after a [[table]] header TOML would attach them to that table.
+# The agent's writes land in them, and the primary score hashes the result.
