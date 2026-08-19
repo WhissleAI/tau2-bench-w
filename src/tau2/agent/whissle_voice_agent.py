@@ -8,7 +8,8 @@ model (OpenAI Realtime / Gemini Live). So it belongs on tau2's turn-based
 the LLM from completing tool calls).
 
 Per turn this agent:
-  1. synthesizes the user simulator's text to speech (ElevenLabs),
+  1. synthesizes the user simulator's text to speech (OpenAI by default — see
+     `agent/user_tts.py`; the agent's OWN voice is Whissle's server-side pipeline),
   2. sends that whole utterance to Whissle's real voice pipeline over LiveKit and
      lets Whissle's endpointer detect end-of-turn,
   3. drives Whissle's cascade to completion: if Whissle's LLM calls a tool it is
@@ -23,8 +24,15 @@ faithful model of how Whissle actually runs.
 
 Env (same as the text agent, + a user voice):
   WHISSLE_BASE / WHISSLE_AGENT_ID / WHISSLE_API_KEY
-  ELEVENLABS_API_KEY           (user-simulator TTS)
-  WHISSLE_USER_VOICE_ID        (an ElevenLabs voice in the account; has a default)
+  OPENAI_API_KEY               (simulated-customer TTS — the default provider)
+  WHISSLE_USER_TTS_PROVIDER    openai (default) | elevenlabs
+  OPENAI_TTS_MODEL / OPENAI_TTS_VOICE      (optional; both have defaults)
+  ELEVENLABS_API_KEY           (ONLY if WHISSLE_USER_TTS_PROVIDER=elevenlabs)
+  WHISSLE_USER_VOICE_ID        (ElevenLabs voice id, when that provider is selected)
+
+The agent's own speech recognition is Deepgram, configured server-side on the
+Whissle agent — this harness neither performs nor needs a second transcription pass,
+since the agent's transcript arrives over the LiveKit data channel.
 """
 from __future__ import annotations
 
@@ -33,11 +41,11 @@ import re
 import time
 from typing import List, Optional
 
-import requests
 from loguru import logger
 from pydantic import BaseModel, ConfigDict
 
 from tau2.agent.base_agent import HalfDuplexAgent, ValidAgentInputMessage
+from tau2.agent.user_tts import UserSimulatorTTS
 from tau2.data_model.message import (
     AssistantMessage,
     Message,
@@ -92,8 +100,9 @@ class WhissleVoiceAgent(HalfDuplexAgent[WhissleVoiceState]):
             f"<instructions>\n{AGENT_INSTRUCTION}\n</instructions>\n"
             f"<policy>\n{domain_policy}\n</policy>"
         )
-        self._el_key = os.getenv("ELEVENLABS_API_KEY") or ""
-        self._user_voice = os.getenv("WHISSLE_USER_VOICE_ID") or _DEFAULT_USER_VOICE
+        # The simulated customer's voice. OpenAI by default; ElevenLabs only if
+        # WHISSLE_USER_TTS_PROVIDER asks for it. No ElevenLabs credential is required.
+        self._tts = UserSimulatorTTS()
         # Turn-completion tuning.
         self._max_turn_s = float(os.getenv("WHISSLE_VOICE_MAX_TURN_S", "60"))
         self._quiet_gap_s = float(os.getenv("WHISSLE_VOICE_QUIET_GAP_S", "2.0"))
@@ -115,8 +124,7 @@ class WhissleVoiceAgent(HalfDuplexAgent[WhissleVoiceState]):
                     "whissle_voice: ignoring {} pre-history message(s) — starting a "
                     "fresh voice call", len(real),
                 )
-        if not self._el_key:
-            raise ValueError("ELEVENLABS_API_KEY is required (user-simulator voice)")
+        self._tts.require()
         self._bg.start()
         self.provider = WhissleRoomProvider(self.config)
         self._bg.run_coroutine(
@@ -129,22 +137,13 @@ class WhissleVoiceAgent(HalfDuplexAgent[WhissleVoiceState]):
     # -- synthesis ---------------------------------------------------------------
 
     def _synthesize(self, text: str) -> bytes:
-        """User text → PCM16 @ 16kHz via ElevenLabs (raw pcm output)."""
-        text = _MARKER_RE.sub("", text).strip()
-        if not text:
-            return b""
-        url = (
-            f"https://api.elevenlabs.io/v1/text-to-speech/{self._user_voice}"
-            f"?output_format=pcm_16000"
-        )
-        r = requests.post(
-            url,
-            headers={"xi-api-key": self._el_key, "Content-Type": "application/json"},
-            json={"text": text, "model_id": "eleven_turbo_v2_5"},
-            timeout=60,
-        )
-        r.raise_for_status()
-        return r.content  # raw PCM16LE @ 16kHz
+        """Simulated-customer text → PCM16LE mono @ 16 kHz.
+
+        Provider selection, the 24k→16k resample the OpenAI path needs, and secret
+        redaction all live in `user_tts`; this stays a thin call so the audio contract
+        has exactly one owner.
+        """
+        return self._tts.synthesize(_MARKER_RE.sub("", text or ""))
 
     # -- turn driving ------------------------------------------------------------
 
