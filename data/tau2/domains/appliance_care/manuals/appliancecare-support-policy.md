@@ -1,5 +1,10 @@
-> **SYNTHETIC SAMPLE DATA** — invented brands, models, and policies for
-> benchmark and demo use. Not a real company's support policy.
+> **SYNTHETIC BENCHMARK POLICY.** This support policy is invented for benchmark
+> use. It is NOT any manufacturer's real support, warranty, repair, or dispatch
+> policy and must never be presented as one. It names no manufacturer.
+>
+> (The appliance *manuals* alongside it are real and are extracts from official
+> manufacturer documentation — see `../MANUAL_SOURCES.md`. Only this policy is
+> invented. ApplianceCare is a benchmark, not affiliated with any manufacturer.)
 
 # ApplianceCare Support Policy
 
