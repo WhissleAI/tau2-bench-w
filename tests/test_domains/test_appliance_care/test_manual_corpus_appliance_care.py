@@ -146,8 +146,12 @@ def test_the_cross_model_conflicts_survive():
 
     What Bosch *does* do is publish E:23 in the WAT28402UC manual only. So the
     discriminator between three models whose numbers differ by one digit is the
-    PRESENCE of a code, not a disagreement about its meaning — and a customer who
-    reads out "E:23" has, by that fact alone, identified their model.
+    PRESENCE of a code, not a disagreement about its meaning.
+
+    That makes E:23 a strong hint about WHICH MANUAL documents it. It is not proof of
+    which machine the customer owns — see test_identification_appliance_care.py, which
+    pins the requirement that the appliance_id is resolved via list_owned_appliances
+    regardless of any code the customer reads out.
     """
     env = get_environment()
     # Shared across the Bosch family, same meaning — no false conflict.

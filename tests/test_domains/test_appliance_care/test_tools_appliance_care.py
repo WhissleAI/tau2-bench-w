@@ -44,8 +44,11 @@ def test_error_codes_are_model_specific(env):
     """Which codes a model documents is model-specific.
 
     Bosch publishes E:23 in the WAT28402UC manual only. The other two models in the
-    family — whose numbers differ by a single digit — do not document it, so a
-    customer reading out E:23 has identified their model by that fact alone.
+    family — whose numbers differ by a single digit — do not document it.
+
+    That makes the code a useful cross-check, NOT an identification shortcut: it is
+    still something the customer read out and could have misread. The appliance_id
+    must come from list_owned_appliances either way.
     """
     assert "leaking" in env.tools.lookup_error_code("WAT28402UC", "E:23").lower()
     assert "not a documented code" in env.tools.lookup_error_code("WAT28400UC", "E:23")

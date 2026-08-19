@@ -62,8 +62,15 @@ document number. The discriminator is verified, not invented:
 | `E:93` hot tap not on | yes | yes | yes |
 | **`E:23` water in base tub, leaking** | **no** | **no** | **yes** |
 
-A customer who reads out `E:23` has, by that fact alone, identified their model. A
-customer who reads out `E:18` has not — and an agent that guesses is wrong.
+`E:23` narrows **which manual documents that code** — it is a strong hint, and a
+useful cross-check once the model is known.
+
+It is **not** proof of the customer's model or of which machine they own. A code is
+something the customer read out: they can misread a digit, read the label of a
+different appliance, or quote a code found online. The agent must still identify the
+customer, call `list_owned_appliances`, and resolve the internal `appliance_id`
+before selecting a manual or writing anything. A code may *corroborate* that result
+or flag a contradiction worth asking about; it may never replace it.
 
 **A stop-use safety condition that is the manufacturer's own instruction.** Bosch's
 text for `E:23` is verbatim:
