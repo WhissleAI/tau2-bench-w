@@ -36,13 +36,13 @@ def _tokenize(text: str) -> List[str]:
 class ManualSection(BaseModel):
     """One `##`/`###` section of a manual, kept verbatim."""
 
-    section_id: str = Field(description="Stable id, e.g. 'nw2200#5.1'")
+    section_id: str = Field(description="Stable id, e.g. 'boschwat28400ucwasher#5.1'")
     heading: str = Field(description="The section heading as printed")
     content: str = Field(description="The section body, verbatim markdown")
 
 
 class Manual(BaseModel):
-    manual_id: str = Field(description="Stable id, e.g. 'nw2200'")
+    manual_id: str = Field(description="Stable id, e.g. 'boschwat28400ucwasher'")
     title: str = Field(description="Manual title (the H1)")
     path: str = Field(description="Source filename")
     sections: List[ManualSection] = Field(default_factory=list)
@@ -135,7 +135,7 @@ class ManualLibrary(BaseModel):
         if manual is None:
             return None
         for s in manual.sections:
-            # Accept either the full id ('nw2200#5.1') or the bare number ('5.1').
+            # Accept either the full id ('boschwat28400ucwasher#5.1') or the bare number ('5.1').
             if s.section_id == section_id or s.section_id.endswith(f"#{section_id}"):
                 return s
         return None

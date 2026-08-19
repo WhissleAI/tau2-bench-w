@@ -20,27 +20,27 @@ def _configure(env, **kwargs):
 
 
 def test_reading_a_legible_label(env):
-    u = _configure(env, model_label_legible=True, model_label_text="Northwind NW-2200")
-    assert "NW-2200" in u.read_model_label()
+    u = _configure(env, model_label_legible=True, model_label_text="Bosch WAT28400UC")
+    assert "WAT28400UC" in u.read_model_label()
 
 
 def test_reading_a_scuffed_label_does_not_reveal_the_model(env):
     u = _configure(
         env,
-        true_model_id="NW-2200X",
+        true_model_id="WAT28401UC",
         model_label_legible=False,
-        model_label_text="Northwind NW-22",
+        model_label_text="Bosch NW-22",
     )
     out = u.read_model_label()
     assert "can't make out" in out
-    assert "NW-2200X" not in out, "a scuffed label must not leak the true model"
+    assert "WAT28401UC" not in out, "a scuffed label must not leak the true model"
 
 
 def test_display_and_senses_report_hidden_state(env):
     u = _configure(
-        env, displayed_error_code="E24", burning_smell=True, grinding_noise=True
+        env, displayed_error_code="E:18", burning_smell=True, grinding_noise=True
     )
-    assert "E24" in u.read_display_code()
+    assert "E:18" in u.read_display_code()
     assert "burning" in u.smell_check()
     assert "grinding" in u.listen_to_appliance()
 
@@ -134,6 +134,6 @@ def test_configure_scenario_only_touches_what_it_is_given(env):
     u = env.user_tools
     u.configure_scenario(burning_smell=True)
     assert u.appliance.burning_smell
-    assert u.appliance.model_label_text == "Northwind NW-2200", (
+    assert u.appliance.model_label_text == "Bosch WAT28400UC", (
         "untouched fields must persist"
     )

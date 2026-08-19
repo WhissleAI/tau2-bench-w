@@ -148,13 +148,13 @@ def test_unnecessary_case_fails_a_self_service_task():
 
 
 def test_wrong_manual_fails_the_ambiguous_model_task():
-    """Citing the NW-2200 manual on an NW-2200X must fail ac_02b."""
+    """Citing the WAT28400UC manual on an WAT28401UC must fail ac_02b."""
     task = next(t for t in TASKS if t.id == "ac_02b_model_unclear")
     calls = []
     for a in task.evaluation_criteria.actions:
         args = dict(a.arguments)
         if a.name == "record_resolution":
-            args["manual_id_used"] = "northwindnw2200washer"  # the wrong model
+            args["manual_id_used"] = "boschwat28400ucwasher"  # the wrong model
         calls.append((a.name, args, a.requestor))
     messages = _run_calls(task, calls)
 

@@ -37,7 +37,7 @@ def test_identical_write_sequences_hash_identically():
             appliance_id="APP-001",
             outcome="service_scheduled",
             steps_taken=["checked the filter"],
-            manual_id_used="northwindnw2200washer",
+            manual_id_used="boschwat28400ucwasher",
         )
         hashes.append(env.get_db_hash())
     assert len(set(hashes)) == 1, f"non-deterministic writes: {hashes}"

@@ -33,11 +33,17 @@ class ApplianceCategory(str, Enum):
 class ApplianceModel(BaseModelNoExtra):
     """A model ApplianceCare supports. `manual_id` links it to the corpus."""
 
-    model_id: str = Field(description="Model identifier, e.g. NW-2200")
+    model_id: str = Field(description="Model identifier, e.g. WAT28400UC")
     brand: str = Field(description="Brand name")
     category: ApplianceCategory = Field(description="Appliance category")
     manual_id: str = Field(description="Identifier of this model's manual")
     display_name: str = Field(description="Human-readable model name")
+    manual_document_code: Optional[str] = Field(
+        default=None,
+        description="Document/revision code printed in the manufacturer's official "
+        "manual for this model (e.g. Bosch '9001002399_H', LG 'MFL68485601_06'). "
+        "Provenance for the extract in manuals/ — see MANUAL_SOURCES.md.",
+    )
     user_serviceable_parts: List[str] = Field(
         default_factory=list,
         description="Parts the manual permits a customer to service",

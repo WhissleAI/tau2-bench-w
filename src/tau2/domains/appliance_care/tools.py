@@ -94,8 +94,8 @@ class ManualToolsMixin(metaclass=ToolKitType):
         Open one manual section and read it in full, exactly as printed.
 
         Args:
-            manual_id: The manual, e.g. "northwindnw2200washer".
-            section_id: The section, e.g. "5.1" or "northwindnw2200washer#5.1".
+            manual_id: The manual, e.g. "boschwat28400ucwasher".
+            section_id: The section, e.g. "5.1" or "boschwat28400ucwasher#5.1".
 
         Returns:
             The section heading and its verbatim text, including any warning boxes.
@@ -118,8 +118,8 @@ class ManualToolsMixin(metaclass=ToolKitType):
         answered from the model's own manual — never from another model's.
 
         Args:
-            model_id: The exact model, e.g. "NW-2200".
-            code: The code shown on the display, e.g. "E24".
+            model_id: The exact model, e.g. "WAT28400UC".
+            code: The code shown on the display, e.g. "E:18".
 
         Returns:
             The meaning of the code on that model.
@@ -289,7 +289,7 @@ class ApplianceCareTools(ToolKitBase):
         Get a model's documented details: serviceable parts, error codes, reset support.
 
         Args:
-            model_id: The exact model, e.g. "NW-2200".
+            model_id: The exact model, e.g. "WAT28400UC".
 
         Returns:
             The model record.

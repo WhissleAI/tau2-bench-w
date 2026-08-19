@@ -1,169 +1,141 @@
 # ApplianceCare — real washing-machine manual source register
 
-**ApplianceCare is a benchmark. It is not affiliated with, authorised by, or endorsed by
-LG Electronics, Whirlpool Corporation, GE Appliances, or any other manufacturer.**
-Manufacturer names and model numbers appear here as factual references to publicly
-published documentation, so that benchmark tasks are grounded in real appliance
-behaviour rather than invented specifications.
+**ApplianceCare is a benchmark. It is not affiliated with, authorised by, or endorsed
+by Robert Bosch GmbH / BSH Home Appliances, LG Electronics, Miele & Cie. KG, or any
+other manufacturer.** Manufacturer names and model numbers appear here as factual
+references to publicly published documentation, so benchmark tasks are grounded in
+real appliance behaviour rather than invented specifications.
 
-The **support policy** used by this benchmark (`manuals/appliancecare-support-policy.md`)
-is a **synthetic benchmark policy**. It is not any manufacturer's real support, warranty,
-repair, or dispatch policy and must never be presented as one.
+The **support policy** (`manuals/appliancecare-support-policy.md`) is a **synthetic
+benchmark policy**. It is not any manufacturer's real support, warranty, repair, or
+dispatch policy and must never be presented as one. It names no manufacturer, and a
+test enforces that.
 
-Retrieved: **2026-08-19**. Retrieval method: direct HTTPS GET, no third-party mirrors.
-
----
-
-## Verification status
-
-Every row below was fetched from the manufacturer's own domain. Rows marked
-**VERIFIED** were downloaded, hashed, and text-extracted in this repository; the model
-family string and document code quoted are read out of the PDF itself, not from a
-product page or a search result.
-
-Rows marked **URL-ONLY** are official manufacturer URLs that could not be downloaded
-automatically (HTTP 403 bot protection). They carry no hash because no hash was
-computed — a fabricated one would be worse than none.
+Retrieved **2026-08-19**, by direct HTTPS GET from each manufacturer's own domain.
+No third-party manual site was used. Machine-readable form: `manifest.json`.
+Re-fetch and verify with `uv run python scripts/fetch_appliance_manuals.py`.
 
 ---
 
-## VERIFIED — LG Electronics
+## The final set — 5 exact models, 3 manufacturers
 
-### 1. LG `WM4000H*A` / `WM4080H*A` — front-load washer
+Every row was downloaded, SHA-256 hashed, and text-extracted in this repository. The
+model string and document code quoted below are read **out of the PDF itself**, not
+from a product page or a search result.
 
-| field | value |
-|---|---|
-| Manufacturer | LG Electronics |
-| Model family (as printed in the manual) | `WM4000H*A / WM4080H*A` |
-| Representative models | WM4000HWA, WM4000HBA, WM4080HVA |
-| Appliance type | Front-load washing machine |
-| Official product support page | https://www.lg.com/us/support/product/lg-WM4000HWA.ABWEUUS |
-| Official manual URL | https://media.us.lg.com/m/12df7154cf356724/original/WM4080_2023_Owners-Manual_Washer_Eng.pdf |
-| Manual title | Owner's Manual — Washing Machine |
-| Document code (revision) | `MFL71728908` |
-| Pages / extracted characters | 60 / 134,295 |
-| SHA-256 | `a17c4a19139d6497…` (full hash in `manifest.json`) |
-| Sections used | Safety Instructions; Operation; Maintenance; Troubleshooting |
-| Copyright | © LG Electronics. Not redistributed in this repository. |
+| # | Manufacturer | Exact model | Type | Document code | Pages | SHA-256 (first 16) |
+|---|---|---|---|---|---|---|
+| 1 | Bosch | `WAT28400UC` | front-load | `9001002399_H` | 36 | `d177a7b717a8083d` |
+| 2 | Bosch | `WAT28401UC` | front-load | `9001002426_I` | 40 | `5ee02a26e8571a72` |
+| 3 | Bosch | `WAT28402UC` | front-load | `9001427986_A` | 40 | `4b3cda1c3ddd0745` |
+| 4 | LG Electronics | `WT901CW` | top-load | `MFL68485601_06` | 76 | `7057e2ee5f6e0d2a` |
+| 5 | Miele | `WWB 020` | front-load | `M.-Nr. 10 980 030` | 80 | `0b9860d70ae18956` |
 
-### 2. LG `WM89*0H*A` — front-load washer (large capacity)
+Official URLs (full hashes in `manifest.json`):
 
-| field | value |
-|---|---|
-| Manufacturer | LG Electronics |
-| Model family (as printed in the manual) | `WM89*0H*A` |
-| Representative models | WM8900HBA, WM8900HWA |
-| Appliance type | Front-load washing machine |
-| Official product support page | https://www.lg.com/us/support/product/lg-WM3900HWA (LG US support index) |
-| Official manual URL | https://media.us.lg.com/m/5d59f3a38d45344c/original/WM8900HBA-Owners-Manual-Fnl-eng.pdf |
-| Manual title | Owner's Manual — Washing Machine |
-| Document code (revision) | `MFL71776110 Rev.00_121621` (rev dated 2021-12-16) |
-| Pages / extracted characters | 60 / 133,891 |
-| Sections used | Safety Instructions; Troubleshooting |
-| Copyright | © LG Electronics. Not redistributed in this repository. |
+1. https://media3.bosch-home.com/Documents/9001002399_H.pdf
+2. https://media3.bosch-home.com/Documents/9001002426_I.pdf
+3. https://media3.bosch-home.com/Documents/9001427986_A.pdf
+4. https://www.lg.com/us/support/products/documents/WT901CW%20Owners%20manual.pdf
+5. https://us.mieleusa.com/MieleMedia/docs/products/OpIn/manuals_pdf/Washers/WWB020_us.pdf
 
-### 3. LG `WT901CW` — top-load washer
+Product/support pages: [Bosch US](https://www.bosch-home.com/us/) ·
+[LG WT901CW](https://www.lg.com/us/support/product/lg-WT901CW) ·
+[Miele manuals](https://www.mieleusa.com/f/us/manuals-125.aspx)
 
-| field | value |
-|---|---|
-| Manufacturer | LG Electronics |
-| Model (as printed in the manual) | `WT901CW` — the only exact single-model manual in the set |
-| Appliance type | Top-load washing machine |
-| Official manual URL | https://www.lg.com/us/support/products/documents/WT901CW%20Owners%20manual.pdf |
-| Manual title | Owner's Manual — Washing Machine |
-| Document code (revision) | `MFL68485601_06` |
-| Pages / extracted characters | 76 / 200,967 |
-| Sections used | Safety Instructions; Troubleshooting; Maintenance |
-| Copyright | © LG Electronics. Not redistributed in this repository. |
+Every one of these five documents names its model on the cover. There are **no
+wildcard families in the database** — a wildcard may describe a manual family here,
+but each stored model is an exact model number.
 
 ---
 
-## URL-ONLY — Whirlpool Corporation (no hash: HTTP 403 on automated fetch)
+## Why this set — what it lets the benchmark test
 
-| # | Document | Official URL | Revision |
+**Model disambiguation, on a real discriminator.** `WAT28400UC`, `WAT28401UC` and
+`WAT28402UC` differ by a single digit, and each has its **own** manual with its own
+document number. The discriminator is verified, not invented:
+
+| Code | WAT28400UC | WAT28401UC | WAT28402UC |
 |---|---|---|---|
-| 4 | Front Load Washer Owner's Manual | https://www.whirlpool.com/content/dam/global/documents/202206/owners-manual-w11355369-revD.pdf | `W11355369 Rev D` |
-| 5 | Top Load Washer Owner's Manual | https://www.whirlpool.com/content/dam/global/documents/202306/owners-manual-w11354658-revB.pdf | `W11354658 Rev B` |
+| `E:18` pump blocked | yes | yes | yes |
+| `E:32` unbalanced (not a fault) | yes | yes | yes |
+| `E:93` hot tap not on | yes | yes | yes |
+| **`E:23` water in base tub, leaking** | **no** | **no** | **yes** |
 
-Both URLs are on `whirlpool.com` and were surfaced from Whirlpool's own domain. Automated
-`curl` returns **HTTP 403** with a browser user-agent, so the documents were not downloaded,
-not hashed, and **the exact model numbers they cover are unconfirmed**. Do not write these
-models into the benchmark database until someone downloads them manually and completes this
-row. Adding them would mean inventing model coverage, which this register exists to prevent.
+A customer who reads out `E:23` has, by that fact alone, identified their model. A
+customer who reads out `E:18` has not — and an agent that guesses is wrong.
+
+**A stop-use safety condition that is the manufacturer's own instruction.** Bosch's
+text for `E:23` is verbatim:
+
+> "Water in the base tub, appliance leaking. Turn off the water tap. Call the
+> after-sales service!"
+
+There is no customer procedure. An agent offering troubleshooting steps for `E:23`
+is contradicting the manual, not merely being unhelpful. LG's manual carries the
+matching general rule:
+
+> "If you detect a strange sound, a chemical or burning smell, or smoke coming from
+> the appliance, unplug it immediately, and contact an LG Electronics Customer
+> Information Center."
+
+**Three genuinely different diagnostic conventions**, which is why three
+manufacturers were required rather than one:
+
+- **Bosch** — numeric codes, `E:nn`
+- **LG** — letter codes, `IE` (inlet filter clogged / weak pressure), `CL` (child
+  lock, *not* a fault)
+- **Miele** — **no codes at all.** Faults are shown by indicator lights on the
+  control field; the manual's problem-solving guide is organised by symptom.
+
+So a customer quoting `E:23` on a Miele has misread the display or misidentified the
+appliance. There is no table to look it up in, and the agent must resolve that rather
+than invent a meaning or borrow one from another manufacturer.
+
+**A procedure that exists, and one that does not.** LG documents lint-filter
+cleaning ("Clean the lint filters at least every 2-3 loads"). Miele documents
+*opening the door on a blocked drain outlet* — a door release so laundry can be
+removed — but publishes **no** customer drain-filter cleaning procedure. Asking for
+one on a `WWB 020` is asking for something the manual does not contain.
 
 ---
 
 ## Rejected sources, and why
 
-| Source | Reason for rejection |
+Recorded so the same ground is not re-covered.
+
+| Source | Reason |
 |---|---|
-| GE `GTW465ASNWW` / `GTW460ASJWW` | Both official support pages resolve to the **same** PDF, and that PDF contains **no model number anywhere** — it prints a blank `Model # ______` for the owner to fill in. Fails the "manual clearly identifies the model" criterion, so it cannot ground a disambiguation task. |
-| LG `WM2077CW` | Official LG URL, HTTP 200, but the PDF is a **scanned image** — 47 pages yielding 46 characters of text. No extractable procedures. |
-| LG `WM3900H*A` | LG's own support page hosts it behind a JS download widget with no resolvable direct URL. The only direct PDFs are third-party mirrors (`manuals.plus`, `washermanual.com`, `manua.ls`, `searspartsdirect.com`), which are **excluded by policy** where the manufacturer publishes the manual. |
-| Samsung `WF45*` | Support pages are JS-rendered; no direct PDF URL is extractable. Document code `DC68-04006P-05` is visible in metadata but the file itself was not retrievable. |
+| **GE** `GTW465ASNWW`, `GTW460ASJWW`, `GFW550SSNWW` | Support pages resolve to manuals containing **no model number at all** — they print a blank `Model # ______` for the owner to fill in. `GFW550SSNWW`'s manual internally names *different* models (`GFW510SCN/SCV`). Fails "the manual clearly identifies the model", twice confirmed. |
+| **Whirlpool** `W11355369 Rev D`, `W11354658 Rev B` | Downloadable only intermittently (bot protection). When retrieved, the manual names **no model numbers** — only document codes. Fails the exact-model criterion. |
+| **Maytag** `W11566620 Rev A` | HTTP 403 Access Denied on the same Whirlpool-Corp infrastructure. |
+| **Speed Queen** (Alliance Laundry) | PDFs download cleanly, but are generic — "User's Guide for Topload Washers", no model numbers. |
+| **Samsung** `WF45*` | Support pages are JS-rendered; no direct PDF URL extractable. Document codes visible in metadata (`DC68-04006P-05`) but the files were not retrievable from an official URL. |
+| **Electrolux** | `manuals.electroluxappliances.com` unreachable (connection failure) over both HTTP and HTTPS. |
+| **LG** `WM2077CW` | Official URL, HTTP 200, but the PDF is a **scanned image** — 47 pages yielding 46 characters of text. No extractable procedures. |
+| **LG** `WM3900H*A`, `WM4000H*A`, `WM89*0H*A` | Family manuals covering several marketed models via wildcard, so no exact-model manual. `WM3900`'s direct URL exists only on third-party mirrors, which policy excludes. |
 
----
-
-## Finding: manuals are family-scoped, not per-model
-
-This materially affects benchmark design and contradicts a common assumption.
-
-Of the five documents examined, **only `WT901CW` names one exact model**. LG publishes
-wildcard families (`WM4000H*A / WM4080H*A`, `WM89*0H*A`) where one manual legitimately
-covers several marketed model numbers, and GE publishes a family manual naming **no**
-model at all.
-
-Model disambiguation therefore has two genuinely distinct correct behaviours, and the
-benchmark should test both:
-
-- **Same-manual pair** — `WM4000HWA` vs `WM4080HVA`. Different marketed models, one
-  document (`MFL71728908`). The agent must *not* demand further disambiguation before
-  answering; both resolve to the same procedures.
-- **Different-manual pair** — `WM4000HWA` vs `WM8900HWA`. Similar-looking `WM` +
-  4 digits + `H` + letter, but **different** documents (`MFL71728908` vs `MFL71776110`).
-  The agent **must** disambiguate before quoting a procedure.
-
-That pairing is the "one changed fact changes the expected behaviour" structure the
-benchmark calls for, and it is grounded in how LG actually publishes documentation.
-
----
-
-## Verified extracts used by the benchmark
-
-Only the minimum needed to ground task expectations. Quoted for verification purposes.
-
-**Stop-use safety condition** — LG `WM4000H*A / WM4080H*A`, Safety Instructions
-(`MFL71728908`), verbatim:
-
-> "If you detect a strange sound, a chemical or burning smell, or smoke coming from the
-> appliance, unplug it immediately, and contact an LG Electronics Customer Information
-> Center."
-
-This is the real basis for the burning-smell stop-use scenario. The required agent
-behaviour — stop use, unplug, escalate, do **not** continue troubleshooting — is what the
-manufacturer's own manual instructs, not a benchmark invention.
-
-**Error codes present in `MFL71728908`:** `CL`, `FE`, `IE`, `LE`, `OE`, `PE`, `PF`, `UE`,
-`dE`, `dE1`, `tE`.
-
-`OE` (drain) and `UE` (unbalanced load) ground the ordinary-troubleshooting tasks;
-`dE`/`dE1` (door) ground a door-lock scenario. Any error code used in a task must appear
-in this list or in the corresponding row's manual.
+**Finding:** US-market manufacturers (GE, Whirlpool, Maytag, Speed Queen) generally
+ship *generic family* manuals that name no model. Bosch, LG's `WT901CW`, and Miele
+name theirs. That is why the final set skews to those three — it was a selection
+constraint discovered during verification, not a preference.
 
 ---
 
 ## Storage policy
 
-Full manuals are **not** committed to this repository. They are copyrighted and this is a
-company repository.
+Full manuals are **not** committed. They are copyrighted and this is a company
+repository.
 
-- **Committed:** this register, plus `manifest.json` (URLs + SHA-256 + document codes),
-  plus the short verification extracts above.
-- **Local only:** PDFs download to `.research/manuals/`, which is git-ignored
-  (`.gitignore:241`). A retrieval script reproduces them from the official URLs.
-- **Private KB:** full manuals may be uploaded to the Whissle knowledge base — which is
-  access-controlled, not public — only after an explicit approved list.
+- **Committed:** this register, `manifest.json` (URLs, SHA-256, document codes,
+  sections used), the retrieval script, and the short approved extracts in
+  `manuals/` — each banner-marked *"APPROVED EXTRACT — NOT THE FULL MANUAL"*.
+- **Local only:** PDFs download to `.research/manuals/`, git-ignored
+  (`.gitignore:241`).
+- **Private KB:** the full manuals are prepared for upload to the Whissle knowledge
+  base, which is access-controlled rather than public. **Not uploaded** — pending an
+  explicitly approved list.
 
-Nothing in this register may be treated as a manufacturer's specification, warranty term,
-or support commitment. It records where the real documents live and what they say, so the
-benchmark can check an agent against reality instead of against invented facts.
+Nothing here may be treated as a manufacturer's specification, warranty term, or
+support commitment. It records where the real documents live and what they say, so
+the benchmark can check an agent against reality instead of against invented facts.

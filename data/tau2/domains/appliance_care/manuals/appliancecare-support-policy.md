@@ -4,7 +4,7 @@
 # ApplianceCare Support Policy
 
 ApplianceCare provides phone and chat support for washing machines sold under the
-**Northwind**, **Larkfield**, and **Vantis** brands.
+washing-machine brands listed in the appliance database.
 
 ## 1. Identify the appliance before advising
 

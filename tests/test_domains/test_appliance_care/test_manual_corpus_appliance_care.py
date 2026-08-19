@@ -30,11 +30,11 @@ CLI_KNOWLEDGE_DIR = (
 
 EXPECTED_MANUALS = {
     "appliancecare-support-policy.md",
-    "northwind-nw2200-washer.md",
-    "northwind-nw2200x-washer.md",
-    "northwind-nw2400-washer.md",
-    "larkfield-lfw70-washer.md",
-    "vantis-vt500-washer.md",
+    "bosch-wat28400uc-washer.md",
+    "bosch-wat28401uc-washer.md",
+    "bosch-wat28402uc-washer.md",
+    "lg-wt901cw-washer.md",
+    "miele-wwb020-washer.md",
 }
 
 
@@ -47,19 +47,48 @@ def test_corpus_contains_the_expected_manuals():
     assert names == EXPECTED_MANUALS
 
 
-def test_every_manual_is_labelled_synthetic():
-    """No real manufacturer content: every file says so on line 1."""
+# The corpus deliberately contains REAL manufacturer content now: benchmark tasks
+# grounded in invented specifications cannot tell you whether an agent is right.
+# What must hold instead is that every file declares what it is, that only approved
+# extracts are present (never a full manual), and that the POLICY stays synthetic —
+# a benchmark support policy must never be mistaken for a manufacturer's real one.
+
+APPROVED_BRANDS = {"bosch", "lg", "miele"}
+
+
+def test_every_manual_declares_its_provenance():
+    """A reader must be able to tell, from line 1, what a file is and is not."""
     for path in APPLIANCE_CARE_MANUALS_DIR.glob("*.md"):
-        first = path.read_text(encoding="utf-8").splitlines()[0]
-        assert "SYNTHETIC SAMPLE DATA" in first, f"{path.name} lacks the banner"
+        head = "\n".join(path.read_text(encoding="utf-8").splitlines()[:12])
+        if path.name == "appliancecare-support-policy.md":
+            assert "SYNTHETIC" in head.upper(), (
+                "the support policy must stay clearly labelled synthetic — it is a "
+                "benchmark policy, not any manufacturer's real support policy"
+            )
+        else:
+            assert "APPROVED EXTRACT" in head.upper(), f"{path.name} lacks the banner"
+            assert "NOT THE FULL MANUAL" in head.upper(), (
+                f"{path.name} must state it is an extract, not a full manual"
+            )
 
 
-def test_no_real_brand_names():
-    real_brands = [
+def test_extracts_disclaim_affiliation():
+    """Real brand names are used. Every file must disclaim endorsement."""
+    for path in APPLIANCE_CARE_MANUALS_DIR.glob("*.md"):
+        if path.name == "appliancecare-support-policy.md":
+            continue
+        text = path.read_text(encoding="utf-8").lower()
+        assert "not affiliated" in text, f"{path.name} lacks an affiliation disclaimer"
+        assert "benchmark" in text, (
+            f"{path.name} does not identify itself as a benchmark"
+        )
+
+
+def test_only_approved_manufacturers_appear():
+    """A brand nobody verified must not drift into the corpus."""
+    unapproved = [
         "samsung",
         "whirlpool",
-        "bosch",
-        "miele",
         "electrolux",
         "maytag",
         "kenmore",
@@ -72,11 +101,30 @@ def test_no_real_brand_names():
         "panasonic",
         "hisense",
         "zanussi",
+        "ge appliances",
+        # the invented brands this corpus replaced
+        "northwind",
+        "larkfield",
+        "vantis",
     ]
     for path in APPLIANCE_CARE_MANUALS_DIR.glob("*.md"):
         text = path.read_text(encoding="utf-8").lower()
-        for brand in real_brands:
-            assert brand not in text, f"{path.name} mentions {brand}"
+        for brand in unapproved:
+            assert brand not in text, f"{path.name} mentions unapproved brand {brand}"
+
+
+def test_the_support_policy_claims_no_manufacturer():
+    """The synthetic policy must not attach itself to a real manufacturer."""
+    text = (
+        (APPLIANCE_CARE_MANUALS_DIR / "appliancecare-support-policy.md")
+        .read_text(encoding="utf-8")
+        .lower()
+    )
+    for brand in APPROVED_BRANDS:
+        assert brand not in text, (
+            f"the benchmark support policy names {brand}; it must not read as that "
+            "manufacturer's real support, warranty, or dispatch policy"
+        )
 
 
 def test_every_model_maps_to_a_real_manual():
@@ -88,29 +136,58 @@ def test_every_model_maps_to_a_real_manual():
 
 
 def test_the_cross_model_conflicts_survive():
-    """The traps are the point of the corpus — assert they are still there."""
+    """The traps are the point of the corpus — assert they are still there.
+
+    The trap changed shape when the corpus moved to real manuals, and the real one
+    is stronger. The synthetic corpus used "same code, different meaning" (E24 was a
+    drain fault on one model and a door-lock fault on another). Bosch does not do
+    that: WAT28400UC, WAT28401UC and WAT28402UC genuinely share E:18/E:32/E:93 with
+    identical meanings.
+
+    What Bosch *does* do is publish E:23 in the WAT28402UC manual only. So the
+    discriminator between three models whose numbers differ by one digit is the
+    PRESENCE of a code, not a disagreement about its meaning — and a customer who
+    reads out "E:23" has, by that fact alone, identified their model.
+    """
     env = get_environment()
-    assert "Drain fault" in env.tools.lookup_error_code("NW-2200", "E24")
-    assert "Door lock fault" in env.tools.lookup_error_code("NW-2400", "E24")
-    assert "Drain fault" in env.tools.lookup_error_code("NW-2400", "E31")
-    # The VT-500 has no customer-accessible drain filter.
-    vt500 = next(m for m in env.tools.db.appliance_models if m.model_id == "VT-500")
-    assert vt500.drain_filter_customer_accessible is False
-    # Only the NW-2200 family documents a customer reset.
+    # Shared across the Bosch family, same meaning — no false conflict.
+    for model_id in ("WAT28400UC", "WAT28401UC", "WAT28402UC"):
+        assert "Pump is blocked" in env.tools.lookup_error_code(model_id, "E:18")
+
+    # E:23 is documented ONLY on the WAT28402UC, and it is a stop-use instruction.
+    e23 = env.tools.lookup_error_code("WAT28402UC", "E:23")
+    assert "leaking" in e23.lower()
+    assert "after-sales service" in e23.lower()
+    for model_id in ("WAT28400UC", "WAT28401UC"):
+        codes = next(
+            m for m in env.tools.db.appliance_models if m.model_id == model_id
+        ).error_codes
+        assert "E:23" not in codes, f"{model_id} must not document E:23"
+        assert "not a documented code" in env.tools.lookup_error_code(model_id, "E:23")
+
+    # Miele signals faults with indicator lights, not codes at all. A customer
+    # quoting any code on a WWB020 has misread it or misidentified the appliance.
+    miele_wwb020 = next(
+        m for m in env.tools.db.appliance_models if m.model_id == "WWB020"
+    )
+    assert miele_wwb020.error_codes == {}
+    assert miele_wwb020.drain_filter_customer_accessible is False
+
+    # Bosch documents a power-cycle reset; LG and Miele do not.
     resets = {m.model_id: m.reset_supported for m in env.tools.db.appliance_models}
     assert resets == {
-        "NW-2200": True,
-        "NW-2200X": True,
-        "NW-2400": False,
-        "LF-W70": False,
-        "VT-500": False,
+        "WAT28400UC": True,
+        "WAT28401UC": True,
+        "WAT28402UC": True,
+        "WT901CW": False,
+        "WWB020": False,
     }
 
 
 def test_search_finds_the_right_section_for_the_canonical_query():
     env = get_environment()
     hits = env.tools.library.search(
-        "drain filter cleaning", manual_ids=["northwindnw2200washer"]
+        "drain filter cleaning", manual_ids=["boschwat28400ucwasher"]
     )
     assert hits, "no hits for the canonical drain-filter query"
     assert "drain filter" in hits[0][0].heading.lower()

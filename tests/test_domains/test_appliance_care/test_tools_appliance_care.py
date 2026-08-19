@@ -25,36 +25,53 @@ def test_customer_lookup_by_phone_and_name(env):
 
 def test_identify_model_is_ambiguous_on_a_partial_number(env):
     """A partial number must return several candidates, forcing a follow-up."""
-    candidates = env.tools.identify_model(brand="Northwind", partial_model="2200")
-    assert {c.model_id for c in candidates} == {"NW-2200", "NW-2200X"}
+    candidates = env.tools.identify_model(brand="Bosch", partial_model="2840")
+    # All three Bosch models share the WAT2840 stem and differ only in the last
+    # digit. This is the real ambiguity the disambiguation tasks exercise.
+    assert {c.model_id for c in candidates} == {
+        "WAT28400UC",
+        "WAT28401UC",
+        "WAT28402UC",
+    }
 
 
 def test_identify_model_by_serial_is_exact(env):
-    candidates = env.tools.identify_model(serial_number="NW22X-5512-3307")
-    assert [c.model_id for c in candidates] == ["NW-2200X"]
+    candidates = env.tools.identify_model(serial_number="FD9512-005512-3307")
+    assert [c.model_id for c in candidates] == ["WAT28401UC"]
 
 
 def test_error_codes_are_model_specific(env):
-    """The same code means different things on different models."""
-    assert "Drain fault" in env.tools.lookup_error_code("NW-2200", "E24")
-    assert "Door lock fault" in env.tools.lookup_error_code("NW-2400", "E24")
+    """Which codes a model documents is model-specific.
+
+    Bosch publishes E:23 in the WAT28402UC manual only. The other two models in the
+    family — whose numbers differ by a single digit — do not document it, so a
+    customer reading out E:23 has identified their model by that fact alone.
+    """
+    assert "leaking" in env.tools.lookup_error_code("WAT28402UC", "E:23").lower()
+    assert "not a documented code" in env.tools.lookup_error_code("WAT28400UC", "E:23")
+    assert "not a documented code" in env.tools.lookup_error_code("WAT28401UC", "E:23")
+    # Miele signals with indicator lights; it has no code table to look up in.
+    assert "not a documented code" in env.tools.lookup_error_code("WWB020", "E:23")
 
 
 def test_unknown_error_code_lists_the_documented_ones(env):
-    out = env.tools.lookup_error_code("NW-2200", "E99")
+    out = env.tools.lookup_error_code("WAT28400UC", "E99")
     assert "not a documented code" in out
-    assert "E24" in out
+    assert "E:18" in out
 
 
 def test_open_manual_section_returns_verbatim_text(env):
-    text = env.tools.open_manual_section("northwindnw2200washer", "5.1")
-    assert "drain filter" in text.lower()
-    assert "WARNING" in text, "warning boxes must survive into the section text"
+    text = env.tools.open_manual_section("boschwat28400ucwasher", "2")
+    assert "drain hose" in text.lower()
+    text23 = env.tools.open_manual_section(
+        "boschwat28402uc_washer".replace("_", ""), "1"
+    )
+    assert "WARNING" in text23, "warning boxes must survive into the section text"
 
 
 def test_open_manual_section_rejects_a_bad_section(env):
     with pytest.raises(ValueError, match="Unknown section"):
-        env.tools.open_manual_section("northwindnw2200washer", "99.9")
+        env.tools.open_manual_section("boschwat28400ucwasher", "99.9")
 
 
 def test_warranty_and_history_lookup(env):
@@ -77,7 +94,7 @@ def test_case_appointment_and_resolution_round_trip(env):
         appliance_id="APP-001",
         outcome="service_scheduled",
         steps_taken=["checked filter"],
-        manual_id_used="northwindnw2200washer",
+        manual_id_used="boschwat28400ucwasher",
     )
     assert res.outcome.value == "service_scheduled"
 

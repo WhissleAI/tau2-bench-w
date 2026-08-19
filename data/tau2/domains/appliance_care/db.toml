@@ -1,13 +1,25 @@
 # Support-side database for the appliance_care domain.
 #
-# Synthetic throughout. Northwind, Larkfield and Vantis are invented brands; the
-# customers, serial numbers and dates are invented. The manual_id values match
-# the filenames in manuals/ (stem, with '-' stripped).
+# MODELS AND ERROR CODES ARE REAL. Every model_id below is an exact washing-machine
+# model that exists, and every error code and procedure is taken from that model's
+# OFFICIAL manufacturer manual. See MANUAL_SOURCES.md for URLs, document codes and
+# SHA-256 hashes, and manifest.json for the machine-readable register.
+#
+# ApplianceCare is a BENCHMARK. It is not affiliated with, authorised by, or endorsed
+# by Robert Bosch GmbH / BSH, LG Electronics, or Miele. Manufacturer and model names
+# appear as factual references to published documentation.
+#
+# CUSTOMERS, SERIAL NUMBERS, PURCHASE DATES, WARRANTIES AND SERVICE RECORDS ARE
+# SYNTHETIC. No real person or real appliance registration is represented. The
+# support policy in manuals/appliancecare-support-policy.md is likewise a synthetic
+# benchmark policy and is NOT any manufacturer's real support or warranty policy.
+#
+# manual_id values match the filenames in manuals/ (stem, with '-' stripped).
 #
 # Dates are fixed. The frozen 'today' is 2026-03-02 (see utils.get_today).
 
 # ---------------------------------------------------------------------------
-# Customers
+# Customers  (synthetic)
 # ---------------------------------------------------------------------------
 [[customers]]
 customer_id = "CUST-001"
@@ -40,138 +52,143 @@ phone = "+14155550105"
 email = "aisha.bello@example.com"
 
 # ---------------------------------------------------------------------------
-# Appliance models  (error_codes are per-model on purpose — E24 differs)
+# Appliance models — REAL models, REAL error codes from the official manuals.
+#
+# The three Bosch models are the disambiguation cluster. They differ by ONE digit,
+# each has its OWN manual (different document numbers), and E:23 appears in the
+# WAT28402UC manual but NOT in the WAT28400UC or WAT28401UC manuals. That is a
+# verified difference, not an invented one, and it is what makes "the customer read
+# out E:23" sufficient to identify the model.
 # ---------------------------------------------------------------------------
 [[appliance_models]]
-model_id = "NW-2200"
-brand = "Northwind"
+model_id = "WAT28400UC"
+brand = "Bosch"
 category = "washing_machine"
-manual_id = "northwindnw2200washer"
-display_name = "Northwind NW-2200 Front-Load Washer"
-user_serviceable_parts = ["drain filter NW-F22", "inlet screen NW-S10", "detergent drawer", "levelling feet"]
+manual_id = "boschwat28400ucwasher"
+display_name = "Bosch 300 Series WAT28400UC Front-Load Washer"
+manual_document_code = "9001002399_H"
+user_serviceable_parts = ["drain hose", "drain pipe", "detergent dispenser drawer", "levelling feet"]
 reset_supported = true
 drain_filter_customer_accessible = true
 
+# Verbatim meanings from Bosch document 9001002399_H.
 [appliance_models.error_codes]
-E11 = "Not filling with water. Check the inlet taps are open and clean the inlet screen."
-E24 = "Drain fault - the machine cannot pump water out. Clean the drain filter, then check the drain hose."
-E45 = "Door lock fault - the door is not latched. Open and firmly re-close it."
-E52 = "Unbalanced load. Redistribute the laundry and restart."
-F03 = "Motor thermal cut-out. Service required - stop using the machine."
-F07 = "Water detected in the base tray. Service required - unplug and arrange a visit."
+"E:18" = "Pump is blocked (obstructed). Clean the washer drain hose and/or the drain pipe. Also shown when too much detergent or non-HE detergent was used."
+"E:32" = "Not a fault - the unbalanced load detection system has interrupted the spin cycle because the laundry is unevenly distributed. Distribute small and large items of laundry evenly in the drum."
+"E:93" = "Hot water tap not turned on, or the hot water supply hose is kinked or pinched closed. Turn on the hot water tap and straighten the hose."
 
 [[appliance_models]]
-model_id = "NW-2200X"
-brand = "Northwind"
+model_id = "WAT28401UC"
+brand = "Bosch"
 category = "washing_machine"
-manual_id = "northwindnw2200xwasher"
-display_name = "Northwind NW-2200X Front-Load Washer"
-user_serviceable_parts = ["main drain filter NW-F22X", "secondary lint filter NW-L05", "inlet screen NW-S10", "detergent drawer", "levelling feet"]
+manual_id = "boschwat28401ucwasher"
+display_name = "Bosch 300 Series WAT28401UC Front-Load Washer"
+manual_document_code = "9001002426_I"
+user_serviceable_parts = ["drain hose", "drain pipe", "detergent dispenser drawer", "levelling feet"]
 reset_supported = true
 drain_filter_customer_accessible = true
 
+# Same three codes as WAT28400UC. E:23 is absent here - that absence is the point.
 [appliance_models.error_codes]
-E11 = "Not filling with water. Check the taps and clean the inlet screen."
-E24 = "Drain fault. Clean BOTH filters - the secondary lint filter must come out first - then check the drain hose."
-E45 = "Door lock fault. Re-close the door firmly."
-E52 = "Unbalanced load. Redistribute the laundry."
-F03 = "Motor thermal cut-out. Service required - stop using the machine."
-F07 = "Water in the base tray. Service required - unplug and arrange a visit."
+"E:18" = "Pump is blocked (obstructed). Clean the washer drain hose and/or the drain pipe. Also shown when too much detergent or non-HE detergent was used."
+"E:32" = "Not a fault - the unbalanced load detection system has interrupted the spin cycle because the laundry is unevenly distributed. Distribute small and large items of laundry evenly in the drum."
+"E:93" = "Hot water tap not turned on, or the hot water supply hose is kinked or pinched closed. Turn on the hot water tap and straighten the hose."
 
 [[appliance_models]]
-model_id = "NW-2400"
-brand = "Northwind"
+model_id = "WAT28402UC"
+brand = "Bosch"
 category = "washing_machine"
-manual_id = "northwindnw2400washer"
-display_name = "Northwind NW-2400 Front-Load Washer"
-user_serviceable_parts = ["drain filter NW-F24", "inlet screen NW-S10", "detergent drawer", "levelling feet"]
+manual_id = "boschwat28402ucwasher"
+display_name = "Bosch 300 Series WAT28402UC Front-Load Washer"
+manual_document_code = "9001427986_A"
+user_serviceable_parts = ["drain hose", "drain pipe", "detergent dispenser drawer", "levelling feet"]
+reset_supported = true
+drain_filter_customer_accessible = true
+
+# E:23 is the STOP-USE code and appears only in this model's manual. Its text is
+# the manufacturer's own instruction: turn off the water and call service.
+[appliance_models.error_codes]
+"E:18" = "Pump is blocked (obstructed). Clean the washer drain hose and/or the drain pipe. Also shown when too much detergent or non-HE detergent was used."
+"E:23" = "Water in the base tub, appliance leaking. Turn off the water tap. Call the after-sales service."
+"E:32" = "Not a fault - the unbalanced load detection system has interrupted the spin cycle because the laundry is unevenly distributed. Distribute small and large items of laundry evenly in the drum."
+"E:93" = "Hot water tap not turned on, or the hot water supply hose is kinked or pinched closed. Turn on the hot water tap and straighten the hose."
+
+[[appliance_models]]
+model_id = "WT901CW"
+brand = "LG"
+category = "washing_machine"
+manual_id = "lgwt901cwwasher"
+display_name = "LG WT901CW Top-Load Washer"
+manual_document_code = "MFL68485601_06"
+user_serviceable_parts = ["lint filters", "water inlet filters", "fabric softener cup", "levelling feet"]
 reset_supported = false
 drain_filter_customer_accessible = true
 
+# From LG document MFL68485601_06. LG uses letter codes, not Bosch-style E:nn -
+# a deliberate cross-manufacturer difference the benchmark exercises.
 [appliance_models.error_codes]
-E12 = "Not filling with water. Check the taps are open; clean the inlet screen."
-E24 = "Door lock fault - the latch has not engaged. Open the door and re-close it firmly."
-E31 = "Drain fault - water cannot be pumped out. Clean the drain filter, then check the drain hose."
-E55 = "Unbalanced load. Redistribute the laundry and restart."
-F09 = "Motor or control fault. Service required - stop using the machine."
-F14 = "Water in the base tray. Service required - stop using the machine and unplug it."
+IE = "Displayed when the water pressure is weak or an inlet filter is clogged with dirt. Clean the inlet filter."
+CL = "Not a fault - Child Lock is active. Press and hold the SOIL LEVEL button for five seconds to deactivate it."
 
 [[appliance_models]]
-model_id = "LF-W70"
-brand = "Larkfield"
+model_id = "WWB020"
+brand = "Miele"
 category = "washing_machine"
-manual_id = "larkfieldlfw70washer"
-display_name = "Larkfield LF-W70 Top-Load Washer"
-user_serviceable_parts = ["lint trap LF-LT7", "inlet screens LF-S04", "softener cup", "levelling feet"]
+manual_id = "mielewwb020washer"
+display_name = "Miele WWB 020 Front-Load Washer"
+manual_document_code = "M.-Nr. 10 980 030"
+user_serviceable_parts = ["water inlet filter", "detergent drawer", "levelling feet"]
 reset_supported = false
-drain_filter_customer_accessible = true
-
-[appliance_models.error_codes]
-LE = "Lid not closed or lid switch not engaged. Close the lid firmly."
-"1E" = "Not filling with water. Check both taps are open; clean the inlet screens."
-"4E" = "Not draining. Clear the lint trap inside the tub and check the drain hose."
-UE = "Unbalanced load. Redistribute the laundry."
-OE = "Overflow - too much water in the tub. Service required."
-HE = "Heater fault. Service required - stop using the machine."
-
-[[appliance_models]]
-model_id = "VT-500"
-brand = "Vantis"
-category = "washing_machine"
-manual_id = "vantisvt500washer"
-display_name = "Vantis VT-500 Compact Front-Load Washer"
-user_serviceable_parts = ["detergent drawer", "inlet screen VT-S02", "levelling feet"]
-reset_supported = false
+# Miele's manual documents opening the door on a blocked drain outlet, but does not
+# publish a customer drain-filter cleaning procedure of the Bosch/LG kind.
 drain_filter_customer_accessible = false
 
+# Miele WWB 020 signals faults with INDICATOR LIGHTS on the control field, not with
+# numeric or letter error codes. This table is intentionally empty: a customer
+# quoting an "E:" or letter code on this model has misread it or misidentified the
+# appliance, and the agent must not invent a meaning for it.
 [appliance_models.error_codes]
-dE = "Door not closed. Open the door and re-close it firmly."
-"1E" = "Not filling with water. Check the tap is open and the inlet hose is not kinked."
-"5E" = "Not draining. Service required - the drain filter is internal and there is no customer procedure."
-Ub = "Unbalanced load. Redistribute the laundry."
-tE = "Temperature sensor fault. Service required - stop using the machine."
-cE = "Control fault. Service required - switch off and unplug."
 
 # ---------------------------------------------------------------------------
-# Owned appliances
+# Owned appliances  (synthetic ownership of real models)
 # ---------------------------------------------------------------------------
 [[owned_appliances]]
 appliance_id = "APP-001"
 customer_id = "CUST-001"
-model_id = "NW-2200"
-serial_number = "NW22-4471-8890"
+model_id = "WAT28400UC"
+serial_number = "FD9401-004471-8890"
 purchase_date = 2025-06-14
 install_date = 2025-06-20
 
 [[owned_appliances]]
 appliance_id = "APP-002"
 customer_id = "CUST-002"
-model_id = "NW-2200X"
-serial_number = "NW22X-5512-3307"
+model_id = "WAT28401UC"
+serial_number = "FD9512-005512-3307"
 purchase_date = 2025-09-02
 install_date = 2025-09-08
 
 [[owned_appliances]]
 appliance_id = "APP-003"
 customer_id = "CUST-003"
-model_id = "NW-2400"
-serial_number = "NW24-7781-2214"
+model_id = "WAT28402UC"
+serial_number = "FD9207-007781-2214"
 purchase_date = 2023-01-19
 install_date = 2023-01-25
 
 [[owned_appliances]]
 appliance_id = "APP-004"
 customer_id = "CUST-004"
-model_id = "LF-W70"
-serial_number = "LFW7-3390-5561"
+model_id = "WT901CW"
+serial_number = "511KWRT3390556"
 purchase_date = 2025-11-11
 install_date = 2025-11-15
 
 [[owned_appliances]]
 appliance_id = "APP-005"
 customer_id = "CUST-005"
-model_id = "VT-500"
-serial_number = "VT50-6604-1128"
+model_id = "WWB020"
+serial_number = "66041128-WWB"
 purchase_date = 2022-08-30
 install_date = 2022-09-03
 
@@ -180,13 +197,13 @@ install_date = 2022-09-03
 [[owned_appliances]]
 appliance_id = "APP-006"
 customer_id = "CUST-003"
-model_id = "NW-2200"
-serial_number = "NW22-9903-4417"
+model_id = "WAT28400UC"
+serial_number = "FD9110-009903-4417"
 purchase_date = 2022-11-05
 install_date = 2022-11-12
 
 # ---------------------------------------------------------------------------
-# Warranties  (today = 2026-03-02)
+# Warranties  (synthetic; today = 2026-03-02)
 # ---------------------------------------------------------------------------
 [[warranties]]
 warranty_id = "WAR-001"
@@ -231,19 +248,19 @@ expires_on = 2024-11-05
 covers = ["drainage", "electrical", "motor", "control board"]
 
 # ---------------------------------------------------------------------------
-# Service history
+# Service history  (synthetic)
 # ---------------------------------------------------------------------------
 [[service_history]]
 record_id = "SVC-001"
 appliance_id = "APP-003"
 date = 2024-05-12
-summary = "Replaced door latch assembly under warranty."
+summary = "Replaced door interlock assembly under warranty."
 
 [[service_history]]
 record_id = "SVC-002"
 appliance_id = "APP-005"
 date = 2024-02-08
-summary = "Cleared internal drain blockage; advised on detergent dosing."
+summary = "Cleared blocked drain outlet; advised on detergent dosing."
 
 # support_cases, service_appointments and resolutions are intentionally absent:
 # they start empty on every task and default to []. They cannot be written here
