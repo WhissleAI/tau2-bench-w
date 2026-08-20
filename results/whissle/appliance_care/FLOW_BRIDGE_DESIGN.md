@@ -97,26 +97,26 @@ needs the create/attach approval this work stops before.
 Real voice is reported to load attached custom HTTP tools; that is the path the
 voice smoke test would exercise.
 
-### 2. The transition judge still has no working provider
+### 2. Platform LLM inference is down (previously mis-scoped as a judge fault)
 
-Re-confirmed on 2026-08-21, unchanged from 2026-08-20:
+Calling this a *transition judge* problem was wrong. `POST /api/models/chat` — no
+agent, no flow, no judge — returns the identical error, on both the default and
+`--fast` engine paths:
 
 ```
-transition_check greet_to_understand → not_satisfied
-reason: "judge error: all LLM providers failed; last error: Gemini API (429): ... "Your prepayment ..."
+Gemini API (429): "Your prepayment credits are depleted. Please go to AI Studio
+at https://ai.studio/projects to manage your project and billing."
+status: RESOURCE_EXHAUSTED
 ```
 
-Every `llm_condition` transition fails closed, so the flow cannot leave `greet`
-and the customer hears "Sorry — I couldn't work that out just now."
+The failing credential is a Google AI Studio (Gemini API) project on the Whissle
+side. It is **not** this workspace's balance, which is positive with payments
+enabled. Non-LLM APIs are healthy. Smallest fix: restore credit on that key.
 
-**Can the configured OpenAI provider be used instead?** Not from anywhere reachable
-here. The judge provider is not exposed on the agent record (which carries only
-`stt_provider`, `tts_provider`, `avatar_provider`), not in the flow's `settings`
-block (`on_guard_trip`, `fallback_state`, `max_visits_per_state`,
-`max_transitions_per_call`), and not in the CLI, where `models` states that "the
-platform picks the engine — the model/provider is never exposed." Redirecting the
-judge to OpenAI is therefore a **backend or org-credential change**, not a
-live-agent edit. No flow-performance claim can be made until it works.
+Full diagnostic, including what the error does *not* prove and what remains
+unknown: `LLM_PROVIDER_DIAGNOSTIC.md`.
+
+No flow-performance claim is possible until inference returns.
 
 ## Sanitisation
 

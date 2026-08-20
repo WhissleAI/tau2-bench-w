@@ -5,46 +5,54 @@ backend; neither has been filed.
 
 ---
 
-## Ticket A — Flow transition judge has no working LLM provider
+## Ticket A — Platform LLM inference failing: Gemini prepaid credit exhausted
 
-**Type:** Bug · **Priority:** Blocker for any flow evaluation
+**Type:** Bug · **Priority:** Blocker — all LLM-backed features
 
 **Summary**
-Every `llm_condition` transition fails closed because all configured judge
-providers fail. Agents with a saved flow cannot leave their first state.
+Every platform LLM call fails. The provider chain ends on a Gemini API key whose
+prepaid credit is exhausted. This is NOT specific to the flow transition judge —
+that is only where it was first noticed.
 
-**Evidence** (agent `26071d02-…`, reproduced 2026-08-20 and again 2026-08-21)
+**Evidence** (reproduced 2026-08-20 and 2026-08-21)
 
-`POST /api/agents/{id}/chat/turn` → `flow.steps`:
+`POST /api/models/chat` — no agent, no flow, no judge — returns HTTP 502:
 
-```json
-{"seq": 1, "kind": "state_enter", "state": "greet", "state_type": "conversation"}
-{"seq": 2, "kind": "tools_gated", "state": "greet", "allowed": ["search_knowledge_base"]}
-{"seq": 3, "kind": "transition_check", "from": "greet",
- "transition_id": "greet_to_understand", "transition_kind": "llm_condition",
- "condition": "The caller has stated their reason for calling.",
- "result": "not_satisfied",
- "reason": "judge error: all LLM providers failed; last error: Gemini API (429): \"Your prepayment ...\""}
+```
+LLM call failed: all LLM providers failed; last error: Gemini API (429):
+{"error": {"code": 429,
+  "message": "Your prepayment credits are depleted. Please go to AI Studio at
+              https://ai.studio/projects to manage your project and billing.",
+  "status": "RESOURCE_EXHAUSTED"}}
 ```
 
-User-visible reply: `"Sorry — I couldn't work that out just now. Could you try again?"`
+The `--fast` engine path fails identically. Flow agents surface the same error as
+`transition_check → not_satisfied`, so every `llm_condition` fails closed and an
+agent cannot leave its start state; the caller just hears "Sorry — I couldn't work
+that out just now."
 
-**Impact**
-Any agent whose flow uses `llm_condition` transitions is stuck in its start state.
-The failure is silent from the caller's perspective — it presents as the agent
-being confused, not as an outage.
+**Scope**
+- Non-LLM APIs are healthy (`GET /api/models/voices` → 11 voices).
+- Auth, agent/flow/KB reads all work.
+- The reporting workspace's balance is positive with payments enabled, so this is
+  not customer credit. Failed LLM calls are not billed.
+- Note: `chat/turn` still debited $0.01 per turn while returning only the fallback
+  message. Flagged for confirmation, not asserted as a bug.
 
-**Notes**
-- The 429 text refers to prepayment, i.e. exhausted credit rather than a rate spike.
-- The judge provider is not configurable from outside: it is absent from the agent
-  record (`stt_provider` / `tts_provider` / `avatar_provider` only), from the flow
-  `settings` block, and from the CLI. Pointing the judge at the org's OpenAI
-  provider appears to require a backend change.
+**Fix**
+Restore credit on the Gemini API key the backend uses (AI Studio → project → billing).
 
-**Asks**
-1. Restore a working judge provider.
-2. Consider falling back to another configured provider before failing closed, and
-   surfacing judge-provider failure as an error rather than `not_satisfied`.
+**Two follow-ups worth considering**
+1. Surface **all** provider failures, not just the last. "all LLM providers failed;
+   last error: …" makes it impossible to tell from outside whether the fallback
+   chain is real or whether only one provider is genuinely wired up.
+2. The flow trace's `reason` field is truncated server-side at 133 characters,
+   which cut this message immediately before the words identifying the cause and
+   sent the first investigation down the wrong path.
+
+**Cannot be determined externally**
+Which account owns the Gemini project, which other providers are configured, and
+why each failed. None of that is exposed on any reachable endpoint.
 
 ---
 
