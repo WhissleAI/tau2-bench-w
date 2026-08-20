@@ -867,6 +867,16 @@ class Orchestrator(BaseOrchestrator[AgentT, UserT, Message]):
                 self.done = True
                 self.termination_reason = TerminationReason.AGENT_STOP
 
+            # Agents whose tools execute outside tau2 (a Whissle saved flow calling
+            # the tool bridge) have ALREADY mutated the environment by the time the
+            # reply arrives. They hand those executed calls over here instead of
+            # returning them as tool_calls, which would run them a second time.
+            # The pairs are spliced in ahead of the reply so the trajectory reads
+            # in the order things actually happened.
+            drain = getattr(self.agent, "drain_trajectory_records", None)
+            if drain is not None:
+                self.trajectory.extend(drain())
+
             self.trajectory.append(agent_msg)
             self.message = agent_msg
             self.from_role = Role.AGENT

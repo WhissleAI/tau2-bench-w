@@ -22,6 +22,18 @@ from tau2.domains.airline.environment import get_tasks as airline_domain_get_tas
 from tau2.domains.airline.environment import (
     get_tasks_split as airline_domain_get_tasks_split,
 )
+from tau2.domains.appliance_care.environment import (
+    get_environment as appliance_care_domain_get_environment,
+)
+from tau2.domains.appliance_care.environment import (
+    get_environment_no_manuals as appliance_care_domain_get_environment_no_manuals,
+)
+from tau2.domains.appliance_care.environment import (
+    get_tasks as appliance_care_domain_get_tasks,
+)
+from tau2.domains.appliance_care.environment import (
+    get_tasks_split as appliance_care_domain_get_tasks_split,
+)
 from tau2.domains.banking_knowledge.environment import (
     get_environment as knowledge_domain_get_environment,
 )
@@ -296,11 +308,24 @@ try:
     # Agent factories
     registry.register_agent_factory(create_llm_agent, "llm_agent")
     from tau2.agent.whissle_agent import create_whissle_agent
+
     registry.register_agent_factory(create_whissle_agent, "whissle")
     # Half-duplex VOICE agent: drives Whissle's real STT→LLM→TTS cascade turn by
     # turn over LiveKit (the faithful model — NOT the tick full-duplex path).
     from tau2.agent.whissle_voice_agent import create_whissle_voice_agent
+
     registry.register_agent_factory(create_whissle_voice_agent, "whissle_voice")
+    # SAVED-FLOW agents: these drive the endpoints that run the real FlowRuntime,
+    # with tools reaching tau2 through the authenticated tool bridge rather than
+    # per-request injection (which the flow runtime drops).
+    from tau2.agent.whissle_flow_agent import create_whissle_flow_agent
+
+    registry.register_agent_factory(create_whissle_flow_agent, "whissle_flow")
+    from tau2.agent.whissle_flow_agent import create_whissle_flow_voice_agent
+
+    registry.register_agent_factory(
+        create_whissle_flow_voice_agent, "whissle_flow_voice"
+    )
     registry.register_agent_factory(
         create_llm_gt_agent,
         "llm_agent_gt",
@@ -352,6 +377,23 @@ try:
 
     registry.register_domain(knowledge_domain_get_environment, "banking_knowledge")
     registry.register_tasks(knowledge_domain_get_tasks, "banking_knowledge")
+
+    # Home-appliance support. `appliance_care-no-manuals` is the ablation that
+    # withholds the manual tools, to show how much of the score they carry.
+    registry.register_domain(appliance_care_domain_get_environment, "appliance_care")
+    registry.register_domain(
+        appliance_care_domain_get_environment_no_manuals, "appliance_care-no-manuals"
+    )
+    registry.register_tasks(
+        appliance_care_domain_get_tasks,
+        "appliance_care",
+        get_task_splits=appliance_care_domain_get_tasks_split,
+    )
+    registry.register_tasks(
+        appliance_care_domain_get_tasks,
+        "appliance_care-no-manuals",
+        get_task_splits=appliance_care_domain_get_tasks_split,
+    )
 
     logger.debug(
         f"Default components registered successfully. Registry info: {json.dumps(registry.get_info().model_dump(), indent=2)}"

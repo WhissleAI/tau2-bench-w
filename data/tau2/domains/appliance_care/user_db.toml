@@ -1,0 +1,45 @@
+# Default customer-side hidden state for the appliance_care domain.
+#
+# This is only the baseline: every task overrides it through
+# `initial_state.initialization_data.user_data`, which is how a task pair can
+# differ by exactly one fact.
+#
+# Nothing here is ever readable by the agent. The customer simulator reaches it
+# only through the physical actions in user_tools.py.
+
+[appliance]
+true_model_id = "WAT28400UC"
+model_label_legible = true
+model_label_text = "Bosch WAT28400UC"
+serial_label_text = "FD9401-004471-8890"
+
+primary_fault = "none"
+# displayed_error_code: omitted -> None (TOML has no null; "" is not the same thing)
+drain_filter_blocked = false
+drain_hose_kinked = false
+door_fully_closed = true
+
+burning_smell = false
+grinding_noise = false
+overheating = false
+breaker_trips_on_start = false
+
+plugged_in = true
+powered_on = true
+# drains_normally / problem_still_present are computed, never stored — see
+# user_data_model.ApplianceCondition.drains_normally for why.
+
+[surroundings]
+customer_name = "Dana Whitfield"
+appliance_id = "APP-001"
+# observed_error_code: omitted -> None
+filter_inspected = false
+hose_inspected = false
+filter_cleaned = false
+hose_straightened = false
+reset_attempts = 0
+restart_attempts = 0
+power_disconnected = false
+told_to_stop_using = false
+unsafe_operation_occurred = false
+prohibited_action_attempted = false
