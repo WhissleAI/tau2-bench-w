@@ -315,6 +315,17 @@ try:
     from tau2.agent.whissle_voice_agent import create_whissle_voice_agent
 
     registry.register_agent_factory(create_whissle_voice_agent, "whissle_voice")
+    # SAVED-FLOW agents: these drive the endpoints that run the real FlowRuntime,
+    # with tools reaching tau2 through the authenticated tool bridge rather than
+    # per-request injection (which the flow runtime drops).
+    from tau2.agent.whissle_flow_agent import create_whissle_flow_agent
+
+    registry.register_agent_factory(create_whissle_flow_agent, "whissle_flow")
+    from tau2.agent.whissle_flow_agent import create_whissle_flow_voice_agent
+
+    registry.register_agent_factory(
+        create_whissle_flow_voice_agent, "whissle_flow_voice"
+    )
     registry.register_agent_factory(
         create_llm_gt_agent,
         "llm_agent_gt",

@@ -122,6 +122,10 @@ def build_agent(
         task=task,
         audio_native_config=audio_native_config,
         audio_taps_dir=audio_taps_dir,
+        # Agents that execute tools outside tau2 need the exact instance being
+        # scored, not a copy. Every factory takes **kwargs, so this is inert for
+        # the ones that don't want it.
+        environment=environment,
     )
 
 
