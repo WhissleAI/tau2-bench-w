@@ -1,0 +1,76 @@
+{
+  "test": "Does the Whissle TEXT flow runner resolve custom HTTP tools?",
+  "date": "2026-08-21",
+  "verdict": "NO \u2014 custom tools are not resolved on the text channel.",
+  "agent": {
+    "id": "2968df73-585f-4168-b6d7-7ce9ac4927ad",
+    "name": "ZZ TEMP custom-tool test (delete me)",
+    "note": "throwaway; the real ApplianceCare agent was not touched",
+    "tools_attached": [
+      "lookup_error_code"
+    ],
+    "knowledge_documents": 0
+  },
+  "flow": {
+    "states": [
+      {
+        "id": "lookup",
+        "allowed_tools": [
+          "lookup_error_code"
+        ]
+      },
+      {
+        "id": "end",
+        "type": "end"
+      }
+    ],
+    "note": "set LIVE on the temp agent; the CLI tool validator ACCEPTED it, confirming lookup_error_code was visible as an agent tool at write time"
+  },
+  "conversation_id": "db493f1c-53d0-4ef9-9746-59e7cd73330e",
+  "observed": {
+    "current_state": "lookup",
+    "steps": [
+      {
+        "seq": 0,
+        "turn": 1,
+        "kind": "state_enter",
+        "state": "lookup",
+        "state_type": "conversation"
+      },
+      {
+        "seq": 1,
+        "turn": 1,
+        "kind": "tools_gated",
+        "state": "lookup",
+        "allowed": [
+          "search_knowledge_base"
+        ]
+      },
+      {
+        "seq": 2,
+        "turn": 1,
+        "kind": "transition_check",
+        "from": "lookup",
+        "transition_id": "lookup_to_end",
+        "transition_kind": "llm_condition",
+        "result": "not_satisfied",
+        "condition": "The error code meaning has been stated to the user.",
+        "reason": "Agent explicitly stated unable to look up error code meaning."
+      }
+    ],
+    "tools_used": [
+      "search_knowledge_base"
+    ],
+    "reply": "I don't have information about that error code in my system. I'm unable to look up the specific meaning of E:23 for model WAT28402UC. \n\nDo you have the appliance manual handy, or would you like me to help you contact support for that model?"
+  },
+  "bridge": {
+    "public_url": "<redacted \u2014 ephemeral tunnel, now closed>",
+    "requests_received": 0,
+    "tunnel_requests_for_lookup_error_code": 0
+  },
+  "three_checks": {
+    "1_tool_appeared_in_tools_gated": false,
+    "2_whissle_sent_http_request_to_bridge": false,
+    "3_tau_recorded_exactly_one_execution": "n/a \u2014 zero executions"
+  }
+}
