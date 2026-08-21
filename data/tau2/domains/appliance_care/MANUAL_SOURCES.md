@@ -99,11 +99,24 @@ So a customer quoting `E:23` on a Miele has misread the display or misidentified
 appliance. There is no table to look it up in, and the agent must resolve that rather
 than invent a meaning or borrow one from another manufacturer.
 
-**A procedure that exists, and one that does not.** LG documents lint-filter
-cleaning ("Clean the lint filters at least every 2-3 loads"). Miele documents
-*opening the door on a blocked drain outlet* — a door release so laundry can be
-removed — but publishes **no** customer drain-filter cleaning procedure. Asking for
-one on a `WWB 020` is asking for something the manual does not contain.
+**A procedure that is easy to find, and one that is not.** LG documents lint-filter
+cleaning under an obvious heading ("Clean the lint filters at least every 2-3
+loads"). Miele documents a full customer drain-filter and drain-pump clean — unscrew
+the filter, drain into a bowl, clear foreign objects, check the impellers turn, refit
+and tighten — but files it under *"Opening the door in the event of a blocked drain
+outlet and/or power outage"*, with no "filter" in the heading. Its problem-solving
+table routes there from "still water in the drum and the machine is unable to drain".
+
+An agent that searches for an obviously-titled filter procedure on a `WWB 020`,
+finds none, and concludes the model has no serviceable filter has misread the
+manual — and will book a chargeable visit for a ten-minute job. That is what
+`ac_05b_procedure_filed_oddly` tests.
+
+> **Correction, 2026-08-21.** This section previously claimed the WWB 020 publishes
+> *no* customer drain-filter procedure. That was wrong. It was checked against the
+> official PDF (`M.-Nr. 10 980 030`, SHA-256 prefix `0b9860d70ae18956`, the same
+> document recorded above), which documents the procedure in full at pages 51–52.
+> The database fact, the manual extract, the task, and its tests were all corrected.
 
 ---
 

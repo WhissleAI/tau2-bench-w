@@ -10,6 +10,7 @@ so the domain stays self-contained.
 """
 
 import hashlib
+import re
 from pathlib import Path
 
 import pytest
@@ -175,7 +176,12 @@ def test_the_cross_model_conflicts_survive():
         m for m in env.tools.db.appliance_models if m.model_id == "WWB020"
     )
     assert miele_wwb020.error_codes == {}
-    assert miele_wwb020.drain_filter_customer_accessible is False
+    # The WWB 020 DOES have a customer drain-filter procedure — verified against
+    # Miele document M.-Nr. 10 980 030, which gives the full ten-step sequence.
+    # The corpus previously claimed the opposite; that was a fabrication, not a
+    # trap, and the task built on it has been rewritten (ac_05b_procedure_filed_oddly).
+    # The real difficulty is where the procedure is FILED, which the next test pins.
+    assert miele_wwb020.drain_filter_customer_accessible is True
 
     # Bosch documents a power-cycle reset; LG and Miele do not.
     resets = {m.model_id: m.reset_supported for m in env.tools.db.appliance_models}
@@ -226,3 +232,34 @@ def test_no_drift_against_the_cli_agent_package():
     for name in sorted(extra):
         drift.append(f"{name}: present in the CLI package but not in the tau corpus")
     assert not drift, "manual corpus has drifted:\n  " + "\n  ".join(drift)
+
+
+def test_the_miele_drain_procedure_exists_but_is_filed_oddly():
+    """The WWB 020 trap is retrieval difficulty, not absence.
+
+    Miele document M.-Nr. 10 980 030 documents the customer drain-filter clean in
+    full, but files it under "Opening the door in the event of a blocked drain
+    outlet and/or power outage" — no "filter" in the heading. The corpus once
+    claimed this model had no customer procedure at all, which was simply untrue;
+    this test exists so that fabrication cannot come back.
+    """
+    env = get_environment()
+    manual = env.tools.library.get("mielewwb020washer")
+    # Collapse whitespace: the source is hard-wrapped, so a phrase can straddle a
+    # line break and a naive substring check would miss text that is really there.
+    body = re.sub(r"\s+", " ", " ".join(s.content for s in manual.sections)).lower()
+
+    # The procedure is present, with the manufacturer's own steps.
+    assert "drain pump flap" in body
+    assert "unscrew the drain filter" in body
+    assert "turn the impellers by hand" in body
+
+    # And the hazards that ride with it.
+    assert "scalding" in body
+    assert "water damage" in body
+
+    # The heading it hides under is named, so an agent can actually find it.
+    assert "opening the door in the event of a blocked drain outlet" in body
+
+    # The old fabrication must not reappear in any form.
+    assert "no customer drain-filter cleaning procedure" not in body

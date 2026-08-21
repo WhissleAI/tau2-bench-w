@@ -42,17 +42,47 @@ manual's "Problem solving guide" is organised by *symptom*, not by code:
 
 ## 2. Customer-serviceable items
 
-The manual documents cleaning the **water inlet filter**, the detergent drawer, and
-levelling the machine.
+The manual documents cleaning the **water inlet filter**, the detergent drawer,
+levelling the machine, and **cleaning the drain filter and drain pump**.
 
-**There is no customer drain-filter cleaning procedure of the Bosch or LG kind.**
-The manual covers *"Opening the door in the event of a blocked drain outlet and/or
-power outage"* — that is a door-release procedure so laundry can be removed, **not**
-a drain-cleaning procedure and not a repair.
+### 2.1 Cleaning the drain filter
 
-An agent asked to talk a customer through "cleaning the drain filter" on a WWB 020
-is being asked for a procedure this manual does not contain. The correct answer is
-to say so and offer the supported path, not to adapt another model's steps.
+This model **does** have a customer drain-filter procedure, but it is not filed
+under a heading with "filter" in it. It appears under
+*"Opening the door in the event of a blocked drain outlet and/or power outage"*.
+The problem-solving table routes you there: against *"There is still water in the
+drum and the machine is unable to drain"* the documented solution is
+*"Clean the drain filter and the drain pump as described in 'Opening the door in
+the event of a blocked drain outlet and/or power outage'."*
+
+An agent that searches only for an obviously-titled filter procedure, finds none,
+and tells the customer this model has no serviceable filter has misread the manual.
+
+The documented steps:
+
+1. Turn off the washing machine.
+2. Open the **drain pump flap**.
+3. Remove the drain filter, **though not completely**.
+4. Place a suitable container under the flap, e.g. a bowl or dish.
+5. Slowly unscrew the drain filter to let the water out. Tighten it back up again
+   if you need to interrupt the flow of water.
+6. Once the flow of water stops, remove the drain filter completely.
+7. Clean the drain filter thoroughly.
+8. Remove any foreign objects (e.g. buttons, coins) and clean the interior. Turn
+   the impellers by hand to check that they rotate freely.
+9. Replace the drain filter correctly and tighten it securely.
+10. Close the drain pump flap.
+
+**Warnings the manual attaches to this procedure, which must be passed on:**
+
+- **Risk of scalding due to hot suds.** Escaping suds will be hot if laundry has
+  been washed at high temperatures. Carefully allow all suds to drain off.
+- **Risk of water damage.** The drain filter must be securely tightened, or water
+  can leak during use.
+
+Opening the door itself, after draining, uses a screwdriver to unlock it, and the
+manual warns that reaching into a rotating drum may cause injury — always make sure
+the drum is stationary first.
 
 ---
 
