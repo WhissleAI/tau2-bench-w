@@ -8,6 +8,8 @@ backend; neither has been filed.
 ## Ticket A — Platform LLM inference failing: Gemini prepaid credit exhausted
 
 **Type:** Bug · **Priority:** Blocker — all LLM-backed features
+**Status: RESOLVED 2026-08-21** by a credit top-up on the backend's Gemini key.
+File only if the two follow-ups below are wanted; the outage itself is closed.
 
 **Summary**
 Every platform LLM call fails. The provider chain ends on a Gemini API key whose
