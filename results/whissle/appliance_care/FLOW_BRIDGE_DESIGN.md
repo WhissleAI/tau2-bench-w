@@ -1,6 +1,19 @@
 # ApplianceCare — connecting the saved Whissle flow to tau2 scoring
 
-**Date:** 2026-08-21 · **Status:** implemented and tested locally; nothing published.
+> **Scope, added 2026-08-24.** Everything in this document is about the
+> **saved-flow / product-integration** path. It is **not** about the standard
+> benchmark, which needs none of it.
+>
+> The standard text benchmark runs over `POST /api/bench/agent-turn` with the
+> `whissle` agent: tau2 sends its own tool schemas and domain policy on every
+> request, Whissle acts purely as the brain and returns `tool_calls`, and
+> `Orchestrator._execute_tool_calls` runs them against the tau2 environment that
+> is then hashed for scoring. No flow, no custom HTTP tools, no bridge. That path
+> works and is unaffected by anything below.
+>
+> The bridge, the `whissle_flow` adapter, and the custom-tool work exist to measure
+> something the standard path deliberately cannot: the agent **as deployed**, with
+> its own prompt, its saved flow, and its attached tools.
 
 ## Correction to the previous note
 

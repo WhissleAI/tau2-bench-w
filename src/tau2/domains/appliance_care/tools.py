@@ -162,6 +162,39 @@ class ApplianceCareTools(ToolKitBase):
                 return a
         return None
 
+    def _appliance_id_error(self, appliance_id: str) -> str:
+        """Say what was wrong AND how to recover.
+
+        Agents reliably reach for whatever identifier the customer read aloud —
+        the model number off the rating label, or the serial. Neither is the
+        record id. A bare "not found" leaves nothing to act on, so this names
+        what was supplied and points at the tool that resolves it.
+        """
+        given = (appliance_id or "").strip()
+        looks_like_model = any(
+            m.model_id.upper() == given.upper() for m in self.db.appliance_models
+        )
+        looks_like_serial = any(
+            a.serial_number.upper() == given.upper() for a in self.db.owned_appliances
+        )
+        if looks_like_model:
+            what = (
+                f"'{given}' is a MODEL number, not an appliance record id. A model "
+                "says what kind of machine it is; it cannot say which customer's "
+                "machine this is, and several customers may own the same model."
+            )
+        elif looks_like_serial:
+            what = f"'{given}' is a SERIAL number, not an appliance record id."
+        else:
+            what = f"No appliance found with id '{given}'."
+        return (
+            f"{what} An appliance_id looks like 'APP-001' and comes from the "
+            "support database: find the customer with get_customer_by_phone or "
+            "get_customer_by_name, then call list_owned_appliances to get their "
+            "appliance_id. Anything the customer reads off the machine is "
+            "reported input, not a record id."
+        )
+
     def _get_case(self, case_id: str) -> Optional[SupportCase]:
         for c in self.db.support_cases:
             if c.case_id == case_id:
@@ -227,14 +260,16 @@ class ApplianceCareTools(ToolKitBase):
         Get the registered details of one machine.
 
         Args:
-            appliance_id: The machine.
+            appliance_id: The machine's record id, e.g. 'APP-001'. Get it from
+                list_owned_appliances - NOT the model or serial number the
+                customer reads off the label.
 
         Returns:
             Its record, including model and serial number.
         """
         appliance = self._get_appliance(appliance_id)
         if appliance is None:
-            raise ValueError(f"No appliance found with id {appliance_id}")
+            raise ValueError(self._appliance_id_error(appliance_id))
         return appliance
 
     @is_tool(ToolType.READ)
@@ -307,11 +342,17 @@ class ApplianceCareTools(ToolKitBase):
         Check warranty coverage for a machine.
 
         Args:
-            appliance_id: The machine.
+            appliance_id: The machine's record id, e.g. 'APP-001'. Get it from
+                list_owned_appliances - NOT the model or serial number the
+                customer reads off the label.
 
         Returns:
             Its warranty record, including whether it is still active.
         """
+        # Check the id first: "no warranty record" for an id that was never an
+        # appliance sends the agent hunting for a coverage problem it does not have.
+        if self._get_appliance(appliance_id) is None:
+            raise ValueError(self._appliance_id_error(appliance_id))
         for w in self.db.warranties:
             if w.appliance_id == appliance_id:
                 return w
@@ -323,7 +364,9 @@ class ApplianceCareTools(ToolKitBase):
         List past service visits for a machine.
 
         Args:
-            appliance_id: The machine.
+            appliance_id: The machine's record id, e.g. 'APP-001'. Get it from
+                list_owned_appliances - NOT the model or serial number the
+                customer reads off the label.
 
         Returns:
             Its service records, oldest first.
@@ -347,7 +390,9 @@ class ApplianceCareTools(ToolKitBase):
         right severity.
 
         Args:
-            appliance_id: The machine.
+            appliance_id: The machine's record id, e.g. 'APP-001'. Get it from
+                list_owned_appliances - NOT the model or serial number the
+                customer reads off the label.
             category: Fault category, e.g. "drainage" or "electrical".
             summary: Short description of the problem.
 
@@ -355,7 +400,7 @@ class ApplianceCareTools(ToolKitBase):
             The created case.
         """
         if self._get_appliance(appliance_id) is None:
-            raise ValueError(f"No appliance found with id {appliance_id}")
+            raise ValueError(self._appliance_id_error(appliance_id))
         case = SupportCase(
             case_id=self.id_generator.next("CASE"),
             appliance_id=appliance_id,
@@ -378,14 +423,16 @@ class ApplianceCareTools(ToolKitBase):
         'safety'.
 
         Args:
-            appliance_id: The machine.
+            appliance_id: The machine's record id, e.g. 'APP-001'. Get it from
+                list_owned_appliances - NOT the model or serial number the
+                customer reads off the label.
             reason: What the customer reported.
 
         Returns:
             The created safety case.
         """
         if self._get_appliance(appliance_id) is None:
-            raise ValueError(f"No appliance found with id {appliance_id}")
+            raise ValueError(self._appliance_id_error(appliance_id))
         case = SupportCase(
             case_id=self.id_generator.next("CASE"),
             appliance_id=appliance_id,
@@ -451,7 +498,9 @@ class ApplianceCareTools(ToolKitBase):
         Record how the contact ended. Do this once, at the end.
 
         Args:
-            appliance_id: The machine.
+            appliance_id: The machine's record id, e.g. 'APP-001'. Get it from
+                list_owned_appliances - NOT the model or serial number the
+                customer reads off the label.
             outcome: One of "resolved_self_service", "service_scheduled",
                 "escalated_safety", "unresolved".
             steps_taken: What the customer was guided through.
@@ -461,7 +510,7 @@ class ApplianceCareTools(ToolKitBase):
             The recorded resolution.
         """
         if self._get_appliance(appliance_id) is None:
-            raise ValueError(f"No appliance found with id {appliance_id}")
+            raise ValueError(self._appliance_id_error(appliance_id))
         try:
             oc = ResolutionOutcome(outcome.strip().lower())
         except ValueError:

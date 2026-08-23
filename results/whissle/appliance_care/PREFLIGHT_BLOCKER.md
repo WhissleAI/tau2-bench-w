@@ -1,5 +1,11 @@
 # ApplianceCare — flow-integration preflight: BLOCKED
 
+> **Scope note, added 2026-08-24.** "BLOCKED" here means the **saved-flow /
+> product-integration** path was blocked, not the benchmark. The standard text
+> benchmark runs over `/api/bench/agent-turn` and needs neither the flow nor
+> custom HTTP tools. Blocker 2 (LLM inference) was resolved on 2026-08-21.
+> See `FLOW_BRIDGE_DESIGN.md` for the architecture split.
+
 **Date:** 2026-08-20
 **Agent:** ApplianceCare Support (`26071d02-bb4f-45b2-98c4-8fa1cf0c0330`)
 **Outcome:** the corrected flow was **not published** and **neither approved smoke test was run.**

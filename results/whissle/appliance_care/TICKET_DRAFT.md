@@ -60,7 +60,7 @@ why each failed. None of that is exposed on any reachable endpoint.
 
 ## Ticket B — A custom HTTP tool attached to an agent was not exposed to that agent's flow on the text channel
 
-**Type:** Question / possible bug · **Priority:** Blocks text-channel tool evaluation
+**Type:** Question / possible bug · **Priority:** Blocks saved-flow / product-integration testing only
 **Status:** not filed. One reproduction, described below.
 
 ### Summary (written by hand — the raw evidence is in `evidence/`)
@@ -84,11 +84,23 @@ configurations. Only one tool was tested and only once. We have not inspected th
 backend, so we are not naming a cause or a code path — establishing why is the
 purpose of this ticket, not its premise.
 
-### Why it matters to us
+### Why it matters to us — and what it does NOT affect
 
-The benchmark supplies its 16 domain tools to an agent as custom HTTP tools. If they
-are not exposed to the flow on the text channel, a text run measures an agent with
-no tools, which is not a result worth reporting. The voice channel is untested.
+**Scope: this blocks testing the saved Whissle flow end to end. It does not block
+the standard benchmark.**
+
+The standard text benchmark does not use custom HTTP tools or the saved flow at
+all. It runs over `POST /api/bench/agent-turn`: the benchmark sends its own tool
+schemas and policy on each request, Whissle acts purely as the brain and returns
+`tool_calls`, and the benchmark executes those against its own database and scores
+the result. Whissle's own prompt, flow, and attached tools are deliberately bypassed
+on that path. It is unaffected by this ticket and can run today.
+
+What this ticket blocks is the *other* thing we want to measure: the agent as it is
+actually deployed — its saved flow, its own prompt, its attached tools. That is the
+product-integration path, and it needs custom HTTP tools to reach the flow.
+
+The voice channel is untested either way.
 
 ### Request
 
@@ -109,6 +121,8 @@ difference is what we most need to know.
    a request.
 
 ### Reproduction result — raw
+
+_Benchmark version v4. Observed on the saved-flow path only._
 
 Agent configuration at test time, read back from the API:
 

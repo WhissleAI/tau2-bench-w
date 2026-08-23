@@ -16,6 +16,28 @@ APPLIANCE_CARE_POLICY_PATH = APPLIANCE_CARE_DATA_DIR / "policy.md"
 APPLIANCE_CARE_MANUALS_DIR = APPLIANCE_CARE_DATA_DIR / "manuals"
 APPLIANCE_CARE_TASK_SET_PATH = APPLIANCE_CARE_DATA_DIR / "tasks.json"
 
+# ---------------------------------------------------------------------------
+# Benchmark version
+# ---------------------------------------------------------------------------
+# Bumped whenever a change could move a score: the manual corpus, the task set,
+# the database, the policy, or the TOOL DESCRIPTIONS. Tool descriptions count
+# because they are part of the prompt every agent sees — clarifying one changes
+# what the agent is being asked, so a run before and a run after are not
+# measuring quite the same thing.
+#
+# Scores are comparable ONLY between runs carrying the same version. When
+# reporting a number, report the version beside it.
+#
+#   v1  2026-08-19  invented brands (Northwind / Larkfield / Vantis).
+#   v2  2026-08-20  real Bosch, LG and Miele manual extracts replace v1.
+#   v3  2026-08-21  ac_05b corrected: the Miele WWB 020 does document a customer
+#                   drain-filter clean, so the task no longer rewards booking an
+#                   engineer for it.
+#   v4  2026-08-24  appliance_id contract stated in the tool descriptions and in
+#                   the lookup errors (model number and serial named as such,
+#                   recovery path given). No task, database or manual changed.
+APPLIANCE_CARE_VERSION = "v4"
+
 
 def get_now() -> datetime:
     """The simulated 'now'. Frozen — see the module docstring."""
