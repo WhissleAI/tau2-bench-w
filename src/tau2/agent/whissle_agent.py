@@ -12,6 +12,7 @@ Env:
   WHISSLE_API_KEY   a wsk_ key for that org
   WHISSLE_MODEL     optional real model override (else the agent's configured model)
 """
+
 import json
 import os
 import time
@@ -53,13 +54,17 @@ class WhissleState(BaseModel):
 class WhissleAgent(HalfDuplexAgent[WhissleState]):
     def __init__(self, tools: List[Tool], domain_policy: str):
         super().__init__(tools=tools, domain_policy=domain_policy)
-        self.base = (os.getenv("WHISSLE_BASE") or "https://aws-gateway-backend.whissle.ai/bot").rstrip("/")
+        self.base = (
+            os.getenv("WHISSLE_BASE") or "https://aws-gateway-backend.whissle.ai/bot"
+        ).rstrip("/")
         self.agent_id = os.getenv("WHISSLE_AGENT_ID")
         self.api_key = os.getenv("WHISSLE_API_KEY")
         self.model = os.getenv("WHISSLE_MODEL") or None
         if not self.agent_id or not self.api_key:
             raise ValueError("WHISSLE_AGENT_ID and WHISSLE_API_KEY are required")
         self._tools = [self._to_anthropic(t) for t in tools]
+        # Every distinct model the endpoint reported serving, in order first seen.
+        self.served_models: List[str] = []
         self._system = (
             f"<instructions>\n{AGENT_INSTRUCTION}\n</instructions>\n"
             f"<policy>\n{domain_policy}\n</policy>"
@@ -72,10 +77,13 @@ class WhissleAgent(HalfDuplexAgent[WhissleState]):
         return {
             "name": fn["name"],
             "description": fn.get("description", ""),
-            "input_schema": fn.get("parameters") or {"type": "object", "properties": {}},
+            "input_schema": fn.get("parameters")
+            or {"type": "object", "properties": {}},
         }
 
-    def get_init_state(self, message_history: Optional[list[Message]] = None) -> WhissleState:
+    def get_init_state(
+        self, message_history: Optional[list[Message]] = None
+    ) -> WhissleState:
         st = WhissleState(messages=[])
         for m in message_history or []:
             self._append_incoming(st, m)
@@ -88,23 +96,54 @@ class WhissleAgent(HalfDuplexAgent[WhissleState]):
         elif isinstance(message, UserMessage):
             st.messages.append({"role": "user", "content": message.content or ""})
         elif isinstance(message, ToolMessage):
-            st.messages.append({
-                "role": "user",
-                "content": [{"type": "tool_result", "tool_use_id": message.id, "content": message.content or ""}],
-            })
+            st.messages.append(
+                {
+                    "role": "user",
+                    "content": [
+                        {
+                            "type": "tool_result",
+                            "tool_use_id": message.id,
+                            "content": message.content or "",
+                        }
+                    ],
+                }
+            )
         elif isinstance(message, AssistantMessage):
             blocks = []
             if message.content:
                 blocks.append({"type": "text", "text": message.content})
             for tc in message.tool_calls or []:
-                blocks.append({"type": "tool_use", "id": tc.id, "name": tc.name, "input": tc.arguments})
-            st.messages.append({"role": "assistant", "content": blocks or (message.content or "")})
+                blocks.append(
+                    {
+                        "type": "tool_use",
+                        "id": tc.id,
+                        "name": tc.name,
+                        "input": tc.arguments,
+                    }
+                )
+            st.messages.append(
+                {"role": "assistant", "content": blocks or (message.content or "")}
+            )
 
     def generate_next_message(
         self, message: ValidAgentInputMessage, state: WhissleState
     ) -> tuple[AssistantMessage, WhissleState]:
         self._append_incoming(state, message)
         resp = self._turn(state.messages)
+        # Provenance. tau2 stamps run-level `agent_info.llm` from the --agent-llm
+        # flag, which this agent never uses: the platform picks the model. A run
+        # was reported as gpt-4.1 while Whissle had actually served
+        # claude-haiku-4-5. Record what the endpoint says it used, per response,
+        # so the transcript carries the truth even if the run header does not.
+        served = resp.get("model")
+        if served and served not in self.served_models:
+            self.served_models.append(served)
+            logger.info("whissle served model: {}", served)
+        provenance = {
+            "served_model": served,
+            "stop_reason": resp.get("stop_reason"),
+            "endpoint": "/api/bench/agent-turn",
+        }
         blocks = resp.get("content") or []
         tool_calls = resp.get("tool_calls") or []
         text = (resp.get("reply") or "").strip()
@@ -115,17 +154,34 @@ class WhissleAgent(HalfDuplexAgent[WhissleState]):
             am = AssistantMessage(
                 role="assistant",
                 content=None,
+                usage=resp.get("usage"),
+                raw_data=provenance,
                 tool_calls=[
-                    ToolCall(id=tc["id"], name=tc["name"], arguments=tc.get("arguments") or {}, requestor="assistant")
+                    ToolCall(
+                        id=tc["id"],
+                        name=tc["name"],
+                        arguments=tc.get("arguments") or {},
+                        requestor="assistant",
+                    )
                     for tc in tool_calls
                 ],
             )
         else:
-            am = AssistantMessage(role="assistant", content=text or "I'm sorry, could you rephrase that?")
+            am = AssistantMessage(
+                role="assistant",
+                content=text or "I'm sorry, could you rephrase that?",
+                usage=resp.get("usage"),
+                raw_data=provenance,
+            )
         return am, state
 
     def _turn(self, messages: list) -> dict:
-        body = {"agent_id": self.agent_id, "messages": messages, "tools": self._tools, "system": self._system}
+        body = {
+            "agent_id": self.agent_id,
+            "messages": messages,
+            "tools": self._tools,
+            "system": self._system,
+        }
         if self.model:
             body["model"] = self.model
         last = "unknown"
@@ -133,7 +189,10 @@ class WhissleAgent(HalfDuplexAgent[WhissleState]):
             try:
                 r = requests.post(
                     f"{self.base}/api/bench/agent-turn",
-                    headers={"Authorization": f"Bearer {self.api_key}", "Content-Type": "application/json"},
+                    headers={
+                        "Authorization": f"Bearer {self.api_key}",
+                        "Content-Type": "application/json",
+                    },
                     data=json.dumps(body),
                     timeout=120,
                 )
