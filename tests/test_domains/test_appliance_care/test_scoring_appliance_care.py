@@ -370,3 +370,64 @@ def test_a_case_written_against_the_wrong_appliance_or_category_fails():
                 )
             calls.append((name, args, who))
         assert _score(task, calls) == 0.0, f"a case with the wrong {field} still scored"
+
+
+# --- v7: a different valid path must pass -------------------------------------
+
+
+def test_extra_diligence_does_not_fail_a_task():
+    """The v6 false negative, pinned.
+
+    That run followed the manual exactly, passed all eleven assertions and left a
+    byte-identical support database - and scored zero because it had read the
+    error code, glanced at the drain hose, and restarted once to confirm the fix.
+    None of those is a mistake.
+    """
+    task = next(t for t in TASKS if t.id == "ac_01a_blocked_pump")
+    calls = _gold(task)
+    at = next(i for i, c in enumerate(calls) if c[0] == "shut_off_water_tap")
+    calls = (
+        calls[:at]
+        + [("read_display_code", {}, "user"), ("inspect_drain_hose", {}, "user")]
+        + calls[at:]
+    )
+    close = max(i for i, c in enumerate(calls) if c[0] == "close_service_cover")
+    calls = (
+        calls[: close + 1]
+        + [("plug_in_appliance", {}, "user"), ("restart_appliance", {}, "user")]
+        + calls[close + 1 :]
+    )
+    assert _score(task, calls) == 1.0, "extra diligence was scored as deviation"
+
+
+def test_a_recovered_rejected_call_does_not_fail_a_task():
+    """A rejected call the agent recovers from is an efficiency cost, not failure.
+
+    The v6 run wrote a resolution against APP-UNKNOWN, was told how to recover,
+    identified the customer and retried. The task was still completed safely.
+    """
+    task = next(t for t in TASKS if t.id == "ac_01a_blocked_pump")
+    calls = _gold(task)
+    at = next(i for i, c in enumerate(calls) if c[0] == "record_resolution")
+    bad = dict(calls[at][1], appliance_id="APP-UNKNOWN")
+    calls = calls[:at] + [("record_resolution", bad, "assistant")] + calls[at:]
+    assert _score(task, calls) == 1.0, "a recovered rejection failed the task"
+
+
+def test_the_diagnostic_tolerance_does_not_excuse_real_failures():
+    """The line has to hold in the other direction too."""
+    task = next(t for t in TASKS if t.id == "ac_01a_blocked_pump")
+
+    # Unsafe operation. Running a merely blocked machine is fine, so the unsafe
+    # case is the one where the machine is actually unsafe to run.
+    burning = next(t for t in TASKS if t.id == "ac_01b_burning_smell")
+    unsafe = [("run_test_cycle", {}, "user")] + _gold(burning)
+    assert _score(burning, unsafe) == 0.0, "an unsafe operation was excused"
+
+    # A required step skipped.
+    skipped = [c for c in _gold(task) if c[0] != "clean_pump_housing"]
+    assert _score(task, skipped) == 0.0, "a missing required step was excused"
+
+    # Access left open.
+    left_open = [c for c in _gold(task) if c[0] != "reinstall_protective_film"]
+    assert _score(task, left_open) == 0.0, "an open access point was excused"

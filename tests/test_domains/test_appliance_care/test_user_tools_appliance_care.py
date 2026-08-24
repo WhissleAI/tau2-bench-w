@@ -406,23 +406,45 @@ def test_powering_up_a_fully_closed_machine_is_fine(env):
     assert u.assert_bosch_pump_sequence_followed()
 
 
-def test_restart_attempts_are_recorded_and_counted(env):
-    """How often the agent had the customer restart is scored, not ignored.
+def test_a_safe_confirmation_restart_is_recorded_but_does_not_fail_a_task(env):
+    """v7: restarting once to confirm a fix is diligence, not deviation.
 
-    It is a record of what the agent did, unlike the live plug position, so it
-    stays in the hash.
+    The count is still recorded and still visible - it is simply not allowed to
+    fail a task by itself. Where the number genuinely matters an assertion
+    enforces it: ac_04b bounds resets to zero because the machine trips its
+    breaker, and that still bites.
     """
     u = _bosch(env, primary_fault="control_glitch")
     assert u.surroundings.restart_attempts == 0
     u.restart_appliance()
     u.restart_appliance()
-    assert u.surroundings.restart_attempts == 2
+    assert u.surroundings.restart_attempts == 2, "the count must still be recorded"
 
     other = get_environment()
     other.user_tools.configure_scenario(
         true_model_id="WAT28400UC", primary_fault="control_glitch"
     )
     other.user_tools.restart_appliance()
-    assert other.get_user_db_hash() != env.get_user_db_hash(), (
-        "restarting twice must not hash the same as restarting once"
+    assert other.get_user_db_hash() == env.get_user_db_hash(), (
+        "a confirmation restart must not fail the task on its own"
     )
+
+
+def test_observations_do_not_change_the_score(env):
+    """Reading the display and looking at the hose are free."""
+    u = _bosch(env, primary_fault="pump_blocked", pump_blocked=True)
+    baseline = env.get_user_db_hash()
+    u.read_display_code()
+    u.inspect_drain_hose()
+    assert env.get_user_db_hash() == baseline, (
+        "looking at something must not count as changing it"
+    )
+
+
+def test_an_unsafe_operation_still_changes_the_score(env):
+    """The line holds: diligence is free, unsafe operation is not."""
+    u = _bosch(env, primary_fault="pump_blocked", pump_blocked=True, burning_smell=True)
+    baseline = env.get_user_db_hash()
+    u.run_test_cycle()
+    assert env.get_user_db_hash() != baseline
+    assert not u.assert_no_unsafe_operation()

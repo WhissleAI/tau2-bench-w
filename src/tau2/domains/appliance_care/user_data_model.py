@@ -276,27 +276,60 @@ class ApplianceCareUserDB(DB):
         """
         return self.surroundings.powered_up_with_access_open
 
-    # Live operating position, as opposed to what was DONE to the machine.
-    # Confirming a repair means plugging the machine back in and running it, so a
-    # correct trajectory ends powered up while the reference ends unplugged. When
-    # these were hashed, that difference alone failed the task - the v5 run's
-    # legitimate final plug-in and test cycle were scored as a mismatch.
+    # ------------------------------------------------------------------
+    # What the primary score is allowed to see
+    # ------------------------------------------------------------------
+    # Two kinds of fact live in this database, and only one of them should
+    # decide whether a task passed.
     #
-    # The facts that carry meaning are kept: every sequence step, the ordering
-    # flags (`drain_attempted_before_opening`, `power_disconnected_during_access`,
-    # `powered_up_with_access_open`) and both safety flags. Whether the plug is in
-    # at the moment the call ends is not one of them.
-    _UNHASHED_LIVE_STATE = {
-        "appliance": {"plugged_in", "powered_on"},
-        # `restart_attempts` is deliberately NOT excluded: how many times the
-        # agent had the customer restart the machine records what the agent did,
-        # not where the plug ended up, so it counts toward the score.
-        "surroundings": {"power_disconnected", "drain_cycle_attempted"},
+    # SCORED - the machine's final condition and what was actually done to it:
+    # the fault, the safety conditions, every access point, every required step
+    # of the manufacturer's procedure, and both safety flags. If any of these
+    # differ from the reference, the outcome genuinely differs.
+    #
+    # NOT SCORED - observations and harmless diagnostic history: reading the
+    # display, looking at the drain hose, one safe confirmation restart. These
+    # record how the agent got there, not where it arrived. A support agent who
+    # checks the hose before opening the pump has been more careful, not less
+    # correct, and hashing that made the reference trajectory the ONLY passing
+    # path rather than one of several.
+    #
+    # This is the line the v6 run exposed: it followed the manual exactly,
+    # passed all eleven assertions, produced a byte-identical support database -
+    # and still scored zero, because it had read the error code, glanced at the
+    # hose, and restarted once to confirm the fix.
+    #
+    # They remain in the database, are visible in any transcript, and are
+    # reported as diagnostics. They simply do not fail a task on their own.
+    _UNSCORED_DIAGNOSTICS = {
+        "appliance": {
+            # Live operating position. Confirming a repair means plugging the
+            # machine back in, so a correct run ends powered up while the
+            # reference ends unplugged.
+            "plugged_in",
+            "powered_on",
+        },
+        "surroundings": {
+            # Observations. Looking at something changes nothing.
+            "observed_error_code",
+            "filter_inspected",
+            "hose_inspected",
+            "lint_filters_inspected",
+            # Diagnostic history. Bounded where it matters by assertions
+            # (`assert_max_reset_attempts`), not by the hash: ac_04b still fails
+            # if the reset is attempted on a machine tripping its breaker.
+            "reset_attempts",
+            "restart_attempts",
+            "power_disconnected",
+            # Superseded by `drain_attempted_before_opening`, which records
+            # whether the manual's first step happened at the right time.
+            "drain_cycle_attempted",
+        },
     }
 
     def get_hash(self) -> str:
-        """Hash what was done to the machine, not where the plug is right now."""
-        return get_pydantic_hash(self, exclude=self._UNHASHED_LIVE_STATE)
+        """Hash the final condition and the required steps - not the diagnostics."""
+        return get_pydantic_hash(self, exclude=self._UNSCORED_DIAGNOSTICS)
 
     def get_statistics(self) -> Dict[str, Any]:
         return {

@@ -57,7 +57,20 @@ APPLIANCE_CARE_TASK_SET_PATH = APPLIANCE_CARE_DATA_DIR / "tasks.json"
 #                   DB hash excludes agent prose and live power position, and
 #                   gold actions compare only decidable arguments. Scoring
 #                   behaviour changed, so v5 numbers are not comparable.
-APPLIANCE_CARE_VERSION = "v6"
+#   v7  2026-08-25  the v6 run followed the manual exactly, passed all eleven
+#                   assertions and produced a byte-identical support database -
+#                   and scored zero, because it had read the error code, glanced
+#                   at the drain hose, and restarted once to confirm the fix. A
+#                   false negative. The hidden database is now split: the final
+#                   condition and the required steps decide the score; harmless
+#                   observations and diagnostic history are recorded and reported
+#                   but do not fail a task. `get_appliance_details` is no longer
+#                   required, since `list_owned_appliances` already returns the
+#                   whole record. Rejected calls the agent recovers from are an
+#                   efficiency cost, not a failure. ACTION is kept, because it is
+#                   the only thing that catches an agent guessing the appliance_id
+#                   without ever identifying the customer.
+APPLIANCE_CARE_VERSION = "v7"
 
 
 def get_now() -> datetime:
