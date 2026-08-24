@@ -258,3 +258,115 @@ def test_the_wrong_manufacturers_procedure_gets_nowhere():
         ("clean_pump_housing", {}, "user"),
     ]
     assert _score(task, calls) == 0.0
+
+
+# --- v6: the three scoring defects the v5 run exposed --------------------------
+#
+# Each of these is a case the v5 scoring got wrong in one direction or the other:
+# it punished a correct final plug-in, it accepted a post-repair drain run as the
+# manual's first step, and it failed a materially correct resolution over wording.
+
+
+def test_plugging_back_in_after_closing_up_is_allowed():
+    """The v5 defect: a correct final plug-in failed the sequence assertion.
+
+    The customer has to run the machine to confirm the fix, which means plugging
+    it back in. That must not read as "never unplugged".
+    """
+    task = next(t for t in TASKS if t.id == "ac_01a_blocked_pump")
+    calls = _gold(task)
+    close_at = max(i for i, c in enumerate(calls) if c[0] == "close_service_cover")
+    calls = (
+        calls[: close_at + 1]
+        + [("plug_in_appliance", {}, "user"), ("run_test_cycle", {}, "user")]
+        + calls[close_at + 1 :]
+    )
+    assert _score(task, calls) == 1.0, "a correct final plug-in was penalised"
+
+
+def test_powering_up_with_the_pump_still_open_fails():
+    """The other side of it: power restored before closing up is a real failure."""
+    task = next(t for t in TASKS if t.id == "ac_01a_blocked_pump")
+    calls = _gold(task)
+    at = next(i for i, c in enumerate(calls) if c[0] == "clean_pump_housing")
+    calls = calls[: at + 1] + [("plug_in_appliance", {}, "user")] + calls[at + 1 :]
+    assert _score(task, calls) == 0.0, "the machine was powered up while open"
+
+
+def test_a_post_repair_drain_run_does_not_satisfy_the_first_step():
+    """The v5 defect: ACTION ignores order, so the victory lap counted.
+
+    The manual's step 1 is to try draining BEFORE opening anything. A drain cycle
+    run afterwards is a check that the repair worked, not that step.
+    """
+    task = next(t for t in TASKS if t.id == "ac_01a_blocked_pump")
+    calls = [c for c in _gold(task) if c[0] != "attempt_drain_cycle"]
+    close_at = max(i for i, c in enumerate(calls) if c[0] == "close_service_cover")
+    calls = (
+        calls[: close_at + 1]
+        + [("plug_in_appliance", {}, "user"), ("attempt_drain_cycle", {}, "user")]
+        + calls[close_at + 1 :]
+    )
+    assert _score(task, calls) == 0.0, (
+        "a drain cycle after the repair was accepted as the manual's first step"
+    )
+
+
+def test_different_wording_in_steps_taken_still_scores():
+    """The v5 defect: a materially correct resolution took DB 0 over prose.
+
+    Same appliance, same outcome, same manual — different English. A support case
+    is not wrong for describing the same fault in different words.
+    """
+    task = next(t for t in TASKS if t.id == "ac_01a_blocked_pump")
+    calls = []
+    for name, args, who in _gold(task):
+        if name == "record_resolution":
+            args = dict(args, steps_taken=["cleared the pump", "put it all back"])
+        calls.append((name, args, who))
+    assert _score(task, calls) == 1.0, "wording alone decided the score"
+
+
+def test_different_wording_in_a_case_summary_still_scores():
+    task = next(t for t in TASKS if t.id == "ac_02a_model_known")
+    calls = []
+    for name, args, who in _gold(task):
+        if name == "create_support_case":
+            args = dict(args, summary="Leak reported. Sent to service.")
+        elif name == "record_resolution":
+            args = dict(args, steps_taken=["told them to stop", "tap off"])
+        calls.append((name, args, who))
+    assert _score(task, calls) == 1.0
+
+
+def test_prose_freedom_does_not_extend_to_the_decidable_fields():
+    """Wording is free; the appliance, outcome and manual are not."""
+    task = next(t for t in TASKS if t.id == "ac_01a_blocked_pump")
+    for field, value in (
+        ("appliance_id", "APP-002"),
+        ("outcome", "service_scheduled"),
+        ("manual_id_used", "mielewwb020washer"),
+    ):
+        calls = []
+        for name, args, who in _gold(task):
+            if name == "record_resolution":
+                args = dict(args, **{field: value})
+            calls.append((name, args, who))
+        assert _score(task, calls) == 0.0, f"{field} was allowed to drift"
+
+
+def test_a_case_written_against_the_wrong_appliance_or_category_fails():
+    """Free wording in a case summary must not carry the structured fields with it."""
+    task = next(t for t in TASKS if t.id == "ac_02a_model_known")
+    for field, value in (
+        ("appliance_id", "APP-001"),
+        ("category", "electrical"),
+    ):
+        calls = []
+        for name, args, who in _gold(task):
+            if name == "create_support_case":
+                args = dict(
+                    args, summary="different wording entirely", **{field: value}
+                )
+            calls.append((name, args, who))
+        assert _score(task, calls) == 0.0, f"a case with the wrong {field} still scored"

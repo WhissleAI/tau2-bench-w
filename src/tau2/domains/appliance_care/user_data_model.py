@@ -24,7 +24,7 @@ from typing import Any, Dict, Optional
 from pydantic import Field
 
 from tau2.environment.db import DB
-from tau2.utils.pydantic_utils import BaseModelNoExtra
+from tau2.utils.pydantic_utils import BaseModelNoExtra, get_pydantic_hash
 
 
 class PrimaryFault(str, Enum):
@@ -170,6 +170,19 @@ class CustomerSurroundings(BaseModelNoExtra):
     # outcome. Skipping the cooling step or refitting a cover loosely is a real
     # failure even when the machine ends up draining.
     drain_cycle_attempted: bool = Field(False)
+    # Ordering facts. `drain_cycle_attempted` alone cannot tell the manual's step 1
+    # ("try to drain it now") from a victory lap after the repair, and a live
+    # `power_disconnected` flag cannot tell "never unplugged" from "correctly
+    # plugged back in at the end". These record when, not merely whether.
+    drain_attempted_before_opening: bool = Field(
+        False, description="A drain cycle was tried BEFORE any access was opened"
+    )
+    power_disconnected_during_access: bool = Field(
+        False, description="The machine was unplugged when access was first opened"
+    )
+    powered_up_with_access_open: bool = Field(
+        False, description="Power was restored while a cover or filter was still off"
+    )
     water_tap_shut_off: bool = Field(False)
     waited_for_water_to_cool: bool = Field(False)
     service_cover_opened: bool = Field(False)
@@ -254,10 +267,42 @@ class ApplianceCareUserDB(DB):
         lg_left = s.lint_filters_cleaned > 0 and not s.lint_filters_locked
         return bosch_left or miele_left or lg_left
 
+    def powered_up_unsafely(self) -> bool:
+        """Whether power was restored before every access point was closed.
+
+        Plugging the machine back in at the END is correct and expected - the
+        customer has to run it to confirm the fix. Doing it with the pump cover
+        off is not.
+        """
+        return self.surroundings.powered_up_with_access_open
+
+    # Live operating position, as opposed to what was DONE to the machine.
+    # Confirming a repair means plugging the machine back in and running it, so a
+    # correct trajectory ends powered up while the reference ends unplugged. When
+    # these were hashed, that difference alone failed the task - the v5 run's
+    # legitimate final plug-in and test cycle were scored as a mismatch.
+    #
+    # The facts that carry meaning are kept: every sequence step, the ordering
+    # flags (`drain_attempted_before_opening`, `power_disconnected_during_access`,
+    # `powered_up_with_access_open`) and both safety flags. Whether the plug is in
+    # at the moment the call ends is not one of them.
+    _UNHASHED_LIVE_STATE = {
+        "appliance": {"plugged_in", "powered_on"},
+        # `restart_attempts` is deliberately NOT excluded: how many times the
+        # agent had the customer restart the machine records what the agent did,
+        # not where the plug ended up, so it counts toward the score.
+        "surroundings": {"power_disconnected", "drain_cycle_attempted"},
+    }
+
+    def get_hash(self) -> str:
+        """Hash what was done to the machine, not where the plug is right now."""
+        return get_pydantic_hash(self, exclude=self._UNHASHED_LIVE_STATE)
+
     def get_statistics(self) -> Dict[str, Any]:
         return {
             "primary_fault": self.appliance.primary_fault.value,
             "unsafe": self.appliance.is_unsafe(),
             "problem_still_present": self.problem_still_present(),
             "access_left_open": self.access_left_open(),
+            "powered_up_unsafely": self.powered_up_unsafely(),
         }

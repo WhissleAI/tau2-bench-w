@@ -228,9 +228,7 @@ def test_final_database_state_is_what_is_checked_not_the_transcript():
     assert reward_info.reward == 0.0
 
 
-@pytest.mark.parametrize(
-    "task_id", ["ac_01a_blocked_pump", "ac_03b_warranty_expired"]
-)
+@pytest.mark.parametrize("task_id", ["ac_01a_blocked_pump", "ac_03b_warranty_expired"])
 def test_bridge_runs_score_correctly_across_tasks(task_id):
     task = _task(task_id)
     _env, _bridge, trajectory = _simulate_flow_run(task)

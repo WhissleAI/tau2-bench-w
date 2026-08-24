@@ -659,3 +659,62 @@ def test_environment_set_state_strict_flag(
             arguments={"user_id": "user_1", "expected_number": 2},
         )
     )
+
+
+# --- ToolKitBase.get_db_hash delegation (shared code) --------------------------
+#
+# `get_db_hash` used to hash `self.db.model_dump()` directly, which meant a domain
+# had no say in what counted toward its score. It now delegates to `DB.get_hash`.
+# These two tests pin both halves of that: unchanged behaviour for every domain
+# that declares nothing, and a real override actually taking effect.
+
+
+def test_default_db_hash_is_unchanged_by_the_delegation():
+    """The default must still equal the previous direct model-dump hash."""
+    from tau2.environment.db import DB
+    from tau2.environment.toolkit import ToolKitBase
+    from tau2.utils.pydantic_utils import get_dict_hash
+
+    class PlainDB(DB):
+        items: list[str] = []
+        count: int = 0
+
+    class PlainToolKit(ToolKitBase):
+        db: PlainDB
+
+    db = PlainDB(items=["a", "b"], count=2)
+    toolkit = PlainToolKit(db)
+
+    # Exactly the expression the old implementation used.
+    assert toolkit.get_db_hash() == get_dict_hash(db.model_dump())
+
+
+def test_a_domain_db_hash_override_is_honoured():
+    """A domain that excludes a field must actually see it excluded."""
+    from tau2.environment.db import DB
+    from tau2.environment.toolkit import ToolKitBase
+    from tau2.utils.pydantic_utils import get_pydantic_hash
+
+    class NotesDB(DB):
+        identifier: str = ""
+        note: str = ""
+
+        def get_hash(self) -> str:
+            return get_pydantic_hash(self, exclude={"note"})
+
+    class NotesToolKit(ToolKitBase):
+        db: NotesDB
+
+    same_id_different_note = [
+        NotesToolKit(NotesDB(identifier="X-1", note="one wording")),
+        NotesToolKit(NotesDB(identifier="X-1", note="quite another")),
+    ]
+    assert (
+        same_id_different_note[0].get_db_hash()
+        == same_id_different_note[1].get_db_hash()
+    ), "the override was ignored — the excluded field still affected the hash"
+
+    different_id = NotesToolKit(NotesDB(identifier="X-2", note="one wording"))
+    assert different_id.get_db_hash() != same_id_different_note[0].get_db_hash(), (
+        "the override swallowed a field that should still count"
+    )

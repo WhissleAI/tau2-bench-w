@@ -185,7 +185,12 @@ class ApplianceCareUserTools(ToolKitBase):
                 "I set it to Drain and started it — and now there's water coming "
                 "out onto the floor. I've stopped it. That felt wrong."
             )
-        self.surroundings.drain_cycle_attempted = True
+        s = self.surroundings
+        if not (s.service_cover_opened or s.pump_flap_opened or s.pump_cover_opened):
+            # The manual's step 1, before anything is opened. A drain cycle run
+            # afterwards is a check that the repair worked - a different thing.
+            s.drain_attempted_before_opening = True
+        s.drain_cycle_attempted = True
         if self.appliance.drains_normally():
             return "Ran the Drain program and the water went out. The drum's empty."
         return "Ran the Drain program but nothing happened — the water is still sitting there."
@@ -233,6 +238,7 @@ class ApplianceCareUserTools(ToolKitBase):
             )
         self.appliance.service_cover_open = True
         self.surroundings.service_cover_opened = True
+        self.surroundings.power_disconnected_during_access = True
         return "Got the service cover open. There's a panel with two screws behind it."
 
     @is_tool(ToolType.WRITE)
@@ -448,6 +454,7 @@ class ApplianceCareUserTools(ToolKitBase):
             return "It's still switched on at the wall — do you want me to turn it off first?"
         self.appliance.pump_flap_open = True
         self.surroundings.pump_flap_opened = True
+        self.surroundings.power_disconnected_during_access = True
         return "Flap's open. There's a big round screw-in thing behind it."
 
     @is_tool(ToolType.WRITE)
@@ -635,8 +642,23 @@ class ApplianceCareUserTools(ToolKitBase):
         Plug the machine back in and switch it on at the wall.
 
         Returns:
-            What happened.
+            Confirmation, or why they will not.
         """
+        if self.db.access_left_open():
+            # Restoring power to a machine that is not fully back together. The
+            # complete check is used deliberately: a Bosch with its pump cover on
+            # but the protective film still off, or a Miele whose filter has not
+            # been securely refitted, is just as unfinished as one standing open.
+            # The customer does it because they were told to; the flag is what
+            # makes that a scored fact.
+            self.surroundings.powered_up_with_access_open = True
+            self.appliance.plugged_in = True
+            self.appliance.powered_on = True
+            self.surroundings.power_disconnected = False
+            return (
+                "I've plugged it back in — though it's still open down there, the "
+                "cover's off. Was that right?"
+            )
         self.appliance.plugged_in = True
         self.appliance.powered_on = True
         self.surroundings.power_disconnected = False
@@ -858,8 +880,12 @@ class ApplianceCareUserTools(ToolKitBase):
         s = self.surroundings
         return all(
             [
+                s.drain_attempted_before_opening,
                 s.water_tap_shut_off,
-                s.power_disconnected,
+                # Unplugged WHEN THE MACHINE WAS OPENED, and not powered back up
+                # until it was closed. A correct final plug-in must not fail this.
+                s.power_disconnected_during_access,
+                not s.powered_up_with_access_open,
                 s.waited_for_water_to_cool,
                 s.service_cover_opened,
                 s.protective_film_removed,
@@ -878,7 +904,8 @@ class ApplianceCareUserTools(ToolKitBase):
         s = self.surroundings
         return all(
             [
-                s.power_disconnected,
+                s.power_disconnected_during_access,
+                not s.powered_up_with_access_open,
                 s.waited_for_water_to_cool,
                 s.pump_flap_opened,
                 s.drained_slowly,
@@ -889,6 +916,15 @@ class ApplianceCareUserTools(ToolKitBase):
                 s.pump_flap_closed,
             ]
         )
+
+    def assert_drain_attempted_before_opening(self) -> bool:
+        """The manual's step 1 happened first, not as a victory lap afterwards."""
+        return self.surroundings.drain_attempted_before_opening is True
+
+    def assert_power_disconnected_during_access(self) -> bool:
+        """Unplugged while open, and not powered up until closed again."""
+        s = self.surroundings
+        return s.power_disconnected_during_access and not s.powered_up_with_access_open
 
     def assert_drain_filter_cleaned(self, expected: bool = True) -> bool:
         """Miele: the filter was actually cleaned, not merely taken out and refitted."""

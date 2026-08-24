@@ -16,7 +16,7 @@ from typing import Any, Dict, List, Optional
 from pydantic import Field
 
 from tau2.environment.db import DB
-from tau2.utils.pydantic_utils import BaseModelNoExtra
+from tau2.utils.pydantic_utils import BaseModelNoExtra, get_pydantic_hash
 
 
 class Customer(BaseModelNoExtra):
@@ -172,6 +172,25 @@ class ApplianceCareDB(DB):
     support_cases: List[SupportCase] = Field(default_factory=list)
     service_appointments: List[ServiceAppointment] = Field(default_factory=list)
     resolutions: List[Resolution] = Field(default_factory=list)
+
+    # Free-text fields the agent writes in its own words. They are stored,
+    # returned to the agent, and readable in any transcript - but they are NOT
+    # hashed, because a support case is not wrong for describing the same fault
+    # in different English. Hashing them made the primary score a string-match on
+    # prose: a v5 run recorded a materially correct resolution against the right
+    # appliance with the right outcome and the right manual, and still took DB 0
+    # because its `steps_taken` wording differed from the reference.
+    #
+    # What still counts: which records exist, for which appliance, with which
+    # outcome, severity, visit type, dates and manual. Everything decidable.
+    _UNHASHED_PROSE = {
+        "support_cases": {"__all__": {"summary"}},
+        "resolutions": {"__all__": {"steps_taken"}},
+    }
+
+    def get_hash(self) -> str:
+        """Hash the decidable state, not the agent's phrasing."""
+        return get_pydantic_hash(self, exclude=self._UNHASHED_PROSE)
 
     def get_statistics(self) -> Dict[str, Any]:
         return {

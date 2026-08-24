@@ -47,7 +47,17 @@ APPLIANCE_CARE_TASK_SET_PATH = APPLIANCE_CARE_DATA_DIR / "tasks.json"
 #                   "Bosch NW-22" label were removed. Policy gains a narrow service-
 #                   access exception. Corpus, policy, tools, tasks and scoring all
 #                   changed: no v4 or earlier number is comparable.
-APPLIANCE_CARE_VERSION = "v5"
+#   v6  2026-08-25  scoring audit after the first valid v5 run. Three defects,
+#                   all found by that run rather than by reasoning about it:
+#                   a correct final plug-in was scored as "never unplugged", a
+#                   post-repair drain check satisfied the manual's first step
+#                   because ACTION ignores order, and a materially correct
+#                   resolution took DB 0 because its free-text wording differed
+#                   from the reference. Ordering is now recorded explicitly, the
+#                   DB hash excludes agent prose and live power position, and
+#                   gold actions compare only decidable arguments. Scoring
+#                   behaviour changed, so v5 numbers are not comparable.
+APPLIANCE_CARE_VERSION = "v6"
 
 
 def get_now() -> datetime:
