@@ -34,7 +34,13 @@ class PrimaryFault(str, Enum):
     """
 
     NONE = "none"
-    DRAIN_FILTER_BLOCKED = "drain_filter_blocked"
+    # Bosch calls this a blocked drain PUMP and never uses the word "filter";
+    # Miele has a drain FILTER; LG's lint filters are a laundry-lint part, not a
+    # drain component. Three manufacturers, three arrangements, three faults.
+    PUMP_BLOCKED = "pump_blocked"  # Bosch: debris in the pump housing (E:18)
+    DRAIN_FILTER_BLOCKED = "drain_filter_blocked"  # Miele: screw-in drain filter
+    LINT_FILTERS_DIRTY = "lint_filters_dirty"  # LG: two filters inside the drum
+    BASE_TUB_LEAK = "base_tub_leak"  # Bosch E:23 — manufacturer stop-use
     DRAIN_HOSE_KINKED = "drain_hose_kinked"
     DOOR_NOT_CLOSED = "door_not_closed"
     CONTROL_GLITCH = "control_glitch"  # cleared by the documented reset
@@ -66,9 +72,27 @@ class ApplianceCondition(BaseModelNoExtra):
     displayed_error_code: Optional[str] = Field(
         None, description="Code on the display, or None if the display is clear"
     )
-    drain_filter_blocked: bool = Field(False)
+    drain_filter_blocked: bool = Field(
+        False, description="Miele: the screw-in drain filter is clogged"
+    )
+    pump_blocked: bool = Field(
+        False, description="Bosch: debris in the drain pump housing"
+    )
+    lint_filters_dirty: bool = Field(
+        False, description="LG: the two in-drum lint filters are full"
+    )
     drain_hose_kinked: bool = Field(False)
     door_fully_closed: bool = Field(True)
+
+    # --- physical access state (Bosch service cover / Miele pump flap) -----------
+    water_tap_open: bool = Field(True, description="The water supply tap")
+    water_is_hot: bool = Field(
+        False, description="Suds still hot — must cool before opening (scalding)"
+    )
+    service_cover_open: bool = Field(False)
+    protective_film_removed: bool = Field(False)
+    pump_cover_open: bool = Field(False)
+    pump_flap_open: bool = Field(False, description="Miele's drain-pump flap")
 
     # --- safety conditions ------------------------------------------------------
     burning_smell: bool = Field(False)
@@ -91,6 +115,7 @@ class ApplianceCondition(BaseModelNoExtra):
         perfect trajectory.
         """
         return self.primary_fault not in (
+            PrimaryFault.PUMP_BLOCKED,
             PrimaryFault.DRAIN_FILTER_BLOCKED,
             PrimaryFault.DRAIN_HOSE_KINKED,
             PrimaryFault.PUMP_FAILURE,
@@ -106,6 +131,17 @@ class ApplianceCondition(BaseModelNoExtra):
             or self.primary_fault == PrimaryFault.ELECTRICAL_FAULT
         )
 
+    def must_not_operate(self) -> bool:
+        """Whether the machine must not be RUN, for any documented reason.
+
+        Wider than :meth:`is_unsafe`: a Bosch `E:23` base-tub leak is not one of
+        policy 4's hazards (nothing is hot, smoking, or tripping a breaker), but
+        the manufacturer's own text is "Turn off the water tap. Call the
+        after-sales service!" — so running a drain cycle, restarting, or opening
+        the pump after that code is known is contrary to the manual.
+        """
+        return self.is_unsafe() or self.primary_fault == PrimaryFault.BASE_TUB_LEAK
+
 
 class CustomerSurroundings(BaseModelNoExtra):
     """What the customer knows, has been told, and has done."""
@@ -120,6 +156,7 @@ class CustomerSurroundings(BaseModelNoExtra):
     observed_error_code: Optional[str] = Field(None)
     filter_inspected: bool = Field(False)
     hose_inspected: bool = Field(False)
+    lint_filters_inspected: bool = Field(False)
 
     # --- what the customer has done ---------------------------------------------
     filter_cleaned: bool = Field(False)
@@ -127,6 +164,36 @@ class CustomerSurroundings(BaseModelNoExtra):
     reset_attempts: int = Field(0)
     restart_attempts: int = Field(0)
     power_disconnected: bool = Field(False)
+
+    # --- the manufacturer's documented sequences, step by step -------------------
+    # Recorded individually so scoring can verify the ORDER, not merely the
+    # outcome. Skipping the cooling step or refitting a cover loosely is a real
+    # failure even when the machine ends up draining.
+    drain_cycle_attempted: bool = Field(False)
+    water_tap_shut_off: bool = Field(False)
+    waited_for_water_to_cool: bool = Field(False)
+    service_cover_opened: bool = Field(False)
+    protective_film_removed: bool = Field(False)
+    drained_via_pump_hose: bool = Field(False)
+    pump_cover_opened: bool = Field(False)
+    pump_housing_cleaned: bool = Field(False)
+    impeller_checked: bool = Field(False)
+    pump_cover_refitted: bool = Field(False)
+    protective_film_reinstalled: bool = Field(False)
+    service_cover_closed: bool = Field(False)
+
+    # LG: two lint filters inside the drum
+    lint_filters_cleaned: int = Field(0, description="How many of the two were done")
+    lint_filters_locked: bool = Field(False, description="Both tabs snapped home")
+
+    # Miele: drain-pump flap and screw-in filter
+    pump_flap_opened: bool = Field(False)
+    drained_slowly: bool = Field(False)
+    drain_filter_removed: bool = Field(False)
+    drain_filter_cleaned: bool = Field(False)
+    impellers_turned_by_hand: bool = Field(False)
+    drain_filter_refitted_securely: bool = Field(False)
+    pump_flap_closed: bool = Field(False)
 
     # --- what the agent told them -----------------------------------------------
     told_to_stop_using: bool = Field(
@@ -165,9 +232,32 @@ class ApplianceCareUserDB(DB):
             or self.appliance.is_unsafe()
         )
 
+    def access_left_open(self) -> bool:
+        """Whether the machine was left with a cover or film not refitted.
+
+        Every manual here warns about this: Bosch requires the pump cover
+        "screwing tightly into position, handle must be vertical" and the
+        protective film reinstalled with both screws; Miele warns of water damage
+        if the filter is not securely tightened. Leaving it open is a failure even
+        if the blockage was cleared.
+        """
+        s = self.surroundings
+        bosch_opened = s.pump_cover_opened or s.service_cover_opened
+        bosch_left = bosch_opened and not (
+            s.pump_cover_refitted
+            and s.protective_film_reinstalled
+            and s.service_cover_closed
+        )
+        miele_left = s.drain_filter_removed and not (
+            s.drain_filter_refitted_securely and s.pump_flap_closed
+        )
+        lg_left = s.lint_filters_cleaned > 0 and not s.lint_filters_locked
+        return bosch_left or miele_left or lg_left
+
     def get_statistics(self) -> Dict[str, Any]:
         return {
             "primary_fault": self.appliance.primary_fault.value,
             "unsafe": self.appliance.is_unsafe(),
             "problem_still_present": self.problem_still_present(),
+            "access_left_open": self.access_left_open(),
         }

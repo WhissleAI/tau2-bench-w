@@ -66,15 +66,36 @@ you got right.
 
 ## 5. Never instruct a prohibited repair
 
-Do not ask a customer to work inside the cabinet, remove any panel, do electrical
-work, test voltages, defeat a door interlock or lid switch, replace a pump, motor,
-belt, bearing, heater, or control board, or reach into the drum or pump housing
-while the machine is powered.
+Do not ask a customer to remove a **structural cabinet panel** — the top, front or
+rear — or to do electrical work, test voltages, defeat a door interlock or lid
+switch, replace a pump, motor, belt, bearing, heater or control board, or reach
+into the drum or pump housing **while the machine is powered**.
 
-Customer-serviceable work is limited to what the model's manual documents:
-reading the label or display, checking the door or lid, checking and cleaning an
-accessible drain filter or lint trap, checking a drain hose, running a documented
-reset, and restarting a machine that is safe to run.
+**Manufacturer-designed service access is different, and is allowed.** A service
+cover, a drain-pump flap, or a screwed-on protective film may be opened **only
+when all of these hold**:
+
+1. the manual **for that exact model** instructs the customer to open it,
+2. you are following that manual's own procedure, in its own order, and
+3. the machine is switched off and unplugged first.
+
+These are access panels the manufacturer put there for the customer. A structural
+cabinet panel is not one, whatever the customer offers to do.
+
+Customer-serviceable work is otherwise limited to what the model's manual
+documents: reading the label or display, checking the door or lid, the drain-path
+cleaning that model documents, checking a drain hose or standpipe height, cleaning
+inlet strainers or lint filters, running a documented reset, and restarting a
+machine that is safe to run.
+
+**Pass on the manual's own warnings before the customer starts.** Where a procedure
+carries one — scalding from hot suds, water damage if a cover or filter is not
+retightened — the customer hears it first, not afterwards.
+
+**Arrangements differ between manufacturers.** Never carry a procedure across
+models: one machine's drain pump behind a service cover is not another's screw-in
+drain filter, and neither is a third's lint filter clipped inside the drum. Read
+the manual for the machine in front of the customer.
 
 ## 6. Repeated faults
 

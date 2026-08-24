@@ -139,7 +139,7 @@ def test_no_task_lets_an_error_code_stand_in_for_identification(tasks):
 
 @pytest.mark.parametrize(
     "task_id",
-    ["ac_01a_blocked_filter", "ac_02b_model_unclear", "ac_05a_manual_has_procedure"],
+    ["ac_01a_blocked_pump", "ac_02b_model_unclear", "ac_05a_two_lint_filters"],
 )
 def test_guessing_the_appliance_id_fails_only_on_action(tasks, task_id):
     """The shortcut leaves an identical database. Only ACTION can catch it."""

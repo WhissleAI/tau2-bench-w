@@ -181,7 +181,7 @@ def test_the_cross_model_conflicts_survive():
     # The corpus previously claimed the opposite; that was a fabrication, not a
     # trap, and the task built on it has been rewritten (ac_05b_procedure_filed_oddly).
     # The real difficulty is where the procedure is FILED, which the next test pins.
-    assert miele_wwb020.drain_filter_customer_accessible is True
+    assert miele_wwb020.customer_drain_maintenance_supported is True
 
     # Bosch documents a power-cycle reset; LG and Miele do not.
     resets = {m.model_id: m.reset_supported for m in env.tools.db.appliance_models}
@@ -195,12 +195,19 @@ def test_the_cross_model_conflicts_survive():
 
 
 def test_search_finds_the_right_section_for_the_canonical_query():
+    """An agent searching Bosch for a "filter" must still land on the pump.
+
+    Bosch never uses the word "filter" for the drain path, but a customer and an
+    agent both will. Retrieval has to bridge that gap, or the correct procedure is
+    unreachable by the words people actually type.
+    """
     env = get_environment()
-    hits = env.tools.library.search(
-        "drain filter cleaning", manual_ids=["boschwat28400ucwasher"]
-    )
-    assert hits, "no hits for the canonical drain-filter query"
-    assert "drain filter" in hits[0][0].heading.lower()
+    for query in ("drain filter cleaning", "clean the drain pump", "will not drain"):
+        hits = env.tools.library.search(query, manual_ids=["boschwat28400ucwasher"])
+        assert hits, f"no hits for {query!r}"
+        assert "drain pump" in hits[0][0].heading.lower(), (
+            f"{query!r} landed on {hits[0][0].heading!r}, not the pump procedure"
+        )
 
 
 def test_manual_library_rejects_an_empty_corpus(tmp_path):
@@ -263,3 +270,86 @@ def test_the_miele_drain_procedure_exists_but_is_filed_oddly():
 
     # The old fabrication must not reappear in any form.
     assert "no customer drain-filter cleaning procedure" not in body
+
+
+def test_the_bosch_extracts_document_the_drain_pump_procedure():
+    """v5: all three previously denied a procedure their manuals document in full.
+
+    Verified against the official PDFs (9001002399_H / 9001002426_I / 9001427986_A,
+    pages 28 / 29 / 31). This test exists so the denial cannot come back.
+    """
+    env = get_environment()
+    for manual_id, page in (
+        ("boschwat28400ucwasher", 28),
+        ("boschwat28401ucwasher", 29),
+        ("boschwat28402ucwasher", 31),
+    ):
+        manual = env.tools.library.get(manual_id)
+        body = re.sub(r"\s+", " ", " ".join(s.content for s in manual.sections)).lower()
+
+        assert "cleaning the drain pump" in body, manual_id
+        assert f"page {page}" in body, f"{manual_id} must cite its own page"
+        assert "service cover" in body and "protective film" in body, manual_id
+        assert "pump cover counterclockwise" in body, manual_id
+        assert "handle must be vertical" in body, manual_id
+        assert "impeller" in body, manual_id
+        assert "scalding" in body, f"{manual_id} drops the manufacturer's warning"
+
+        # The v5 fabrications, in every form they took.
+        assert "no separate pull-out drain filter cartridge" not in body, manual_id
+        assert "no customer procedure for opening the pump housing" not in body, (
+            manual_id
+        )
+
+
+def test_bosch_never_calls_the_drain_path_a_filter():
+    """The word does not appear in any Bosch manual; the corpus must match."""
+    for name in (
+        "bosch-wat28400uc-washer.md",
+        "bosch-wat28401uc-washer.md",
+        "bosch-wat28402uc-washer.md",
+    ):
+        text = (APPLIANCE_CARE_MANUALS_DIR / name).read_text(encoding="utf-8").lower()
+        # Saying the model has NO drain filter is correct and useful; calling its
+        # drain path one is the error. Strip the negation before checking.
+        text = text.replace("no drain filter", "")
+        assert "drain filter" not in text, (
+            f"{name} calls the Bosch drain path a filter; the manual says drain pump"
+        )
+
+
+def test_the_lg_extract_documents_two_in_drum_lint_filters():
+    env = get_environment()
+    manual = env.tools.library.get("lgwt901cwwasher")
+    body = re.sub(r"\s+", " ", " ".join(s.content for s in manual.sections)).lower()
+    assert "two lint filters inside the drum" in body
+    assert "drum wall" in body
+    assert "both tabs are locked" in body
+    # And that a drain complaint is NOT a filter problem on this model.
+    assert "kinked drain hose" in body or "no higher than 8 ft" in body
+
+
+def test_no_invented_model_or_part_survives_anywhere():
+    """The retired synthetic corpus must not leak back through a task or a part."""
+    import json
+
+    from tau2.domains.appliance_care.utils import APPLIANCE_CARE_TASK_SET_PATH
+
+    blob = json.dumps(json.load(open(APPLIANCE_CARE_TASK_SET_PATH))).lower()
+    # "TWO filters" is legitimate for the LG, whose manual says exactly that. The
+    # invented claim was that a *Bosch* model had two, with a lint filter first.
+    for token in (
+        "northwind",
+        "larkfield",
+        "vantis",
+        "nw-22",
+        "nw22",
+        "nw-2200",
+        "nw-2400",
+        "lf-w70",
+        "vt-500",
+        "kick-panel",
+        "lint filter must come out first",
+        "filter cartridge",
+    ):
+        assert token not in blob, f"tasks still reference the invented {token!r}"

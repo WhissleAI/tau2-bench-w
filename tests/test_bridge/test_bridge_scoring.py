@@ -17,7 +17,7 @@ from tau2.evaluator.evaluator_env import EnvironmentEvaluator
 
 TOKEN = "test-token-not-a-real-secret"
 AUTH = f"Bearer {TOKEN}"
-TASK_ID = "ac_01a_blocked_filter"
+TASK_ID = "ac_01a_blocked_pump"
 
 
 def _task(task_id=TASK_ID):
@@ -229,7 +229,7 @@ def test_final_database_state_is_what_is_checked_not_the_transcript():
 
 
 @pytest.mark.parametrize(
-    "task_id", ["ac_01a_blocked_filter", "ac_03b_warranty_expired"]
+    "task_id", ["ac_01a_blocked_pump", "ac_03b_warranty_expired"]
 )
 def test_bridge_runs_score_correctly_across_tasks(task_id):
     task = _task(task_id)

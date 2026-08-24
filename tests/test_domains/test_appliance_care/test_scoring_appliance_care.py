@@ -122,7 +122,7 @@ def test_unnecessary_case_fails_a_self_service_task():
     'No unnecessary database changes' is not a separate scorer — it falls out of
     hashing the whole DB, and this test pins that behaviour.
     """
-    task = next(t for t in TASKS if t.id == "ac_01a_blocked_filter")
+    task = next(t for t in TASKS if t.id == "ac_01a_blocked_pump")
     calls = [
         (a.name, a.arguments, a.requestor) for a in task.evaluation_criteria.actions
     ]
@@ -164,3 +164,97 @@ def test_wrong_manual_fails_the_ambiguous_model_task():
         full_trajectory=messages,
     )
     assert reward_info.reward == 0.0, "the wrong model's manual still scored 1.0"
+
+
+# --- v5 bad baselines: the procedures must be verified, not just attempted ----
+
+
+def _run(task, calls):
+    return _run_calls(task, calls)
+
+
+def _gold(task):
+    return [
+        (a.name, a.arguments, a.requestor) for a in task.evaluation_criteria.actions
+    ]
+
+
+def _score(task, calls):
+    return EnvironmentEvaluator.calculate_reward(
+        environment_constructor=get_environment,
+        task=task,
+        full_trajectory=_run(task, calls),
+    ).reward
+
+
+def test_skipping_the_cooling_step_fails_the_bosch_task():
+    """The manual's RISK OF SCALDING step is not optional."""
+    task = next(t for t in TASKS if t.id == "ac_01a_blocked_pump")
+    calls = [c for c in _gold(task) if c[0] != "allow_water_to_cool"]
+    assert _score(task, calls) == 0.0, "a scalded customer still scored a pass"
+
+
+def test_skipping_the_predrain_fails_the_bosch_task():
+    task = next(t for t in TASKS if t.id == "ac_01a_blocked_pump")
+    calls = [c for c in _gold(task) if c[0] != "drain_via_pump_hose"]
+    assert _score(task, calls) == 0.0
+
+
+def test_leaving_the_pump_cover_off_fails_the_bosch_task():
+    """Every manual here warns that a loose cover leaks in use."""
+    task = next(t for t in TASKS if t.id == "ac_01a_blocked_pump")
+    calls = [c for c in _gold(task) if c[0] != "refit_pump_cover"]
+    assert _score(task, calls) == 0.0
+
+
+def test_opening_the_pump_on_a_burning_machine_fails():
+    task = next(t for t in TASKS if t.id == "ac_01b_burning_smell")
+    calls = [
+        ("unplug_appliance", {}, "user"),
+        ("open_service_cover", {}, "user"),
+    ] + _gold(task)
+    assert _score(task, calls) == 0.0
+
+
+def test_running_a_drain_cycle_after_e23_fails():
+    """E:23 routes to service; running the machine contradicts the manual."""
+    for task_id in ("ac_02a_model_known", "ac_02b_model_unclear"):
+        task = next(t for t in TASKS if t.id == task_id)
+        calls = [("attempt_drain_cycle", {}, "user")] + _gold(task)
+        assert _score(task, calls) == 0.0, f"{task_id} passed after a drain cycle"
+
+
+def test_cleaning_only_one_lg_lint_filter_is_not_enough():
+    """The manual says there are two, and both tabs must lock back in."""
+    task = next(t for t in TASKS if t.id == "ac_05a_two_lint_filters")
+    calls = [c for c in _gold(task) if c[0] != "clean_lint_filters"]
+    assert _score(task, calls) == 0.0
+
+
+def test_skipping_the_miele_impeller_check_fails():
+    task = next(t for t in TASKS if t.id == "ac_05b_procedure_filed_oddly")
+    calls = [c for c in _gold(task) if c[0] != "check_impellers_turn"]
+    assert _score(task, calls) == 0.0
+
+
+def test_taking_the_miele_filter_out_and_putting_it_back_uncleaned_fails():
+    """Removing and refitting is not cleaning.
+
+    The refit action used to clear the blockage by itself, which meant an agent
+    that never told the customer to clean the filter still passed. Refitting now
+    refits and nothing else, so the cleaning instruction has to be given.
+    """
+    task = next(t for t in TASKS if t.id == "ac_05b_procedure_filed_oddly")
+    calls = [c for c in _gold(task) if c[0] != "clean_drain_filter"]
+    assert _score(task, calls) == 0.0, "a filter put back dirty still scored a pass"
+
+
+def test_the_wrong_manufacturers_procedure_gets_nowhere():
+    """A Bosch pump procedure applied to the LG must not fix it."""
+    task = next(t for t in TASKS if t.id == "ac_05a_two_lint_filters")
+    calls = _gold(task)[:3] + [
+        ("open_service_cover", {}, "user"),
+        ("open_pump_cover", {}, "user"),
+        ("clean_pump_housing", {}, "user"),
+    ]
+    assert _score(task, calls) == 0.0

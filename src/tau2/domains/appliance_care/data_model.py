@@ -56,9 +56,16 @@ class ApplianceModel(BaseModelNoExtra):
     reset_supported: bool = Field(
         False, description="Whether the manual documents a customer reset procedure"
     )
-    drain_filter_customer_accessible: bool = Field(
+    customer_drain_maintenance_supported: bool = Field(
         True,
-        description="Whether this model has a drain filter the customer may reach",
+        description=(
+            "Whether this model's manual documents a customer procedure for the "
+            "DRAIN PATH. What that procedure is differs by manufacturer: Bosch "
+            "documents cleaning the drain PUMP behind a service cover, Miele a "
+            "screw-in drain FILTER behind a pump flap. False where the manual "
+            "gives the customer no drain-path route at all - LG's two lint "
+            "filters are a laundry-lint part and do not count."
+        ),
     )
 
 

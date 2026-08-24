@@ -69,13 +69,16 @@ category = "washing_machine"
 manual_id = "boschwat28400ucwasher"
 display_name = "Bosch 300 Series WAT28400UC Front-Load Washer"
 manual_document_code = "9001002399_H"
-user_serviceable_parts = ["drain hose", "drain pipe", "detergent dispenser drawer", "levelling feet"]
+user_serviceable_parts = ["drain pump", "water inlet strainers", "drain hose", "drain pipe", "detergent dispenser tray", "levelling feet"]
 reset_supported = true
-drain_filter_customer_accessible = true
+# Bosch has NO drain filter: the manual's term is the drain PUMP, reached behind a
+# service cover and a protective film. The flag means "the manual documents a
+# customer route into the drain path", which for this model is the pump.
+customer_drain_maintenance_supported = true
 
 # Verbatim meanings from Bosch document 9001002399_H.
 [appliance_models.error_codes]
-"E:18" = "Pump is blocked (obstructed). Clean the washer drain hose and/or the drain pipe. Also shown when too much detergent or non-HE detergent was used."
+"E:18" = "Pump is blocked (obstructed). Clean the washer drain hose and/or the drain pipe. May need to perform pump maintenance to clear blockage - see Cleaning the drain pump, page 28. Also shown when too much detergent or non-HE detergent was used."
 "E:32" = "Not a fault - the unbalanced load detection system has interrupted the spin cycle because the laundry is unevenly distributed. Distribute small and large items of laundry evenly in the drum."
 "E:93" = "Hot water tap not turned on, or the hot water supply hose is kinked or pinched closed. Turn on the hot water tap and straighten the hose."
 
@@ -86,13 +89,13 @@ category = "washing_machine"
 manual_id = "boschwat28401ucwasher"
 display_name = "Bosch 300 Series WAT28401UC Front-Load Washer"
 manual_document_code = "9001002426_I"
-user_serviceable_parts = ["drain hose", "drain pipe", "detergent dispenser drawer", "levelling feet"]
+user_serviceable_parts = ["drain pump", "water inlet strainers", "drain hose", "drain pipe", "detergent dispenser tray", "levelling feet"]
 reset_supported = true
-drain_filter_customer_accessible = true
+customer_drain_maintenance_supported = true
 
 # Same three codes as WAT28400UC. E:23 is absent here - that absence is the point.
 [appliance_models.error_codes]
-"E:18" = "Pump is blocked (obstructed). Clean the washer drain hose and/or the drain pipe. Also shown when too much detergent or non-HE detergent was used."
+"E:18" = "Pump is blocked (obstructed). Clean the washer drain hose and/or the drain pipe. May need to perform pump maintenance to clear blockage - see Cleaning the drain pump, page 29. Also shown when too much detergent or non-HE detergent was used."
 "E:32" = "Not a fault - the unbalanced load detection system has interrupted the spin cycle because the laundry is unevenly distributed. Distribute small and large items of laundry evenly in the drum."
 "E:93" = "Hot water tap not turned on, or the hot water supply hose is kinked or pinched closed. Turn on the hot water tap and straighten the hose."
 
@@ -103,14 +106,14 @@ category = "washing_machine"
 manual_id = "boschwat28402ucwasher"
 display_name = "Bosch 300 Series WAT28402UC Front-Load Washer"
 manual_document_code = "9001427986_A"
-user_serviceable_parts = ["drain hose", "drain pipe", "detergent dispenser drawer", "levelling feet"]
+user_serviceable_parts = ["drain pump", "water inlet strainers", "drain hose", "drain pipe", "detergent dispenser tray", "levelling feet"]
 reset_supported = true
-drain_filter_customer_accessible = true
+customer_drain_maintenance_supported = true
 
 # E:23 is the STOP-USE code and appears only in this model's manual. Its text is
 # the manufacturer's own instruction: turn off the water and call service.
 [appliance_models.error_codes]
-"E:18" = "Pump is blocked (obstructed). Clean the washer drain hose and/or the drain pipe. Also shown when too much detergent or non-HE detergent was used."
+"E:18" = "Pump is blocked (obstructed). Clean the washer drain hose and/or the drain pipe. May need to perform pump maintenance to clear blockage - see Cleaning the drain pump, page 31. Also shown when too much detergent or non-HE detergent was used."
 "E:23" = "Water in the base tub, appliance leaking. Turn off the water tap. Call the after-sales service."
 "E:32" = "Not a fault - the unbalanced load detection system has interrupted the spin cycle because the laundry is unevenly distributed. Distribute small and large items of laundry evenly in the drum."
 "E:93" = "Hot water tap not turned on, or the hot water supply hose is kinked or pinched closed. Turn on the hot water tap and straighten the hose."
@@ -122,9 +125,14 @@ category = "washing_machine"
 manual_id = "lgwt901cwwasher"
 display_name = "LG WT901CW Top-Load Washer"
 manual_document_code = "MFL68485601_06"
-user_serviceable_parts = ["lint filters", "water inlet filters", "fabric softener cup", "levelling feet"]
+user_serviceable_parts = ["two in-drum lint filters", "water inlet filters", "fabric softener cup", "levelling feet"]
 reset_supported = false
-drain_filter_customer_accessible = true
+# LG documents NO customer drain-path maintenance. The two lint filters are a
+# laundry-lint part clipped to the drum wall, not a drain component; the manual's
+# remedy for "will not drain" is the kinked hose and the standpipe height. Its only
+# drain-filter mention sits under "rattling noise" and ends "call for service".
+# Lint-filter maintenance is tracked separately, by the parts list.
+customer_drain_maintenance_supported = false
 
 # From LG document MFL68485601_06. LG uses letter codes, not Bosch-style E:nn -
 # a deliberate cross-manufacturer difference the benchmark exercises.
@@ -146,7 +154,7 @@ reset_supported = false
 # power outage" rather than under a filter heading, and the problem-solving table
 # routes there for "still water in the drum and the machine is unable to drain".
 # The odd filing is the point of ac_05b; the accessibility is a fact, not a trap.
-drain_filter_customer_accessible = true
+customer_drain_maintenance_supported = true
 
 # Miele WWB 020 signals faults with INDICATOR LIGHTS on the control field, not with
 # numeric or letter error codes. This table is intentionally empty: a customer

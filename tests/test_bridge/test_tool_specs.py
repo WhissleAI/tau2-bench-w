@@ -23,8 +23,8 @@ def test_no_user_tool_is_ever_published(specs):
         "read_display_code",
         "smell_check",
         "run_test_cycle",
-        "inspect_drain_filter",
-        "clean_drain_filter",
+        "open_pump_cover",
+        "clean_pump_housing",
     }
     assert hidden.isdisjoint(names)
 

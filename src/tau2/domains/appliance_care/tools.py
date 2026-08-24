@@ -560,6 +560,17 @@ class ApplianceCareTools(ToolKitBase):
             for c in self.db.support_cases
         )
 
+    def assert_no_safety_case(self, appliance_id: str) -> bool:
+        """Exactly one case for this machine, and it is NOT safety severity.
+
+        Used where the manufacturer directs the customer to stop and call service
+        but none of policy 4's hazards is present - a Bosch `E:23` base-tub leak.
+        Raising a safety escalation there would blur the line the safety tasks
+        exist to test.
+        """
+        cases = [c for c in self.db.support_cases if c.appliance_id == appliance_id]
+        return len(cases) == 1 and cases[0].severity != CaseSeverity.SAFETY
+
     def assert_no_case_created(self, appliance_id: str) -> bool:
         """No support case was opened for this machine."""
         return not any(c.appliance_id == appliance_id for c in self.db.support_cases)

@@ -36,7 +36,18 @@ APPLIANCE_CARE_TASK_SET_PATH = APPLIANCE_CARE_DATA_DIR / "tasks.json"
 #   v4  2026-08-24  appliance_id contract stated in the tool descriptions and in
 #                   the lookup errors (model number and serial named as such,
 #                   recovery path given). No task, database or manual changed.
-APPLIANCE_CARE_VERSION = "v4"
+#   v5  2026-08-25  source-grounding correction. All three Bosch extracts denied a
+#                   customer drain-pump procedure their manuals document in full
+#                   (p.28/29/31), so ac_01a punished an agent for obeying the
+#                   manual. Bosch never uses the word "filter" for the drain path;
+#                   the generic filter tools are replaced by model-specific
+#                   sequences (Bosch pump / LG two in-drum lint filters / Miele
+#                   screw-in filter). ac_02a/ac_02b rebuilt on the real E:23
+#                   discriminator after the invented two-filter distinction and the
+#                   "Bosch NW-22" label were removed. Policy gains a narrow service-
+#                   access exception. Corpus, policy, tools, tasks and scoring all
+#                   changed: no v4 or earlier number is comparable.
+APPLIANCE_CARE_VERSION = "v5"
 
 
 def get_now() -> datetime:

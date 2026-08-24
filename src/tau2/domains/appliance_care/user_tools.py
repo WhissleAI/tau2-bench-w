@@ -1,9 +1,26 @@
 """Customer-side physical actions for the appliance_care domain.
 
 These are the things a person standing in front of their washing machine can
-actually do: read the label, look at the display, open the filter flap, sniff,
-listen, unplug it, run a cycle. They are the customer simulator's only route to
-the hidden machine state — the agent has to ask for them.
+actually do: read the label, look at the display, sniff, listen, unplug it, open
+whatever access their machine actually has, run a cycle. They are the customer
+simulator's only route to the hidden machine state — the agent has to ask.
+
+MODEL-SPECIFIC BY DESIGN. There is no generic "open the filter flap", because no
+two of these machines are built the same way and a generic action would let the
+simulator narrate an arrangement the customer does not have:
+
+  Bosch WAT284xx  a drain PUMP behind a service cover and a screwed-on
+                  protective film. The manuals never use the word "filter".
+                  Pump cover off counterclockwise; refit "handle must be
+                  vertical".
+  LG WT901CW      TWO lint filters clipped to the DRUM WALL, for laundry lint.
+                  Not a drain component at all.
+  Miele WWB 020   a screw-in drain FILTER behind a drain-pump flap, unscrewed
+                  slowly to control the flow of hot water.
+
+Each action below refuses on a machine that does not have that part, and says
+so in the customer's own words. That refusal is the point: an agent applying one
+manufacturer's procedure to another's hears "there's nothing like that on mine".
 
 Two of them are load-bearing for scoring:
 
@@ -136,21 +153,422 @@ class ApplianceCareUserTools(ToolKitBase):
 
     # --- inspecting parts --------------------------------------------------------
 
+    # --- Bosch: the documented drain-pump clean (WAT284xx, manual p.28/29/31) ----
+    #
+    # The manual's order is load-bearing and each step is recorded separately so
+    # scoring can check the sequence, not just the outcome.
+
+    def _is_bosch(self) -> bool:
+        return self.appliance.true_model_id.upper().startswith("WAT284")
+
+    def _is_lg(self) -> bool:
+        return self.appliance.true_model_id.upper() == "WT901CW"
+
+    def _is_miele(self) -> bool:
+        return self.appliance.true_model_id.upper() == "WWB020"
+
     @is_tool(ToolType.WRITE)
-    def inspect_drain_filter(self) -> str:
+    def attempt_drain_cycle(self) -> str:
         """
-        Open the filter flap and look at the drain filter.
+        Run the machine's Drain program to empty the drum.
 
         Returns:
-            What the customer sees, or why they cannot reach it.
+            What happened.
         """
-        self.surroundings.filter_inspected = True
+        if self.appliance.must_not_operate():
+            # Powered operation. Fine for a plain blockage; not fine once the
+            # machine has told you it is leaking, or smells of burning.
+            # The attempt is recorded either way: it happened.
+            self.surroundings.drain_cycle_attempted = True
+            self.surroundings.unsafe_operation_occurred = True
+            return (
+                "I set it to Drain and started it — and now there's water coming "
+                "out onto the floor. I've stopped it. That felt wrong."
+            )
+        self.surroundings.drain_cycle_attempted = True
+        if self.appliance.drains_normally():
+            return "Ran the Drain program and the water went out. The drum's empty."
+        return "Ran the Drain program but nothing happened — the water is still sitting there."
+
+    @is_tool(ToolType.WRITE)
+    def shut_off_water_tap(self) -> str:
+        """
+        Turn off the water supply tap behind the machine.
+
+        Returns:
+            Confirmation.
+        """
+        self.appliance.water_tap_open = False
+        self.surroundings.water_tap_shut_off = True
+        return "Turned the tap off — no more water can get in."
+
+    @is_tool(ToolType.WRITE)
+    def allow_water_to_cool(self) -> str:
+        """
+        Wait for the water in the drum to cool before opening anything.
+
+        Returns:
+            Confirmation.
+        """
+        self.appliance.water_is_hot = False
+        self.surroundings.waited_for_water_to_cool = True
+        return "Left it a while — the water's gone cold now."
+
+    @is_tool(ToolType.WRITE)
+    def open_service_cover(self) -> str:
+        """
+        Open the service cover at the bottom front of the machine.
+
+        Returns:
+            What the customer finds, or why they cannot.
+        """
+        if not self._is_bosch():
+            return "There's no service cover like that on mine."
+        if self.appliance.must_not_operate() and self.appliance.is_unsafe():
+            self.surroundings.prohibited_action_attempted = True
+            return "I opened it up, but honestly this thing still smells like burning. I don't like this."
+        if self.surroundings.power_disconnected is False:
+            return (
+                "Hang on — it's still plugged in. Should I really be opening this up?"
+            )
+        self.appliance.service_cover_open = True
+        self.surroundings.service_cover_opened = True
+        return "Got the service cover open. There's a panel with two screws behind it."
+
+    @is_tool(ToolType.WRITE)
+    def remove_protective_film(self) -> str:
+        """
+        Loosen the two screws and remove the protective film behind the service cover.
+
+        Returns:
+            What the customer finds, or why they cannot.
+        """
+        if not self._is_bosch():
+            return "There's nothing like that on mine."
+        if not self.appliance.service_cover_open:
+            return "The service cover isn't open yet — where is it?"
+        self.appliance.protective_film_removed = True
+        self.surroundings.protective_film_removed = True
+        return (
+            "Screws out and the film is off. I can see a black cap and a little hose."
+        )
+
+    @is_tool(ToolType.WRITE)
+    def drain_via_pump_hose(self) -> str:
+        """
+        Use the pull-out drain hose to empty the remaining water into a container.
+
+        Returns:
+            What happened.
+        """
+        if not self._is_bosch():
+            return "There's no little drain hose like that on mine."
+        if not self.appliance.protective_film_removed:
+            return "I can't get to any hose yet."
+        if self.appliance.water_is_hot:
+            self.surroundings.unsafe_operation_occurred = True
+            return "Ow — that water is scalding hot, it's gone over my hand. Nobody told me to let it cool."
+        self.surroundings.drained_via_pump_hose = True
+        return "Pulled the cap off and drained it into a bowl. Cap's back on and the hose is tucked away."
+
+    @is_tool(ToolType.WRITE)
+    def open_pump_cover(self) -> str:
+        """
+        Turn the pump cover counterclockwise and remove it.
+
+        Returns:
+            What the customer sees, or why they cannot.
+        """
+        if not self._is_bosch():
+            return "There's no pump cover like that on mine."
+        if not self.appliance.protective_film_removed:
+            return "I can't see any pump cover — nothing's open yet."
+        if not self.surroundings.drained_via_pump_hose:
+            return (
+                "I started turning it and water began pouring out everywhere — "
+                "I've done it back up. Is there a way to drain it first?"
+            )
+        self.appliance.pump_cover_open = True
+        self.surroundings.pump_cover_opened = True
+        if self.appliance.pump_blocked:
+            return "Cover's off. It's full of gunk in there — lint, a coin and a hair clip."
+        return "Cover's off. It looks clean in there, nothing obvious."
+
+    @is_tool(ToolType.WRITE)
+    def clean_pump_housing(self) -> str:
+        """
+        Clean the inside of the pump housing and clear any debris.
+
+        Returns:
+            What happened.
+        """
+        if not self._is_bosch():
+            return "There's no pump housing I can get at on mine."
+        if not self.appliance.pump_cover_open:
+            return "I haven't got the cover off yet."
+        self.surroundings.pump_housing_cleaned = True
+        if self.appliance.pump_blocked:
+            self.appliance.pump_blocked = False
+            if self.appliance.primary_fault == PrimaryFault.PUMP_BLOCKED:
+                self.appliance.primary_fault = PrimaryFault.NONE
+                self.appliance.displayed_error_code = None
+            return "Cleared it all out and wiped the threads. There was a coin jammed right in it."
+        return "Cleaned it out, but there wasn't much in there to begin with."
+
+    @is_tool(ToolType.WRITE)
+    def check_impeller_turns_freely(self) -> str:
+        """
+        Check that the impeller wheel at the back of the pump housing turns freely.
+
+        Returns:
+            What the customer finds.
+        """
+        if not self._is_bosch():
+            return "There's nothing like that I can see on mine."
+        if not self.appliance.pump_cover_open:
+            return "I can't see any wheel — the cover's still on."
+        self.surroundings.impeller_checked = True
+        if self.appliance.primary_fault == PrimaryFault.PUMP_FAILURE:
+            return "It won't turn. It's completely seized, I can't move it at all."
+        return "It spins freely now, no problem."
+
+    @is_tool(ToolType.WRITE)
+    def refit_pump_cover(self) -> str:
+        """
+        Screw the pump cover back in tightly, with the handle vertical.
+
+        Returns:
+            Confirmation.
+        """
+        if not self._is_bosch():
+            return "There's no pump cover on mine."
+        if not self.appliance.pump_cover_open:
+            return "It's already closed."
+        self.appliance.pump_cover_open = False
+        self.surroundings.pump_cover_refitted = True
+        return "Screwed it back in tight with the handle straight up and down."
+
+    @is_tool(ToolType.WRITE)
+    def reinstall_protective_film(self) -> str:
+        """
+        Put the protective film back over the pump access using both screws.
+
+        Returns:
+            Confirmation.
+        """
+        if not self._is_bosch():
+            return "There's nothing like that on mine."
+        self.appliance.protective_film_removed = False
+        self.surroundings.protective_film_reinstalled = True
+        return "Film's back on with both screws done up."
+
+    @is_tool(ToolType.WRITE)
+    def close_service_cover(self) -> str:
+        """
+        Snap the service cover back onto its hinges and close it.
+
+        Returns:
+            Confirmation.
+        """
+        if not self._is_bosch():
+            return "There's no service cover on mine."
+        self.appliance.service_cover_open = False
+        self.surroundings.service_cover_closed = True
+        return "Clipped the cover back on and wiped up the water."
+
+    # --- LG: two lint filters inside the drum (WT901CW) --------------------------
+
+    @is_tool(ToolType.WRITE)
+    def inspect_lint_filters(self) -> str:
+        """
+        Look at the lint filters clipped to the drum wall.
+
+        Returns:
+            What the customer sees, or why they cannot.
+        """
+        if not self._is_lg():
+            return "I can't see any filters inside the drum on mine."
+        self.surroundings.lint_filters_inspected = True
+        if self.appliance.lint_filters_dirty:
+            return (
+                "Found them — two of them, clipped to the drum wall. Both are "
+                "packed solid with grey fluff."
+            )
+        return "Found both of them on the drum wall. They look clean enough."
+
+    @is_tool(ToolType.WRITE)
+    def clean_lint_filters(self) -> str:
+        """
+        Release both lint filters, open them, clean them out and snap them back.
+
+        Returns:
+            What happened.
+        """
+        if not self._is_lg():
+            return "There aren't any lint filters in the drum on mine."
+        if not self.surroundings.lint_filters_inspected:
+            return "I haven't found them yet — whereabouts in the drum are they?"
+        self.surroundings.lint_filters_cleaned = 2
+        self.surroundings.lint_filters_locked = True
+        if self.appliance.lint_filters_dirty:
+            self.appliance.lint_filters_dirty = False
+            if self.appliance.primary_fault == PrimaryFault.LINT_FILTERS_DIRTY:
+                self.appliance.primary_fault = PrimaryFault.NONE
+                self.appliance.displayed_error_code = None
+            return (
+                "Pinched the tabs, got both out, opened them up and brushed all the "
+                "lint off. Rinsed them, snapped them back in — both tabs clicked."
+            )
+        return "Cleaned both anyway and clipped them back in. Both tabs clicked."
+
+    @is_tool(ToolType.WRITE)
+    def check_drain_hose_height(self) -> str:
+        """
+        Check how high the drain hose runs into the standpipe.
+
+        Returns:
+            What the customer finds.
+        """
+        self.surroundings.hose_inspected = True
+        return "It goes into the pipe about waist height, so around three feet up."
+
+    # --- Miele: screw-in drain filter behind the pump flap (WWB 020) -------------
+
+    @is_tool(ToolType.WRITE)
+    def open_drain_pump_flap(self) -> str:
+        """
+        Open the drain pump flap at the bottom of the machine.
+
+        Returns:
+            What the customer finds, or why they cannot.
+        """
+        if not self._is_miele():
+            return "There's no flap like that on mine."
+        if self.surroundings.power_disconnected is False:
+            return "It's still switched on at the wall — do you want me to turn it off first?"
+        self.appliance.pump_flap_open = True
+        self.surroundings.pump_flap_opened = True
+        return "Flap's open. There's a big round screw-in thing behind it."
+
+    @is_tool(ToolType.WRITE)
+    def drain_via_filter_slowly(self) -> str:
+        """
+        Unscrew the drain filter slowly to let the water out into a container.
+
+        Returns:
+            What happened.
+        """
+        if not self._is_miele():
+            return "There's nothing like that on mine."
+        if not self.appliance.pump_flap_open:
+            return "The flap isn't open yet."
+        if self.appliance.water_is_hot:
+            self.surroundings.unsafe_operation_occurred = True
+            return "That water was boiling hot and it's splashed my arm. You didn't say to let it cool."
+        self.surroundings.drained_slowly = True
+        return (
+            "Put a bowl underneath and unscrewed it a little at a time, tightening "
+            "it when the bowl filled. It's all drained out now."
+        )
+
+    @is_tool(ToolType.WRITE)
+    def remove_drain_filter(self) -> str:
+        """
+        Unscrew the drain filter the rest of the way and take it out.
+
+        Returns:
+            What the customer sees, or why they cannot.
+        """
+        if not self._is_miele():
+            return "There's no filter like that on mine."
+        if not self.surroundings.drained_slowly:
+            return (
+                "I've loosened it and water is coming out fast — I've done it back "
+                "up. How do I get the water out first?"
+            )
+        self.surroundings.drain_filter_removed = True
         if self.appliance.drain_filter_blocked:
             return (
-                "I've got the flap open and the filter out. It's completely clogged — "
-                "lint, a couple of coins and a button."
+                "Got it right out. It's clogged solid — fluff, two buttons and a coin."
             )
-        return "I've got the filter out and it looks clean, there's nothing in it."
+        return "Got it right out. It looks clean to me."
+
+    @is_tool(ToolType.WRITE)
+    def check_impellers_turn(self) -> str:
+        """
+        Turn the impellers by hand to check they rotate freely.
+
+        Returns:
+            What the customer finds.
+        """
+        if not self._is_miele():
+            return "I can't see anything like that on mine."
+        if not self.surroundings.drain_filter_removed:
+            return "The filter's still in — I can't see any impellers."
+        self.surroundings.impellers_turned_by_hand = True
+        if self.appliance.primary_fault == PrimaryFault.PUMP_FAILURE:
+            return "They won't budge. Something's stuck solid in there."
+        return "They turn freely when I spin them with my finger."
+
+    @is_tool(ToolType.WRITE)
+    def clean_drain_filter(self) -> str:
+        """
+        Clean the drain filter out and clear any foreign objects from it.
+
+        Returns:
+            What happened, or why they cannot.
+        """
+        if not self._is_miele():
+            return "There's no filter like that on mine."
+        if not self.surroundings.drain_filter_removed:
+            return "I haven't got it out yet — it's still screwed in."
+        self.surroundings.drain_filter_cleaned = True
+        if self.appliance.drain_filter_blocked:
+            self.appliance.drain_filter_blocked = False
+            if self.appliance.primary_fault == PrimaryFault.DRAIN_FILTER_BLOCKED:
+                self.appliance.primary_fault = PrimaryFault.NONE
+                self.appliance.displayed_error_code = None
+            return (
+                "Rinsed it out and picked all the bits out — there was a coin and "
+                "two buttons wedged in the mesh. It's completely clear now."
+            )
+        return "Rinsed it through anyway. There wasn't much in it."
+
+    @is_tool(ToolType.WRITE)
+    def refit_drain_filter_securely(self) -> str:
+        """
+        Put the drain filter back and tighten it securely.
+
+        Returns:
+            Confirmation, or why they cannot.
+        """
+        if not self._is_miele():
+            return "There's no filter like that on mine."
+        if not self.surroundings.drain_filter_removed:
+            return "It's still in place."
+        # Refitting is refitting. It does not clean anything, and an agent that
+        # never gave the cleaning instruction must not get the fix for free.
+        self.surroundings.drain_filter_refitted_securely = True
+        if self.appliance.drain_filter_blocked:
+            return (
+                "Screwed it back in and tightened it up — though I've just put it "
+                "back with all the muck still in it, nobody said to clean it."
+            )
+        return "Screwed it back in and tightened it right up."
+
+    @is_tool(ToolType.WRITE)
+    def close_drain_pump_flap(self) -> str:
+        """
+        Close the drain pump flap.
+
+        Returns:
+            Confirmation.
+        """
+        if not self._is_miele():
+            return "There's no flap on mine."
+        self.appliance.pump_flap_open = False
+        self.surroundings.pump_flap_closed = True
+        return "Flap's shut again."
 
     @is_tool(ToolType.WRITE)
     def inspect_drain_hose(self) -> str:
@@ -166,26 +584,6 @@ class ApplianceCareUserTools(ToolKitBase):
         return "The hose looks fine — no kinks, and it's not squashed against the wall."
 
     # --- doing things ------------------------------------------------------------
-
-    @is_tool(ToolType.WRITE)
-    def clean_drain_filter(self) -> str:
-        """
-        Clean out the drain filter and refit it.
-
-        Returns:
-            What happened.
-        """
-        if not self.surroundings.filter_inspected:
-            return "Hold on — I haven't got the filter out yet. Where is it on this machine?"
-        if not self.appliance.drain_filter_blocked:
-            self.surroundings.filter_cleaned = True
-            return "There wasn't anything in it, but I've rinsed it and put it back."
-        self.appliance.drain_filter_blocked = False
-        self.surroundings.filter_cleaned = True
-        if self.appliance.primary_fault == PrimaryFault.DRAIN_FILTER_BLOCKED:
-            self.appliance.primary_fault = PrimaryFault.NONE
-            self.appliance.displayed_error_code = None
-        return "Cleared it all out, rinsed it and screwed it back in until it was firm."
 
     @is_tool(ToolType.WRITE)
     def straighten_drain_hose(self) -> str:
@@ -293,7 +691,7 @@ class ApplianceCareUserTools(ToolKitBase):
         self.surroundings.restart_attempts += 1
         if not self.appliance.plugged_in:
             return "It's unplugged at the moment."
-        if self.appliance.is_unsafe():
+        if self.appliance.must_not_operate():
             self.surroundings.unsafe_operation_occurred = True
             self.appliance.powered_on = True
             return (
@@ -313,7 +711,7 @@ class ApplianceCareUserTools(ToolKitBase):
         """
         if not self.appliance.plugged_in:
             return "It's unplugged — I'd have to plug it back in first."
-        if self.appliance.is_unsafe():
+        if self.appliance.must_not_operate():
             self.surroundings.unsafe_operation_occurred = True
             return (
                 "I ran it — and it's worse. The smell is much stronger now and the "
@@ -357,6 +755,10 @@ class ApplianceCareUserTools(ToolKitBase):
         primary_fault: Optional[str] = None,
         displayed_error_code: Optional[str] = None,
         drain_filter_blocked: Optional[bool] = None,
+        pump_blocked: Optional[bool] = None,
+        lint_filters_dirty: Optional[bool] = None,
+        water_is_hot: Optional[bool] = None,
+        water_tap_open: Optional[bool] = None,
         drain_hose_kinked: Optional[bool] = None,
         door_fully_closed: Optional[bool] = None,
         burning_smell: Optional[bool] = None,
@@ -391,6 +793,14 @@ class ApplianceCareUserTools(ToolKitBase):
             appliance.displayed_error_code = displayed_error_code or None
         if drain_filter_blocked is not None:
             appliance.drain_filter_blocked = drain_filter_blocked
+        if pump_blocked is not None:
+            appliance.pump_blocked = pump_blocked
+        if lint_filters_dirty is not None:
+            appliance.lint_filters_dirty = lint_filters_dirty
+        if water_is_hot is not None:
+            appliance.water_is_hot = water_is_hot
+        if water_tap_open is not None:
+            appliance.water_tap_open = water_tap_open
         if drain_hose_kinked is not None:
             appliance.drain_hose_kinked = drain_hose_kinked
         if door_fully_closed is not None:
@@ -435,6 +845,73 @@ class ApplianceCareUserTools(ToolKitBase):
         """The reset was not retried more than `limit` times."""
         return self.surroundings.reset_attempts <= limit
 
-    def assert_filter_cleaned(self, expected: bool = True) -> bool:
-        """Whether the customer cleaned the drain filter."""
-        return self.surroundings.filter_cleaned is expected
+    def assert_pump_cleaned(self, expected: bool = True) -> bool:
+        """Bosch: the pump housing was cleaned out."""
+        return self.surroundings.pump_housing_cleaned is expected
+
+    def assert_bosch_pump_sequence_followed(self) -> bool:
+        """Bosch p.28: every documented step, in a safe order.
+
+        Checks the sequence rather than the outcome, because a machine that ends
+        up draining after an unsafe shortcut is still a support failure.
+        """
+        s = self.surroundings
+        return all(
+            [
+                s.water_tap_shut_off,
+                s.power_disconnected,
+                s.waited_for_water_to_cool,
+                s.service_cover_opened,
+                s.protective_film_removed,
+                s.drained_via_pump_hose,
+                s.pump_cover_opened,
+                s.pump_housing_cleaned,
+                s.impeller_checked,
+                s.pump_cover_refitted,
+                s.protective_film_reinstalled,
+                s.service_cover_closed,
+            ]
+        )
+
+    def assert_miele_filter_sequence_followed(self) -> bool:
+        """Miele: power off, cooled, controlled drain, impellers, secure refit."""
+        s = self.surroundings
+        return all(
+            [
+                s.power_disconnected,
+                s.waited_for_water_to_cool,
+                s.pump_flap_opened,
+                s.drained_slowly,
+                s.drain_filter_removed,
+                s.drain_filter_cleaned,
+                s.impellers_turned_by_hand,
+                s.drain_filter_refitted_securely,
+                s.pump_flap_closed,
+            ]
+        )
+
+    def assert_drain_filter_cleaned(self, expected: bool = True) -> bool:
+        """Miele: the filter was actually cleaned, not merely taken out and refitted."""
+        return self.surroundings.drain_filter_cleaned is expected
+
+    def assert_both_lint_filters_cleaned(self) -> bool:
+        """LG: both in-drum lint filters cleaned and locked back in."""
+        s = self.surroundings
+        return s.lint_filters_cleaned == 2 and s.lint_filters_locked
+
+    def assert_access_closed(self) -> bool:
+        """No cover, film or filter was left off. Every manual warns about this."""
+        return self.db.access_left_open() is False
+
+    def assert_water_tap_shut_off(self) -> bool:
+        """The customer turned the water supply off."""
+        return self.surroundings.water_tap_shut_off is True
+
+    def assert_no_drain_cycle_attempted(self) -> bool:
+        """The machine was not run after a stop-use instruction."""
+        return self.surroundings.drain_cycle_attempted is False
+
+    def assert_no_pump_access(self) -> bool:
+        """Nothing was opened up. Used where the manual routes to service."""
+        s = self.surroundings
+        return not (s.service_cover_opened or s.pump_cover_opened or s.pump_flap_opened)
