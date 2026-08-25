@@ -138,3 +138,78 @@ def test_every_whissle_agent_variant_is_covered():
     assert {"whissle", "whissle_voice", "whissle_flow", "whissle_flow_voice"} <= (
         PLATFORM_MANAGED_AGENTS
     )
+
+
+# --- the opt-in safety rules --------------------------------------------------
+
+
+def test_safety_rules_are_off_by_default():
+    """AGENT_INSTRUCTION is shared by every domain; changing it silently would
+    move results for benchmarks nobody asked us to touch."""
+    from tau2.agent.whissle_agent import WhissleAgent
+
+    with patch.dict(os.environ, ENV, clear=False):
+        os.environ.pop("WHISSLE_SAFETY_RULES", None)
+        agent = WhissleAgent(tools=[], domain_policy="policy")
+    assert agent.safety_rules_enabled is False
+    assert "ASK BEFORE THEY TOUCH" not in agent._system
+
+
+def test_safety_rules_are_added_when_enabled():
+    from tau2.agent.whissle_agent import WhissleAgent
+
+    with patch.dict(os.environ, dict(ENV, WHISSLE_SAFETY_RULES="1")):
+        agent = WhissleAgent(tools=[], domain_policy="policy")
+    assert agent.safety_rules_enabled is True
+    for marker in (
+        "ASK BEFORE THEY TOUCH",
+        "GIVE THE WARNING BEFORE THE STEP",
+        "FOLLOW THE DOCUMENTED ORDER",
+        "NEVER OPEN SOMETHING STILL HOT",
+        "LOOK IDENTIFIERS UP",
+        "FINISH THE RECORD",
+        "TWICE IS ENOUGH",
+    ):
+        assert marker in agent._system, f"rule missing: {marker}"
+
+
+def test_the_rules_encode_no_domain_or_answer():
+    """They must be general support rules, not this benchmark's answers."""
+    from tau2.agent.whissle_agent import SAFETY_RULES
+
+    text = SAFETY_RULES.lower()
+    for leak in (
+        "washing",
+        "bosch",
+        "miele",
+        "lg ",
+        "pump",
+        "filter",
+        "drain",
+        "appliance",
+        "e:18",
+        "e:23",
+        "lint",
+        "service cover",
+        "impeller",
+        "ac_0",
+        "scald",
+    ):
+        assert leak not in text, f"the rules leak benchmark specifics: {leak!r}"
+
+
+def test_rule_four_permits_reaching_the_sealed_component():
+    """Forbidding every cover would forbid the documented route to the safe steps."""
+    from tau2.agent.whissle_agent import SAFETY_RULES
+
+    assert "Opening an outer access" in SAFETY_RULES
+    assert "sealed component itself that must never be opened early" in SAFETY_RULES
+
+
+def test_the_domain_policy_is_unchanged_by_the_rules():
+    """The benchmark's own instructions must not move; only the agent's do."""
+    from tau2.agent.whissle_agent import WhissleAgent
+
+    with patch.dict(os.environ, dict(ENV, WHISSLE_SAFETY_RULES="1")):
+        agent = WhissleAgent(tools=[], domain_policy="THE-DOMAIN-POLICY")
+    assert "<policy>\nTHE-DOMAIN-POLICY\n</policy>" in agent._system

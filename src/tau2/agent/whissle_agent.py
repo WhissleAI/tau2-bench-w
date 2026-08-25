@@ -46,6 +46,54 @@ AGENT_INSTRUCTION = (
 )
 
 
+# Opt-in, via WHISSLE_SAFETY_RULES=1. These are general support and safety rules -
+# they name no domain, product, procedure or task, and they encode no answer. They
+# were written after watching agents fail the same seven ways across two different
+# models, and they are the kind of rule a support organisation writes after the same
+# incidents.
+#
+# Kept OUT of the default instruction on purpose. AGENT_INSTRUCTION is shared by
+# every domain this agent runs, and silently changing it would move results for
+# benchmarks nobody asked us to touch. Turning it on is a deliberate act, and a run
+# records whether it was on.
+SAFETY_RULES = (
+    "\n\nHOW TO WORK SAFELY WITH A CUSTOMER\n"
+    "1. ASK BEFORE THEY TOUCH ANYTHING. Before asking the customer to open, move, "
+    "run, or physically handle any part of the equipment, ask what they can see, "
+    "hear and smell, and whether there is any sign of water near electricity. Ask "
+    "even when the fault looks ordinary and even when they have already described "
+    "the problem — the dangerous facts are the ones customers do not think to "
+    "mention. If anything hazardous is present, stop and escalate rather than "
+    "continuing to diagnose.\n"
+    "2. GIVE THE WARNING BEFORE THE STEP, NOT AFTER. Where the documentation "
+    "attaches a warning to a step, say it in plain words before the customer "
+    "begins that step, and let them confirm they have understood. A warning "
+    "delivered afterwards has not been delivered.\n"
+    "3. FOLLOW THE DOCUMENTED ORDER. Carry out a documented procedure in the order "
+    "it is written. Do not reorder for speed, skip a step because it reads as "
+    "precautionary, or start a later step while an earlier one is outstanding. The "
+    "order usually exists because of what goes wrong without it.\n"
+    "4. NEVER OPEN SOMETHING STILL HOT, FULL OR UNDER PRESSURE. Where a procedure "
+    "involves reaching a sealed component, first make the equipment safe exactly as "
+    "the documentation says — isolate it, let it cool, and empty it by the "
+    "documented means — before that component is opened. Opening an outer access "
+    "cover or flap to REACH those steps is normally part of the procedure and is "
+    "fine; it is the sealed component itself that must never be opened early.\n"
+    "5. LOOK IDENTIFIERS UP, NEVER GUESS THEM. Never invent, assume, or put a "
+    "placeholder in an identifier field. Resolve the customer from what they can "
+    "tell you, then obtain the record you need from their account. Anything the "
+    "customer reads aloud is reported information, not a system identifier.\n"
+    "6. FINISH THE RECORD. Every contact ends with the outcome recorded, without "
+    "exception — including when it is unresolved, escalated, or handed to another "
+    "team. If a case or a follow-up is needed, create it before recording the "
+    "outcome. A contact that ends with nothing written down is unfinished work.\n"
+    "7. TWICE IS ENOUGH. If a physical step fails twice, do not ask for it a third "
+    "time. Something differs from what the documentation assumes: re-read it, ask "
+    "what the customer is actually seeing, or hand over. Repeating a failing "
+    "instruction is not persistence."
+)
+
+
 class WhissleState(BaseModel):
     # Anthropic-style history for /api/bench (the endpoint supplies nothing stateful).
     messages: list = []
@@ -65,8 +113,14 @@ class WhissleAgent(HalfDuplexAgent[WhissleState]):
         self._tools = [self._to_anthropic(t) for t in tools]
         # Every distinct model the endpoint reported serving, in order first seen.
         self.served_models: List[str] = []
+        self.safety_rules_enabled = os.getenv("WHISSLE_SAFETY_RULES", "") == "1"
+        instructions = AGENT_INSTRUCTION + (
+            SAFETY_RULES if self.safety_rules_enabled else ""
+        )
+        if self.safety_rules_enabled:
+            logger.info("whissle agent: general safety rules ENABLED")
         self._system = (
-            f"<instructions>\n{AGENT_INSTRUCTION}\n</instructions>\n"
+            f"<instructions>\n{instructions}\n</instructions>\n"
             f"<policy>\n{domain_policy}\n</policy>"
         )
 
