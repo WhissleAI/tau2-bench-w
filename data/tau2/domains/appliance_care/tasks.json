@@ -346,8 +346,7 @@
           },
           "compare_args": [
             "appliance_id",
-            "outcome",
-            "manual_id_used"
+            "outcome"
           ]
         }
       ],
@@ -416,7 +415,7 @@
     "description": {
       "purpose": "Model resolution, easy case. The label is legible and names the WAT28402UC - the only one of the three Bosch models whose manual documents E:23. The manual's text is \"Water in the base tub, appliance leaking. Turn off the water tap. Call the after-sales service!\", so the documented route is to stop, shut the tap and hand over - not to troubleshoot.",
       "relevant_policies": "Policy 1, 2, 5 (do not open the pump when the manual routes to service), 8.",
-      "notes": "Paired with ac_02b, which is the same machine and the same code with a scuffed label. Both sit on APP-003 so warranty state is identical and cannot become the discriminator: this pair is about resolving the model, not about coverage. No warranty check and no appointment are required."
+      "notes": "Paired with ac_02b, which is the same machine and the same code with a scuffed label. Both sit on APP-003 so warranty state is identical and cannot become the discriminator: this pair is about resolving the model, not about coverage. No warranty check and no appointment are required. The severity here is not a matter of taste: policy 4 enumerates the conditions that require a safety escalation, and a base-tub leak is not one of them. An agent that reads the policy files a normal case."
     },
     "user_scenario": {
       "persona": "You are Priya Raman. Calm and precise; you read out exactly what you see.",
@@ -487,15 +486,15 @@
           "action_id": "case",
           "requestor": "assistant",
           "name": "create_support_case",
+          "compare_args": [
+            "appliance_id",
+            "category"
+          ],
           "arguments": {
             "appliance_id": "APP-003",
             "category": "drainage",
             "summary": "E:23 water in the base tub, appliance leaking. Customer told to stop using it and shut off the tap. Manual routes to after-sales service."
-          },
-          "compare_args": [
-            "appliance_id",
-            "category"
-          ]
+          }
         },
         {
           "action_id": "res",
@@ -579,11 +578,12 @@
         },
         {
           "env_type": "assistant",
-          "func_name": "assert_no_safety_case",
+          "func_name": "assert_case_severity",
           "arguments": {
-            "appliance_id": "APP-003"
+            "appliance_id": "APP-003",
+            "severity": "normal"
           },
-          "message": "E:23 is a manufacturer stop-use for a leak, not one of policy 4's hazards - a normal case is correct."
+          "message": "Policy 4 lists what counts as a safety condition and a base-tub leak is not among them, so this is a normal case. The manufacturer directs the customer to stop and call service; that is a handover, not one of the hazards that triggers a safety escalation."
         }
       ],
       "reward_basis": [
@@ -598,7 +598,7 @@
     "description": {
       "purpose": "Model resolution, hard case. The same machine and the same E:23, but the label is scuffed and reads only 'Bosch WAT284'. That fragment matches ALL THREE Bosch models. The agent must resolve the appliance through the serial number and the customer record, then confirm the code against THAT model's manual.",
       "relevant_policies": "Policy 1 (identify before advising), 2, 5, 8.",
-      "notes": "The trap: E:23 is documented for the WAT28402UC alone, so an agent can be tempted to reason backwards - 'only the 402 has E:23, so it must be a 402'. A code the customer reads aloud is reported input, not proof of identity; they may have misread it or be describing another machine. Only the serial resolves it. Same appliance and same warranty state as ac_02a, so the pair differs by one fact: model_label_legible."
+      "notes": "The trap: E:23 is documented for the WAT28402UC alone, so an agent can be tempted to reason backwards - 'only the 402 has E:23, so it must be a 402'. A code the customer reads aloud is reported input, not proof of identity; they may have misread it or be describing another machine. Only the serial resolves it. Same appliance and same warranty state as ac_02a, so the pair differs by one fact: model_label_legible. The severity here is not a matter of taste: policy 4 enumerates the conditions that require a safety escalation, and a base-tub leak is not one of them. An agent that reads the policy files a normal case."
     },
     "user_scenario": {
       "persona": "You are Priya Raman. Calm and precise. You read out exactly what you can see, and you will not fill in characters you cannot make out.",
@@ -675,15 +675,15 @@
           "action_id": "case",
           "requestor": "assistant",
           "name": "create_support_case",
+          "compare_args": [
+            "appliance_id",
+            "category"
+          ],
           "arguments": {
             "appliance_id": "APP-003",
             "category": "drainage",
             "summary": "E:23 water in the base tub, appliance leaking. Customer told to stop using it and shut off the tap. Manual routes to after-sales service."
-          },
-          "compare_args": [
-            "appliance_id",
-            "category"
-          ]
+          }
         },
         {
           "action_id": "res",
@@ -768,11 +768,12 @@
         },
         {
           "env_type": "assistant",
-          "func_name": "assert_no_safety_case",
+          "func_name": "assert_case_severity",
           "arguments": {
-            "appliance_id": "APP-003"
+            "appliance_id": "APP-003",
+            "severity": "normal"
           },
-          "message": "E:23 is a manufacturer stop-use for a leak, not one of policy 4's hazards - a normal case is correct."
+          "message": "Policy 4 lists what counts as a safety condition and a base-tub leak is not among them, so this is a normal case. The manufacturer directs the customer to stop and call service; that is a handover, not one of the hazards that triggers a safety escalation."
         }
       ],
       "reward_basis": [
@@ -1036,6 +1037,24 @@
             "appliance_id": "APP-001",
             "outcome": "service_scheduled"
           }
+        },
+        {
+          "env_type": "assistant",
+          "func_name": "assert_manual_used",
+          "arguments": {
+            "appliance_id": "APP-001",
+            "manual_id": "boschwat28400ucwasher"
+          },
+          "message": "The resolution cites a manual other than this model's."
+        },
+        {
+          "env_type": "assistant",
+          "func_name": "assert_case_severity",
+          "arguments": {
+            "appliance_id": "APP-001",
+            "severity": "normal"
+          },
+          "message": "A routine drainage fault was filed as a safety escalation."
         }
       ],
       "reward_basis": [
@@ -1299,6 +1318,24 @@
             "appliance_id": "APP-006",
             "outcome": "service_scheduled"
           }
+        },
+        {
+          "env_type": "assistant",
+          "func_name": "assert_manual_used",
+          "arguments": {
+            "appliance_id": "APP-006",
+            "manual_id": "boschwat28400ucwasher"
+          },
+          "message": "The resolution cites a manual other than this model's."
+        },
+        {
+          "env_type": "assistant",
+          "func_name": "assert_case_severity",
+          "arguments": {
+            "appliance_id": "APP-006",
+            "severity": "normal"
+          },
+          "message": "A routine drainage fault was filed as a safety escalation."
         }
       ],
       "reward_basis": [
@@ -1432,6 +1469,15 @@
             "appliance_id": "APP-002",
             "outcome": "resolved_self_service"
           }
+        },
+        {
+          "env_type": "assistant",
+          "func_name": "assert_manual_used",
+          "arguments": {
+            "appliance_id": "APP-002",
+            "manual_id": "boschwat28401ucwasher"
+          },
+          "message": "The resolution cites a manual other than this model's."
         }
       ],
       "reward_basis": [
@@ -1541,8 +1587,7 @@
           },
           "compare_args": [
             "appliance_id",
-            "outcome",
-            "manual_id_used"
+            "outcome"
           ]
         }
       ],

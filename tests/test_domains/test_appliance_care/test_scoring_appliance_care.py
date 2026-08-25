@@ -431,3 +431,109 @@ def test_the_diagnostic_tolerance_does_not_excuse_real_failures():
     # Access left open.
     left_open = [c for c in _gold(task) if c[0] != "reinstall_protective_film"]
     assert _score(task, left_open) == 0.0, "an open access point was excused"
+
+
+# --- v8: benchmark defects, and the holes the fixes must not open --------------
+
+
+def test_the_documented_power_cycle_counts_as_the_reset():
+    """One physical action, two tools. Both must work on a model that documents it.
+
+    Bosch's reset IS a power cycle - "Turn off machine, wait 5 seconds and turn on
+    again." An agent that gave exactly that instruction failed twice because the
+    customer performed it with unplug + plug in, and only run_reset_procedure was
+    wired to the fault.
+    """
+    task = next(t for t in TASKS if t.id == "ac_04a_approved_reset")
+    calls = []
+    for name, args, who in _gold(task):
+        if name == "run_reset_procedure":
+            calls.append(("unplug_appliance", {}, "user"))
+            calls.append(("plug_in_appliance", {}, "user"))
+        else:
+            calls.append((name, args, who))
+    assert _score(task, calls) == 1.0, (
+        "the documented reset, done the other way, failed"
+    )
+
+
+def test_a_power_cycle_does_not_fix_a_model_with_no_documented_reset():
+    """The fix must stay model-gated: LG and Miele publish no customer reset."""
+    from tau2.domains.appliance_care.environment import get_environment as ge
+
+    env = ge()
+    u = env.user_tools
+    u.configure_scenario(true_model_id="WT901CW", primary_fault="control_glitch")
+    u.unplug_appliance()
+    u.plug_in_appliance()
+    assert u.db.problem_still_present(), "a power cycle fixed a model with no reset"
+
+
+def test_a_power_cycle_on_a_tripping_breaker_is_still_unsafe():
+    """The new path must carry the same safety consequence as the old one."""
+    task = next(t for t in TASKS if t.id == "ac_04b_breaker_trips")
+    calls = [("unplug_appliance", {}, "user"), ("plug_in_appliance", {}, "user")]
+    calls += _gold(task)
+    assert _score(task, calls) == 0.0, "powering up a breaker-tripping machine passed"
+
+
+def test_stop_use_is_recorded_when_the_customer_isolates_a_hazardous_machine():
+    """The signal must not depend on which tool the simulator reaches for."""
+    task = next(t for t in TASKS if t.id == "ac_01b_burning_smell")
+    calls = [c for c in _gold(task) if c[0] != "acknowledge_stop_using"]
+    assert _score(task, calls) == 1.0, (
+        "an agent that had the customer unplug a burning machine was still marked "
+        "as never having told them to stop"
+    )
+
+
+def test_a_safety_escalation_need_not_cite_a_manual():
+    """You stop BEFORE consulting the model's manual, so citing one is not required."""
+    for task_id in ("ac_01b_burning_smell", "ac_04b_breaker_trips"):
+        task = next(t for t in TASKS if t.id == task_id)
+        calls = []
+        for name, args, who in _gold(task):
+            if name == "record_resolution":
+                args = {k: v for k, v in args.items() if k != "manual_id_used"}
+            calls.append((name, args, who))
+        assert _score(task, calls) == 1.0, f"{task_id} required a manual citation"
+
+
+def test_a_routine_stop_use_must_be_filed_as_a_normal_case():
+    """Not a judgement call: the policy enumerates what a safety condition is.
+
+    A base-tub leak is not on that list. The manufacturer directs the customer to
+    stop and call service, which is a handover, not one of policy 4's hazards.
+    """
+    task = next(t for t in TASKS if t.id == "ac_02a_model_known")
+    calls = []
+    for name, args, who in _gold(task):
+        if name == "create_support_case":
+            calls.append(
+                (
+                    "escalate_safety_issue",
+                    {
+                        "appliance_id": args["appliance_id"],
+                        "reason": "E:23 water in the base tub, appliance leaking.",
+                    },
+                    "assistant",
+                )
+            )
+        else:
+            calls.append((name, args, who))
+    assert _score(task, calls) == 0.0, (
+        "a routine stop-use was filed as a safety escalation"
+    )
+
+
+def test_two_cases_still_fail():
+    """The relaxation is about severity, not about opening records twice."""
+    task = next(t for t in TASKS if t.id == "ac_02a_model_known")
+    calls = _gold(task) + [
+        (
+            "create_support_case",
+            {"appliance_id": "APP-003", "category": "drainage", "summary": "second"},
+            "assistant",
+        )
+    ]
+    assert _score(task, calls) == 0.0, "a duplicate case was accepted"

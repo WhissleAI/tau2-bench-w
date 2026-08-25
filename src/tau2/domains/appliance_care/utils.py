@@ -70,7 +70,19 @@ APPLIANCE_CARE_TASK_SET_PATH = APPLIANCE_CARE_DATA_DIR / "tasks.json"
 #                   efficiency cost, not a failure. ACTION is kept, because it is
 #                   the only thing that catches an agent guessing the appliance_id
 #                   without ever identifying the customer.
-APPLIANCE_CARE_VERSION = "v7"
+#   v8  2026-08-26  benchmark-defect pass after the v7 baseline. Three defects,
+#                   all of which failed agents for things they had done right.
+#                   A power cycle now counts as the documented reset on models
+#                   that publish one, because "turn it off and on again" IS that
+#                   procedure and only one of two equivalent tools was wired to
+#                   it. Isolating a hazardous machine now records the stop-use
+#                   instruction, so the signal no longer depends on whether the
+#                   simulator reached for acknowledge_stop_using. A safety
+#                   escalation no longer has to cite a manual, since you stop
+#                   before consulting one. `severity` and `manual_id_used` moved
+#                   out of the DB hash into named assertions. Scoring changed:
+#                   v7 numbers are not comparable.
+APPLIANCE_CARE_VERSION = "v8"
 
 
 def get_now() -> datetime:

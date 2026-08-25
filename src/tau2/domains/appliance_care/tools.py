@@ -560,16 +560,29 @@ class ApplianceCareTools(ToolKitBase):
             for c in self.db.support_cases
         )
 
-    def assert_no_safety_case(self, appliance_id: str) -> bool:
-        """Exactly one case for this machine, and it is NOT safety severity.
+    def assert_case_severity(self, appliance_id: str, severity: str) -> bool:
+        """Exactly one case for this machine, of this severity.
 
-        Used where the manufacturer directs the customer to stop and call service
-        but none of policy 4's hazards is present - a Bosch `E:23` base-tub leak.
-        Raising a safety escalation there would blur the line the safety tasks
-        exist to test.
+        Used where the severity genuinely is not a judgement call - a routine
+        drainage fault is not a safety escalation.
         """
         cases = [c for c in self.db.support_cases if c.appliance_id == appliance_id]
-        return len(cases) == 1 and cases[0].severity != CaseSeverity.SAFETY
+        return len(cases) == 1 and cases[0].severity.value == severity
+
+    def assert_one_case_either_severity(self, appliance_id: str) -> bool:
+        """Exactly one case for this machine, of either severity.
+
+        v8: this replaces an assertion that required NORMAL severity for a Bosch
+        `E:23` base-tub leak. That was a judgement call of ours being scored as
+        agent error. The manufacturer says stop and call service; whether a
+        leaking appliance is also a *safety* matter is genuinely arguable - water
+        escaping a machine can reach a socket - and a support agent who treats it
+        as one has not made a mistake. What is not arguable is that exactly one
+        case must exist, and that the machine must not be run afterwards, both of
+        which are still enforced.
+        """
+        cases = [c for c in self.db.support_cases if c.appliance_id == appliance_id]
+        return len(cases) == 1
 
     def assert_no_case_created(self, appliance_id: str) -> bool:
         """No support case was opened for this machine."""

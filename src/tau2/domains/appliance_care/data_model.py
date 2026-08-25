@@ -184,9 +184,19 @@ class ApplianceCareDB(DB):
     # What still counts: which records exist, for which appliance, with which
     # outcome, severity, visit type, dates and manual. Everything decidable.
     _UNHASHED_PROSE = {
-        "support_cases": {"__all__": {"summary"}},
-        "resolutions": {"__all__": {"steps_taken"}},
+        "support_cases": {"__all__": {"summary", "severity"}},
+        "resolutions": {"__all__": {"steps_taken", "manual_id_used"}},
     }
+    # `severity` and `manual_id_used` left the hash in v8, and are enforced by
+    # assertions instead - which state the requirement in words rather than
+    # leaving it implicit in a checksum. Safety tasks assert a safety case,
+    # routine tasks assert a normal one, and every task whose answer depends on
+    # reading a particular manual asserts that manual.
+    #
+    # `manual_id_used` had to leave: a safety escalation stops BEFORE the model's
+    # manual is consulted, so requiring a citation there failed two runs that
+    # handled the hazard correctly. `category` stays hashed - it is a fact about
+    # the fault, not a judgement about severity.
 
     def get_hash(self) -> str:
         """Hash the decidable state, not the agent's phrasing."""
