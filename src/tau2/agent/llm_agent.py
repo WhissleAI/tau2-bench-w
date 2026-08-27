@@ -1,3 +1,4 @@
+import os
 from typing import Generic, List, Optional, TypeVar
 
 from loguru import logger
@@ -77,8 +78,17 @@ class LLMAgent(
 
     @property
     def system_prompt(self) -> str:
+        # The same opt-in general safety rules the Whissle agent can carry, so a
+        # control run can answer "do these rules help any model, or only that
+        # platform?" without a second set of wording to keep in sync. Off unless
+        # WHISSLE_SAFETY_RULES=1, so no existing benchmark moves silently.
+        instruction = AGENT_INSTRUCTION
+        if os.getenv("WHISSLE_SAFETY_RULES", "") == "1":
+            from tau2.agent.whissle_agent import SAFETY_RULES
+
+            instruction = instruction + SAFETY_RULES
         return SYSTEM_PROMPT.format(
-            domain_policy=self.domain_policy, agent_instruction=AGENT_INSTRUCTION
+            domain_policy=self.domain_policy, agent_instruction=instruction
         )
 
     def get_init_state(

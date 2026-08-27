@@ -213,3 +213,27 @@ def test_the_domain_policy_is_unchanged_by_the_rules():
     with patch.dict(os.environ, dict(ENV, WHISSLE_SAFETY_RULES="1")):
         agent = WhissleAgent(tools=[], domain_policy="THE-DOMAIN-POLICY")
     assert "<policy>\nTHE-DOMAIN-POLICY\n</policy>" in agent._system
+
+
+def test_the_llm_agent_can_carry_the_same_rules():
+    """One wording, two agents - so a control run answers "do these help ANY
+    model?" without a second copy of the text drifting out of sync."""
+    from tau2.agent.llm_agent import LLMAgent
+    from tau2.domains.appliance_care.environment import get_environment
+
+    env = get_environment()
+    with patch.dict(os.environ, {"WHISSLE_SAFETY_RULES": "1"}):
+        on = LLMAgent(
+            tools=env.get_tools(), domain_policy=env.get_policy(), llm="gpt-4.1"
+        ).system_prompt
+    with patch.dict(os.environ, {"WHISSLE_SAFETY_RULES": ""}):
+        off = LLMAgent(
+            tools=env.get_tools(), domain_policy=env.get_policy(), llm="gpt-4.1"
+        ).system_prompt
+
+    assert "ASK BEFORE THEY TOUCH" in on
+    assert "ASK BEFORE THEY TOUCH" not in off
+    # The benchmark's own instructions must be identical either way.
+    assert (
+        "ApplianceCare Support Policy" in on and "ApplianceCare Support Policy" in off
+    )
