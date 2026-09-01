@@ -122,7 +122,13 @@ def make_run_name(config: RunConfig) -> str:
 # Agents whose model is chosen by the platform, not by --agent-llm. Labelling
 # these with the flag's value states something untrue about the run.
 PLATFORM_MANAGED_AGENTS = frozenset(
-    {"whissle", "whissle_voice", "whissle_flow", "whissle_flow_voice"}
+    {
+        "platform_adapter",
+        "whissle",
+        "whissle_voice",
+        "whissle_flow",
+        "whissle_flow_voice",
+    }
 )
 
 

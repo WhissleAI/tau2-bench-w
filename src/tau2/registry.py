@@ -310,6 +310,9 @@ try:
     from tau2.agent.whissle_agent import create_whissle_agent
 
     registry.register_agent_factory(create_whissle_agent, "whissle")
+    from tau2.agent.platform_adapter_agent import create_platform_adapter_agent
+
+    registry.register_agent_factory(create_platform_adapter_agent, "platform_adapter")
     # Half-duplex VOICE agent: drives Whissle's real STT→LLM→TTS cascade turn by
     # turn over LiveKit (the faithful model — NOT the tick full-duplex path).
     from tau2.agent.whissle_voice_agent import create_whissle_voice_agent
