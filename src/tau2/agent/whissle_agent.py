@@ -15,6 +15,7 @@ Env:
 
 import json
 import os
+import re
 import time
 from typing import List, Optional
 
@@ -32,6 +33,26 @@ from tau2.data_model.message import (
     UserMessage,
 )
 from tau2.environment.tool import Tool
+
+_MAX_ERROR_CHARS = 2000
+_CREDENTIAL = re.compile(r"(?:sk-|wsk_)[A-Za-z0-9_-]{12,}")
+_BEARER = re.compile(r"(?i)(authorization\s*:\s*bearer\s+)[^\s,}\"]+")
+
+
+def _redact_error(value: str | None) -> str:
+    """Keep provider explanations while preventing echoed credentials in results."""
+    text = value or ""
+    text = _BEARER.sub(r"\1[REDACTED]", text)
+    return _CREDENTIAL.sub("[REDACTED]", text)
+
+
+def _response_error(response) -> str:
+    try:
+        body = response.text or ""
+    except Exception:  # pragma: no cover - response decoding is best effort
+        body = "<unreadable body>"
+    return _redact_error(body)[:_MAX_ERROR_CHARS]
+
 
 AGENT_INSTRUCTION = (
     "You are a customer service agent that helps the user according to the <policy> "
@@ -251,13 +272,23 @@ class WhissleAgent(HalfDuplexAgent[WhissleState]):
                     timeout=120,
                 )
                 if r.status_code >= 500:
-                    last = f"{r.status_code} {r.text[:120]}"
+                    last = f"{r.status_code} {_response_error(r)}"
                     time.sleep(2 * (attempt + 1))
                     continue
-                r.raise_for_status()
+                if r.status_code >= 400:
+                    # A 4xx is a rejected request, not a transient transport error.
+                    # Preserve the safe response body because it is where Whissle
+                    # names the failed provider and remedy. Retrying the same body
+                    # only wastes time and money and cannot change the result.
+                    detail = _response_error(r) or "<empty response body>"
+                    raise RuntimeError(
+                        f"bench agent-turn rejected request: {r.status_code} {detail}"
+                    )
                 return r.json()
+            except RuntimeError:
+                raise
             except requests.exceptions.RequestException as e:
-                last = str(e)
+                last = _redact_error(str(e))[:_MAX_ERROR_CHARS]
                 time.sleep(2 * (attempt + 1))
         raise RuntimeError(f"bench agent-turn failed after retries: {last}")
 

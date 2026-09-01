@@ -36,6 +36,51 @@ def _reply(agent, payload):
         )
 
 
+class _Response:
+    def __init__(self, status_code, text="", payload=None):
+        self.status_code = status_code
+        self.text = text
+        self._payload = payload or {}
+
+    def json(self):
+        return self._payload
+
+
+def test_a_400_preserves_the_provider_explanation_and_is_not_retried():
+    agent = _agent()
+    response = _Response(
+        400,
+        text=(
+            "No configured provider serves that model. Providers tried — "
+            "claude: provider_down (Your credit balance is too low)"
+        ),
+    )
+    with patch("tau2.agent.whissle_agent.requests.post", return_value=response) as post:
+        with pytest.raises(RuntimeError, match="credit balance is too low"):
+            agent._turn([{"role": "user", "content": "hello"}])
+    assert post.call_count == 1
+
+
+def test_a_provider_error_cannot_echo_a_credential_into_results():
+    from tau2.agent.whissle_agent import _redact_error
+
+    secret = "sk-proj-supersecretvalue0123456789abcdef"
+    assert secret not in _redact_error(f"bad key {secret}")
+    assert "[REDACTED]" in _redact_error(f"bad key {secret}")
+
+
+def test_a_5xx_is_retried_and_keeps_its_explanation():
+    agent = _agent()
+    response = _Response(503, text="temporary upstream outage")
+    with (
+        patch("tau2.agent.whissle_agent.requests.post", return_value=response) as post,
+        patch("tau2.agent.whissle_agent.time.sleep"),
+    ):
+        with pytest.raises(RuntimeError, match="temporary upstream outage"):
+            agent._turn([{"role": "user", "content": "hello"}])
+    assert post.call_count == 3
+
+
 def test_a_text_reply_records_the_served_model():
     agent = _agent()
     msg, _ = _reply(
