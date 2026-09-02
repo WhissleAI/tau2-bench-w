@@ -35,7 +35,7 @@ DEST = ROOT / ".research" / "manuals"
 HEADERS = {
     "User-Agent": (
         "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 "
-        "(KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
+        "(KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36"
     ),
     "Accept": "application/pdf,*/*;q=0.8",
     "Sec-Fetch-Dest": "document",
@@ -70,7 +70,13 @@ def main() -> int:
                 print(f"MISSING  {src['key']} (run without --verify to fetch)")
                 failures += 1
                 continue
-            referer = "https://" + src["manual_url"].split("/")[2] + "/"
+            # LG currently rejects the same public PDF request when it carries
+            # only the site root as its referrer. Use the official product page
+            # from the manifest when available; other manufacturers keep the
+            # conservative same-origin fallback.
+            referer = src.get("product_page") or (
+                "https://" + src["manual_url"].split("/")[2] + "/"
+            )
             request = Request(
                 src["manual_url"], headers={**HEADERS, "Referer": referer}
             )
