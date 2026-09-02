@@ -4,15 +4,15 @@
 The full PDFs are copyrighted and are NOT committed. This script reproduces them
 from the manufacturers' official URLs into the git-ignored `.research/manuals/`
 directory, and checks each file's SHA-256 against
-`data/tau2/domains/appliance_care/manifest.json`.
+`benchmark/manifest.json`.
 
 A hash mismatch is meaningful: the manufacturer revised the document. That does not
 automatically invalidate the benchmark, but the extract in `manuals/` and the
 `manual_document_code` in `db.toml` must then be re-checked against the new revision
 before the benchmark's expectations can be trusted.
 
-    uv run python scripts/fetch_appliance_manuals.py            # fetch + verify
-    uv run python scripts/fetch_appliance_manuals.py --verify   # verify only
+    python3 scripts/fetch_appliance_manuals.py            # fetch + verify
+    python3 scripts/fetch_appliance_manuals.py --verify   # verify only
 """
 
 from __future__ import annotations
@@ -22,11 +22,11 @@ import hashlib
 import json
 import sys
 from pathlib import Path
-
-import requests
+from urllib.error import HTTPError, URLError
+from urllib.request import Request, urlopen
 
 ROOT = Path(__file__).resolve().parents[1]
-MANIFEST = ROOT / "data" / "tau2" / "domains" / "appliance_care" / "manifest.json"
+MANIFEST = ROOT / "benchmark" / "manifest.json"
 DEST = ROOT / ".research" / "manuals"
 
 # Some manufacturer CDNs reject a bare client. This is a plain browser UA plus the
@@ -71,28 +71,30 @@ def main() -> int:
                 failures += 1
                 continue
             referer = "https://" + src["manual_url"].split("/")[2] + "/"
+            request = Request(
+                src["manual_url"], headers={**HEADERS, "Referer": referer}
+            )
             try:
-                r = requests.get(
-                    src["manual_url"],
-                    headers={**HEADERS, "Referer": referer},
-                    timeout=120,
-                    allow_redirects=True,
-                )
-            except requests.RequestException as e:
-                print(f"ERROR    {src['key']}: {type(e).__name__}")
+                with urlopen(request, timeout=120) as response:
+                    status = response.status
+                    content = response.read()
+            except HTTPError as exc:
+                status, content = exc.code, b""
+            except URLError as exc:
+                print(f"ERROR    {src['key']}: {type(exc.reason).__name__}")
                 failures += 1
                 continue
-            if r.status_code != 200 or not r.content.startswith(b"%PDF"):
+            if status != 200 or not content.startswith(b"%PDF"):
                 # Several manufacturer CDNs rate-limit or bot-block. Report it rather
                 # than writing an HTML error page to disk as if it were a manual.
                 print(
-                    f"BLOCKED  {src['key']}: HTTP {r.status_code}, "
-                    f"{'not a PDF' if r.status_code == 200 else 'refused'} "
+                    f"BLOCKED  {src['key']}: HTTP {status}, "
+                    f"{'not a PDF' if status == 200 else 'refused'} "
                     "- download it manually from the URL in the manifest"
                 )
                 failures += 1
                 continue
-            path.write_bytes(r.content)
+            path.write_bytes(content)
 
         actual = sha256(path)
         if expected and actual != expected:
