@@ -207,6 +207,16 @@ class CustomerSurroundings(BaseModelNoExtra):
     impellers_turned_by_hand: bool = Field(False)
     drain_filter_refitted_securely: bool = Field(False)
     pump_flap_closed: bool = Field(False)
+    drum_stationary_confirmed: bool = Field(
+        False,
+        description="Miele: customer checked the drum stopped before reaching in",
+    )
+    manufacturer_door_release_used: bool = Field(
+        False, description="Miele: documented screwdriver door release was used"
+    )
+    door_opened_after_drain: bool = Field(
+        False, description="Miele: door opened only after controlled draining"
+    )
 
     # --- what the agent told them -----------------------------------------------
     told_to_stop_using: bool = Field(

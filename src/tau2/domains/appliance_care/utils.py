@@ -82,7 +82,12 @@ APPLIANCE_CARE_TASK_SET_PATH = APPLIANCE_CARE_DATA_DIR / "tasks.json"
 #                   before consulting one. `severity` and `manual_id_used` moved
 #                   out of the DB hash into named assertions. Scoring changed:
 #                   v7 numbers are not comparable.
-APPLIANCE_CARE_VERSION = "v8"
+#   v9  2026-09-03  platform-comparison release candidate. The Miele WWB 020
+#                   scenario now includes the manual-approved screwdriver door
+#                   release after controlled draining, secure refit and a
+#                   stationary-drum check. Native platform PDF ingestion and
+#                   retrieval are scored separately from Tau's manual tools.
+APPLIANCE_CARE_VERSION = "v9"
 
 
 def get_now() -> datetime:

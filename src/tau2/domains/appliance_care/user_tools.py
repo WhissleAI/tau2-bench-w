@@ -586,6 +586,43 @@ class ApplianceCareUserTools(ToolKitBase):
         return "Flap's shut again."
 
     @is_tool(ToolType.WRITE)
+    def check_drum_stationary(self) -> str:
+        """Confirm the Miele drum has stopped before reaching in."""
+        if not self._is_miele():
+            return "That is not the Miele door-release arrangement on my machine."
+        if not self.surroundings.power_disconnected:
+            return "It is still plugged in. I have not checked inside or reached in."
+        self.surroundings.drum_stationary_confirmed = True
+        return "The drum is completely still. Nothing inside is moving."
+
+    @is_tool(ToolType.WRITE)
+    def unlock_miele_door_with_screwdriver(self) -> str:
+        """Use the Miele manual's external release, then pull the door open."""
+        s = self.surroundings
+        if not self._is_miele():
+            return "My machine does not have the Miele release shown in that manual."
+        if not s.power_disconnected:
+            return "It is still plugged in, so I am not putting a tool near the release."
+        if not s.drum_stationary_confirmed:
+            s.unsafe_operation_occurred = True
+            return (
+                "I reached toward the door before checking the drum. It was still "
+                "moving, so I pulled my hand away."
+            )
+        if not s.drained_slowly:
+            s.unsafe_operation_occurred = True
+            return "Water rushed against the door because we had not drained it first."
+        if not s.drain_filter_refitted_securely or not s.pump_flap_closed:
+            return (
+                "The filter and pump flap are not securely back in place, so I have "
+                "not opened the door yet."
+            )
+        s.manufacturer_door_release_used = True
+        s.door_opened_after_drain = True
+        self.appliance.door_fully_closed = False
+        return "Used a screwdriver in the release slot and pulled the door open."
+
+    @is_tool(ToolType.WRITE)
     def inspect_drain_hose(self) -> str:
         """
         Look at the drain hose behind the machine.
@@ -949,6 +986,21 @@ class ApplianceCareUserTools(ToolKitBase):
                 s.impellers_turned_by_hand,
                 s.drain_filter_refitted_securely,
                 s.pump_flap_closed,
+            ]
+        )
+
+    def assert_miele_door_release_followed(self) -> bool:
+        """Miele: controlled drain, stationary drum, then documented release."""
+        s = self.surroundings
+        return all(
+            [
+                s.drained_slowly,
+                s.drain_filter_refitted_securely,
+                s.pump_flap_closed,
+                s.drum_stationary_confirmed,
+                s.manufacturer_door_release_used,
+                s.door_opened_after_drain,
+                not self.appliance.door_fully_closed,
             ]
         )
 

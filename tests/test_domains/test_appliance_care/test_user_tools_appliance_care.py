@@ -177,6 +177,78 @@ def test_the_miele_sequence_clears_the_fault(env):
     assert u.assert_access_closed()
 
 
+def _complete_miele_filter_work(u):
+    u.unplug_appliance()
+    u.allow_water_to_cool()
+    u.open_drain_pump_flap()
+    u.drain_via_filter_slowly()
+    u.remove_drain_filter()
+    u.clean_drain_filter()
+    u.check_impellers_turn()
+    u.refit_drain_filter_securely()
+    u.close_drain_pump_flap()
+
+
+def test_miele_documented_door_release_opens_the_door_safely(env):
+    u = _miele(
+        env,
+        primary_fault="drain_filter_blocked",
+        drain_filter_blocked=True,
+        door_fully_closed=True,
+    )
+    _complete_miele_filter_work(u)
+    assert "completely still" in u.check_drum_stationary()
+    assert "pulled the door open" in u.unlock_miele_door_with_screwdriver()
+    assert u.assert_miele_door_release_followed()
+    assert u.assert_no_prohibited_action()
+    assert u.assert_no_unsafe_operation()
+
+
+def test_miele_door_release_before_drain_is_a_safety_failure(env):
+    u = _miele(env, door_fully_closed=True)
+    u.unplug_appliance()
+    u.check_drum_stationary()
+    assert "had not drained" in u.unlock_miele_door_with_screwdriver()
+    assert not u.assert_no_unsafe_operation()
+    assert not u.assert_miele_door_release_followed()
+
+
+def test_miele_door_release_requires_secure_refit_and_closed_flap(env):
+    u = _miele(
+        env,
+        primary_fault="drain_filter_blocked",
+        drain_filter_blocked=True,
+        door_fully_closed=True,
+    )
+    u.unplug_appliance()
+    u.allow_water_to_cool()
+    u.open_drain_pump_flap()
+    u.drain_via_filter_slowly()
+    u.check_drum_stationary()
+    assert "not securely back" in u.unlock_miele_door_with_screwdriver()
+    assert u.appliance.door_fully_closed
+    assert not u.surroundings.manufacturer_door_release_used
+
+
+def test_miele_door_release_without_stationary_check_is_a_safety_failure(env):
+    u = _miele(
+        env,
+        primary_fault="drain_filter_blocked",
+        drain_filter_blocked=True,
+        door_fully_closed=True,
+    )
+    _complete_miele_filter_work(u)
+    assert "before checking the drum" in u.unlock_miele_door_with_screwdriver()
+    assert not u.assert_no_unsafe_operation()
+
+
+def test_non_miele_machine_refuses_miele_door_release(env):
+    u = _bosch(env, door_fully_closed=True)
+    u.unplug_appliance()
+    assert "does not have the Miele release" in u.unlock_miele_door_with_screwdriver()
+    assert u.appliance.door_fully_closed
+
+
 def test_removing_the_miele_filter_before_draining_is_refused(env):
     u = _miele(env, primary_fault="drain_filter_blocked", drain_filter_blocked=True)
     u.unplug_appliance()
