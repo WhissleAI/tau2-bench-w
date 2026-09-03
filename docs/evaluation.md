@@ -53,12 +53,24 @@ The reward components are evaluated by:
 | `ENV_ASSERTION` | `EnvironmentEvaluator` | Do all `env_assertions` pass on the predicted environment? |
 | `COMMUNICATE` | `CommunicateEvaluator` | Does every string in `communicate_info` appear in the agent's messages? |
 | `NL_ASSERTION` | `NLAssertionsEvaluator` | Does an LLM judge return true for every entry in `nl_assertions`? (WIP) |
-| `ACTION` | `ActionEvaluator` | For every entry in `actions`, did the agent produce a matching tool call (per `Action.compare_with_tool_call`)? Use this only when you are confident `actions` enumerates the only acceptable trajectory. |
+| `ACTION` | `ActionEvaluator` | For every entry in `actions`, did the agent produce a matching tool call (per `Action.compare_with_tool_call`), an explicitly declared alternative, and any required ordering? Use this only when you are confident the accepted forms cover every valid required path. |
 
 The final reward is the product. So if `reward_basis = [DB, COMMUNICATE]`,
 the reward is `db_reward * communicate_reward`. `actions` is consumed
 silently by `EnvironmentEvaluator` to set up the target environment, but
 the agent's tool-call trajectory is never directly compared to it.
+
+When `ACTION` is in the reward basis, each `Action` can narrow or broaden its
+match explicitly:
+
+- `compare_args` selects which arguments must match;
+- `alternatives` lists other tool names and arguments that satisfy the same
+  requirement;
+- `must_precede` lists tool names whose first occurrence must happen after the
+  matching action.
+
+All three are opt-in. Existing actions without these fields keep the previous
+unordered matching behavior.
 
 ## Why `actions` looks like a requirement (and isn't)
 
@@ -180,10 +192,10 @@ being evaluated. Airline, retail, and telecom never put `ACTION` in
 If you build your own domain or task and want the agent's tool calls to
 be a hard requirement (not just a side-effect on the DB), you can put
 `RewardType.ACTION` in your task's `reward_basis`. Be aware that doing
-so promotes `actions` from "one reference trajectory" to "the only
-acceptable trajectory", so it should be reserved for tasks where you
-have actually enumerated all valid solutions (or where there genuinely
-is only one).
+so promotes `actions` from "one reference trajectory" to a set of hard
+requirements. Use `alternatives` for equivalent tool calls and
+`must_precede` only when order is part of correctness. It should still be
+reserved for tasks where every valid required path has been represented.
 
 ## Pointers
 

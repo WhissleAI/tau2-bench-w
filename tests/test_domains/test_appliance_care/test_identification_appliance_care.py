@@ -27,8 +27,10 @@ import pytest
 
 from tau2.data_model.message import AssistantMessage, ToolCall, UserMessage
 from tau2.data_model.simulation import SimulationRun, TerminationReason
+from tau2.data_model.tasks import Action
 from tau2.domains.appliance_care.environment import get_environment, get_tasks
 from tau2.evaluator.evaluator import EvaluationType, evaluate_simulation
+from tau2.evaluator.evaluator_action import _check_actions
 
 # The chain that turns a caller into a verified internal record.
 RESOLUTION_CHAIN = {
@@ -125,6 +127,21 @@ def test_every_task_that_writes_must_first_list_owned_appliances(tasks):
             f"{task.id} writes before resolving the appliance"
         )
 
+        customer_lookup = next(
+            action
+            for action in task.evaluation_criteria.actions
+            if action.name == "get_customer_by_phone"
+        )
+        assert {alternative.name for alternative in customer_lookup.alternatives} == {
+            "get_customer_by_name"
+        }
+        assert customer_lookup.must_precede == ["list_owned_appliances"]
+
+        appliance_lookup = task.evaluation_criteria.actions[
+            names.index("list_owned_appliances")
+        ]
+        assert set(appliance_lookup.must_precede) == APPLIANCE_ID_WRITES
+
 
 def test_no_task_lets_an_error_code_stand_in_for_identification(tasks):
     """No gold path may reach a write via lookup_error_code without the chain.
@@ -174,6 +191,121 @@ def test_guessing_the_appliance_id_fails_only_on_action(tasks, task_id):
     assert part(guess_result, "ENV_ASSERTION") == 1.0
     assert part(guess_result, "ACTION") == 0.0
     assert part(gold_result, "ACTION") == 1.0
+
+
+@pytest.mark.parametrize("task_id", sorted(task.id for task in get_tasks("base")))
+def test_verified_name_lookup_is_equivalent_to_verified_phone(tasks, task_id):
+    """Either verified identifier may start the same customer-resolution chain."""
+    task = tasks[task_id]
+    calls = []
+    for action in task.evaluation_criteria.actions:
+        if action.name == "get_customer_by_phone":
+            alternative = action.alternatives[0]
+            calls.append((alternative.name, alternative.arguments, action.requestor))
+        else:
+            calls.append((action.name, action.arguments, action.requestor))
+    result = _score(task, calls)
+    assert result.reward == 1.0
+
+
+@pytest.mark.parametrize(
+    "task_id",
+    ["ac_01a_blocked_pump", "ac_02b_model_unclear", "ac_05a_two_lint_filters"],
+)
+def test_identity_resolution_after_the_first_write_is_too_late(tasks, task_id):
+    """A correct lookup performed after a write must not validate a prior guess."""
+    task = tasks[task_id]
+    gold = _gold(task)
+    identity = [call for call in gold if call[0] in RESOLUTION_CHAIN]
+    without_identity = [call for call in gold if call[0] not in RESOLUTION_CHAIN]
+    first_write = next(
+        index
+        for index, (name, _arguments, _requestor) in enumerate(without_identity)
+        if name in APPLIANCE_ID_WRITES
+    )
+    late = (
+        without_identity[: first_write + 1]
+        + identity
+        + without_identity[first_write + 1 :]
+    )
+
+    result = _score(task, late)
+    breakdown = {
+        (key.value if hasattr(key, "value") else str(key)): value
+        for key, value in (result.reward_breakdown or {}).items()
+    }
+    assert result.reward == 0.0
+    assert breakdown["DB"] == 1.0
+    assert breakdown["ENV_ASSERTION"] == 1.0
+    assert breakdown["ACTION"] == 0.0
+
+
+def test_customer_lookup_after_listing_appliances_is_out_of_order(tasks):
+    task = tasks["ac_01a_blocked_pump"]
+    calls = _gold(task)
+    customer_index = next(
+        index for index, call in enumerate(calls) if call[0] == "get_customer_by_phone"
+    )
+    appliance_index = next(
+        index for index, call in enumerate(calls) if call[0] == "list_owned_appliances"
+    )
+    calls[customer_index], calls[appliance_index] = (
+        calls[appliance_index],
+        calls[customer_index],
+    )
+
+    result = _score(task, calls)
+    breakdown = {
+        (key.value if hasattr(key, "value") else str(key)): value
+        for key, value in (result.reward_breakdown or {}).items()
+    }
+    assert result.reward == 0.0
+    assert breakdown["ACTION"] == 0.0
+
+
+def test_wrong_name_does_not_satisfy_the_lookup_alternative(tasks):
+    task = tasks["ac_01a_blocked_pump"]
+    calls = [
+        (
+            "get_customer_by_name" if name == "get_customer_by_phone" else name,
+            {"name": "Not Dana"} if name == "get_customer_by_phone" else arguments,
+            requestor,
+        )
+        for name, arguments, requestor in _gold(task)
+    ]
+    result = _score(task, calls)
+    breakdown = {
+        (key.value if hasattr(key, "value") else str(key)): value
+        for key, value in (result.reward_breakdown or {}).items()
+    }
+    assert result.reward == 0.0
+    assert breakdown["ACTION"] == 0.0
+
+
+def test_actions_without_new_constraints_keep_the_old_matching_behavior():
+    """Other Tau domains remain opt-in and backward-compatible."""
+    action = Action(
+        action_id="legacy",
+        name="legacy_lookup",
+        arguments={"identifier": "A-1"},
+    )
+    calls = [
+        ToolCall(
+            id="c0",
+            name="unrelated_write",
+            arguments={},
+            requestor="assistant",
+        ),
+        ToolCall(
+            id="c1",
+            name="legacy_lookup",
+            arguments={"identifier": "A-1"},
+            requestor="assistant",
+        ),
+    ]
+    [check] = _check_actions(calls, [action])
+    assert check.action_match is True
+    assert check.action_reward == 1.0
 
 
 @pytest.mark.parametrize(
