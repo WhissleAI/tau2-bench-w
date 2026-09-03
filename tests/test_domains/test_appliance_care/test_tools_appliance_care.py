@@ -124,6 +124,20 @@ def test_invalid_arguments_are_rejected(env):
         env.tools.schedule_service(
             case_id="CASE-001", date="5 March", window="am", visit_type="warranty"
         )
+    with pytest.raises(ValueError, match="cannot be before"):
+        env.tools.schedule_service(
+            case_id="CASE-001",
+            date="2026-03-01",
+            window="morning",
+            visit_type="warranty",
+        )
+    with pytest.raises(ValueError, match="window must be"):
+        env.tools.schedule_service(
+            case_id="CASE-001",
+            date="2026-03-05",
+            window="midnight",
+            visit_type="warranty",
+        )
     with pytest.raises(ValueError, match="outcome must be one of"):
         env.tools.record_resolution(
             appliance_id="APP-001", outcome="fixed_it", steps_taken=[]

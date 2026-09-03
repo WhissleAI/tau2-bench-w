@@ -29,6 +29,7 @@ from tau2.domains.appliance_care.data_model import (
     Warranty,
 )
 from tau2.domains.appliance_care.manuals import ManualLibrary
+from tau2.domains.appliance_care.utils import get_today
 from tau2.environment.toolkit import ToolKitBase, ToolKitType, ToolType, is_tool
 
 
@@ -456,8 +457,9 @@ class ApplianceCareTools(ToolKitBase):
 
         Args:
             case_id: The case this visit addresses.
-            date: Visit date as YYYY-MM-DD.
-            window: Time window, e.g. "morning" or "afternoon".
+            date: Visit date as YYYY-MM-DD. It cannot be before today's
+                simulated date.
+            window: "morning" or "afternoon".
             visit_type: "warranty" or "billable".
 
         Returns:
@@ -476,11 +478,16 @@ class ApplianceCareTools(ToolKitBase):
             parsed = _date.fromisoformat(date.strip())
         except ValueError:
             raise ValueError("date must be in YYYY-MM-DD format")
+        if parsed < get_today():
+            raise ValueError(f"date cannot be before {get_today().isoformat()}")
+        normalized_window = window.strip().lower()
+        if normalized_window not in {"morning", "afternoon"}:
+            raise ValueError("window must be 'morning' or 'afternoon'")
         appointment = ServiceAppointment(
             appointment_id=self.id_generator.next("APPT"),
             case_id=case_id,
             date=parsed,
-            window=window,
+            window=normalized_window,
             visit_type=vt,
         )
         self.db.service_appointments.append(appointment)
