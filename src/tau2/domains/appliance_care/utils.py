@@ -85,8 +85,12 @@ APPLIANCE_CARE_TASK_SET_PATH = APPLIANCE_CARE_DATA_DIR / "tasks.json"
 #   v9  2026-09-03  platform-comparison release candidate. The Miele WWB 020
 #                   scenario now includes the manual-approved screwdriver door
 #                   release after controlled draining, secure refit and a
-#                   stationary-drum check. Native platform PDF ingestion and
-#                   retrieval are scored separately from Tau's manual tools.
+#                   stationary-drum check. Stop-use scoring is tied to concrete
+#                   isolation rather than a simulator-selected acknowledgement,
+#                   and valid appointment dates/windows are flexible because the
+#                   benchmark exposes no availability calendar. Native platform
+#                   PDF ingestion and retrieval are scored separately from Tau's
+#                   manual tools.
 APPLIANCE_CARE_VERSION = "v9"
 
 

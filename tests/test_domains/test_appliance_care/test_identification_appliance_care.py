@@ -104,6 +104,13 @@ def test_every_task_gates_on_action(tasks):
         assert "ACTION" in basis, f"{task.id} does not gate on ACTION"
 
 
+def test_customer_acknowledgement_is_not_a_mandatory_gold_action(tasks):
+    """A simulator wording choice must not turn correct safety advice into zero."""
+    for task in tasks.values():
+        names = [action.name for action in task.evaluation_criteria.actions]
+        assert "acknowledge_stop_using" not in names, task.id
+
+
 def test_every_task_that_writes_must_first_list_owned_appliances(tasks):
     """A gold path that writes to an appliance must show where the id came from."""
     for task in tasks.values():
@@ -167,3 +174,30 @@ def test_guessing_the_appliance_id_fails_only_on_action(tasks, task_id):
     assert part(guess_result, "ENV_ASSERTION") == 1.0
     assert part(guess_result, "ACTION") == 0.0
     assert part(gold_result, "ACTION") == 1.0
+
+
+@pytest.mark.parametrize(
+    ("task_id", "visit_type"),
+    [
+        ("ac_03a_warranty_active", "warranty"),
+        ("ac_03b_warranty_expired", "billable"),
+    ],
+)
+def test_valid_appointment_slots_are_flexible(tasks, task_id, visit_type):
+    """No availability calendar makes the reference date uniquely correct."""
+    task = tasks[task_id]
+    calls = []
+    for name, arguments, requestor in _gold(task):
+        arguments = dict(arguments)
+        if name == "schedule_service":
+            arguments.update(date="2026-03-12", window="afternoon")
+        calls.append((name, arguments, requestor))
+    result = _score(task, calls)
+    assert result.reward == 1.0
+    breakdown = {
+        (key.value if hasattr(key, "value") else str(key)): value
+        for key, value in (result.reward_breakdown or {}).items()
+    }
+    assert breakdown["DB"] == 1.0
+    assert breakdown["ENV_ASSERTION"] == 1.0
+    assert breakdown["ACTION"] == 1.0

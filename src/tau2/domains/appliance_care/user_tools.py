@@ -213,6 +213,12 @@ class ApplianceCareUserTools(ToolKitBase):
         """
         self.appliance.water_tap_open = False
         self.surroundings.water_tap_shut_off = True
+        if self.appliance.must_not_operate():
+            # For a documented leak route, shutting off the supply is the
+            # concrete stop-use action. Record that evidence here so scoring
+            # does not depend on the simulator also choosing a separate
+            # acknowledgement tool after it followed the instruction.
+            self.surroundings.told_to_stop_using = True
         return "Turned the tap off — no more water can get in."
 
     @is_tool(ToolType.WRITE)
@@ -928,7 +934,7 @@ class ApplianceCareUserTools(ToolKitBase):
         return self.db.problem_still_present() is True
 
     def assert_told_to_stop_using(self) -> bool:
-        """The customer was told to stop using the machine, and confirmed it."""
+        """A required stop-use instruction produced a concrete isolation action."""
         return self.surroundings.told_to_stop_using is True
 
     def assert_power_disconnected(self) -> bool:

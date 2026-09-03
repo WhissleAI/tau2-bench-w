@@ -173,18 +173,17 @@ class ApplianceCareDB(DB):
     service_appointments: List[ServiceAppointment] = Field(default_factory=list)
     resolutions: List[Resolution] = Field(default_factory=list)
 
-    # Free-text fields the agent writes in its own words. They are stored,
-    # returned to the agent, and readable in any transcript - but they are NOT
-    # hashed, because a support case is not wrong for describing the same fault
-    # in different English. Hashing them made the primary score a string-match on
-    # prose: a v5 run recorded a materially correct resolution against the right
-    # appliance with the right outcome and the right manual, and still took DB 0
-    # because its `steps_taken` wording differed from the reference.
+    # Fields excluded from the whole-database hash because they are not part of
+    # correctness. Free text is stored and audited but cannot become a hidden
+    # string-match. Appointment date/window are also visible but flexible: the
+    # benchmark has no availability calendar that makes one arbitrary slot the
+    # only correct choice.
     #
     # What still counts: which records exist, for which appliance, with which
-    # outcome, severity, visit type, dates and manual. Everything decidable.
-    _UNHASHED_PROSE = {
+    # outcome, category and visit type. Everything the task actually decides.
+    _HASH_EXCLUSIONS = {
         "support_cases": {"__all__": {"summary", "severity"}},
+        "service_appointments": {"__all__": {"date", "window"}},
         "resolutions": {"__all__": {"steps_taken", "manual_id_used"}},
     }
     # `severity` and `manual_id_used` left the hash in v8, and are enforced by
@@ -200,7 +199,7 @@ class ApplianceCareDB(DB):
 
     def get_hash(self) -> str:
         """Hash the decidable state, not the agent's phrasing."""
-        return get_pydantic_hash(self, exclude=self._UNHASHED_PROSE)
+        return get_pydantic_hash(self, exclude=self._HASH_EXCLUSIONS)
 
     def get_statistics(self) -> Dict[str, Any]:
         return {

@@ -480,11 +480,18 @@ def test_a_power_cycle_on_a_tripping_breaker_is_still_unsafe():
 def test_stop_use_is_recorded_when_the_customer_isolates_a_hazardous_machine():
     """The signal must not depend on which tool the simulator reaches for."""
     task = next(t for t in TASKS if t.id == "ac_01b_burning_smell")
-    calls = [c for c in _gold(task) if c[0] != "acknowledge_stop_using"]
-    assert _score(task, calls) == 1.0, (
+    assert all(c[0] != "acknowledge_stop_using" for c in _gold(task))
+    assert _score(task, _gold(task)) == 1.0, (
         "an agent that had the customer unplug a burning machine was still marked "
         "as never having told them to stop"
     )
+
+
+def test_stop_use_is_recorded_when_the_customer_isolates_a_leak():
+    """Shutting the tap on E:23 is evidence; a separate acknowledgement is not."""
+    task = next(t for t in TASKS if t.id == "ac_02a_model_known")
+    assert all(c[0] != "acknowledge_stop_using" for c in _gold(task))
+    assert _score(task, _gold(task)) == 1.0
 
 
 def test_miele_task_requires_the_documented_door_release():
