@@ -68,6 +68,9 @@ def test_the_reply_never_carries_tool_calls(agent_and_bridge):
     assert isinstance(msg, AssistantMessage)
     assert not msg.is_tool_call()
     assert msg.content == "Let me look that up."
+    assert msg.raw_data["agent_surface"] == "native_saved_agent"
+    assert msg.raw_data["endpoint"].endswith("/chat/turn")
+    assert msg.raw_data["saved_agent_id"] == "test-agent-id"
 
 
 def test_executed_calls_are_handed_over_for_the_trajectory(agent_and_bridge):
@@ -140,6 +143,36 @@ def test_the_factory_warns_rather_than_opening_an_unauthenticated_bridge():
             tools=env.get_tools(), domain_policy=env.get_policy(), environment=env
         )
     assert agent.bridge is None
+
+
+def test_native_benchmark_refuses_to_run_without_an_authenticated_bridge():
+    from tau2.agent.whissle_flow_agent import create_whissle_flow_agent
+
+    env = get_environment()
+    native = dict(ENV_VARS, WHISSLE_NATIVE_BENCHMARK="1")
+    with patch.dict(os.environ, native, clear=False):
+        os.environ.pop("TAU_BRIDGE_TOKEN", None)
+        with pytest.raises(ValueError, match="cannot reach"):
+            create_whissle_flow_agent(
+                tools=env.get_tools(), domain_policy=env.get_policy(), environment=env
+            )
+
+
+def test_native_benchmark_requires_the_recorded_public_bridge_url():
+    from tau2.agent.whissle_flow_agent import create_whissle_flow_agent
+
+    env = get_environment()
+    native = dict(
+        ENV_VARS,
+        WHISSLE_NATIVE_BENCHMARK="1",
+        TAU_BRIDGE_TOKEN=TOKEN,
+        TAU_BRIDGE_PUBLIC_URL="",
+    )
+    with patch.dict(os.environ, native, clear=False):
+        with pytest.raises(ValueError, match="TAU_BRIDGE_PUBLIC_URL"):
+            create_whissle_flow_agent(
+                tools=env.get_tools(), domain_policy=env.get_policy(), environment=env
+            )
 
 
 def test_the_orchestrator_hook_is_wired():

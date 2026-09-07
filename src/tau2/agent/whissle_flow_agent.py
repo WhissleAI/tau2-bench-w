@@ -1,4 +1,4 @@
-"""Whissle agents that run the agent's SAVED FLOW, not a bare brain call.
+"""Whissle agents that run the SAVED AGENT product path, not a bare brain call.
 
 HOW THIS DIFFERS FROM ``whissle_agent`` / ``whissle_voice_agent``
 ----------------------------------------------------------------
@@ -6,11 +6,15 @@ Those two drive Whissle in *bench mode*: they POST tau2's policy as ``system`` a
 tau2's tool schemas as ``tools``, and the platform runs neither its own prompt nor
 its own flow. That measures the brain. It cannot measure the product.
 
-This module measures the product. It drives the endpoints that instantiate the
-real ``FlowRuntime``:
+This module measures the product. It drives endpoints that load the persisted
+agent configuration:
 
-    text   POST /api/agents/{id}/chat/turn        body {message, conversation_id}
-    voice  POST /api/bench/voice/start {real:true}  the deployed pipeline
+    text   POST /api/agents/{id}/chat/turn          saved prompt + KB + tools
+    voice  POST /api/bench/voice/start {real:true}  deployed voice pipeline
+
+The text endpoint is only described as a saved *flow* when its response carries
+flow trace evidence. The checked local backend loads the saved prompt, native KB
+and attached tools on this route, but does not instantiate ``FlowRuntime``.
 
 Neither accepts per-request tools — verified against the live backend, where an
 injected ``tools`` array was accepted by the HTTP layer and then dropped, with the
@@ -39,6 +43,7 @@ from loguru import logger
 from pydantic import BaseModel, ConfigDict
 
 from tau2.agent.base_agent import HalfDuplexAgent, ValidAgentInputMessage
+from tau2.bridge.server import ToolBridgeServer
 from tau2.bridge.tool_bridge import ToolBridge, build_trajectory_records
 from tau2.data_model.message import (
     AssistantMessage,
@@ -68,6 +73,7 @@ class _WhissleFlowBase(HalfDuplexAgent[WhissleFlowState]):
         tools: List[Tool],
         domain_policy: str,
         bridge: Optional[ToolBridge] = None,
+        bridge_server: Optional[ToolBridgeServer] = None,
     ) -> None:
         super().__init__(tools=tools, domain_policy=domain_policy)
         self.base = (os.getenv("WHISSLE_BASE") or DEFAULT_BASE).rstrip("/")
@@ -76,6 +82,7 @@ class _WhissleFlowBase(HalfDuplexAgent[WhissleFlowState]):
         if not self.agent_id or not self.api_key:
             raise ValueError("WHISSLE_AGENT_ID and WHISSLE_API_KEY are required")
         self.bridge = bridge
+        self.bridge_server = bridge_server
         self._pending: list[Message] = []
         self.flow_steps: list[dict] = []
 
@@ -109,6 +116,12 @@ class _WhissleFlowBase(HalfDuplexAgent[WhissleFlowState]):
     ) -> WhissleFlowState:
         return WhissleFlowState()
 
+    def stop(self, message=None, state=None) -> None:
+        """Stop the local HTTP bridge even when a simulation fails."""
+        if self.bridge_server is not None:
+            server, self.bridge_server = self.bridge_server, None
+            server.stop()
+
     @staticmethod
     def _incoming_text(message: ValidAgentInputMessage) -> Optional[str]:
         """The user's words for this turn, or None if the turn carried no speech.
@@ -125,7 +138,7 @@ class _WhissleFlowBase(HalfDuplexAgent[WhissleFlowState]):
 
 
 class WhissleFlowAgent(_WhissleFlowBase):
-    """TEXT: one ``/chat/turn`` per user turn, on the agent's saved flow."""
+    """TEXT: one ``/chat/turn`` per user turn on the saved Whissle agent."""
 
     def generate_next_message(
         self, message: ValidAgentInputMessage, state: WhissleFlowState
@@ -150,9 +163,23 @@ class WhissleFlowAgent(_WhissleFlowBase):
         self._collect_bridge_records()
 
         reply = (data.get("reply") or "").strip()
+        usage = data.get("usage") if isinstance(data.get("usage"), dict) else None
+        served_model = data.get("served_model") or data.get("model")
         return AssistantMessage(
             role="assistant",
             content=reply or "I'm sorry, could you say that again?",
+            usage=usage,
+            raw_data={
+                "endpoint": f"/api/agents/{self.agent_id}/chat/turn",
+                "agent_surface": "native_saved_agent",
+                "saved_agent_id": self.agent_id,
+                "served_model": served_model,
+                "served_models": data.get("served_models")
+                or ([served_model] if served_model else []),
+                "stop_reasons": data.get("stop_reasons") or [],
+                "flow_trace_present": bool(steps),
+                "flow_steps": steps,
+            },
         ), state
 
     def _chat_turn(self, message: str, conversation_id: Optional[str]) -> dict:
@@ -160,7 +187,8 @@ class WhissleFlowAgent(_WhissleFlowBase):
         if conversation_id:
             body["conversation_id"] = conversation_id
         last = "unknown"
-        for attempt in range(3):
+        attempts = 1 if os.getenv("WHISSLE_NATIVE_BENCHMARK") == "1" else 3
+        for attempt in range(attempts):
             try:
                 resp = requests.post(
                     f"{self.base}/api/agents/{self.agent_id}/chat/turn",
@@ -180,7 +208,7 @@ class WhissleFlowAgent(_WhissleFlowBase):
             except requests.exceptions.RequestException as exc:
                 last = str(exc)
                 time.sleep(2 * (attempt + 1))
-        raise RuntimeError(f"chat/turn failed after retries: {last}")
+        raise RuntimeError(f"chat/turn failed after {attempts} attempt(s): {last}")
 
 
 def create_whissle_flow_agent(tools, domain_policy, **kwargs):
@@ -193,17 +221,32 @@ def create_whissle_flow_agent(tools, domain_policy, **kwargs):
 
     environment = kwargs.get("environment")
     bridge = None
+    bridge_server = None
     if environment is not None:
         token = os.getenv(BRIDGE_TOKEN_ENV)
         if token:
             bridge = ToolBridge(environment=environment, token=token)
+            if os.getenv("WHISSLE_NATIVE_BENCHMARK") == "1":
+                if not os.getenv("TAU_BRIDGE_PUBLIC_URL"):
+                    raise ValueError(
+                        "TAU_BRIDGE_PUBLIC_URL is required for a native Whissle run"
+                    )
+                port = int(os.getenv("TAU_BRIDGE_PORT", "8765"))
+                bridge_server = ToolBridgeServer(bridge, port=port).start()
         else:
-            logger.warning(
-                "{} is unset — no bridge attached; Whissle's tool calls will not "
-                "reach tau2 and nothing will be scored.",
-                BRIDGE_TOKEN_ENV,
+            message = (
+                f"{BRIDGE_TOKEN_ENV} is unset — Whissle's tool calls cannot reach "
+                "the scored Tau environment"
             )
-    return WhissleFlowAgent(tools=tools, domain_policy=domain_policy, bridge=bridge)
+            if os.getenv("WHISSLE_NATIVE_BENCHMARK") == "1":
+                raise ValueError(message)
+            logger.warning(message)
+    return WhissleFlowAgent(
+        tools=tools,
+        domain_policy=domain_policy,
+        bridge=bridge,
+        bridge_server=bridge_server,
+    )
 
 
 # ── voice ───────────────────────────────────────────────────────────────────

@@ -23,9 +23,9 @@ from pathlib import Path
 from tau2.bridge.tool_bridge import BRIDGE_URL_ENV
 from tau2.domains.appliance_care.environment import get_environment
 
-# The exact 16 agent-side tools. Listed explicitly rather than derived so that a
+# The exact 16 Tau agent-side tools. Listed explicitly rather than derived so that a
 # change to the domain cannot silently widen what gets published to Whissle.
-EXPECTED_TOOLS = [
+EXPECTED_DOMAIN_TOOLS = [
     "search_manuals",
     "open_manual_section",
     "lookup_error_code",
@@ -44,6 +44,17 @@ EXPECTED_TOOLS = [
     "transfer_to_human_agents",
 ]
 
+# Native platform runs deliberately withhold Tau's three manual-serving tools.
+# Whissle must ingest and retrieve the five PDFs through its own knowledge base.
+WITHHELD_MANUAL_TOOLS = {
+    "search_manuals",
+    "open_manual_section",
+    "lookup_error_code",
+}
+EXPECTED_TOOLS = [
+    name for name in EXPECTED_DOMAIN_TOOLS if name not in WITHHELD_MANUAL_TOOLS
+]
+
 
 def build_specs(bridge_url: str, credential_id: str | None) -> list[dict]:
     """One Whissle custom HTTP-tool spec per tau2 agent tool."""
@@ -54,10 +65,10 @@ def build_specs(bridge_url: str, credential_id: str | None) -> list[dict]:
         fn = schema.get("function", schema)
         by_name[fn["name"]] = fn
 
-    missing = [name for name in EXPECTED_TOOLS if name not in by_name]
+    missing = [name for name in EXPECTED_DOMAIN_TOOLS if name not in by_name]
     if missing:
         raise SystemExit(f"domain is missing expected tool(s): {', '.join(missing)}")
-    extra = [name for name in by_name if name not in EXPECTED_TOOLS]
+    extra = [name for name in by_name if name not in EXPECTED_DOMAIN_TOOLS]
     if extra:
         raise SystemExit(
             f"domain exposes unexpected agent tool(s): {', '.join(sorted(extra))}. "

@@ -127,6 +127,7 @@ PLATFORM_MANAGED_AGENTS = frozenset(
         "whissle",
         "whissle_voice",
         "whissle_flow",
+        "whissle_native",
         "whissle_flow_voice",
     }
 )
