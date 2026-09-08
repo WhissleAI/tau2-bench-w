@@ -71,6 +71,8 @@ def test_the_reply_never_carries_tool_calls(agent_and_bridge):
     assert msg.raw_data["agent_surface"] == "native_saved_agent"
     assert msg.raw_data["endpoint"].endswith("/chat/turn")
     assert msg.raw_data["saved_agent_id"] == "test-agent-id"
+    assert msg.raw_data["platform_session_id"] == "conv-1"
+    assert msg.raw_data["conversation_id"] == "conv-1"
 
 
 def test_executed_calls_are_handed_over_for_the_trajectory(agent_and_bridge):
@@ -117,6 +119,47 @@ def test_the_adapter_requires_credentials():
     with patch.dict(os.environ, {"WHISSLE_AGENT_ID": "", "WHISSLE_API_KEY": ""}):
         with pytest.raises(ValueError):
             WhissleFlowAgent(tools=env.get_tools(), domain_policy=env.get_policy())
+
+
+def test_embed_mode_mints_a_unique_trial_session(agent_and_bridge):
+    from tau2.agent.whissle_flow_agent import WhissleFlowAgent
+
+    _agent, bridge, env = agent_and_bridge
+    response = type(
+        "Response",
+        (),
+        {"raise_for_status": lambda self: None, "json": lambda self: {"token": "t"}},
+    )()
+    native = dict(ENV_VARS, WHISSLE_NATIVE_SESSION_MODE="embed")
+    with (
+        patch.dict(os.environ, native),
+        patch("tau2.agent.whissle_flow_agent.requests.post", return_value=response),
+    ):
+        first = WhissleFlowAgent(env.get_tools(), env.get_policy(), bridge=bridge)
+        second = WhissleFlowAgent(env.get_tools(), env.get_policy(), bridge=bridge)
+    assert first.embed_token == "t"
+    assert first.embed_session_id.startswith("tau2-")
+    assert first.embed_session_id != second.embed_session_id
+    assert first._endpoint_path() == "/api/embed/chat/turn"
+
+
+def test_isolated_studio_creates_on_embed_then_continues_on_studio(agent_and_bridge):
+    from tau2.agent.whissle_flow_agent import WhissleFlowAgent
+
+    _agent, bridge, env = agent_and_bridge
+    response = type(
+        "Response",
+        (),
+        {"raise_for_status": lambda self: None, "json": lambda self: {"token": "t"}},
+    )()
+    native = dict(ENV_VARS, WHISSLE_NATIVE_SESSION_MODE="isolated_studio")
+    with (
+        patch.dict(os.environ, native),
+        patch("tau2.agent.whissle_flow_agent.requests.post", return_value=response),
+    ):
+        agent = WhissleFlowAgent(env.get_tools(), env.get_policy(), bridge=bridge)
+    assert agent._endpoint_path(None) == "/api/embed/chat/turn"
+    assert agent._endpoint_path("conv-1") == "/api/agents/test-agent-id/chat/turn"
 
 
 def test_the_factory_builds_a_bridge_over_the_scored_environment():

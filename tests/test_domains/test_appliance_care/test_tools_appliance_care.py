@@ -213,6 +213,42 @@ def test_every_appliance_id_parameter_says_where_the_id_comes_from():
         )
 
 
+def test_list_owned_appliances_requires_the_returned_customer_id():
+    env = get_environment()
+    tool = next(
+        tool
+        for tool in env.get_tools()
+        if (tool.openai_schema.get("function", tool.openai_schema))["name"]
+        == "list_owned_appliances"
+    )
+    schema = tool.openai_schema.get("function", tool.openai_schema)
+    description = schema["parameters"]["properties"]["customer_id"]["description"]
+    assert "CUST-001" in description
+    assert "get_customer_by_phone" in description
+    assert "name, phone number, or email address" in description
+
+
+def test_record_resolution_names_the_exact_manual_ids():
+    env = get_environment()
+    tool = next(
+        tool
+        for tool in env.get_tools()
+        if (tool.openai_schema.get("function", tool.openai_schema))["name"]
+        == "record_resolution"
+    )
+    schema = tool.openai_schema.get("function", tool.openai_schema)
+    assert "before sending the customer" in schema["description"]
+    description = schema["parameters"]["properties"]["manual_id_used"]["description"]
+    for manual_id in (
+        "boschwat28400ucwasher",
+        "boschwat28401ucwasher",
+        "boschwat28402ucwasher",
+        "lgwt901cwwasher",
+        "mielewwb020washer",
+    ):
+        assert manual_id in description
+
+
 def test_the_domain_declares_a_benchmark_version():
     """Scores are comparable only within a version, so one must exist.
 

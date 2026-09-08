@@ -32,6 +32,7 @@ def test_the_ablation_domain_is_versioned_too():
     """The no-manuals variant is scored against the same corpus generation."""
     info = get_environment_info("appliance_care-no-manuals")
     assert info.benchmark_version == APPLIANCE_CARE_VERSION
+    assert info.domain_name == "appliance_care-no-manuals"
 
 
 def test_run_metadata_records_the_version():

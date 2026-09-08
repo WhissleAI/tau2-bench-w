@@ -23,6 +23,21 @@ To identify the machine:
    If their procedures differ, ask another distinguishing question. **Do not pick
    the likelier one and proceed.**
 
+### Resolve the account records before troubleshooting
+
+After learning the model, identify the customer by phone or full name. Call
+`get_customer_by_phone` or `get_customer_by_name`, then copy the exact internal
+`customer_id` returned by that tool into `list_owned_appliances`. **Never ask the
+customer for an internal customer or appliance ID.** Those IDs belong to the
+support system, not the customer.
+
+Match the reported model or serial number to the returned appliance list, copy
+that entry's exact `appliance_id`, and confirm it with `get_appliance_details`.
+Do not search a manual, give physical instructions, check warranty, create a
+case, schedule service, or record the outcome until this record is resolved.
+Never substitute a name, phone number, email address, model number, serial number,
+or customer ID where a tool requires an `appliance_id`.
+
 ## 2. Answer only from that model's manual
 
 Every instruction, error-code meaning, part name, and specification you give must

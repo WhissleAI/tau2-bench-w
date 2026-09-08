@@ -248,7 +248,9 @@ class ApplianceCareTools(ToolKitBase):
         List the machines a customer owns.
 
         Args:
-            customer_id: The customer.
+            customer_id: The exact internal customer id returned by
+                get_customer_by_phone or get_customer_by_name, e.g. 'CUST-001'.
+                Do not pass the customer's name, phone number, or email address.
 
         Returns:
             Their registered appliances.
@@ -502,7 +504,8 @@ class ApplianceCareTools(ToolKitBase):
         manual_id_used: Optional[str] = None,
     ) -> Resolution:
         """
-        Record how the contact ended. Do this once, at the end.
+        Mandatory final write: call this exactly once before sending the customer
+        a closing message. Never end a contact without it.
 
         Args:
             appliance_id: The machine's record id, e.g. 'APP-001'. Get it from
@@ -512,6 +515,11 @@ class ApplianceCareTools(ToolKitBase):
                 "escalated_safety", "unresolved".
             steps_taken: What the customer was guided through.
             manual_id_used: The manual the guidance came from, if any.
+                Use the exact manual id for the resolved model:
+                WAT28400UC = 'boschwat28400ucwasher', WAT28401UC =
+                'boschwat28401ucwasher', WAT28402UC =
+                'boschwat28402ucwasher', WT901CW = 'lgwt901cwwasher', and
+                WWB020 = 'mielewwb020washer'.
 
         Returns:
             The recorded resolution.

@@ -121,10 +121,14 @@ def get_environment(
         tools = ApplianceCareTools(db)
 
     user_tools = ApplianceCareUserTools(user_db)
+    # Keep the environment's own name identical to the registry key. The evaluator
+    # resolves a fresh environment from this value after the conversation; mixing
+    # the hyphenated registry suffix with the underscored variant name makes a
+    # completed native-platform conversation impossible to score.
     domain_name = (
         "appliance_care"
         if manual_access == "search"
-        else f"appliance_care-{manual_access}"
+        else "appliance_care-no-manuals"
     )
     return ApplianceCareEnvironment(
         domain_name=domain_name,

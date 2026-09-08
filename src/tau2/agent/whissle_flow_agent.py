@@ -36,6 +36,7 @@ from __future__ import annotations
 
 import os
 import time
+import uuid
 from typing import List, Optional
 
 import requests
@@ -83,8 +84,43 @@ class _WhissleFlowBase(HalfDuplexAgent[WhissleFlowState]):
             raise ValueError("WHISSLE_AGENT_ID and WHISSLE_API_KEY are required")
         self.bridge = bridge
         self.bridge_server = bridge_server
+        self.session_mode = os.getenv("WHISSLE_NATIVE_SESSION_MODE", "studio")
+        if self.session_mode not in {"studio", "embed", "isolated_studio"}:
+            raise ValueError(
+                "WHISSLE_NATIVE_SESSION_MODE must be studio, embed, or isolated_studio"
+            )
+        self.embed_token: Optional[str] = None
+        self.embed_session_id: Optional[str] = None
+        if self.session_mode in {"embed", "isolated_studio"}:
+            self.embed_token = self._mint_embed_token()
+            self.embed_session_id = f"tau2-{uuid.uuid4()}"
+        self._last_endpoint_path = f"/api/agents/{self.agent_id}/chat/turn"
         self._pending: list[Message] = []
         self.flow_steps: list[dict] = []
+
+    def _mint_embed_token(self) -> str:
+        """Mint a short-lived server-trusted token for one isolated trial."""
+        resp = requests.post(
+            f"{self.base}/api/embed/session-token",
+            headers={
+                "Authorization": f"Bearer {self.api_key}",
+                "Content-Type": "application/json",
+            },
+            json={"api_key": self.api_key, "agent_id": self.agent_id},
+            timeout=30,
+        )
+        resp.raise_for_status()
+        token = resp.json().get("token")
+        if not token:
+            raise RuntimeError("Whissle embed token response did not contain a token")
+        return token
+
+    def _endpoint_path(self, conversation_id: Optional[str] = None) -> str:
+        if self.session_mode == "embed" or (
+            self.session_mode == "isolated_studio" and not conversation_id
+        ):
+            return "/api/embed/chat/turn"
+        return f"/api/agents/{self.agent_id}/chat/turn"
 
     # ── the trajectory contract ──────────────────────────────────────────────
 
@@ -170,9 +206,11 @@ class WhissleFlowAgent(_WhissleFlowBase):
             content=reply or "I'm sorry, could you say that again?",
             usage=usage,
             raw_data={
-                "endpoint": f"/api/agents/{self.agent_id}/chat/turn",
+                "endpoint": self._last_endpoint_path,
                 "agent_surface": "native_saved_agent",
                 "saved_agent_id": self.agent_id,
+                "platform_session_id": state.conversation_id,
+                "conversation_id": state.conversation_id,
                 "served_model": served_model,
                 "served_models": data.get("served_models")
                 or ([served_model] if served_model else []),
@@ -183,15 +221,24 @@ class WhissleFlowAgent(_WhissleFlowBase):
         ), state
 
     def _chat_turn(self, message: str, conversation_id: Optional[str]) -> dict:
-        body: dict = {"message": message}
-        if conversation_id:
-            body["conversation_id"] = conversation_id
+        endpoint_path = self._endpoint_path(conversation_id)
+        self._last_endpoint_path = endpoint_path
+        if endpoint_path == "/api/embed/chat/turn":
+            body: dict = {
+                "token": self.embed_token,
+                "message": message,
+                "session_id": self.embed_session_id,
+            }
+        else:
+            body = {"message": message}
+            if conversation_id:
+                body["conversation_id"] = conversation_id
         last = "unknown"
         attempts = 1 if os.getenv("WHISSLE_NATIVE_BENCHMARK") == "1" else 3
         for attempt in range(attempts):
             try:
                 resp = requests.post(
-                    f"{self.base}/api/agents/{self.agent_id}/chat/turn",
+                    f"{self.base}{endpoint_path}",
                     headers={
                         "Authorization": f"Bearer {self.api_key}",
                         "Content-Type": "application/json",
