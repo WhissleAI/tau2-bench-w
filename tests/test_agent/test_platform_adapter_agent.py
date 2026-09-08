@@ -83,6 +83,7 @@ class Session:
             {
                 "turn_id": result.turn_id,
                 "served_model": result.served_model,
+                "harness_latency_ms": 20.0 if self.count == 1 else 7.5,
                 "citations": "NOT_SUPPORTED",
             }
         )
@@ -138,7 +139,7 @@ def test_tau_executes_platform_tool_calls_and_returns_results(tmp_path):
     reply, state = agent.generate_next_message(result, state)
     assert reply.content == "I found the customer record."
     assert reply.raw_data["served_model"] == "fixture-model"
-    assert reply.generation_time_seconds == 0.005
+    assert reply.generation_time_seconds == 0.0075
     agent.stop(None, state)
 
     assert made[0].closed

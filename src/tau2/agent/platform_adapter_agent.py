@@ -180,6 +180,7 @@ class PlatformAdapterAgent(HalfDuplexAgent[PlatformAdapterState]):
         state.messages.extend(_normalise_message(message))
         result = self.session.turn(state.messages)
         turn_evidence = copy.deepcopy(self.session.turns[-1])
+        measured_latency_ms = turn_evidence.get("harness_latency_ms", result.latency_ms)
         raw_data = {
             "served_model": result.served_model,
             "platform_id": self.platform_id,
@@ -202,7 +203,7 @@ class PlatformAdapterAgent(HalfDuplexAgent[PlatformAdapterState]):
                 usage=result.usage,
                 cost=result.cost,
                 raw_data=raw_data,
-                generation_time_seconds=result.latency_ms / 1000,
+                generation_time_seconds=measured_latency_ms / 1000,
             )
         else:
             assistant = AssistantMessage(
@@ -211,7 +212,7 @@ class PlatformAdapterAgent(HalfDuplexAgent[PlatformAdapterState]):
                 usage=result.usage,
                 cost=result.cost,
                 raw_data=raw_data,
-                generation_time_seconds=result.latency_ms / 1000,
+                generation_time_seconds=measured_latency_ms / 1000,
             )
         state.messages.extend(_normalise_message(assistant))
         self._last_assistant_message = assistant
