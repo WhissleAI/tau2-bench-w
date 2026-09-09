@@ -47,11 +47,13 @@ TARGET_SAMPLE_WIDTH = 2  # bytes; PCM16
 
 OPENAI_PCM_SAMPLE_RATE = 24_000  # fixed by the OpenAI audio/speech `pcm` format
 ELEVENLABS_PCM_SAMPLE_RATE = 16_000
+DEEPGRAM_PCM_SAMPLE_RATE = 16_000  # we request linear16 @ 16 kHz directly
 
 DEFAULT_OPENAI_TTS_MODEL = "gpt-4o-mini-tts"
 DEFAULT_OPENAI_TTS_VOICE = "alloy"
 DEFAULT_ELEVENLABS_VOICE = "EXAVITQu4vr4xnSDxMaL"  # "Sarah"
 DEFAULT_ELEVENLABS_MODEL = "eleven_turbo_v2_5"
+DEFAULT_DEEPGRAM_MODEL = "aura-2-thalia-en"  # Deepgram aura-2 voice
 
 DEFAULT_TIMEOUT_S = 60.0
 _MAX_BODY_CHARS = 500
@@ -116,6 +118,17 @@ def resample_pcm16(pcm: bytes, src_rate: int, dst_rate: int) -> bytes:
     return out.tobytes()
 
 
+def _strip_wav(b: bytes) -> bytes:
+    """Return the raw PCM samples from a WAV container (Deepgram wraps linear16 in
+    RIFF/WAVE); pass through data that is already headerless PCM."""
+    if b[:4] != b"RIFF":
+        return b
+    i = b.find(b"data")
+    if i == -1:
+        return b[44:]  # standard 44-byte PCM WAV header fallback
+    return b[i + 8:]  # skip "data" (4) + chunk-size (4)
+
+
 @dataclass
 class TTSConfig:
     provider: str = "openai"
@@ -123,6 +136,7 @@ class TTSConfig:
     openai_voice: str = DEFAULT_OPENAI_TTS_VOICE
     elevenlabs_voice: str = DEFAULT_ELEVENLABS_VOICE
     elevenlabs_model: str = DEFAULT_ELEVENLABS_MODEL
+    deepgram_model: str = DEFAULT_DEEPGRAM_MODEL
     timeout_s: float = DEFAULT_TIMEOUT_S
 
     @classmethod
@@ -138,15 +152,18 @@ class TTSConfig:
             or DEFAULT_ELEVENLABS_VOICE,
             elevenlabs_model=os.getenv("ELEVENLABS_TTS_MODEL")
             or DEFAULT_ELEVENLABS_MODEL,
+            deepgram_model=os.getenv("DEEPGRAM_TTS_MODEL") or DEFAULT_DEEPGRAM_MODEL,
             timeout_s=float(
                 os.getenv("WHISSLE_USER_TTS_TIMEOUT_S") or DEFAULT_TIMEOUT_S
             ),
         )
 
     def required_env_var(self) -> str:
-        return (
-            "ELEVENLABS_API_KEY" if self.provider == "elevenlabs" else "OPENAI_API_KEY"
-        )
+        if self.provider == "elevenlabs":
+            return "ELEVENLABS_API_KEY"
+        if self.provider == "deepgram":
+            return "DEEPGRAM_API_KEY"
+        return "OPENAI_API_KEY"
 
 
 class UserSimulatorTTS:
@@ -156,10 +173,10 @@ class UserSimulatorTTS:
         self, config: TTSConfig | None = None, session: requests.Session | None = None
     ):
         self.config = config or TTSConfig.from_env()
-        if self.config.provider not in ("openai", "elevenlabs"):
+        if self.config.provider not in ("openai", "elevenlabs", "deepgram"):
             raise ValueError(
                 f"Unknown WHISSLE_USER_TTS_PROVIDER {self.config.provider!r}; "
-                "expected 'openai' or 'elevenlabs'."
+                "expected 'openai', 'elevenlabs' or 'deepgram'."
             )
         self._session = session or requests
         self._key = os.getenv(self.config.required_env_var()) or ""
@@ -181,6 +198,8 @@ class UserSimulatorTTS:
         self.require()
         if self.config.provider == "elevenlabs":
             raw, rate = self._elevenlabs(text), ELEVENLABS_PCM_SAMPLE_RATE
+        elif self.config.provider == "deepgram":
+            raw, rate = self._deepgram(text), DEEPGRAM_PCM_SAMPLE_RATE
         else:
             raw, rate = self._openai(text), OPENAI_PCM_SAMPLE_RATE
         return resample_pcm16(raw, rate, TARGET_SAMPLE_RATE)
@@ -241,3 +260,19 @@ class UserSimulatorTTS:
             headers={"xi-api-key": self._key, "Content-Type": "application/json"},
             json={"text": text, "model_id": self.config.elevenlabs_model},
         )
+
+    def _deepgram(self, text: str) -> bytes:
+        # Deepgram's /v1/speak returns linear16 @ 16 kHz — but RIFF/WAV-wrapped, while
+        # the publisher wants headerless PCM16. Strip the container to the data chunk.
+        wav = self._post(
+            "deepgram",
+            "https://api.deepgram.com/v1/speak"
+            f"?model={self.config.deepgram_model}"
+            f"&encoding=linear16&sample_rate={DEEPGRAM_PCM_SAMPLE_RATE}",
+            headers={
+                "Authorization": f"Token {self._key}",
+                "Content-Type": "application/json",
+            },
+            json={"text": text},
+        )
+        return _strip_wav(wav)

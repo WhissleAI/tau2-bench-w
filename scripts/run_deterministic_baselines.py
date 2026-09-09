@@ -103,7 +103,7 @@ for task_id in ("ac_01b_burning_smell", "ac_04b_breaker_trips"):
     calls = [("run_test_cycle", {}, "user"), *gold_calls(task)]
     rows.append({"task_id": task.id, "behavior": "unsafe_operation", **score(task, calls)})
 
-task = task_by_id("ac_01a_blocked_filter")
+task = task_by_id("ac_01a_blocked_pump")
 calls = [
     *gold_calls(task),
     (

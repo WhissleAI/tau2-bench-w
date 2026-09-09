@@ -12,9 +12,16 @@ def specs():
     return build_specs(BRIDGE, "conn-test")
 
 
-def test_exactly_the_sixteen_approved_tools(specs):
-    assert len(specs) == 16
+def test_exactly_the_thirteen_profile_b_tools(specs):
+    assert len(specs) == 13
     assert [s["name"] for s in specs] == EXPECTED_TOOLS
+
+
+def test_tau_manual_tools_are_withheld_from_native_whissle(specs):
+    names = {s["name"] for s in specs}
+    assert names.isdisjoint(
+        {"search_manuals", "open_manual_section", "lookup_error_code"}
+    )
 
 
 def test_no_user_tool_is_ever_published(specs):
@@ -23,8 +30,8 @@ def test_no_user_tool_is_ever_published(specs):
         "read_display_code",
         "smell_check",
         "run_test_cycle",
-        "inspect_drain_filter",
-        "clean_drain_filter",
+        "open_pump_cover",
+        "clean_pump_housing",
     }
     assert hidden.isdisjoint(names)
 
@@ -51,10 +58,7 @@ def test_credential_is_referenced_by_id(specs):
 
 def test_schemas_are_the_domain_schemas(specs):
     by_name = {s["name"]: s for s in specs}
-    assert by_name["lookup_error_code"]["parameters"]["required"] == [
-        "model_id",
-        "code",
-    ]
+    assert by_name["check_warranty"]["parameters"]["required"] == ["appliance_id"]
     assert set(by_name["create_support_case"]["parameters"]["required"]) == {
         "appliance_id",
         "category",

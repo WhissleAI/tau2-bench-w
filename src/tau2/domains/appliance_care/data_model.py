@@ -16,7 +16,7 @@ from typing import Any, Dict, List, Optional
 from pydantic import Field
 
 from tau2.environment.db import DB
-from tau2.utils.pydantic_utils import BaseModelNoExtra
+from tau2.utils.pydantic_utils import BaseModelNoExtra, get_pydantic_hash
 
 
 class Customer(BaseModelNoExtra):
@@ -56,9 +56,16 @@ class ApplianceModel(BaseModelNoExtra):
     reset_supported: bool = Field(
         False, description="Whether the manual documents a customer reset procedure"
     )
-    drain_filter_customer_accessible: bool = Field(
+    customer_drain_maintenance_supported: bool = Field(
         True,
-        description="Whether this model has a drain filter the customer may reach",
+        description=(
+            "Whether this model's manual documents a customer procedure for the "
+            "DRAIN PATH. What that procedure is differs by manufacturer: Bosch "
+            "documents cleaning the drain PUMP behind a service cover, Miele a "
+            "screw-in drain FILTER behind a pump flap. False where the manual "
+            "gives the customer no drain-path route at all - LG's two lint "
+            "filters are a laundry-lint part and do not count."
+        ),
     )
 
 
@@ -165,6 +172,34 @@ class ApplianceCareDB(DB):
     support_cases: List[SupportCase] = Field(default_factory=list)
     service_appointments: List[ServiceAppointment] = Field(default_factory=list)
     resolutions: List[Resolution] = Field(default_factory=list)
+
+    # Fields excluded from the whole-database hash because they are not part of
+    # correctness. Free text is stored and audited but cannot become a hidden
+    # string-match. Appointment date/window are also visible but flexible: the
+    # benchmark has no availability calendar that makes one arbitrary slot the
+    # only correct choice.
+    #
+    # What still counts: which records exist, for which appliance, with which
+    # outcome, category and visit type. Everything the task actually decides.
+    _HASH_EXCLUSIONS = {
+        "support_cases": {"__all__": {"summary", "severity"}},
+        "service_appointments": {"__all__": {"date", "window"}},
+        "resolutions": {"__all__": {"steps_taken", "manual_id_used"}},
+    }
+    # `severity` and `manual_id_used` left the hash in v8, and are enforced by
+    # assertions instead - which state the requirement in words rather than
+    # leaving it implicit in a checksum. Safety tasks assert a safety case,
+    # routine tasks assert a normal one, and every task whose answer depends on
+    # reading a particular manual asserts that manual.
+    #
+    # `manual_id_used` had to leave: a safety escalation stops BEFORE the model's
+    # manual is consulted, so requiring a citation there failed two runs that
+    # handled the hazard correctly. `category` stays hashed - it is a fact about
+    # the fault, not a judgement about severity.
+
+    def get_hash(self) -> str:
+        """Hash the decidable state, not the agent's phrasing."""
+        return get_pydantic_hash(self, exclude=self._HASH_EXCLUSIONS)
 
     def get_statistics(self) -> Dict[str, Any]:
         return {

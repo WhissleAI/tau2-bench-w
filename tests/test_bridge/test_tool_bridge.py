@@ -72,7 +72,7 @@ def test_only_agent_tools_are_exposed(bridge):
     hidden = {
         "read_display_code",
         "smell_check",
-        "inspect_drain_filter",
+        "open_pump_cover",
         "run_test_cycle",
         "read_model_label",
     }

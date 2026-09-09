@@ -29,6 +29,14 @@ class EnvironmentInfo(BaseModel):
     tool_defs: Optional[dict[str, ToolSignature]] = Field(
         description="The tool definitions of the environment.", default=None
     )
+    benchmark_version: Optional[str] = Field(
+        description=(
+            "The domain's benchmark version, when it declares one. Recorded on "
+            "every run so a stored result carries the version it was measured "
+            "against — scores are only comparable within a version."
+        ),
+        default=None,
+    )
 
 
 class Environment:
@@ -241,6 +249,14 @@ class Environment:
             else:
                 self.run_env_function_call(env_function_call)
 
+    def get_benchmark_version(self) -> Optional[str]:
+        """The domain's benchmark version, or None if it does not declare one.
+
+        Overridden by domains whose corpus, tasks, database, policy or tool
+        descriptions change over time — anything that can move a score.
+        """
+        return None
+
     def get_info(self, include_tool_info: bool = False) -> EnvironmentInfo:
         """
         Get environment information.
@@ -248,6 +264,9 @@ class Environment:
         return EnvironmentInfo(
             domain_name=self.domain_name,
             policy=self.policy,
+            # Domains that version themselves stamp every run automatically, so
+            # the version cannot be forgotten when a result is written.
+            benchmark_version=self.get_benchmark_version(),
             tool_defs=(
                 get_tool_signatures(self.tools)
                 if self.tools is not None and include_tool_info

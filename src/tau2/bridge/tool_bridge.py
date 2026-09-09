@@ -17,7 +17,7 @@ WHY NOT :class:`tau2.environment.server.EnvironmentServer`
 ----------------------------------------------------------
 That server is unauthenticated and, more importantly, publishes ``/user_tools/*``
 alongside the agent tools. In this domain the user tools ARE the hidden state —
-``read_display_code``, ``smell_check``, ``inspect_drain_filter``. Exposing them
+``read_display_code``, ``smell_check``, ``open_pump_cover``. Exposing them
 to the agent under test would hand it the answer key. This bridge serves agent
 tools only and has no route that can reach ``use_user_tool``.
 

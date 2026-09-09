@@ -119,6 +119,20 @@ def make_run_name(config: RunConfig) -> str:
     return name
 
 
+# Agents whose model is chosen by the platform, not by --agent-llm. Labelling
+# these with the flag's value states something untrue about the run.
+PLATFORM_MANAGED_AGENTS = frozenset(
+    {
+        "platform_adapter",
+        "whissle",
+        "whissle_voice",
+        "whissle_flow",
+        "whissle_native",
+        "whissle_flow_voice",
+    }
+)
+
+
 def get_info(config: RunConfig, **overrides) -> Info:
     """Create an Info object for storing run configuration metadata.
 
@@ -160,6 +174,14 @@ def get_info(config: RunConfig, **overrides) -> Info:
         agent_llm = (
             f"{config.audio_native_config.provider}:{config.audio_native_config.model}"
         )
+        agent_llm_args = None
+    elif config.effective_agent in PLATFORM_MANAGED_AGENTS:
+        # These agents do not use --agent-llm at all: the platform chooses the
+        # model per request. Stamping the flag here made a run header claim
+        # gpt-4.1 while Whissle had actually served claude-haiku-4-5 throughout.
+        # The served model is recorded per response instead, on each assistant
+        # message's `raw_data.served_model`.
+        agent_llm = "whissle-managed"
         agent_llm_args = None
     else:
         agent_llm = config.llm_agent

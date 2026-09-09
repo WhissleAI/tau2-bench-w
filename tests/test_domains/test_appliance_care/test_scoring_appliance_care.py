@@ -122,7 +122,7 @@ def test_unnecessary_case_fails_a_self_service_task():
     'No unnecessary database changes' is not a separate scorer — it falls out of
     hashing the whole DB, and this test pins that behaviour.
     """
-    task = next(t for t in TASKS if t.id == "ac_01a_blocked_filter")
+    task = next(t for t in TASKS if t.id == "ac_01a_blocked_pump")
     calls = [
         (a.name, a.arguments, a.requestor) for a in task.evaluation_criteria.actions
     ]
@@ -164,3 +164,403 @@ def test_wrong_manual_fails_the_ambiguous_model_task():
         full_trajectory=messages,
     )
     assert reward_info.reward == 0.0, "the wrong model's manual still scored 1.0"
+
+
+# --- v5 bad baselines: the procedures must be verified, not just attempted ----
+
+
+def _run(task, calls):
+    return _run_calls(task, calls)
+
+
+def _gold(task):
+    return [
+        (a.name, a.arguments, a.requestor) for a in task.evaluation_criteria.actions
+    ]
+
+
+def _score(task, calls):
+    return EnvironmentEvaluator.calculate_reward(
+        environment_constructor=get_environment,
+        task=task,
+        full_trajectory=_run(task, calls),
+    ).reward
+
+
+def test_skipping_the_cooling_step_fails_the_bosch_task():
+    """The manual's RISK OF SCALDING step is not optional."""
+    task = next(t for t in TASKS if t.id == "ac_01a_blocked_pump")
+    calls = [c for c in _gold(task) if c[0] != "allow_water_to_cool"]
+    assert _score(task, calls) == 0.0, "a scalded customer still scored a pass"
+
+
+def test_skipping_the_predrain_fails_the_bosch_task():
+    task = next(t for t in TASKS if t.id == "ac_01a_blocked_pump")
+    calls = [c for c in _gold(task) if c[0] != "drain_via_pump_hose"]
+    assert _score(task, calls) == 0.0
+
+
+def test_leaving_the_pump_cover_off_fails_the_bosch_task():
+    """Every manual here warns that a loose cover leaks in use."""
+    task = next(t for t in TASKS if t.id == "ac_01a_blocked_pump")
+    calls = [c for c in _gold(task) if c[0] != "refit_pump_cover"]
+    assert _score(task, calls) == 0.0
+
+
+def test_opening_the_pump_on_a_burning_machine_fails():
+    task = next(t for t in TASKS if t.id == "ac_01b_burning_smell")
+    calls = [
+        ("unplug_appliance", {}, "user"),
+        ("open_service_cover", {}, "user"),
+    ] + _gold(task)
+    assert _score(task, calls) == 0.0
+
+
+def test_running_a_drain_cycle_after_e23_fails():
+    """E:23 routes to service; running the machine contradicts the manual."""
+    for task_id in ("ac_02a_model_known", "ac_02b_model_unclear"):
+        task = next(t for t in TASKS if t.id == task_id)
+        calls = [("attempt_drain_cycle", {}, "user")] + _gold(task)
+        assert _score(task, calls) == 0.0, f"{task_id} passed after a drain cycle"
+
+
+def test_cleaning_only_one_lg_lint_filter_is_not_enough():
+    """The manual says there are two, and both tabs must lock back in."""
+    task = next(t for t in TASKS if t.id == "ac_05a_two_lint_filters")
+    calls = [c for c in _gold(task) if c[0] != "clean_lint_filters"]
+    assert _score(task, calls) == 0.0
+
+
+def test_skipping_the_miele_impeller_check_fails():
+    task = next(t for t in TASKS if t.id == "ac_05b_procedure_filed_oddly")
+    calls = [c for c in _gold(task) if c[0] != "check_impellers_turn"]
+    assert _score(task, calls) == 0.0
+
+
+def test_taking_the_miele_filter_out_and_putting_it_back_uncleaned_fails():
+    """Removing and refitting is not cleaning.
+
+    The refit action used to clear the blockage by itself, which meant an agent
+    that never told the customer to clean the filter still passed. Refitting now
+    refits and nothing else, so the cleaning instruction has to be given.
+    """
+    task = next(t for t in TASKS if t.id == "ac_05b_procedure_filed_oddly")
+    calls = [c for c in _gold(task) if c[0] != "clean_drain_filter"]
+    assert _score(task, calls) == 0.0, "a filter put back dirty still scored a pass"
+
+
+def test_the_wrong_manufacturers_procedure_gets_nowhere():
+    """A Bosch pump procedure applied to the LG must not fix it."""
+    task = next(t for t in TASKS if t.id == "ac_05a_two_lint_filters")
+    calls = _gold(task)[:3] + [
+        ("open_service_cover", {}, "user"),
+        ("open_pump_cover", {}, "user"),
+        ("clean_pump_housing", {}, "user"),
+    ]
+    assert _score(task, calls) == 0.0
+
+
+# --- v6: the three scoring defects the v5 run exposed --------------------------
+#
+# Each of these is a case the v5 scoring got wrong in one direction or the other:
+# it punished a correct final plug-in, it accepted a post-repair drain run as the
+# manual's first step, and it failed a materially correct resolution over wording.
+
+
+def test_plugging_back_in_after_closing_up_is_allowed():
+    """The v5 defect: a correct final plug-in failed the sequence assertion.
+
+    The customer has to run the machine to confirm the fix, which means plugging
+    it back in. That must not read as "never unplugged".
+    """
+    task = next(t for t in TASKS if t.id == "ac_01a_blocked_pump")
+    calls = _gold(task)
+    close_at = max(i for i, c in enumerate(calls) if c[0] == "close_service_cover")
+    calls = (
+        calls[: close_at + 1]
+        + [("plug_in_appliance", {}, "user"), ("run_test_cycle", {}, "user")]
+        + calls[close_at + 1 :]
+    )
+    assert _score(task, calls) == 1.0, "a correct final plug-in was penalised"
+
+
+def test_powering_up_with_the_pump_still_open_fails():
+    """The other side of it: power restored before closing up is a real failure."""
+    task = next(t for t in TASKS if t.id == "ac_01a_blocked_pump")
+    calls = _gold(task)
+    at = next(i for i, c in enumerate(calls) if c[0] == "clean_pump_housing")
+    calls = calls[: at + 1] + [("plug_in_appliance", {}, "user")] + calls[at + 1 :]
+    assert _score(task, calls) == 0.0, "the machine was powered up while open"
+
+
+def test_a_post_repair_drain_run_does_not_satisfy_the_first_step():
+    """The v5 defect: ACTION ignores order, so the victory lap counted.
+
+    The manual's step 1 is to try draining BEFORE opening anything. A drain cycle
+    run afterwards is a check that the repair worked, not that step.
+    """
+    task = next(t for t in TASKS if t.id == "ac_01a_blocked_pump")
+    calls = [c for c in _gold(task) if c[0] != "attempt_drain_cycle"]
+    close_at = max(i for i, c in enumerate(calls) if c[0] == "close_service_cover")
+    calls = (
+        calls[: close_at + 1]
+        + [("plug_in_appliance", {}, "user"), ("attempt_drain_cycle", {}, "user")]
+        + calls[close_at + 1 :]
+    )
+    assert _score(task, calls) == 0.0, (
+        "a drain cycle after the repair was accepted as the manual's first step"
+    )
+
+
+def test_different_wording_in_steps_taken_still_scores():
+    """The v5 defect: a materially correct resolution took DB 0 over prose.
+
+    Same appliance, same outcome, same manual — different English. A support case
+    is not wrong for describing the same fault in different words.
+    """
+    task = next(t for t in TASKS if t.id == "ac_01a_blocked_pump")
+    calls = []
+    for name, args, who in _gold(task):
+        if name == "record_resolution":
+            args = dict(args, steps_taken=["cleared the pump", "put it all back"])
+        calls.append((name, args, who))
+    assert _score(task, calls) == 1.0, "wording alone decided the score"
+
+
+def test_different_wording_in_a_case_summary_still_scores():
+    task = next(t for t in TASKS if t.id == "ac_02a_model_known")
+    calls = []
+    for name, args, who in _gold(task):
+        if name == "create_support_case":
+            args = dict(args, summary="Leak reported. Sent to service.")
+        elif name == "record_resolution":
+            args = dict(args, steps_taken=["told them to stop", "tap off"])
+        calls.append((name, args, who))
+    assert _score(task, calls) == 1.0
+
+
+def test_prose_freedom_does_not_extend_to_the_decidable_fields():
+    """Wording is free; the appliance, outcome and manual are not."""
+    task = next(t for t in TASKS if t.id == "ac_01a_blocked_pump")
+    for field, value in (
+        ("appliance_id", "APP-002"),
+        ("outcome", "service_scheduled"),
+        ("manual_id_used", "mielewwb020washer"),
+    ):
+        calls = []
+        for name, args, who in _gold(task):
+            if name == "record_resolution":
+                args = dict(args, **{field: value})
+            calls.append((name, args, who))
+        assert _score(task, calls) == 0.0, f"{field} was allowed to drift"
+
+
+def test_a_case_written_against_the_wrong_appliance_or_category_fails():
+    """Free wording in a case summary must not carry the structured fields with it."""
+    task = next(t for t in TASKS if t.id == "ac_02a_model_known")
+    for field, value in (
+        ("appliance_id", "APP-001"),
+        ("category", "electrical"),
+    ):
+        calls = []
+        for name, args, who in _gold(task):
+            if name == "create_support_case":
+                args = dict(
+                    args, summary="different wording entirely", **{field: value}
+                )
+            calls.append((name, args, who))
+        assert _score(task, calls) == 0.0, f"a case with the wrong {field} still scored"
+
+
+# --- v7: a different valid path must pass -------------------------------------
+
+
+def test_extra_diligence_does_not_fail_a_task():
+    """The v6 false negative, pinned.
+
+    That run followed the manual exactly, passed all eleven assertions and left a
+    byte-identical support database - and scored zero because it had read the
+    error code, glanced at the drain hose, and restarted once to confirm the fix.
+    None of those is a mistake.
+    """
+    task = next(t for t in TASKS if t.id == "ac_01a_blocked_pump")
+    calls = _gold(task)
+    at = next(i for i, c in enumerate(calls) if c[0] == "shut_off_water_tap")
+    calls = (
+        calls[:at]
+        + [("read_display_code", {}, "user"), ("inspect_drain_hose", {}, "user")]
+        + calls[at:]
+    )
+    close = max(i for i, c in enumerate(calls) if c[0] == "close_service_cover")
+    calls = (
+        calls[: close + 1]
+        + [("plug_in_appliance", {}, "user"), ("restart_appliance", {}, "user")]
+        + calls[close + 1 :]
+    )
+    assert _score(task, calls) == 1.0, "extra diligence was scored as deviation"
+
+
+def test_a_recovered_rejected_call_does_not_fail_a_task():
+    """A rejected call the agent recovers from is an efficiency cost, not failure.
+
+    The v6 run wrote a resolution against APP-UNKNOWN, was told how to recover,
+    identified the customer and retried. The task was still completed safely.
+    """
+    task = next(t for t in TASKS if t.id == "ac_01a_blocked_pump")
+    calls = _gold(task)
+    at = next(i for i, c in enumerate(calls) if c[0] == "record_resolution")
+    bad = dict(calls[at][1], appliance_id="APP-UNKNOWN")
+    calls = calls[:at] + [("record_resolution", bad, "assistant")] + calls[at:]
+    assert _score(task, calls) == 1.0, "a recovered rejection failed the task"
+
+
+def test_the_diagnostic_tolerance_does_not_excuse_real_failures():
+    """The line has to hold in the other direction too."""
+    task = next(t for t in TASKS if t.id == "ac_01a_blocked_pump")
+
+    # Unsafe operation. Running a merely blocked machine is fine, so the unsafe
+    # case is the one where the machine is actually unsafe to run.
+    burning = next(t for t in TASKS if t.id == "ac_01b_burning_smell")
+    unsafe = [("run_test_cycle", {}, "user")] + _gold(burning)
+    assert _score(burning, unsafe) == 0.0, "an unsafe operation was excused"
+
+    # A required step skipped.
+    skipped = [c for c in _gold(task) if c[0] != "clean_pump_housing"]
+    assert _score(task, skipped) == 0.0, "a missing required step was excused"
+
+    # Access left open.
+    left_open = [c for c in _gold(task) if c[0] != "reinstall_protective_film"]
+    assert _score(task, left_open) == 0.0, "an open access point was excused"
+
+
+# --- v8: benchmark defects, and the holes the fixes must not open --------------
+
+
+def test_the_documented_power_cycle_counts_as_the_reset():
+    """One physical action, two tools. Both must work on a model that documents it.
+
+    Bosch's reset IS a power cycle - "Turn off machine, wait 5 seconds and turn on
+    again." An agent that gave exactly that instruction failed twice because the
+    customer performed it with unplug + plug in, and only run_reset_procedure was
+    wired to the fault.
+    """
+    task = next(t for t in TASKS if t.id == "ac_04a_approved_reset")
+    calls = []
+    for name, args, who in _gold(task):
+        if name == "run_reset_procedure":
+            calls.append(("unplug_appliance", {}, "user"))
+            calls.append(("plug_in_appliance", {}, "user"))
+        else:
+            calls.append((name, args, who))
+    assert _score(task, calls) == 1.0, (
+        "the documented reset, done the other way, failed"
+    )
+
+
+def test_a_power_cycle_does_not_fix_a_model_with_no_documented_reset():
+    """The fix must stay model-gated: LG and Miele publish no customer reset."""
+    from tau2.domains.appliance_care.environment import get_environment as ge
+
+    env = ge()
+    u = env.user_tools
+    u.configure_scenario(true_model_id="WT901CW", primary_fault="control_glitch")
+    u.unplug_appliance()
+    u.plug_in_appliance()
+    assert u.db.problem_still_present(), "a power cycle fixed a model with no reset"
+
+
+def test_a_power_cycle_on_a_tripping_breaker_is_still_unsafe():
+    """The new path must carry the same safety consequence as the old one."""
+    task = next(t for t in TASKS if t.id == "ac_04b_breaker_trips")
+    calls = [("unplug_appliance", {}, "user"), ("plug_in_appliance", {}, "user")]
+    calls += _gold(task)
+    assert _score(task, calls) == 0.0, "powering up a breaker-tripping machine passed"
+
+
+def test_stop_use_is_recorded_when_the_customer_isolates_a_hazardous_machine():
+    """The signal must not depend on which tool the simulator reaches for."""
+    task = next(t for t in TASKS if t.id == "ac_01b_burning_smell")
+    assert all(c[0] != "acknowledge_stop_using" for c in _gold(task))
+    assert _score(task, _gold(task)) == 1.0, (
+        "an agent that had the customer unplug a burning machine was still marked "
+        "as never having told them to stop"
+    )
+
+
+def test_stop_use_is_recorded_when_the_customer_isolates_a_leak():
+    """Shutting the tap on E:23 is evidence; a separate acknowledgement is not."""
+    task = next(t for t in TASKS if t.id == "ac_02a_model_known")
+    assert all(c[0] != "acknowledge_stop_using" for c in _gold(task))
+    assert _score(task, _gold(task)) == 1.0
+
+
+def test_miele_task_requires_the_documented_door_release():
+    task = next(t for t in TASKS if t.id == "ac_05b_procedure_filed_oddly")
+    calls = [
+        call
+        for call in _gold(task)
+        if call[0] != "unlock_miele_door_with_screwdriver"
+    ]
+    assert _score(task, calls) == 0.0, "a still-locked door passed the Miele task"
+
+
+def test_miele_release_before_stationary_check_is_a_hard_failure():
+    task = next(t for t in TASKS if t.id == "ac_05b_procedure_filed_oddly")
+    calls = []
+    for call in _gold(task):
+        if call[0] == "check_drum_stationary":
+            continue
+        calls.append(call)
+    assert _score(task, calls) == 0.0, "unsafe Miele door release passed"
+
+
+def test_a_safety_escalation_need_not_cite_a_manual():
+    """You stop BEFORE consulting the model's manual, so citing one is not required."""
+    for task_id in ("ac_01b_burning_smell", "ac_04b_breaker_trips"):
+        task = next(t for t in TASKS if t.id == task_id)
+        calls = []
+        for name, args, who in _gold(task):
+            if name == "record_resolution":
+                args = {k: v for k, v in args.items() if k != "manual_id_used"}
+            calls.append((name, args, who))
+        assert _score(task, calls) == 1.0, f"{task_id} required a manual citation"
+
+
+def test_a_routine_stop_use_must_be_filed_as_a_normal_case():
+    """Not a judgement call: the policy enumerates what a safety condition is.
+
+    A base-tub leak is not on that list. The manufacturer directs the customer to
+    stop and call service, which is a handover, not one of policy 4's hazards.
+    """
+    task = next(t for t in TASKS if t.id == "ac_02a_model_known")
+    calls = []
+    for name, args, who in _gold(task):
+        if name == "create_support_case":
+            calls.append(
+                (
+                    "escalate_safety_issue",
+                    {
+                        "appliance_id": args["appliance_id"],
+                        "reason": "E:23 water in the base tub, appliance leaking.",
+                    },
+                    "assistant",
+                )
+            )
+        else:
+            calls.append((name, args, who))
+    assert _score(task, calls) == 0.0, (
+        "a routine stop-use was filed as a safety escalation"
+    )
+
+
+def test_two_cases_still_fail():
+    """The relaxation is about severity, not about opening records twice."""
+    task = next(t for t in TASKS if t.id == "ac_02a_model_known")
+    calls = _gold(task) + [
+        (
+            "create_support_case",
+            {"appliance_id": "APP-003", "category": "drainage", "summary": "second"},
+            "assistant",
+        )
+    ]
+    assert _score(task, calls) == 0.0, "a duplicate case was accepted"

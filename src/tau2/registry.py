@@ -310,6 +310,9 @@ try:
     from tau2.agent.whissle_agent import create_whissle_agent
 
     registry.register_agent_factory(create_whissle_agent, "whissle")
+    from tau2.agent.platform_adapter_agent import create_platform_adapter_agent
+
+    registry.register_agent_factory(create_platform_adapter_agent, "platform_adapter")
     # Half-duplex VOICE agent: drives Whissle's real STT→LLM→TTS cascade turn by
     # turn over LiveKit (the faithful model — NOT the tick full-duplex path).
     from tau2.agent.whissle_voice_agent import create_whissle_voice_agent
@@ -321,6 +324,10 @@ try:
     from tau2.agent.whissle_flow_agent import create_whissle_flow_agent
 
     registry.register_agent_factory(create_whissle_flow_agent, "whissle_flow")
+    # Canonical name for text evaluation of the real saved Whissle agent.  The
+    # older alias is retained for historical commands, although the text route
+    # does not guarantee that a saved state-machine flow is active.
+    registry.register_agent_factory(create_whissle_flow_agent, "whissle_native")
     from tau2.agent.whissle_flow_agent import create_whissle_flow_voice_agent
 
     registry.register_agent_factory(

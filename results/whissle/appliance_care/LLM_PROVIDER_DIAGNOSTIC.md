@@ -1,5 +1,12 @@
 # Diagnostic: the "transition judge" failure is not a transition-judge failure
 
+> **RESOLVED 2026-08-21.** Credit was restored on the backend's Gemini key and every
+> LLM path recovered immediately. `POST /api/models/chat` returns normally
+> (`"OK"`, 724 ms), and the live agent's flow now advances: `greet → understand_issue`
+> with `transition_check … "result": "fired"`. The diagnosis below held — it was
+> platform-wide inference, not the judge, and a billing top-up was the whole fix.
+> Kept as the record of how it was found, and of what stayed unknown.
+
 **Date:** 2026-08-21 · **Method:** read-only; 2 paid requests, both unbilled (they failed).
 
 ## Correction

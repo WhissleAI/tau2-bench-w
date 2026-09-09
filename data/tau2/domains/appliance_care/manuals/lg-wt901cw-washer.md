@@ -38,11 +38,38 @@ agent must not map it onto an LG meaning.
 The manual documents customer cleaning of the **lint filters** and the **water inlet
 filters**, plus the fabric softener cup and levelling feet.
 
-**Lint filters:** "Clean the lint filters at least every 2-3 loads." The manual
-describes lifting a triangular tab to open the filter.
+**Lint filters — there are TWO, and they are inside the drum.** The manual:
+*"Your washer comes with two lint filters inside the drum. These lint filters are
+designed to collect lint and other debris and prevent it from depositing on your
+laundry during the wash cycle. Clean the lint filters at least every 2-3 loads."*
 
-**Inlet filters:** cleaned in response to `IE` (weak water pressure or a clogged
-filter).
+They are a **laundry-lint** part, not a drain component. A machine that will not
+drain is not fixed by cleaning them.
+
+The documented steps, for each of the two:
+
+1. *"Pinch the tabs on the top and bottom of the filter to release the filter from
+   the drum wall."*
+2. *"On the back of the filter, pull on the triangular tab to open the filter."*
+3. *"Pull the filter completely open."*
+4. *"Use your fingers or a soft brush to remove the lint from both sides."*
+5. Rinse under running water if necessary.
+6. *"Close the filter and snap it back into place with the tabs at top and bottom.
+   Make sure both tabs are locked into the housing."*
+
+**Inlet filters:** cleaned in response to `IE`. The manual: *"IE message may blink
+on the display when the water pressure is weak or an inlet filter is clogged with
+dirt. Clean the inlet filter."* This is a **fill** problem, not a drain problem.
+
+**Will not drain** is a separate entry with its own causes: a *kinked drain hose*,
+or a *drain located higher than 96 in. above the floor* — *"Make sure that the
+drain hose is no higher than 8 ft. above the bottom of the washer and is no more
+than 5 ft. away from the washer."* No filter is involved.
+
+This model has **no customer drain-pump access** of the Bosch or Miele kind. The
+manual's only mention of a drain filter is under *rattling and clanking noise*
+(foreign objects in the tub or pump), and it ends *"If noise continues after washer
+is restarted, call for service."*
 
 ---
 

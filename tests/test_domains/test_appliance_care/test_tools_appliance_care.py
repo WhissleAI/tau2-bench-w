@@ -124,6 +124,20 @@ def test_invalid_arguments_are_rejected(env):
         env.tools.schedule_service(
             case_id="CASE-001", date="5 March", window="am", visit_type="warranty"
         )
+    with pytest.raises(ValueError, match="cannot be before"):
+        env.tools.schedule_service(
+            case_id="CASE-001",
+            date="2026-03-01",
+            window="morning",
+            visit_type="warranty",
+        )
+    with pytest.raises(ValueError, match="window must be"):
+        env.tools.schedule_service(
+            case_id="CASE-001",
+            date="2026-03-05",
+            window="midnight",
+            visit_type="warranty",
+        )
     with pytest.raises(ValueError, match="outcome must be one of"):
         env.tools.record_resolution(
             appliance_id="APP-001", outcome="fixed_it", steps_taken=[]
@@ -140,3 +154,109 @@ def test_no_manuals_variant_withholds_the_manual_tools():
 def test_solo_mode_is_refused():
     with pytest.raises(ValueError, match="Solo mode not supported"):
         get_environment(solo_mode=True)
+
+
+# --- identifier contract ------------------------------------------------------
+#
+# The first live text run scored 0/10, and twelve of its tool calls were rejected
+# for the same reason: the agent passed whatever identifier the customer had read
+# aloud — a model number, a serial, once the literal string "unknown" — where an
+# appliance record id belongs. The old error said only "No appliance found with
+# id NW-2200", which names the symptom and offers no way back. These tests pin an
+# error a competent agent can actually recover from.
+
+
+def test_a_model_number_is_named_as_such():
+    env = get_environment()
+    with pytest.raises(ValueError) as exc:
+        env.tools.create_support_case(
+            appliance_id="WAT28400UC", category="drainage", summary="x"
+        )
+    msg = str(exc.value)
+    assert "MODEL number" in msg
+    assert "list_owned_appliances" in msg, "the error must name the way out"
+
+
+def test_a_serial_number_is_named_as_such():
+    env = get_environment()
+    with pytest.raises(ValueError) as exc:
+        env.tools.record_resolution(
+            appliance_id="FD9401-004471-8890",
+            outcome="resolved_self_service",
+            steps_taken=["x"],
+        )
+    assert "SERIAL number" in str(exc.value)
+
+
+def test_an_unrecognised_id_still_points_at_the_recovery_path():
+    env = get_environment()
+    with pytest.raises(ValueError) as exc:
+        env.tools.check_warranty(appliance_id="unknown")
+    msg = str(exc.value)
+    assert "APP-001" in msg
+    assert "get_customer_by_phone" in msg
+
+
+def test_every_appliance_id_parameter_says_where_the_id_comes_from():
+    """A schema that says only 'The machine.' invites exactly the wrong value."""
+    env = get_environment()
+    for tool in env.get_tools():
+        schema = tool.openai_schema
+        fn = schema.get("function", schema)
+        prop = (fn.get("parameters") or {}).get("properties", {}).get("appliance_id")
+        if not prop:
+            continue
+        desc = prop.get("description") or ""
+        assert "APP-001" in desc, f"{fn['name']}: appliance_id gives no example id"
+        assert "list_owned_appliances" in desc, (
+            f"{fn['name']}: appliance_id does not say where the id comes from"
+        )
+
+
+def test_list_owned_appliances_requires_the_returned_customer_id():
+    env = get_environment()
+    tool = next(
+        tool
+        for tool in env.get_tools()
+        if (tool.openai_schema.get("function", tool.openai_schema))["name"]
+        == "list_owned_appliances"
+    )
+    schema = tool.openai_schema.get("function", tool.openai_schema)
+    description = schema["parameters"]["properties"]["customer_id"]["description"]
+    assert "CUST-001" in description
+    assert "get_customer_by_phone" in description
+    assert "name, phone number, or email address" in description
+
+
+def test_record_resolution_names_the_exact_manual_ids():
+    env = get_environment()
+    tool = next(
+        tool
+        for tool in env.get_tools()
+        if (tool.openai_schema.get("function", tool.openai_schema))["name"]
+        == "record_resolution"
+    )
+    schema = tool.openai_schema.get("function", tool.openai_schema)
+    assert "before sending the customer" in schema["description"]
+    description = schema["parameters"]["properties"]["manual_id_used"]["description"]
+    for manual_id in (
+        "boschwat28400ucwasher",
+        "boschwat28401ucwasher",
+        "boschwat28402ucwasher",
+        "lgwt901cwwasher",
+        "mielewwb020washer",
+    ):
+        assert manual_id in description
+
+
+def test_the_domain_declares_a_benchmark_version():
+    """Scores are comparable only within a version, so one must exist.
+
+    Tool descriptions are versioned material: they are part of the prompt every
+    agent sees, so clarifying one changes the question being asked. A run from
+    before such a change cannot be set beside a run from after it.
+    """
+    from tau2.domains.appliance_care.utils import APPLIANCE_CARE_VERSION
+
+    assert APPLIANCE_CARE_VERSION.startswith("v")
+    assert APPLIANCE_CARE_VERSION[1:].isdigit()

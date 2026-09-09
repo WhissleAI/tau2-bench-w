@@ -31,11 +31,19 @@ def _check_actions(
     """
     action_checks = []
     for gold_action in golden_actions:
-        found = False
-        for pred_tool_call in predicted_tool_calls:
-            if gold_action.compare_with_tool_call(pred_tool_call):
-                found = True
-                break
+        first_later_call = min(
+            (
+                index
+                for index, call in enumerate(predicted_tool_calls)
+                if call.name in gold_action.must_precede
+            ),
+            default=None,
+        )
+        found = any(
+            gold_action.compare_with_tool_call(pred_tool_call)
+            and (first_later_call is None or index < first_later_call)
+            for index, pred_tool_call in enumerate(predicted_tool_calls)
+        )
         if found:
             gold_action_reward = 1.0
             gold_action_match = True

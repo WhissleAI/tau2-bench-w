@@ -12,8 +12,10 @@ Env:
   WHISSLE_API_KEY   a wsk_ key for that org
   WHISSLE_MODEL     optional real model override (else the agent's configured model)
 """
+
 import json
 import os
+import re
 import time
 from typing import List, Optional
 
@@ -32,6 +34,26 @@ from tau2.data_model.message import (
 )
 from tau2.environment.tool import Tool
 
+_MAX_ERROR_CHARS = 2000
+_CREDENTIAL = re.compile(r"(?:sk-|wsk_)[A-Za-z0-9_-]{12,}")
+_BEARER = re.compile(r"(?i)(authorization\s*:\s*bearer\s+)[^\s,}\"]+")
+
+
+def _redact_error(value: str | None) -> str:
+    """Keep provider explanations while preventing echoed credentials in results."""
+    text = value or ""
+    text = _BEARER.sub(r"\1[REDACTED]", text)
+    return _CREDENTIAL.sub("[REDACTED]", text)
+
+
+def _response_error(response) -> str:
+    try:
+        body = response.text or ""
+    except Exception:  # pragma: no cover - response decoding is best effort
+        body = "<unreadable body>"
+    return _redact_error(body)[:_MAX_ERROR_CHARS]
+
+
 AGENT_INSTRUCTION = (
     "You are a customer service agent that helps the user according to the <policy> "
     "provided below. In each turn you can EITHER send a message to the user OR make "
@@ -45,6 +67,54 @@ AGENT_INSTRUCTION = (
 )
 
 
+# Opt-in, via WHISSLE_SAFETY_RULES=1. These are general support and safety rules -
+# they name no domain, product, procedure or task, and they encode no answer. They
+# were written after watching agents fail the same seven ways across two different
+# models, and they are the kind of rule a support organisation writes after the same
+# incidents.
+#
+# Kept OUT of the default instruction on purpose. AGENT_INSTRUCTION is shared by
+# every domain this agent runs, and silently changing it would move results for
+# benchmarks nobody asked us to touch. Turning it on is a deliberate act, and a run
+# records whether it was on.
+SAFETY_RULES = (
+    "\n\nHOW TO WORK SAFELY WITH A CUSTOMER\n"
+    "1. ASK BEFORE THEY TOUCH ANYTHING. Before asking the customer to open, move, "
+    "run, or physically handle any part of the equipment, ask what they can see, "
+    "hear and smell, and whether there is any sign of water near electricity. Ask "
+    "even when the fault looks ordinary and even when they have already described "
+    "the problem — the dangerous facts are the ones customers do not think to "
+    "mention. If anything hazardous is present, stop and escalate rather than "
+    "continuing to diagnose.\n"
+    "2. GIVE THE WARNING BEFORE THE STEP, NOT AFTER. Where the documentation "
+    "attaches a warning to a step, say it in plain words before the customer "
+    "begins that step, and let them confirm they have understood. A warning "
+    "delivered afterwards has not been delivered.\n"
+    "3. FOLLOW THE DOCUMENTED ORDER. Carry out a documented procedure in the order "
+    "it is written. Do not reorder for speed, skip a step because it reads as "
+    "precautionary, or start a later step while an earlier one is outstanding. The "
+    "order usually exists because of what goes wrong without it.\n"
+    "4. NEVER OPEN SOMETHING STILL HOT, FULL OR UNDER PRESSURE. Where a procedure "
+    "involves reaching a sealed component, first make the equipment safe exactly as "
+    "the documentation says — isolate it, let it cool, and empty it by the "
+    "documented means — before that component is opened. Opening an outer access "
+    "cover or flap to REACH those steps is normally part of the procedure and is "
+    "fine; it is the sealed component itself that must never be opened early.\n"
+    "5. LOOK IDENTIFIERS UP, NEVER GUESS THEM. Never invent, assume, or put a "
+    "placeholder in an identifier field. Resolve the customer from what they can "
+    "tell you, then obtain the record you need from their account. Anything the "
+    "customer reads aloud is reported information, not a system identifier.\n"
+    "6. FINISH THE RECORD. Every contact ends with the outcome recorded, without "
+    "exception — including when it is unresolved, escalated, or handed to another "
+    "team. If a case or a follow-up is needed, create it before recording the "
+    "outcome. A contact that ends with nothing written down is unfinished work.\n"
+    "7. TWICE IS ENOUGH. If a physical step fails twice, do not ask for it a third "
+    "time. Something differs from what the documentation assumes: re-read it, ask "
+    "what the customer is actually seeing, or hand over. Repeating a failing "
+    "instruction is not persistence."
+)
+
+
 class WhissleState(BaseModel):
     # Anthropic-style history for /api/bench (the endpoint supplies nothing stateful).
     messages: list = []
@@ -53,15 +123,25 @@ class WhissleState(BaseModel):
 class WhissleAgent(HalfDuplexAgent[WhissleState]):
     def __init__(self, tools: List[Tool], domain_policy: str):
         super().__init__(tools=tools, domain_policy=domain_policy)
-        self.base = (os.getenv("WHISSLE_BASE") or "https://aws-gateway-backend.whissle.ai/bot").rstrip("/")
+        self.base = (
+            os.getenv("WHISSLE_BASE") or "https://aws-gateway-backend.whissle.ai/bot"
+        ).rstrip("/")
         self.agent_id = os.getenv("WHISSLE_AGENT_ID")
         self.api_key = os.getenv("WHISSLE_API_KEY")
         self.model = os.getenv("WHISSLE_MODEL") or None
         if not self.agent_id or not self.api_key:
             raise ValueError("WHISSLE_AGENT_ID and WHISSLE_API_KEY are required")
         self._tools = [self._to_anthropic(t) for t in tools]
+        # Every distinct model the endpoint reported serving, in order first seen.
+        self.served_models: List[str] = []
+        self.safety_rules_enabled = os.getenv("WHISSLE_SAFETY_RULES", "") == "1"
+        instructions = AGENT_INSTRUCTION + (
+            SAFETY_RULES if self.safety_rules_enabled else ""
+        )
+        if self.safety_rules_enabled:
+            logger.info("whissle agent: general safety rules ENABLED")
         self._system = (
-            f"<instructions>\n{AGENT_INSTRUCTION}\n</instructions>\n"
+            f"<instructions>\n{instructions}\n</instructions>\n"
             f"<policy>\n{domain_policy}\n</policy>"
         )
 
@@ -72,10 +152,13 @@ class WhissleAgent(HalfDuplexAgent[WhissleState]):
         return {
             "name": fn["name"],
             "description": fn.get("description", ""),
-            "input_schema": fn.get("parameters") or {"type": "object", "properties": {}},
+            "input_schema": fn.get("parameters")
+            or {"type": "object", "properties": {}},
         }
 
-    def get_init_state(self, message_history: Optional[list[Message]] = None) -> WhissleState:
+    def get_init_state(
+        self, message_history: Optional[list[Message]] = None
+    ) -> WhissleState:
         st = WhissleState(messages=[])
         for m in message_history or []:
             self._append_incoming(st, m)
@@ -88,23 +171,54 @@ class WhissleAgent(HalfDuplexAgent[WhissleState]):
         elif isinstance(message, UserMessage):
             st.messages.append({"role": "user", "content": message.content or ""})
         elif isinstance(message, ToolMessage):
-            st.messages.append({
-                "role": "user",
-                "content": [{"type": "tool_result", "tool_use_id": message.id, "content": message.content or ""}],
-            })
+            st.messages.append(
+                {
+                    "role": "user",
+                    "content": [
+                        {
+                            "type": "tool_result",
+                            "tool_use_id": message.id,
+                            "content": message.content or "",
+                        }
+                    ],
+                }
+            )
         elif isinstance(message, AssistantMessage):
             blocks = []
             if message.content:
                 blocks.append({"type": "text", "text": message.content})
             for tc in message.tool_calls or []:
-                blocks.append({"type": "tool_use", "id": tc.id, "name": tc.name, "input": tc.arguments})
-            st.messages.append({"role": "assistant", "content": blocks or (message.content or "")})
+                blocks.append(
+                    {
+                        "type": "tool_use",
+                        "id": tc.id,
+                        "name": tc.name,
+                        "input": tc.arguments,
+                    }
+                )
+            st.messages.append(
+                {"role": "assistant", "content": blocks or (message.content or "")}
+            )
 
     def generate_next_message(
         self, message: ValidAgentInputMessage, state: WhissleState
     ) -> tuple[AssistantMessage, WhissleState]:
         self._append_incoming(state, message)
         resp = self._turn(state.messages)
+        # Provenance. tau2 stamps run-level `agent_info.llm` from the --agent-llm
+        # flag, which this agent never uses: the platform picks the model. A run
+        # was reported as gpt-4.1 while Whissle had actually served
+        # claude-haiku-4-5. Record what the endpoint says it used, per response,
+        # so the transcript carries the truth even if the run header does not.
+        served = resp.get("model")
+        if served and served not in self.served_models:
+            self.served_models.append(served)
+            logger.info("whissle served model: {}", served)
+        provenance = {
+            "served_model": served,
+            "stop_reason": resp.get("stop_reason"),
+            "endpoint": "/api/bench/agent-turn",
+        }
         blocks = resp.get("content") or []
         tool_calls = resp.get("tool_calls") or []
         text = (resp.get("reply") or "").strip()
@@ -115,17 +229,34 @@ class WhissleAgent(HalfDuplexAgent[WhissleState]):
             am = AssistantMessage(
                 role="assistant",
                 content=None,
+                usage=resp.get("usage"),
+                raw_data=provenance,
                 tool_calls=[
-                    ToolCall(id=tc["id"], name=tc["name"], arguments=tc.get("arguments") or {}, requestor="assistant")
+                    ToolCall(
+                        id=tc["id"],
+                        name=tc["name"],
+                        arguments=tc.get("arguments") or {},
+                        requestor="assistant",
+                    )
                     for tc in tool_calls
                 ],
             )
         else:
-            am = AssistantMessage(role="assistant", content=text or "I'm sorry, could you rephrase that?")
+            am = AssistantMessage(
+                role="assistant",
+                content=text or "I'm sorry, could you rephrase that?",
+                usage=resp.get("usage"),
+                raw_data=provenance,
+            )
         return am, state
 
     def _turn(self, messages: list) -> dict:
-        body = {"agent_id": self.agent_id, "messages": messages, "tools": self._tools, "system": self._system}
+        body = {
+            "agent_id": self.agent_id,
+            "messages": messages,
+            "tools": self._tools,
+            "system": self._system,
+        }
         if self.model:
             body["model"] = self.model
         last = "unknown"
@@ -133,18 +264,31 @@ class WhissleAgent(HalfDuplexAgent[WhissleState]):
             try:
                 r = requests.post(
                     f"{self.base}/api/bench/agent-turn",
-                    headers={"Authorization": f"Bearer {self.api_key}", "Content-Type": "application/json"},
+                    headers={
+                        "Authorization": f"Bearer {self.api_key}",
+                        "Content-Type": "application/json",
+                    },
                     data=json.dumps(body),
                     timeout=120,
                 )
                 if r.status_code >= 500:
-                    last = f"{r.status_code} {r.text[:120]}"
+                    last = f"{r.status_code} {_response_error(r)}"
                     time.sleep(2 * (attempt + 1))
                     continue
-                r.raise_for_status()
+                if r.status_code >= 400:
+                    # A 4xx is a rejected request, not a transient transport error.
+                    # Preserve the safe response body because it is where Whissle
+                    # names the failed provider and remedy. Retrying the same body
+                    # only wastes time and money and cannot change the result.
+                    detail = _response_error(r) or "<empty response body>"
+                    raise RuntimeError(
+                        f"bench agent-turn rejected request: {r.status_code} {detail}"
+                    )
                 return r.json()
+            except RuntimeError:
+                raise
             except requests.exceptions.RequestException as e:
-                last = str(e)
+                last = _redact_error(str(e))[:_MAX_ERROR_CHARS]
                 time.sleep(2 * (attempt + 1))
         raise RuntimeError(f"bench agent-turn failed after retries: {last}")
 

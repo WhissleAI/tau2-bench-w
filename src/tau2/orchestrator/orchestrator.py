@@ -778,6 +778,8 @@ class Orchestrator(BaseOrchestrator[AgentT, UserT, Message]):
         try:
             self.agent.stop(last_msg_to_agent, self.agent_state)
         except Exception as e:
+            if getattr(self.agent, "strict_cleanup", False):
+                raise
             logger.warning(f"Error stopping agent during finalization: {e}")
         try:
             self.user.stop(last_msg_to_user, self.user_state)

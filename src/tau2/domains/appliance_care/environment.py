@@ -31,6 +31,7 @@ from tau2.domains.appliance_care.utils import (
     APPLIANCE_CARE_POLICY_PATH,
     APPLIANCE_CARE_TASK_SET_PATH,
     APPLIANCE_CARE_USER_DB_PATH,
+    APPLIANCE_CARE_VERSION,
 )
 from tau2.environment.environment import Environment
 from tau2.utils import load_file
@@ -50,6 +51,16 @@ class ApplianceCareEnvironment(Environment):
         user_tools: ApplianceCareUserTools,
     ):
         super().__init__(domain_name, policy, tools, user_tools)
+
+    def get_benchmark_version(self) -> str:
+        """Stamp every run with the version it was measured against.
+
+        This is why the constant exists rather than living only in a report: a
+        result file written months from now carries its own version, so nobody
+        has to reconstruct which corpus, task set and tool descriptions produced
+        the number.
+        """
+        return APPLIANCE_CARE_VERSION
 
     def sync_tools(self):
         """Keep the two sides consistent after every tool call.
@@ -110,10 +121,14 @@ def get_environment(
         tools = ApplianceCareTools(db)
 
     user_tools = ApplianceCareUserTools(user_db)
+    # Keep the environment's own name identical to the registry key. The evaluator
+    # resolves a fresh environment from this value after the conversation; mixing
+    # the hyphenated registry suffix with the underscored variant name makes a
+    # completed native-platform conversation impossible to score.
     domain_name = (
         "appliance_care"
         if manual_access == "search"
-        else f"appliance_care-{manual_access}"
+        else "appliance_care-no-manuals"
     )
     return ApplianceCareEnvironment(
         domain_name=domain_name,

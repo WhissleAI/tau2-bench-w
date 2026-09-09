@@ -113,6 +113,46 @@ class Description(BaseModel):
         return "\n".join(lines)
 
 
+class ActionMatch(BaseModel):
+    """An equally valid tool-call representation of a gold action."""
+
+    name: str = Field(description="The alternative tool name.")
+    arguments: dict = Field(description="The alternative tool arguments.")
+    compare_args: Optional[list[str]] = Field(
+        description=(
+            "The alternative arguments to compare. If None, compare all arguments "
+            "supplied by the tool call."
+        ),
+        default=None,
+    )
+
+    def compare_with_tool_call(self, tool_call: ToolCall) -> bool:
+        """Return whether a tool call satisfies this alternative."""
+        return _tool_call_matches(
+            tool_call=tool_call,
+            name=self.name,
+            arguments=self.arguments,
+            compare_args=self.compare_args,
+        )
+
+
+def _tool_call_matches(
+    tool_call: ToolCall,
+    name: str,
+    arguments: dict,
+    compare_args: Optional[list[str]],
+) -> bool:
+    """Compare a tool call with one accepted name-and-arguments form."""
+    if name != tool_call.name:
+        return False
+    selected_args = tool_call.arguments.keys() if compare_args is None else compare_args
+    if len(selected_args) == 0:
+        return True
+    tool_args = {k: v for k, v in tool_call.arguments.items() if k in selected_args}
+    action_args = {k: v for k, v in arguments.items() if k in selected_args}
+    return tool_args == action_args
+
+
 class Action(BaseModel):
     """
     Descriptor for a tool call by the agent or the user.
@@ -127,8 +167,9 @@ class Action(BaseModel):
       simulation to set up the initial state.
 
     `compare_with_tool_call` matches an action against a tool call using
-    `compare_args` (or all arguments if `compare_args` is None). It is
-    only consulted by `ActionEvaluator`.
+    `compare_args` (or all arguments if `compare_args` is None) and any
+    declared `alternatives`. `must_precede` adds an optional ordering
+    constraint. These fields are only consulted by `ActionEvaluator`.
 
     Example:
       {
@@ -156,6 +197,17 @@ class Action(BaseModel):
         description="The arguments to check in tool call. If None, will check all the arguments.",
         default=None,
     )
+    alternatives: list[ActionMatch] = Field(
+        description="Other tool calls that satisfy the same required action.",
+        default_factory=list,
+    )
+    must_precede: list[str] = Field(
+        description=(
+            "Tool names whose first occurrence must come after this action. "
+            "Ignored when none of those tools is called."
+        ),
+        default_factory=list,
+    )
 
     def __str__(self) -> str:
         lines = []
@@ -182,17 +234,17 @@ class Action(BaseModel):
         If compare_args is None, will check all the arguments.
         Otherwise, will check only the arguments in compare_args.
         """
-        if self.name != tool_call.name:
-            return False
-        if self.compare_args is None:
-            compare_args = tool_call.arguments.keys()
-        else:
-            compare_args = self.compare_args
-        if len(compare_args) == 0:
+        if _tool_call_matches(
+            tool_call=tool_call,
+            name=self.name,
+            arguments=self.arguments,
+            compare_args=self.compare_args,
+        ):
             return True
-        tool_args = {k: v for k, v in tool_call.arguments.items() if k in compare_args}
-        action_args = {k: v for k, v in self.arguments.items() if k in compare_args}
-        return tool_args == action_args
+        return any(
+            alternative.compare_with_tool_call(tool_call)
+            for alternative in self.alternatives
+        )
 
 
 class EnvFunctionCall(BaseModel):

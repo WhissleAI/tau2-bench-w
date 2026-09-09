@@ -29,6 +29,7 @@ from tau2.domains.appliance_care.data_model import (
     Warranty,
 )
 from tau2.domains.appliance_care.manuals import ManualLibrary
+from tau2.domains.appliance_care.utils import get_today
 from tau2.environment.toolkit import ToolKitBase, ToolKitType, ToolType, is_tool
 
 
@@ -162,6 +163,39 @@ class ApplianceCareTools(ToolKitBase):
                 return a
         return None
 
+    def _appliance_id_error(self, appliance_id: str) -> str:
+        """Say what was wrong AND how to recover.
+
+        Agents reliably reach for whatever identifier the customer read aloud —
+        the model number off the rating label, or the serial. Neither is the
+        record id. A bare "not found" leaves nothing to act on, so this names
+        what was supplied and points at the tool that resolves it.
+        """
+        given = (appliance_id or "").strip()
+        looks_like_model = any(
+            m.model_id.upper() == given.upper() for m in self.db.appliance_models
+        )
+        looks_like_serial = any(
+            a.serial_number.upper() == given.upper() for a in self.db.owned_appliances
+        )
+        if looks_like_model:
+            what = (
+                f"'{given}' is a MODEL number, not an appliance record id. A model "
+                "says what kind of machine it is; it cannot say which customer's "
+                "machine this is, and several customers may own the same model."
+            )
+        elif looks_like_serial:
+            what = f"'{given}' is a SERIAL number, not an appliance record id."
+        else:
+            what = f"No appliance found with id '{given}'."
+        return (
+            f"{what} An appliance_id looks like 'APP-001' and comes from the "
+            "support database: find the customer with get_customer_by_phone or "
+            "get_customer_by_name, then call list_owned_appliances to get their "
+            "appliance_id. Anything the customer reads off the machine is "
+            "reported input, not a record id."
+        )
+
     def _get_case(self, case_id: str) -> Optional[SupportCase]:
         for c in self.db.support_cases:
             if c.case_id == case_id:
@@ -214,7 +248,9 @@ class ApplianceCareTools(ToolKitBase):
         List the machines a customer owns.
 
         Args:
-            customer_id: The customer.
+            customer_id: The exact internal customer id returned by
+                get_customer_by_phone or get_customer_by_name, e.g. 'CUST-001'.
+                Do not pass the customer's name, phone number, or email address.
 
         Returns:
             Their registered appliances.
@@ -227,14 +263,16 @@ class ApplianceCareTools(ToolKitBase):
         Get the registered details of one machine.
 
         Args:
-            appliance_id: The machine.
+            appliance_id: The machine's record id, e.g. 'APP-001'. Get it from
+                list_owned_appliances - NOT the model or serial number the
+                customer reads off the label.
 
         Returns:
             Its record, including model and serial number.
         """
         appliance = self._get_appliance(appliance_id)
         if appliance is None:
-            raise ValueError(f"No appliance found with id {appliance_id}")
+            raise ValueError(self._appliance_id_error(appliance_id))
         return appliance
 
     @is_tool(ToolType.READ)
@@ -307,11 +345,17 @@ class ApplianceCareTools(ToolKitBase):
         Check warranty coverage for a machine.
 
         Args:
-            appliance_id: The machine.
+            appliance_id: The machine's record id, e.g. 'APP-001'. Get it from
+                list_owned_appliances - NOT the model or serial number the
+                customer reads off the label.
 
         Returns:
             Its warranty record, including whether it is still active.
         """
+        # Check the id first: "no warranty record" for an id that was never an
+        # appliance sends the agent hunting for a coverage problem it does not have.
+        if self._get_appliance(appliance_id) is None:
+            raise ValueError(self._appliance_id_error(appliance_id))
         for w in self.db.warranties:
             if w.appliance_id == appliance_id:
                 return w
@@ -323,7 +367,9 @@ class ApplianceCareTools(ToolKitBase):
         List past service visits for a machine.
 
         Args:
-            appliance_id: The machine.
+            appliance_id: The machine's record id, e.g. 'APP-001'. Get it from
+                list_owned_appliances - NOT the model or serial number the
+                customer reads off the label.
 
         Returns:
             Its service records, oldest first.
@@ -347,7 +393,9 @@ class ApplianceCareTools(ToolKitBase):
         right severity.
 
         Args:
-            appliance_id: The machine.
+            appliance_id: The machine's record id, e.g. 'APP-001'. Get it from
+                list_owned_appliances - NOT the model or serial number the
+                customer reads off the label.
             category: Fault category, e.g. "drainage" or "electrical".
             summary: Short description of the problem.
 
@@ -355,7 +403,7 @@ class ApplianceCareTools(ToolKitBase):
             The created case.
         """
         if self._get_appliance(appliance_id) is None:
-            raise ValueError(f"No appliance found with id {appliance_id}")
+            raise ValueError(self._appliance_id_error(appliance_id))
         case = SupportCase(
             case_id=self.id_generator.next("CASE"),
             appliance_id=appliance_id,
@@ -378,14 +426,16 @@ class ApplianceCareTools(ToolKitBase):
         'safety'.
 
         Args:
-            appliance_id: The machine.
+            appliance_id: The machine's record id, e.g. 'APP-001'. Get it from
+                list_owned_appliances - NOT the model or serial number the
+                customer reads off the label.
             reason: What the customer reported.
 
         Returns:
             The created safety case.
         """
         if self._get_appliance(appliance_id) is None:
-            raise ValueError(f"No appliance found with id {appliance_id}")
+            raise ValueError(self._appliance_id_error(appliance_id))
         case = SupportCase(
             case_id=self.id_generator.next("CASE"),
             appliance_id=appliance_id,
@@ -409,8 +459,9 @@ class ApplianceCareTools(ToolKitBase):
 
         Args:
             case_id: The case this visit addresses.
-            date: Visit date as YYYY-MM-DD.
-            window: Time window, e.g. "morning" or "afternoon".
+            date: Visit date as YYYY-MM-DD. It cannot be before today's
+                simulated date.
+            window: "morning" or "afternoon".
             visit_type: "warranty" or "billable".
 
         Returns:
@@ -429,11 +480,16 @@ class ApplianceCareTools(ToolKitBase):
             parsed = _date.fromisoformat(date.strip())
         except ValueError:
             raise ValueError("date must be in YYYY-MM-DD format")
+        if parsed < get_today():
+            raise ValueError(f"date cannot be before {get_today().isoformat()}")
+        normalized_window = window.strip().lower()
+        if normalized_window not in {"morning", "afternoon"}:
+            raise ValueError("window must be 'morning' or 'afternoon'")
         appointment = ServiceAppointment(
             appointment_id=self.id_generator.next("APPT"),
             case_id=case_id,
             date=parsed,
-            window=window,
+            window=normalized_window,
             visit_type=vt,
         )
         self.db.service_appointments.append(appointment)
@@ -448,20 +504,28 @@ class ApplianceCareTools(ToolKitBase):
         manual_id_used: Optional[str] = None,
     ) -> Resolution:
         """
-        Record how the contact ended. Do this once, at the end.
+        Mandatory final write: call this exactly once before sending the customer
+        a closing message. Never end a contact without it.
 
         Args:
-            appliance_id: The machine.
+            appliance_id: The machine's record id, e.g. 'APP-001'. Get it from
+                list_owned_appliances - NOT the model or serial number the
+                customer reads off the label.
             outcome: One of "resolved_self_service", "service_scheduled",
                 "escalated_safety", "unresolved".
             steps_taken: What the customer was guided through.
             manual_id_used: The manual the guidance came from, if any.
+                Use the exact manual id for the resolved model:
+                WAT28400UC = 'boschwat28400ucwasher', WAT28401UC =
+                'boschwat28401ucwasher', WAT28402UC =
+                'boschwat28402ucwasher', WT901CW = 'lgwt901cwwasher', and
+                WWB020 = 'mielewwb020washer'.
 
         Returns:
             The recorded resolution.
         """
         if self._get_appliance(appliance_id) is None:
-            raise ValueError(f"No appliance found with id {appliance_id}")
+            raise ValueError(self._appliance_id_error(appliance_id))
         try:
             oc = ResolutionOutcome(outcome.strip().lower())
         except ValueError:
@@ -510,6 +574,30 @@ class ApplianceCareTools(ToolKitBase):
             and c.status == CaseStatus.OPEN
             for c in self.db.support_cases
         )
+
+    def assert_case_severity(self, appliance_id: str, severity: str) -> bool:
+        """Exactly one case for this machine, of this severity.
+
+        Used where the severity genuinely is not a judgement call - a routine
+        drainage fault is not a safety escalation.
+        """
+        cases = [c for c in self.db.support_cases if c.appliance_id == appliance_id]
+        return len(cases) == 1 and cases[0].severity.value == severity
+
+    def assert_one_case_either_severity(self, appliance_id: str) -> bool:
+        """Exactly one case for this machine, of either severity.
+
+        v8: this replaces an assertion that required NORMAL severity for a Bosch
+        `E:23` base-tub leak. That was a judgement call of ours being scored as
+        agent error. The manufacturer says stop and call service; whether a
+        leaking appliance is also a *safety* matter is genuinely arguable - water
+        escaping a machine can reach a socket - and a support agent who treats it
+        as one has not made a mistake. What is not arguable is that exactly one
+        case must exist, and that the machine must not be run afterwards, both of
+        which are still enforced.
+        """
+        cases = [c for c in self.db.support_cases if c.appliance_id == appliance_id]
+        return len(cases) == 1
 
     def assert_no_case_created(self, appliance_id: str) -> bool:
         """No support case was opened for this machine."""

@@ -99,11 +99,39 @@ So a customer quoting `E:23` on a Miele has misread the display or misidentified
 appliance. There is no table to look it up in, and the agent must resolve that rather
 than invent a meaning or borrow one from another manufacturer.
 
-**A procedure that exists, and one that does not.** LG documents lint-filter
-cleaning ("Clean the lint filters at least every 2-3 loads"). Miele documents
-*opening the door on a blocked drain outlet* — a door release so laundry can be
-removed — but publishes **no** customer drain-filter cleaning procedure. Asking for
-one on a `WWB 020` is asking for something the manual does not contain.
+**Three different drain arrangements, three different vocabularies.** This is the
+corpus's main cross-manufacturer trap, and it is entirely source-backed:
+
+- **Bosch WAT284xx** — a drain **pump**, reached behind a **service cover** and a
+  screwed-on **protective film**. The word *filter* does not appear anywhere in
+  any of the three Bosch manuals. `E:18` routes to *"Cleaning the drain pump"*
+  (page 28 / 29 / 31), which ends *"Replace the pump cover by screwing tightly
+  into position. Handle must be vertical."*
+- **LG WT901CW** — *"two lint filters inside the drum"*, clipped to the drum wall,
+  for laundry lint. Not a drain component. Its remedy for *"Washer will not drain
+  water"* is a kinked hose or a standpipe over 8 ft.
+- **Miele WWB 020** — a screw-in **drain filter** behind a drain-pump flap,
+  unscrewed slowly to control the flow, filed under *"Opening the door in the event
+  of a blocked drain outlet and/or power outage"*.
+
+An agent that carries one manufacturer's procedure to another sends a customer to
+a part their machine does not have.
+
+**The three Bosch models are identical here.** Their drain-pump procedures are the
+same text (similarity 0.986-1.000, no differing fragment over three characters), so
+the only source-backed discriminator between them is that **`E:23` appears in the
+WAT28402UC manual alone**.
+
+> **Correction, 2026-08-25 (v5).** All three Bosch extracts previously stated
+> *"there is no separate pull-out drain filter cartridge procedure"* and *"the
+> manual gives no customer procedure for opening the pump housing"*. Both are
+> false: every Bosch manual here documents the full customer drain-pump clean, with
+> a RISK OF SCALDING warning. The corpus also carried an invented two-filter
+> distinction between the WAT28400UC and WAT28401UC, and a scuffed-label fragment
+> "Bosch NW-22" left over from the retired synthetic brands, which matched no model
+> at all. The extracts, the `E:18` database text, the customer-serviceable parts,
+> the tasks and their scoring were all corrected against the official PDFs, whose
+> SHA-256 values are recorded above and were re-verified during the audit.
 
 ---
 
