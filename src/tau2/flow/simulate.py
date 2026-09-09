@@ -596,7 +596,7 @@ def run_session(
     deleted = False
     if agent_id and not keep_agent:
         try:
-            client.delete_agent(agent_id)
+            client.delete_agent(agent_id, confirm=True)
             deleted = True
             _emit({"event": "agent_deleted", "agent_id": agent_id})
         except Exception as e:  # noqa: BLE001
@@ -980,7 +980,7 @@ def _fetch_flow_spec(client: FlowClient, agent_type: str, system_prompt: str,
     finally:
         if aid and not keep_agent:
             try:
-                client.delete_agent(aid)
+                client.delete_agent(aid, confirm=True)
             except Exception:  # noqa: BLE001
                 pass
 
@@ -1038,7 +1038,7 @@ def _report_lingering(client: FlowClient) -> None:
                       f"still present — deleting[/red]")
         for a in stragglers:
             try:
-                client.delete_agent(a["id"])
+                client.delete_agent(a["id"], confirm=True)
                 console.print(f"    deleted {a['id']}")
             except Exception as e:  # noqa: BLE001
                 console.print(f"    [red]failed to delete {a['id']}: {e}[/red]")

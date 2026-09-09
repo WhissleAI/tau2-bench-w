@@ -206,10 +206,17 @@ class WhissleVoiceAgent(HalfDuplexAgent[WhissleVoiceState]):
         transcript_parts: list[str] = []
         last_activity = time.monotonic()
         saw_output = False
-        # SPEECH bytes, not raw received bytes: the bot's LiveKit track streams
-        # continuous silence frames, so raw byte growth never goes quiet and the
-        # quiet-gap would only ever exit at the max-turn deadline.
+        # PRIMARY end-of-turn signal is the RTVI ``bot-stopped-speaking`` event
+        # (SpeakingStateMixin's CORRECTED one, deferred to true playout end), NOT the
+        # quiet-gap: the bot's LiveKit track streams continuous silence frames, so
+        # speech-byte growth may never go quiet and the quiet-gap would only exit at
+        # the max-turn deadline — the observed "every turn runs to the cap" stall that
+        # left voice results empty. We break a short grace after a bot-stopped fires
+        # (to catch a trailing bench-tool-call / resumed clause) and keep the quiet-gap
+        # as a fallback for when the stop event is missed.
+        start_bot_stopped = self.provider.bot_stopped_total()
         last_audio_total = self.provider.agent_speech_total()
+        stop_grace_s = float(os.getenv("WHISSLE_VOICE_STOP_GRACE_S", "0.6"))
         while time.monotonic() < deadline:
             calls = self.provider.drain_tool_calls()
             if calls:
@@ -224,6 +231,19 @@ class WhissleVoiceAgent(HalfDuplexAgent[WhissleVoiceState]):
                 last_audio_total = audio_total
                 saw_output = True
                 last_activity = time.monotonic()
+            # Event-driven end: the bot declared it finished speaking. Require captured
+            # output, that it is not speaking again (a mid-turn pause that resumed),
+            # and a short quiet grace so a tool-call/clause landing right after the
+            # stop is not truncated.
+            stopped = self.provider.bot_stopped_total() > start_bot_stopped
+            if (
+                saw_output
+                and stopped
+                and not self.provider.bot_speaking()
+                and (time.monotonic() - last_activity) >= stop_grace_s
+            ):
+                break
+            # Fallback: the stop event never arrived but the turn went quiet.
             if saw_output and (time.monotonic() - last_activity) >= self._quiet_gap_s:
                 break
             time.sleep(0.1)
